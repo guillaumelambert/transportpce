@@ -184,7 +184,7 @@ public class DataStoreContextImpl implements DataStoreContext {
          */
         private SchemaContext getSchemaContext(List<YangModuleInfo> moduleInfos) {
             this.moduleInfoBackedCntxt.addModuleInfos(moduleInfos);
-            Optional<SchemaContext> tryToCreateSchemaContext =
+            com.google.common.base.Optional<SchemaContext> tryToCreateSchemaContext =
                     this.moduleInfoBackedCntxt.tryToCreateSchemaContext();
             if (!tryToCreateSchemaContext.isPresent()) {
                 LOG.error("Could not create the initial schema context. Schema context is empty");
