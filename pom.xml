@@ -9,9 +9,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.opendaylight.odlparent</groupId>
-    <artifactId>odlparent</artifactId>
-    <version>4.0.10</version>
+    <groupId>org.onap.ccsdk.parent</groupId>
+	<artifactId>odlparent</artifactId>
+	<version>1.3.0-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -40,7 +40,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <module>pce</module>
     <module>servicehandler</module>
     <module>features</module>
-    <module>karaf</module>
+    <!--  no karaf4 parent in onap because of known security vulnerabilities-->
+    <!-- <module>karaf</module> -->
     <module>test-common</module>
   </modules>
 
