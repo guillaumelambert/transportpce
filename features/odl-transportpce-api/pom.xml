@@ -23,7 +23,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
 
 
   <properties>
-    <netconf.version>1.5.3-SNAPSHOT</netconf.version>
+    <netconf.version>1.5.2</netconf.version>
     <configfile.directory>etc/opendaylight/karaf</configfile.directory>
   </properties>
 
