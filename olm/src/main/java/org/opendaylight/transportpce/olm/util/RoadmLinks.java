@@ -6,6 +6,9 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package org.opendaylight.transportpce.olm.util;
+
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.LinkId;
+
 /**
  * The Class RoadmLinks.
  */
@@ -22,6 +25,7 @@ public class RoadmLinks {
 
     /** The dest tpid. */
     private String destTpid;
+    private LinkId linkId;
 
     /**
      * Gets the src node id.
@@ -95,4 +99,11 @@ public class RoadmLinks {
         this.destTpid = destTpid;
     }
 
+    public LinkId getLinkId() {
+        return linkId;
+    }
+
+    public void setLinkId(LinkId linkId) {
+        this.linkId = linkId;
+    }
 }

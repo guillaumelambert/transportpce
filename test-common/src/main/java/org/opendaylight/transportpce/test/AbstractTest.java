@@ -8,9 +8,11 @@
 package org.opendaylight.transportpce.test;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
+import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
-import org.opendaylight.transportpce.test.common.DataStoreContext;
-import org.opendaylight.transportpce.test.common.DataStoreContextImpl;
+import org.opendaylight.transportpce.common.DataStoreContext;
+import org.opendaylight.transportpce.common.DataStoreContextImpl;
 
 public abstract class AbstractTest {
 
@@ -24,12 +26,25 @@ public abstract class AbstractTest {
         return dataStoreContextUtil.getDataBroker();
     }
 
+    public DataBroker getNewDataBroker() {
+        DataStoreContext dataStoreContext = new DataStoreContextImpl();
+        return dataStoreContext.getDataBroker();
+    }
+
     public DOMDataBroker getDOMDataBroker() {
         return dataStoreContextUtil.getDOMDataBroker();
     }
 
     public DataStoreContext getDataStoreContextUtil() {
         return dataStoreContextUtil;
+    }
+
+    public NotificationPublishService getNotificationPublishService() {
+        return dataStoreContextUtil.getNotificationPublishService();
+    }
+
+    public NotificationService getNotificationService() {
+        return dataStoreContextUtil.getNotificationService();
     }
 
 }

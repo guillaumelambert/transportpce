@@ -13,9 +13,6 @@ import org.junit.Test;
 
 public class OtsPmHolderTest {
 
-    /*
-     * test OtsPmHolder creation
-     */
     @Test
     public void test() {
         OtsPmHolder otspmholder0 = new OtsPmHolder("name", Double.valueOf(12), "interface");

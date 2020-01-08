@@ -7,7 +7,7 @@
  */
 package org.opendaylight.transportpce.pce;
 
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev170426.PathComputationRequestInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.PathComputationRequestInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,11 +18,14 @@ public final class PceComplianceCheck {
 
     private static final Logger LOG = LoggerFactory.getLogger(PceComplianceCheck.class);
 
+    private PceComplianceCheck() {
+    }
+
     /*
-     * Check if a String is not
-     * null and not equal to ''.
+     * Check if a String is not null and not equal to ''.
      *
      * @param value String value
+     *
      * @return  true  if String ok
      *          false if not
      */
@@ -34,6 +37,8 @@ public final class PceComplianceCheck {
         String message = "";
         Boolean result = true;
         if (input != null) {
+            LOG.info("New request {} for new service {}",
+                    input.getServiceHandlerHeader().getRequestId(), input.getServiceName());
             if (!checkString(input.getServiceName())) {
                 result = false;
                 message = "Service Name is not set";
@@ -51,8 +56,4 @@ public final class PceComplianceCheck {
         return new PceComplianceCheckResult(result, message);
     }
 
-    private PceComplianceCheck() {
-    }
-
 }
-

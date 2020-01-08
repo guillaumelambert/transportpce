@@ -10,10 +10,11 @@ package org.opendaylight.transportpce.renderer.provisiondevice.tasks;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import org.opendaylight.transportpce.common.ResponseCodes;
 import org.opendaylight.transportpce.renderer.provisiondevice.OLMRenderingResult;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.olm.rev170418.OlmService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.olm.rev170418.ServicePowerSetupInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.olm.rev170418.ServicePowerSetupOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.TransportpceOlmService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +23,10 @@ public class OlmPowerSetupTask implements Callable<OLMRenderingResult> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OlmPowerSetupTask.class);
 
-    private final OlmService olmService;
+    private final TransportpceOlmService olmService;
     private final ServicePowerSetupInput input;
 
-    public OlmPowerSetupTask(OlmService olmService, ServicePowerSetupInput input) {
+    public OlmPowerSetupTask(TransportpceOlmService olmService, ServicePowerSetupInput input) {
         this.olmService = olmService;
         this.input = input;
     }
@@ -40,7 +41,7 @@ public class OlmPowerSetupTask implements Callable<OLMRenderingResult> {
         }
 
         LOG.debug("Result: {}", result.getResult());
-        if (result.isSuccessful()) {
+        if (ResponseCodes.SUCCESS_RESULT.equals(result.getResult().getResult())) {
             LOG.info("OLM power setup finished successfully");
             return OLMRenderingResult.ok();
         } else {

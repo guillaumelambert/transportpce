@@ -10,16 +10,16 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
+ <parent>
   	<groupId>org.onap.ccsdk.parent</groupId>
 	<artifactId>odlparent-lite</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.5.1-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.transportpce</groupId>
   <artifactId>transportpce-artifacts</artifactId>
-  <version>0.2.3-SNAPSHOT</version>
+  <version>0.3.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <dependencyManagement>
@@ -58,4 +58,15 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <build>
+    <pluginManagement>
+    <plugins>
+    	<plugin>
+     	  <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>2.9</version>    	
+    	</plugin>
+    </plugins>
+    </pluginManagement>
+  </build>
 </project>

@@ -12,22 +12,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-
 import org.junit.Assert;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.transportpce.binding.converter.XMLDataObjectConverter;
-import org.opendaylight.transportpce.binding.converter.api.DataObjectConverter;
+import org.opendaylight.transportpce.common.DataStoreContext;
 import org.opendaylight.transportpce.common.NetworkUtils;
-import org.opendaylight.transportpce.test.common.DataStoreContext;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev170426.PathComputationRequestOutput;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev170426.path.description.atoz.direction.AToZ;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev170426.pce.resource.resource.resource.Node;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev170426.pce.resource.resource.resource.node.NodeIdentifier;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.Network;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.NetworkId;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.NetworkKey;
+import org.opendaylight.transportpce.common.converter.XMLDataObjectConverter;
+import org.opendaylight.transportpce.common.converter.api.DataObjectConverter;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.PathComputationRequestOutput;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.atoz.direction.AToZ;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.pce.resource.resource.resource.Node;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NetworkId;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.Networks;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.Network;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.NetworkKey;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
@@ -57,9 +56,9 @@ public final class PceTestUtils {
                 = ((ContainerNode) normalizedNode.get()).getValue().iterator().next();
         MapEntryNode mapNode = ((MapNode) next).getValue().iterator().next();
         Optional<DataObject> dataObject = dataObjectConverter.getDataObject(mapNode, Network.QNAME);
-        InstanceIdentifier<Network> nwInstanceIdentifier = InstanceIdentifier
-                .builder(Network.class, new NetworkKey(new NetworkId(NetworkUtils.OVERLAY_NETWORK_ID)))
-                .build();
+        InstanceIdentifier<Network> nwInstanceIdentifier = InstanceIdentifier.builder(Networks.class)
+            .child(Network.class, new NetworkKey(new NetworkId(NetworkUtils.OVERLAY_NETWORK_ID)))
+            .build();
         WriteTransaction dataWriteTransaction = dataBroker.newWriteOnlyTransaction();
         dataWriteTransaction.put(LogicalDatastoreType.CONFIGURATION, nwInstanceIdentifier, (Network) dataObject.get());
         dataWriteTransaction.submit().get();
@@ -124,15 +123,12 @@ public final class PceTestUtils {
                     return false;
                 }
                 return aToZ.getResource().getResource() instanceof Node;
-            }).filter(aToZ -> {
-                Node node = (Node) aToZ.getResource().getResource();
-                if (node.getNodeIdentifier() == null) {
-                    LOG.warn("Node in AToZ node {} contains null! Skipping this node!", aToZ.getId());
-                    return false;
-                }
-                return true;
             }).map(aToZ -> {
-                NodeIdentifier node = ((Node) aToZ.getResource().getResource()).getNodeIdentifier();
+                Node node = (Node) aToZ.getResource().getResource();
+                if (node.getNodeId() == null) {
+                    LOG.warn("Node in AToZ node {} contains null! Skipping this node!", aToZ.getId());
+                    return null;
+                }
                 return node.getNodeId().toString();
             }).collect(Collectors.toList());
     }

@@ -9,8 +9,9 @@
 package org.opendaylight.transportpce.networkmodel.util;
 
 import java.text.MessageFormat;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev150608.LinkId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.networkutils.rev170818.InitRoadmNodesInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.networkutils.rev170818.InitRoadmNodesInput;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.LinkId;
+
 
 public final class LinkIdUtil {
 
@@ -75,7 +76,8 @@ public final class LinkIdUtil {
      * @param srcTp a source termination point
      * @param destNode a destination node
      * @param destTp a destination termination point
-     * @param checkNode boolean
+     * @param checkNode boolean to check node
+     *
      * @return LinkId a link identifier
      */
     public static LinkId getOppositeLinkId(String srcNode, String srcTp, String destNode, String destTp,

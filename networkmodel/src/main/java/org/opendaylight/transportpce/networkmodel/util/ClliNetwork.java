@@ -8,7 +8,6 @@
 
 package org.opendaylight.transportpce.networkmodel.util;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -16,24 +15,22 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.NetworkUtils;
-import org.opendaylight.transportpce.common.Timeouts;
-import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev170626.NetworkTypes1;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev170626.NetworkTypes1Builder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev170626.Node1;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev170626.Node1Builder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev170626.network.network.types.ClliNetworkBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.OrgOpenroadmDevice;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.Info;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.Network;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.NetworkBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.NetworkId;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.NetworkKey;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.NodeId;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.network.NetworkTypesBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.network.Node;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.network.NodeBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev150608.network.NodeKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev190702.network.nodes.NodeInfo;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev181130.NetworkTypes1;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev181130.NetworkTypes1Builder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev181130.Node1;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev181130.Node1Builder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev181130.networks.network.network.types.ClliNetworkBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NetworkId;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.Networks;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.Network;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.NetworkBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.NetworkKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NetworkTypesBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NodeBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.slf4j.Logger;
@@ -50,13 +47,13 @@ public final class ClliNetwork {
     /**
      * This public method creates the CLLI Layer and posts it to the controller.
      *
-     * @param controllerdb controller DataBroker
+     * @param controllerdb   controller Databroker
      */
     public static void createClliLayer(DataBroker controllerdb) {
         try {
             Network clliNetwork = createNetwork();
-            InstanceIdentifierBuilder<Network> nwIID = InstanceIdentifier.builder(
-                       Network.class,new NetworkKey(new NetworkId(NetworkUtils.CLLI_NETWORK_ID)));
+            InstanceIdentifierBuilder<Network> nwIID = InstanceIdentifier.builder(Networks.class).child(Network.class,
+                new NetworkKey(new NetworkId(NetworkUtils.CLLI_NETWORK_ID)));
             WriteTransaction wrtx = controllerdb.newWriteOnlyTransaction();
             wrtx.put(LogicalDatastoreType.CONFIGURATION, nwIID.build(), clliNetwork);
             wrtx.submit().get(1, TimeUnit.SECONDS);
@@ -69,23 +66,13 @@ public final class ClliNetwork {
     /**
      * Create single node entry for CLLI topology.
      *
-     * @param deviceTransactionManager Device Transaction Manager
-     * @param deviceId Device ID
+     * @param deviceId device ID
+     * @param nodeInfo Some important and general data from device
      *
-     * @return Node Node Builder
+     * @return node builder status
      */
-    public static Node createNode(DeviceTransactionManager deviceTransactionManager, String deviceId) {
-        //Read clli from the device
-        InstanceIdentifier<Info> infoIID = InstanceIdentifier.create(OrgOpenroadmDevice.class).child(Info.class);
-        Optional<Info> deviceInfo = deviceTransactionManager.getDataFromDevice(deviceId,
-                LogicalDatastoreType.OPERATIONAL, infoIID, Timeouts.DEVICE_READ_TIMEOUT,
-                Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-        String clli;
-        if (deviceInfo.isPresent()) {
-            clli = deviceInfo.get().getClli();
-        } else {
-            return null;
-        }
+    public static Node createNode(String deviceId, NodeInfo nodeInfo) {
+        String clli = nodeInfo.getNodeClli();
         /*
          * Create node in the CLLI layer of the network model
          * with nodeId equal to the clli attribute in the device
