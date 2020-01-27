@@ -23,6 +23,8 @@ public interface CrossConnect {
      *            Device id.
      * @param connectionNumber
      *            Name of the cross connect.
+     * @param <T>
+     *            generic.
      *
      * @return Roadm connection subtree from the device.
      */
@@ -56,7 +58,7 @@ public interface CrossConnect {
      * @return true/false based on status of operation.
      */
 
-    boolean deleteCrossConnect(String deviceId, String connectionNumber);
+    List<String> deleteCrossConnect(String deviceId, String connectionNumber);
 
     /**
      * This public method returns the list of ports (port-trail) for a roadm's
@@ -71,6 +73,10 @@ public interface CrossConnect {
      *            Source logical connection point.
      * @param destTp
      *            Destination logical connection point.
+     * @param <T>
+     *            generic.
+     * @throws OpenRoadmInterfaceException
+     *            an exception at OpenRoadm interface.
      *
      * @return list of Ports object type.
      */

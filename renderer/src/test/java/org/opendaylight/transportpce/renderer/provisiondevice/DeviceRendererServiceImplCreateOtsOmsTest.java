@@ -36,7 +36,7 @@ import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfa
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl121;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl221;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface121;
-import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface22;
+import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface221;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterfaceFactory;
 import org.opendaylight.transportpce.renderer.stub.MountPointServiceStub;
 import org.opendaylight.transportpce.renderer.utils.CreateOtsOmsDataUtils;
@@ -77,14 +77,14 @@ public class DeviceRendererServiceImplCreateOtsOmsTest extends AbstractTest {
             this.openRoadmInterfaces);
         this.portMappingVersion121 = new PortMappingVersion121(getDataBroker(), this.deviceTransactionManager,
             this.openRoadmInterfaces);
-        PortMapping portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22, this.mappingUtils,
+        PortMapping portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22,
             this.portMappingVersion121);
         FixedFlexInterface fixedFlexInterface = new FixedFlexImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
-        OpenRoadmInterface22 openRoadmInterface22 = new OpenRoadmInterface22(portMapping,openRoadmInterfaces,
+        OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
             fixedFlexInterface);
         this.openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,openRoadmInterface121,
-            openRoadmInterface22);
+            openRoadmInterface221);
 
         this.crossConnectImpl121 = new CrossConnectImpl121(this.deviceTransactionManager);
         this.crossConnectImpl221 = new CrossConnectImpl221(this.deviceTransactionManager);

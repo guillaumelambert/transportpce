@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import org.junit.Assert;
@@ -45,7 +46,7 @@ import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfa
 import org.opendaylight.transportpce.renderer.NetworkModelWavelengthService;
 import org.opendaylight.transportpce.renderer.NetworkModelWavelengthServiceImpl;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface121;
-import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface22;
+import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface221;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterfaceFactory;
 import org.opendaylight.transportpce.renderer.stub.MountPointServiceStub;
 import org.opendaylight.transportpce.renderer.stub.MountPointStub;
@@ -98,7 +99,7 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
             new PortMappingVersion221(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
         this.portMappingVersion121 =
             new PortMappingVersion121(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
-        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22, this.mappingUtils,
+        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22,
             this.portMappingVersion121);
         this.crossConnectImpl121 = new CrossConnectImpl121(deviceTransactionManager);
         this.crossConnectImpl221 = new CrossConnectImpl221(deviceTransactionManager);
@@ -107,10 +108,10 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         this.crossConnect = Mockito.spy(crossConnect);
         FixedFlexInterface fixedFlexInterface = new FixedFlexImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
-        OpenRoadmInterface22 openRoadmInterface22 = new OpenRoadmInterface22(portMapping,openRoadmInterfaces,
+        OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
             fixedFlexInterface);
         OpenRoadmInterfaceFactory openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,
-             openRoadmInterface121,openRoadmInterface22);
+             openRoadmInterface121,openRoadmInterface221);
 
         this.deviceRenderer = new DeviceRendererServiceImpl(this.getDataBroker(),
             this.deviceTransactionManager, openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect,
@@ -139,7 +140,8 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         serviceDeleteInputBuilder.setServiceName("service 1");
         serviceDeleteInputBuilder.setServiceHandlerHeader((new ServiceHandlerHeaderBuilder())
             .setRequestId("request1").build());
-        Mockito.doReturn(true).when(this.crossConnect).deleteCrossConnect(Mockito.anyString(), Mockito.anyString());
+        Mockito.doReturn(Collections.emptyList()).when(this.crossConnect).deleteCrossConnect(Mockito.anyString(),
+            Mockito.anyString());
         ServiceDeleteOutput serviceDeleteOutput
                 = this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build()).get();
         Assert.assertEquals(ResponseCodes.RESPONSE_OK,
@@ -160,7 +162,8 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
 
     @Test
     public void serviceDeleteOperationTearDownFailedAtoZ() throws ExecutionException, InterruptedException {
-        Mockito.doReturn(true).when(this.crossConnect).deleteCrossConnect(Mockito.anyString(), Mockito.anyString());
+        Mockito.doReturn(Collections.emptyList()).when(this.crossConnect).deleteCrossConnect(Mockito.anyString(),
+            Mockito.anyString());
         Mockito.doReturn(RpcResultBuilder.success((new ServicePowerTurndownOutputBuilder())
             .setResult("Failed").build()).buildFuture()).when(this.olmService).servicePowerTurndown(Mockito.any());
 
@@ -180,7 +183,8 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
 
     @Test
     public void serviceDeleteOperationTearDownFailedZtoA() throws ExecutionException, InterruptedException {
-        Mockito.doReturn(true).when(this.crossConnect).deleteCrossConnect(Mockito.anyString(), Mockito.anyString());
+        Mockito.doReturn(Collections.emptyList()).when(this.crossConnect).deleteCrossConnect(Mockito.anyString(),
+            Mockito.anyString());
         Mockito.when(this.olmService.servicePowerTurndown(Mockito.any()))
             .thenReturn(RpcResultBuilder.success((new ServicePowerTurndownOutputBuilder())
                 .setResult("Success").build()).buildFuture())

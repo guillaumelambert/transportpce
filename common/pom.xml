@@ -8,15 +8,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-      <groupId>org.onap.ccsdk.parent</groupId>
-	<artifactId>bundle-parent</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+        <groupId>org.opendaylight.mdsal</groupId>
+        <artifactId>binding-parent</artifactId>
+        <version>3.0.13</version>
         <relativePath />
     </parent>
 
     <groupId>org.opendaylight.transportpce</groupId>
     <artifactId>transportpce-common</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>0.3.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <dependencyManagement>
@@ -24,14 +24,14 @@
             <dependency>
                 <groupId>org.opendaylight.controller</groupId>
                 <artifactId>mdsal-artifacts</artifactId>
-                <version>1.9.2-SNAPSHOT</version>
+                <version>1.9.3-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.6.2-SNAPSHOT</version>
+                <version>1.6.3-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -73,6 +73,21 @@
             <groupId>${project.groupId}.ordmodels</groupId>
             <artifactId>transportpce-ordmodels-device</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.controller</groupId>
+            <artifactId>sal-binding-broker-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-data-codec-xml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.opendaylight.yangtools</groupId>
+            <artifactId>yang-data-codec-gson</artifactId>
         </dependency>
 
         <!-- Testing Dependencies -->

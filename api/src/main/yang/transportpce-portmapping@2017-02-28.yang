@@ -49,6 +49,11 @@ module transportpce-portmapping {
         description
           "Identifier for node-type e.g Roadm, xponder";
       }
+      leaf clli{
+          type string;
+          description
+            "Common Language Location Identifier read from device";
+      }
       list mapping{
         description
           "Mapping for Physical circuit pack/port/parent interfaces
@@ -77,6 +82,29 @@ module transportpce-portmapping {
           description
           "OTS interface provisioned on the port";
         }
+        leaf port-direction{
+          type string;
+          description
+            "Useful for line port of XPDR, for which there is no
+            indication in its logical-termination-point naming";
+        }
+        leaf port-qual{
+          type string;
+          description
+            "Useful to identify from portmapping client from network ports of XPDR";
+        }
+        leaf associated-lcp{
+          type string;
+          description
+            "For XPDR, associate two logical-connection-points
+            from device/connnection-map data";
+        }
+        leaf partner-lcp{
+            type string;
+            description
+              "For XPDR unidirectional NETWORK port, associate two logical-connection-points
+              from device/partner port data";
+          }
       }
       list cp-to-degree{
         description

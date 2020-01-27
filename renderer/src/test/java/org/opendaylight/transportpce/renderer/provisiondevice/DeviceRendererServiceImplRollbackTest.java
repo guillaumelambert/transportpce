@@ -9,6 +9,7 @@
 package org.opendaylight.transportpce.renderer.provisiondevice;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -37,7 +38,7 @@ import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfa
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl121;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl221;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface121;
-import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface22;
+import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface221;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterfaceFactory;
 import org.opendaylight.transportpce.renderer.stub.MountPointServiceStub;
 import org.opendaylight.transportpce.renderer.stub.MountPointStub;
@@ -82,14 +83,14 @@ public class DeviceRendererServiceImplRollbackTest extends AbstractTest {
         this.crossConnect = new CrossConnectImpl(deviceTransactionManager, this.mappingUtils, this.crossConnectImpl121,
             this.crossConnectImpl221);
         this.crossConnect = Mockito.spy(this.crossConnect);
-        PortMapping portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22, this.mappingUtils,
+        PortMapping portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22,
             this.portMappingVersion121);
         FixedFlexInterface fixedFlexInterface = new FixedFlexImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
-        OpenRoadmInterface22 openRoadmInterface22 = new OpenRoadmInterface22(portMapping,openRoadmInterfaces,
+        OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
             fixedFlexInterface);
         OpenRoadmInterfaceFactory openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,
-            openRoadmInterface121,openRoadmInterface22);
+            openRoadmInterface121,openRoadmInterface221);
 
 
         this.deviceRendererService = new DeviceRendererServiceImpl(this.getDataBroker(),
@@ -147,7 +148,8 @@ public class DeviceRendererServiceImplRollbackTest extends AbstractTest {
         RendererRollbackInputBuilder rendererRollbackInputBuilder = new RendererRollbackInputBuilder();
         rendererRollbackInputBuilder.setNodeInterface(nodeInterfaces);
 
-        Mockito.doReturn(true).when(this.crossConnect).deleteCrossConnect("node1", connectionID.get(0));
+        Mockito.doReturn(Collections.emptyList()).when(this.crossConnect)
+            .deleteCrossConnect("node1", connectionID.get(0));
         RendererRollbackOutput rendererRollbackOutput =
             this.deviceRendererService.rendererRollback(rendererRollbackInputBuilder.build());
         Assert.assertTrue("Rollback must success when cross connect returns true", rendererRollbackOutput.isSuccess());
@@ -155,7 +157,7 @@ public class DeviceRendererServiceImplRollbackTest extends AbstractTest {
         Assert.assertTrue("There must not be any failed interfaces when cross connect returns true",
             rendererRollbackOutput.getFailedToRollback().get(0).getInterface().isEmpty());
 
-        Mockito.doReturn(false).when(this.crossConnect).deleteCrossConnect("node1", connectionID.get(0));
+        Mockito.doReturn(null).when(this.crossConnect).deleteCrossConnect("node1", connectionID.get(0));
         rendererRollbackOutput =
             this.deviceRendererService.rendererRollback(rendererRollbackInputBuilder.build());
         Assert.assertFalse("Rollback must fail when cross connect returns false",rendererRollbackOutput.isSuccess());

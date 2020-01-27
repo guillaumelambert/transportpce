@@ -66,6 +66,8 @@ public class OpenRoadmInterfacesImpl221 {
 
         InstanceIdentifier<Interface> interfacesIID = InstanceIdentifier.create(OrgOpenroadmDevice.class).child(
             Interface.class, new InterfaceKey(ifBuilder.getName()));
+        LOG.info("POST INTERF for {} : InterfaceBuilder : name = {} \t type = {}", nodeId, ifBuilder.getName(),
+            ifBuilder.getType().toString());
         deviceTx.put(LogicalDatastoreType.CONFIGURATION, interfacesIID, ifBuilder.build());
         ListenableFuture<Void> txSubmitFuture = deviceTx.submit(Timeouts.DEVICE_WRITE_TIMEOUT,
             Timeouts.DEVICE_WRITE_TIMEOUT_UNIT);
@@ -88,6 +90,7 @@ public class OpenRoadmInterfacesImpl221 {
 
 
     public void deleteInterface(String nodeId, String interfaceName) throws OpenRoadmInterfaceException {
+        LOG.info("deleting interface {} on device221 {}", interfaceName, nodeId);
         Optional<Interface> intf2DeleteOpt;
         try {
             intf2DeleteOpt = getInterface(nodeId, interfaceName);
@@ -178,7 +181,6 @@ public class OpenRoadmInterfacesImpl221 {
 
     public void postEquipmentState(String nodeId, String circuitPackName, boolean activate)
         throws OpenRoadmInterfaceException {
-
         InstanceIdentifier<CircuitPacks> circuitPackIID = InstanceIdentifier.create(OrgOpenroadmDevice.class).child(
             CircuitPacks.class, new CircuitPacksKey(circuitPackName));
         Optional<CircuitPacks> cpOpt = this.deviceTransactionManager.getDataFromDevice(nodeId,
@@ -194,12 +196,13 @@ public class OpenRoadmInterfacesImpl221 {
         CircuitPacksBuilder cpBldr = new CircuitPacksBuilder(cp);
         boolean change = false;
         if (activate) {
-            if (cpBldr.getEquipmentState() != null && !cpBldr.getEquipmentState().equals(States.NotReservedInuse)) {
+            if (cpBldr.getEquipmentState() != null && !cpBldr.getEquipmentState().getName()
+                .equals(States.NotReservedInuse)) {
                 cpBldr.setEquipmentState(States.NotReservedInuse);
                 change = true;
             }
-        } else if (
-            (cpBldr.getEquipmentState() != null && !cpBldr.getEquipmentState().equals(States.NotReservedAvailable))) {
+        } else if ((cpBldr.getEquipmentState() != null && !cpBldr.getEquipmentState().getName()
+            .equals(States.NotReservedAvailable))) {
             cpBldr.setEquipmentState(States.NotReservedAvailable);
             change = true;
         }

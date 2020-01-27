@@ -40,7 +40,7 @@ import org.opendaylight.transportpce.renderer.provisiondevice.servicepath.Servic
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.alarmsuppression.rev171102.ServiceNodelist;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.alarmsuppression.rev171102.service.nodelist.NodelistBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.alarmsuppression.rev171102.service.nodelist.NodelistKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev190702.network.nodes.Mapping;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.CreateOtsOmsInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.CreateOtsOmsOutput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.CreateOtsOmsOutputBuilder;
@@ -54,10 +54,6 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.renderer.rollback.output.FailedToRollbackBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.renderer.rollback.output.FailedToRollbackKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev161014.service.Topology;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.get.connection.port.trail.output.Ports;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.OrgOpenroadmDevice;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.RoadmConnections;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.RoadmConnectionsKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev161014.OchAttributes.ModulationFormat;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev161014.R100G;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.ServiceList;
@@ -175,14 +171,6 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                                 this.crossConnect.postCrossConnect(nodeId, waveNumber, srcTp, destTp);
                         if (connectionNameOpt.isPresent()) {
                             nodesProvisioned.add(nodeId);
-                            List<Ports> ports =
-                                    this.crossConnect.getConnectionPortTrail(nodeId, waveNumber, srcTp, destTp);
-                            if (ServicePathDirection.A_TO_Z.equals(direction)) {
-                                topology.updateAtoZTopologyList(ports, nodeId);
-                            }
-                            if (ServicePathDirection.Z_TO_A.equals(direction)) {
-                                topology.updateZtoATopologyList(ports, nodeId);
-                            }
                             createdConnections.add(connectionNameOpt.get());
                         } else {
                             processErrorMessage("Unable to post Roadm-connection for node " + nodeId, forkJoinPool,
@@ -214,6 +202,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             LOG.error("Error while setting up service paths!", e);
         }
         forkJoinPool.shutdown();
+
         if (success.get()) {
             results.add("Roadm-connection successfully created for nodes: " + String.join(", ", nodesProvisioned));
         }
@@ -287,18 +276,15 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                     }
                 } else {
                     String connectionNumber = srcTp + "-" + destTp + "-" + waveNumber;
-                    if (!this.crossConnect.deleteCrossConnect(nodeId, connectionNumber)) {
-                        LOG.error("Failed to delete cross connect {}", connectionNumber);
-                    }
+                    List<String> intToDelete = this.crossConnect.deleteCrossConnect(nodeId, connectionNumber);
                     connectionNumber = destTp + "-" + srcTp + "-" + waveNumber;
-                    String interfName =
-                            this.openRoadmInterfaceFactory.createOpenRoadmOchInterfaceName(srcTp, waveNumber);
-                    if (!isUsedByXc(nodeId, interfName, connectionNumber)) {
-                        interfacesToDelete.add(interfName);
-                    }
-                    interfName = this.openRoadmInterfaceFactory.createOpenRoadmOchInterfaceName(destTp, waveNumber);
-                    if (!isUsedByXc(nodeId, interfName, connectionNumber)) {
-                        interfacesToDelete.add(interfName);
+                    if (intToDelete != null) {
+                        for (String interf : intToDelete) {
+                            if (!this.openRoadmInterfaceFactory.isUsedbyXc(nodeId, interf, connectionNumber,
+                                this.deviceTransactionManager)) {
+                                interfacesToDelete.add(interf);
+                            }
+                        }
                     }
                 }
             } else {
@@ -307,7 +293,8 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                 success.set(false);
                 LOG.warn(result);
                 forkJoinPool.shutdown();
-                return; // TODO should deletion end here?
+                return;
+                //TODO should deletion end here?
             }
             for (String interfaceId : interfacesToDelete) {
                 try {
@@ -346,7 +333,8 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             List<String> failedInterfaces = new ArrayList<>();
             String nodeId = nodeInterfaces.getNodeId();
             for (String connectionId : nodeInterfaces.getConnectionId()) {
-                if (this.crossConnect.deleteCrossConnect(nodeId, connectionId)) {
+                List<String> listInter = this.crossConnect.deleteCrossConnect(nodeId, connectionId);
+                if (listInter != null) {
                     LOG.info("Cross connect {} on node {} successfully deleted.", connectionId, nodeId);
                 } else {
                     LOG.error("Failed to delete cross connect {} on node {}!", connectionId, nodeId);
@@ -460,34 +448,15 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             throw e;
         }
         if (services.isPresent()) {
+            LOG.info("service {} already exists", name);
             servicesBuilder = new ServicesBuilder(services.get());
+            servicesBuilder.setTopology(topo);
+            WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
+            writeTx.merge(LogicalDatastoreType.OPERATIONAL, iid, servicesBuilder.build());
+            writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
         } else {
-            servicesBuilder = new ServicesBuilder();
-            servicesBuilder.withKey(serviceKey);
+            LOG.warn("Service {} does not exist - topology can not be updated", name);
         }
-        servicesBuilder.setTopology(topo);
-        WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
-        writeTx.merge(LogicalDatastoreType.OPERATIONAL, iid, servicesBuilder.build());
-        writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
-    }
-
-    private boolean isUsedByXc(String nodeid, String interfaceid, String xcid) {
-        InstanceIdentifier<RoadmConnections> xciid = InstanceIdentifier.create(OrgOpenroadmDevice.class)
-                .child(RoadmConnections.class, new RoadmConnectionsKey(xcid));
-        LOG.info("reading xc {} in node {}", xcid, nodeid);
-        Optional<RoadmConnections> crossconnection =
-                this.deviceTransactionManager.getDataFromDevice(nodeid, LogicalDatastoreType.CONFIGURATION, xciid,
-                        Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-        if (crossconnection.isPresent()) {
-            RoadmConnections xc = crossconnection.get();
-            LOG.info("xd {} found", xcid);
-            if (xc.getSource().getSrcIf().equals(interfaceid) || xc.getDestination().getDstIf().equals(interfaceid)) {
-                return true;
-            }
-        } else {
-            LOG.info("xd {} not found !", xcid);
-        }
-        return false;
     }
 
     @Override

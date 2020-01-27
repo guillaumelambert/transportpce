@@ -10,15 +10,15 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.onap.ccsdk.parent</groupId>
-	<artifactId>single-feature-parent</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+    <groupId>org.opendaylight.odlparent</groupId>
+    <artifactId>single-feature-parent</artifactId>
+    <version>4.0.14</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.transportpce</groupId>
   <artifactId>odl-transportpce-stubmodels</artifactId>
-  <version>0.3.2-SNAPSHOT</version>
+  <version>0.3.3-SNAPSHOT</version>
   <packaging>feature</packaging>
 
 

@@ -48,7 +48,6 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev18113
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.node.termination.point.TxTtpAttributes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.node.termination.point.TxTtpAttributesBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.node.termination.point.XpdrClientAttributes;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.node.termination.point.XpdrClientAttributesBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.node.termination.point.XpdrNetworkAttributes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.node.termination.point.XpdrNetworkAttributesBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.node.termination.point.XpdrPortAttributes;
@@ -395,11 +394,8 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
 
     private void addUsedWL(long wavelengthIndex, List<NodeIdPair> tpIds) {
         WriteTransaction addUsedWlTx = this.dataBroker.newWriteOnlyTransaction();
-        FixedFlexImpl fixedFlex = new FixedFlexImpl();
-        fixedFlex.getFixedFlexWaveMapping(wavelengthIndex);
-        FrequencyGHz frequencyGHz = new FrequencyGHz(new BigDecimal(fixedFlex.getWavelength()));
-        FrequencyTHz frequencyTHz = new FrequencyTHz(new BigDecimal(fixedFlex.getCenterFrequency()));
-
+        FixedFlexImpl fixedFlex = new FixedFlexImpl(wavelengthIndex);
+        FrequencyTHz centralTHz = new FrequencyTHz(new BigDecimal(fixedFlex.getCenterFrequency()));
         for (NodeIdPair idPair : tpIds) {
             Optional<TerminationPoint1> tpOpt = getTerminationPoint1FromDatastore(idPair.getNodeID(), idPair.getTpID());
 
@@ -429,7 +425,8 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                         usedDegreeTxTtpWls = new ArrayList<>();
                         txTtpAttributesBuilder.setUsedWavelengths(usedDegreeTxTtpWls);
                     }
-                    usedDegreeTxTtpWls.add(new UsedWavelengthsBuilder().setIndex(wavelengthIndex).build());
+                    usedDegreeTxTtpWls.add(new UsedWavelengthsBuilder().setIndex(wavelengthIndex)
+                        .setFrequency(centralTHz).setWidth(FrequencyGHz.getDefaultInstance("40")).build());
                     tp1Builder.setTxTtpAttributes(txTtpAttributesBuilder.build());
                     break;
 
@@ -446,7 +443,8 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                         usedDegreeRxTtpWls = new ArrayList<>();
                         rxTtpAttributesBuilder.setUsedWavelengths(usedDegreeRxTtpWls);
                     }
-                    usedDegreeRxTtpWls.add(new UsedWavelengthsBuilder().setIndex(wavelengthIndex).build());
+                    usedDegreeRxTtpWls.add(new UsedWavelengthsBuilder().setIndex(wavelengthIndex)
+                        .setFrequency(centralTHz).setWidth(FrequencyGHz.getDefaultInstance("40")).build());
                     tp1Builder.setRxTtpAttributes(rxTtpAttributesBuilder.build());
                     break;
 
@@ -465,7 +463,8 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                         usedDegreeCtpWls = new ArrayList<>();
                         ctpAttributesBuilder.setUsedWavelengths(usedDegreeCtpWls);
                     }
-                    usedDegreeCtpWls.add(new UsedWavelengthsBuilder().setIndex(wavelengthIndex).build());
+                    usedDegreeCtpWls.add(new UsedWavelengthsBuilder().setIndex(wavelengthIndex)
+                        .setFrequency(centralTHz).setWidth(FrequencyGHz.getDefaultInstance("40")).build());
                     tp1Builder.setCtpAttributes(ctpAttributesBuilder.build());
                     break;
 
@@ -488,7 +487,8 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                     }
                     usedDegreeCpWls.add(new org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130
                             .networks.network.node.termination.point.cp.attributes.UsedWavelengthsBuilder()
-                            .setIndex(wavelengthIndex).build());
+                            .setIndex(wavelengthIndex)
+                            .setFrequency(centralTHz).setWidth(FrequencyGHz.getDefaultInstance("40")).build());
                     tp1Builder.setCpAttributes(cpAttributesBuilder.build());
                     break;
 
@@ -507,7 +507,8 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                         usedDegreePpWls = new ArrayList<>();
                         ppAttributesBuilder.setUsedWavelength(usedDegreePpWls);
                     }
-                    usedDegreePpWls.add(new UsedWavelengthBuilder().setIndex(wavelengthIndex).build());
+                    usedDegreePpWls.add(new UsedWavelengthBuilder().setIndex(wavelengthIndex)
+                        .setFrequency(centralTHz).setWidth(FrequencyGHz.getDefaultInstance("40")).build());
                     tp1Builder.setPpAttributes(ppAttributesBuilder.build());
                     break;
 
@@ -519,25 +520,12 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                     } else {
                         xpdrNetworkAttributesBuilder = new XpdrNetworkAttributesBuilder(xpdrNetworkAttributes);
                     }
-                    Wavelength usedXpdrNetworkWl = new WavelengthBuilder().setWidth(frequencyGHz)
-                        .setFrequency(frequencyTHz).build();
-                    tp1Builder.setXpdrNetworkAttributes(xpdrNetworkAttributesBuilder
-                            .setWavelength(usedXpdrNetworkWl)
-                            .build());
+                    Wavelength usedXpdrNetworkWl = new WavelengthBuilder()
+                        .setWidth(FrequencyGHz.getDefaultInstance("40")).setFrequency(centralTHz).build();
+                    tp1Builder.setXpdrNetworkAttributes(xpdrNetworkAttributesBuilder.setWavelength(usedXpdrNetworkWl)
+                        .build());
                     break;
                 case XPONDERCLIENT:
-                    XpdrClientAttributes xpdrClientAttributes = tp.getXpdrClientAttributes();
-                    XpdrClientAttributesBuilder xpdrClientAttributesBuilder;
-                    if (xpdrClientAttributes == null) {
-                        xpdrClientAttributesBuilder = new XpdrClientAttributesBuilder();
-                    } else {
-                        xpdrClientAttributesBuilder = new XpdrClientAttributesBuilder(xpdrClientAttributes);
-                    }
-                    Wavelength usedXpdrClientWl = new WavelengthBuilder().setWidth(frequencyGHz)
-                        .setFrequency(frequencyTHz).build();
-                    tp1Builder.setXpdrClientAttributes(xpdrClientAttributesBuilder
-                            .setWavelength(usedXpdrClientWl)
-                            .build());
                     break;
                 case XPONDERPORT:
                     XpdrPortAttributes xpdrPortAttributes = tp.getXpdrPortAttributes();
@@ -547,11 +535,10 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                     } else {
                         xpdrPortAttributesBuilder = new XpdrPortAttributesBuilder(xpdrPortAttributes);
                     }
-                    Wavelength usedXpdrPortWl = new WavelengthBuilder().setWidth(frequencyGHz)
-                        .setFrequency(frequencyTHz).build();
-                    tp1Builder.setXpdrPortAttributes(xpdrPortAttributesBuilder
-                            .setWavelength(usedXpdrPortWl)
-                            .build());
+                    Wavelength usedXpdrPortWl = new WavelengthBuilder().setWidth(FrequencyGHz.getDefaultInstance("40"))
+                        .setFrequency(centralTHz).build();
+                    tp1Builder.setXpdrPortAttributes(xpdrPortAttributesBuilder.setWavelength(usedXpdrPortWl)
+                        .build());
                     break;
 
                 default:
