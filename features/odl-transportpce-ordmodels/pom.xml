@@ -10,9 +10,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.opendaylight.odlparent</groupId>
-    <artifactId>single-feature-parent</artifactId>
-    <version>4.0.14</version>
+    <groupId>org.onap.ccsdk.parent</groupId>
+	<artifactId>single-feature-parent</artifactId>
+	<version>1.5.1-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -22,10 +22,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <packaging>feature</packaging>
 
   <properties>
-    <mdsal.version>1.9.3-SNAPSHOT</mdsal.version>
-    <restconf.version>1.9.3-SNAPSHOT</restconf.version>
+    <mdsal.version>1.9.1</mdsal.version>
+    <restconf.version>1.9.1</restconf.version>
     <yangtools.version>2.1.14</yangtools.version>
-    <netconf.version>1.6.3-SNAPSHOT</netconf.version>
+    <netconf.version>1.6.1</netconf.version>
     <configfile.directory>etc/opendaylight/karaf</configfile.directory>
   </properties>
 
@@ -68,5 +68,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       </plugin>
     </plugins>
   </build>
-
+    <reporting>
+        <plugins>           
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>           
+        </plugins>    
+    </reporting>
 </project>

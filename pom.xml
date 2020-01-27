@@ -9,9 +9,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.opendaylight.odlparent</groupId>
-    <artifactId>odlparent</artifactId>
-    <version>4.0.14</version>
+   <groupId>org.onap.ccsdk.parent</groupId>
+	<artifactId>odlparent</artifactId>
+	<version>1.5.1-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -39,9 +39,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <!--module>tests</module-->
     <module>pce</module>
     <module>servicehandler</module>
-    <module>features</module>
-    <module>karaf</module>
-    <module>test-common</module>
+     <module>features</module>
+<!-- 	<module>karaf</module> -->
+<!--     <module>test-common</module> -->
   </modules>
 
   <!-- DO NOT install or deploy the repo root pom as it's only needed to initiate a build -->
@@ -82,4 +82,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       </plugin>
     </plugins>
   </build>
+      <reporting>
+        <plugins>           
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>           
+        </plugins>    
+    </reporting>
 </project>

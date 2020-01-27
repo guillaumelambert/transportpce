@@ -22,7 +22,7 @@ classes
 ordmodels/src/main/java
 tests/config.xml
 tests/models
-
+.vscode
 # Sphinx documentation
 .tox/
 docs/_build/
