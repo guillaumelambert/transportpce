@@ -4,7 +4,6 @@ MAINTAINER CCSDK Team (onap-ccsdk@lists.onap.org)
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV ODL_HOME /opt/opendaylight
 ENV SDNC_CONFIG_DIR /opt/onap/ccsdk/data/properties
-ENV ANSIBLE_GPG_KEY ${ansible.gpg.key}
 
 # copy CCSDK mvn artifacts to ODL repository
 COPY system /tmp/system

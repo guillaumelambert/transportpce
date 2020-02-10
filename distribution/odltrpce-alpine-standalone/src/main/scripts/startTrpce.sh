@@ -37,13 +37,13 @@ function addToFeatureBoot() {
   cat $ORIG | sed -e "\|featuresBoot *=|s|$|,$1|" > $CFG
 }
 
-# Install SDNR functionality and activate netconf for cluster or single node setup
+# Install SDNC functionality and activate netconf for cluster or single node setup
 # Par $ENABLE_ODL_CLUSTER: true for cluster setup or false for single node setup
-# Par $SDNRWT_REPOSITORY: (optional) Repository for sdnr wt features
-# Par $SDNRWT_BOOTFEATURES: Override SDNRWT_BOOTFEATURES
+# Par $SDNC_REPOSITORY: (optional) Repository for sdnr wt features
+# Par $SDNC_BOOTFEATURES: Override SDNC_BOOTFEATURES
 function install_trpce() {
-  if [ -n "$SDNRWT_BOOTFEATURES" ] ; then
-      BOOTFEATURES="$SDNRWT_BOOTFEATURES"
+  if [ -n "$SDNC_BOOTFEATURES" ] ; then
+      BOOTFEATURES="$SDNC_BOOTFEATURES"
   else
 	  if $ENABLE_ODL_CLUSTER ; then
 	    BOOTFEATURES="odl-netconf-clustered-topology,odl-transportpce"
@@ -51,7 +51,7 @@ function install_trpce() {
 	    BOOTFEATURES="odl-netconf-topology,odl-transportpce"
 	  fi
   fi
-  addToFeatureBoot "$BOOTFEATURES" $SDNRWT_REPOSITORY
+  addToFeatureBoot "$BOOTFEATURES" $SDNC_REPOSITORY
 }
 
 function enable_odl_cluster(){
@@ -113,15 +113,13 @@ export JAVA_MAX_MEM=${JAVA_MAX_MEM:-4G}
 export JAVA_PERM_MEM=${JAVA_PERM_MEM:-512m}
 export JAVA_MAX_PERM_MEM=${JAVA_MAX_PERM_MEM:-1G}
 
-# SDN-R Related setup
-SDNRWT=${SDNRWT:-false}
-SDNRWT_REPOSITORY=${SDNRWT_REPOSITORY}
-SDNRWT_BOOTFEATURES=${SDNRWT_BOOTFEATURES}
+# SDNC Related setup
+SDNC_REPOSITORY=${SDNC_REPOSITORY}
+SDNC_BOOTFEATURES=${SDNC_BOOTFEATURES}
 
 echo "SDNC Settings:"
 echo "  ENABLE_ODL_CLUSTER=$ENABLE_ODL_CLUSTER"
 echo "  SDNC_REPLICAS=$SDNC_REPLICAS"
-echo "  SDNRWT=$SDNRWT"
 echo "  JAVA: -Xms${JAVA_MIN_MEM} -Xmx${JAVA_MAX_MEM} -XX:PermSize=${JAVA_PERM_MEM} -XX:MaxPermSize=${JAVA_MAX_PERM_MEM}"
 
 if [ ! -d ${INSTALLED_DIR} ]
@@ -133,7 +131,7 @@ if [ ! -f ${INSTALLED_DIR}/.installed ]
 then
 	# Prepare ODL boot configuration and features
     if $ENABLE_ODL_CLUSTER ; then enable_odl_cluster ; fi
-	if $SDNRWT ; then install_trpce ; fi
+	install_trpce
     echo "Installed at `date`" > ${INSTALLED_DIR}/.installed
 fi
 

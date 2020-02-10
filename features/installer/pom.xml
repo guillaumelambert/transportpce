@@ -30,29 +30,18 @@
     <relativePath/>
   </parent>
 
-  <groupId>org.onap.ccsdk.features.sdnr.ot</groupId>
-  <artifactId>sdnr-ot-transportpce-installer</artifactId>
+  <groupId>org.onap.ccsdk.features</groupId>
+  <artifactId>sdnc-transportpce-installer</artifactId>
   <version>0.3.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>ccsdk-features-sdnr-wo :: ${project.artifactId}</name>
+  <name>ccsdk-features :: ${project.artifactId}</name>
 
   <properties>
-    <application.name>sdnr-ot-feature-aggregator</application.name>
+    <application.name>sdnc-transportpce-feature-aggregator</application.name>
     <include.transitive.dependencies>true</include.transitive.dependencies>
     <ccsdk.features.version>${project.version}</ccsdk.features.version>
   </properties>
-<!--   <dependencyManagement> -->
-<!--     <dependencies> -->
-<!--       <dependency> -->
-<!--         <groupId>org.opendaylight.controller</groupId> -->
-<!--         <artifactId>mdsal-artifacts</artifactId> -->
-<!--         <version>${odl.controller.mdsal.version}</version> -->
-<!--         <type>pom</type> -->
-<!--         <scope>import</scope> -->
-<!--       </dependency> -->
-<!--     </dependencies> -->
-<!--   </dependencyManagement> -->
   <dependencies>
     <dependency>
       <groupId>org.opendaylight.transportpce</groupId>

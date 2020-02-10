@@ -1,14 +1,13 @@
 # Wireless transport micro services (wt)
 
-This distribution uses the ONAP ODL image "onap/ccsdk-odl-fluorine-alpine-image" to create the ONAP WT Container.
+This distribution uses the ONAP ODL image "onap/ccsdk-odl-neon-alpine-image" to create the ONAP WT Container.
 
 Configuration used by this container
 - Linux alpine as OS
 - ODL as single node or cluster node
-- Added bundles are Repository: 'ccsdk/features'/sdnr
-- ENTRYPOINT /opt/onap/ccsdk/bin/startSdnr.sh
-- ODLUX Login:
-    - ODL Default is user here: admin/admin
+- Added bundles are: 'odl-transportpce'
+- ENTRYPOINT /opt/onap/ccsdk/bin/startTrpce.sh
+- image name is defined in pom.xml properties 'image.name'
 
 ## Parameters
 
@@ -48,16 +47,9 @@ Configuration used by this container
 
 ## Container ports
 
-    docker run --detach --network="yaml_default" \
-      --link ccsdk_db_container:dbhost --link ccsdk_db_container:sdnctldb01 --link ccsdk_db_container:sdnctldb02 \
+    docker run -d 
       --publish 8181:8181 \
-      --publish 8185:8185 \
-      --publish 8085:8085 \
-      --publish 9200:9200 \
-      --env MYSQL_ROOT_PASSWORD=openECOMP1.0 \
-      --env SDNC_CONFIG_DIR=/opt/onap/ccsdk/data/properties \
-
-      --name sdnr \
-    "$IMAGE"
+      --name sdnc-trpce \
+    onap/ccsdk-transportpce-alpine-image
 
 

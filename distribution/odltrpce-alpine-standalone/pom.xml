@@ -23,7 +23,7 @@
 
   <properties>
     <base.image.repo>onap/ccsdk-odl-neon-alpine-image:0.7.1-STAGING-20200208T112135Z</base.image.repo>
-    <image.name>oof-pci/ccsdk-odltrpce-alpine-image</image.name>
+    <image.name>onap/ccsdk-transportpce-alpine-image</image.name>
     <ccsdk.build.timestamp>${maven.build.timestamp}</ccsdk.build.timestamp>
     <ccsdk.project.version>${project.version}</ccsdk.project.version>
     <ccsdk.features.version>${project.version}</ccsdk.features.version>
@@ -33,7 +33,6 @@
     <opendaylight.root>opt/opendaylight</opendaylight.root>
     <docker.push.phase>deploy</docker.push.phase>
     <docker.verbose>true</docker.verbose>
-    <ansible.gpg.key>93C4A3FD7BB9C367</ansible.gpg.key>
 
     <!-- odl.repolist.features and odl.boot.features.all are used by dockerfile. Contains all repos and features to start -->
     <sdnr.trpce.repo>mvn:org.opendaylight.transportpce/odl-transportpce/${ccsdk.features.version}/xml/features</sdnr.trpce.repo>
@@ -46,8 +45,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.onap.ccsdk.features.sdnr.ot</groupId>
-      <artifactId>sdnr-ot-transportpce-installer</artifactId>
+      <groupId>org.onap.ccsdk.features</groupId>
+      <artifactId>sdnc-transportpce-installer</artifactId>
       <version>${ccsdk.features.version}</version>
       <classifier>repo</classifier>
       <type>zip</type>
