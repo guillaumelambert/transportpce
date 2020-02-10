@@ -47,9 +47,6 @@ Configuration used by this container
 
 ## Container ports
 
-    docker run -d 
-      --publish 8181:8181 \
-      --name sdnc-trpce \
-    onap/ccsdk-transportpce-alpine-image
+    docker run -d --publish 8181:8181 --name sdnc-trpce onap/ccsdk-transportpce-alpine-image
 
 
