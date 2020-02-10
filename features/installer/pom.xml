@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.onap.ccsdk.parent</groupId>
     <artifactId>odlparent-lite</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.5.2-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -42,17 +42,17 @@
     <include.transitive.dependencies>true</include.transitive.dependencies>
     <ccsdk.features.version>${project.version}</ccsdk.features.version>
   </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.opendaylight.controller</groupId>
-        <artifactId>mdsal-artifacts</artifactId>
-        <version>${odl.controller.mdsal.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+<!--   <dependencyManagement> -->
+<!--     <dependencies> -->
+<!--       <dependency> -->
+<!--         <groupId>org.opendaylight.controller</groupId> -->
+<!--         <artifactId>mdsal-artifacts</artifactId> -->
+<!--         <version>${odl.controller.mdsal.version}</version> -->
+<!--         <type>pom</type> -->
+<!--         <scope>import</scope> -->
+<!--       </dependency> -->
+<!--     </dependencies> -->
+<!--   </dependencyManagement> -->
   <dependencies>
     <dependency>
       <groupId>org.opendaylight.transportpce</groupId>
@@ -61,13 +61,6 @@
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
-    <!--     <dependency> -->
-    <!--       <groupId>org.opendaylight.transportpce</groupId> -->
-    <!--   	  <artifactId>odl-transportpce-api</artifactId> -->
-    <!--       <version>${project.version}</version> -->
-    <!--       <type>xml</type> -->
-    <!--       <classifier>features</classifier> -->
-    <!--     </dependency>    -->
   </dependencies>
 
   <build>
@@ -96,25 +89,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
-          <!--           <execution> -->
-          <!--             <id>copy-dependencies</id> -->
-          <!--             <goals> -->
-          <!--               <goal>copy-dependencies</goal> -->
-          <!--             </goals> -->
-          <!--             <phase>prepare-package</phase> -->
-          <!--             <configuration> -->
-          <!--               <transitive>false</transitive> -->
-          <!--               <outputDirectory>${project.build.directory}/assembly/system</outputDirectory> -->
-          <!--               <overWriteReleases>false</overWriteReleases> -->
-          <!--               <overWriteSnapshots>true</overWriteSnapshots> -->
-          <!--               <overWriteIfNewer>true</overWriteIfNewer> -->
-          <!--               <useRepositoryLayout>true</useRepositoryLayout> -->
-          <!--               <addParentPoms>false</addParentPoms> -->
-          <!--               <copyPom>false</copyPom> -->
-          <!--               <includeArtifactIds>${application.name}-model,${application.name}-provider,${application.name}</includeArtifactIds> -->
-          <!--               <scope>provided</scope> -->
-          <!--             </configuration> -->
-          <!--           </execution> -->
           <execution>
             <id>copy-nested-dependencies</id>
             <goals>
@@ -122,7 +96,7 @@
             </goals>
             <phase>prepare-package</phase>
             <configuration>
-              <transitive>true</transitive>
+              <transitive>false</transitive>
               <outputDirectory>${project.build.directory}/assembly/system</outputDirectory>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>

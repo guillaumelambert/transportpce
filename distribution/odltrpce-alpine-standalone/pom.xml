@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.onap.ccsdk.parent</groupId>
+    <artifactId>odlparent-lite</artifactId>
+    <version>1.5.2-SNAPSHOT</version>
+    <relativePath />
+  </parent>
+
+  <groupId>org.onap.ccsdk.distribution</groupId>
+  <artifactId>distribution-odltrpce-alpine-standalone</artifactId>
+  <version>0.3.3-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>ccsdk-distribution :: odlsli-alpine :: TransportPCE</name>
+  <description>Creates Alpine-based ODL-TransportPCE Docker container</description>
+  <organization>
+    <name>openECOMP</name>
+  </organization>
+
+  <properties>
+    <base.image.repo>onap/ccsdk-odl-neon-alpine-image:0.7.1-STAGING-20200208T112135Z</base.image.repo>
+    <image.name>oof-pci/ccsdk-odltrpce-alpine-image</image.name>
+    <ccsdk.build.timestamp>${maven.build.timestamp}</ccsdk.build.timestamp>
+    <ccsdk.project.version>${project.version}</ccsdk.project.version>
+    <ccsdk.features.version>${project.version}</ccsdk.features.version>
+    <platform-logic-installer.version>${project.version}</platform-logic-installer.version>
+    <docker.buildArg.https_proxy>${https_proxy}</docker.buildArg.https_proxy>
+    <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
+    <opendaylight.root>opt/opendaylight</opendaylight.root>
+    <docker.push.phase>deploy</docker.push.phase>
+    <docker.verbose>true</docker.verbose>
+    <ansible.gpg.key>93C4A3FD7BB9C367</ansible.gpg.key>
+
+    <!-- odl.repolist.features and odl.boot.features.all are used by dockerfile. Contains all repos and features to start -->
+    <sdnr.trpce.repo>mvn:org.opendaylight.transportpce/odl-transportpce/${ccsdk.features.version}/xml/features</sdnr.trpce.repo>
+    <odl.repolist.features>${sdnr.trpce.repo}</odl.repolist.features>
+
+    <odl.boot.features.odl>odl-mdsal-all,odl-mdsal-apidocs,odl-daexim-all</odl.boot.features.odl>
+    <ccsdk.odl.features>odl-netconf-topology,odl-netconf-connector</ccsdk.odl.features>
+    <odl.boot.features.all>${odl.boot.features.odl}</odl.boot.features.all>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.onap.ccsdk.features.sdnr.ot</groupId>
+      <artifactId>sdnr-ot-transportpce-installer</artifactId>
+      <version>${ccsdk.features.version}</version>
+      <classifier>repo</classifier>
+      <type>zip</type>
+    </dependency>
+
+  </dependencies>
+  <build>
+    <extensions>
+      <extension>
+        <!-- this extension is required by wagon in order to pass the proxy -->
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http-lightweight</artifactId>
+        <version>2.2</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.groovy.maven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <source>${basedir}/src/main/scripts/TagVersion.groovy</source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>copy-dockerfile</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <configuration>
+              <outputDirectory>${basedir}/target/docker-stage</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/docker</directory>
+                  <includes>
+                    <include>Dockerfile</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-scripts</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <configuration>
+              <outputDirectory>${basedir}/target/docker-stage/opt/onap/ccsdk/bin</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/scripts</directory>
+                  <includes>
+                    <include>*.sh</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-favicon</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <configuration>
+              <outputDirectory>${basedir}/target/docker-stage/opt/opendaylight/etc/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/res</directory>
+                  <includes>
+                    <include>favicon.ico</include>
+                    <include>*.properties</include>
+                  </includes>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack features</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/docker-stage</outputDirectory>
+              <excludeTransitive>true</excludeTransitive>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+          <!--          <execution>
+            <id>unpack dgs</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/docker-stage/opt/onap/ccsdk</outputDirectory>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>platform-logic-installer</artifactId>
+                  <version>${platform-logic-installer.version}</version>
+                  <type>zip</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution> -->
+          <execution>
+            <id>copy-with-alternalte-repo</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>io.netty</groupId>
+                  <artifactId>netty-all</artifactId>
+                  <version>4.1.34.Final</version>
+                </artifactItem>
+              </artifactItems>
+              <localRepositoryDirectory>${project.build.directory}/docker-stage/system</localRepositoryDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.16.5</version>
+        <inherited>false</inherited>
+        <configuration>
+          <images>
+            <image>
+              <name>${image.name}</name>
+              <build>
+                <cleanup>try</cleanup>
+                <dockerFileDir>${basedir}/target/docker-stage</dockerFileDir>
+                <dockerFile>${basedir}/target/docker-stage/Dockerfile</dockerFile>
+                <tags>
+                  <tag>${project.docker.latestminortag.version}</tag>
+                  <tag>${project.docker.latestfulltag.version}</tag>
+                  <tag>${project.docker.latesttagtimestamp.version}</tag>
+                </tags>
+              </build>
+            </image>
+          </images>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-images</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <id>push-images</id>
+            <phase>${docker.push.phase}</phase>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.9</version>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>

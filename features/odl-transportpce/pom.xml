@@ -12,7 +12,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <parent>
     <groupId>org.onap.ccsdk.parent</groupId>
 	<artifactId>single-feature-parent</artifactId>
-	<version>1.5.1-SNAPSHOT</version>
+	<version>1.5.2-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -34,46 +34,42 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <name>OpenDaylight :: transportpce</name>
 
   <dependencies>
-    <dependency>
-      <groupId>org.opendaylight.netconf</groupId>
-      <artifactId>odl-restconf-all</artifactId>
-<!--       <version>${restconf.version}</version> -->
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>odl-mdsal-broker</artifactId>
-<!--       <version>${mdsal.version}</version> -->
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.netconf</groupId>
-      <artifactId>odl-netconf-all</artifactId>
+<!--     <dependency> -->
+<!--       <groupId>org.opendaylight.netconf</groupId> -->
+<!--       <artifactId>odl-restconf-all</artifactId> -->
+ <!--       <version>${restconf.version}</version> --> 
+<!--       <classifier>features</classifier> -->
+<!--       <type>xml</type> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.opendaylight.controller</groupId> -->
+<!--       <artifactId>odl-mdsal-broker</artifactId> -->
+<!--       <classifier>features</classifier> -->
+<!--       <type>xml</type> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.opendaylight.netconf</groupId> -->
+<!--       <artifactId>odl-netconf-all</artifactId> -->
+<!--       <classifier>features</classifier> -->
+<!--       <type>xml</type> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.opendaylight.netconf</groupId> -->
+<!--       <artifactId>odl-netconf-connector-all</artifactId> -->
+<!--       <classifier>features</classifier> -->
+<!--       <type>xml</type> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.opendaylight.netconf</groupId> -->
+<!--       <artifactId>netconf-console</artifactId> -->
 <!--       <version>${netconf.version}</version> -->
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.netconf</groupId>
-      <artifactId>odl-netconf-connector-all</artifactId>
-<!--       <version>${netconf.version}</version> -->
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.netconf</groupId>
-      <artifactId>netconf-console</artifactId>
-      <version>${netconf.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.netconf</groupId>
-      <artifactId>odl-netconf-topology</artifactId>
-<!--       <version>${netconf.version}</version> -->
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.opendaylight.netconf</groupId> -->
+<!--       <artifactId>odl-netconf-topology</artifactId> -->
+<!--       <classifier>features</classifier> -->
+<!--       <type>xml</type> -->
+<!--     </dependency> -->
     <dependency>
       <groupId>org.opendaylight.transportpce</groupId>
       <artifactId>odl-transportpce-api</artifactId>

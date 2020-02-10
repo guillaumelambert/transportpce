@@ -15,7 +15,7 @@ Author: Martial Coulibaly <martial.coulibaly@gfi.com> on behalf of Orange
   <parent>
    <groupId>org.onap.ccsdk.parent</groupId>
 	<artifactId>binding-parent</artifactId>
-	<version>1.5.1-SNAPSHOT</version>
+	<version>1.5.2-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -24,17 +24,17 @@ Author: Martial Coulibaly <martial.coulibaly@gfi.com> on behalf of Orange
   <version>0.3.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.opendaylight.controller</groupId>
-        <artifactId>mdsal-artifacts</artifactId>
-        <version>1.9.1</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+<!--   <dependencyManagement> -->
+<!--     <dependencies> -->
+<!--       <dependency> -->
+<!--         <groupId>org.opendaylight.controller</groupId> -->
+<!--         <artifactId>mdsal-artifacts</artifactId> -->
+<!--         <version>1.9.1</version> -->
+<!--         <scope>import</scope> -->
+<!--         <type>pom</type> -->
+<!--       </dependency> -->
+<!--     </dependencies> -->
+<!--   </dependencyManagement> -->
 
   <dependencies>
     <dependency>
