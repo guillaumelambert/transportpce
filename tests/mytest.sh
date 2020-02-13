@@ -221,98 +221,100 @@ create_service()
 {
   xpdra=$1
   xpdra_ccli=$2
-  xpdra_port=$3
-  xpdra_port_number=$4
+  xpdrz=$3
+  xpdrz_ccli=$4
 
 
   URL=$BASEURL"restconf/operations/org-openroadm-service:service-create"
   DATA=$(cat <<-END
-  {
-    "input": {
-        "sdnc-request-header": {
-            "request-id": "request-1",
-            "rpc-action": "service-create",
-            "request-system-id": "appname"
+ {
+    "org-openroadm-service:input": {
+        "org-openroadm-service:service-name": "service-1",
+        "org-openroadm-service:connection-type": "service",
+        "org-openroadm-service:sdnc-request-header": {
+            "org-openroadm-service:request-id": "request-1",
+            "org-openroadm-service:rpc-action": "service-create"
         },
-        "service-name": "test1",
-        "common-id": "commonId",
-        "connection-type": "service",
-        "service-a-end": {
-            "service-rate": "100",
-            "node-id": "$xpdra",
-            "service-format": "Ethernet",
-            "clli": "$xpdra_ccli",
-            "tx-direction": {
-                "port": {
-                    "port-device-name": "$xpdra_port",
-                    "port-type": "fixed",
-                    "port-name": "$xpdra_port_number",
-                    "port-rack": "000000.00",
-                    "port-shelf": "Chassis#1"
+        "org-openroadm-service:service-a-end": {
+            "org-openroadm-service:node-id": "$xpdra",
+            "org-openroadm-service:service-rate": "1",
+            "org-openroadm-service:service-format": "Ethernet",
+            "org-openroadm-service:clli": "$xpdra_ccli",
+            "org-openroadm-service:tx-direction": {
+                "org-openroadm-service:port": {
+                    "org-openroadm-service:port-device-name": "$xpdra-device-name",
+                    "org-openroadm-service:port-type": "$xpdra-port-type",
+                    "org-openroadm-service:port-name": "$xpdra-port-name",
+                    "org-openroadm-service:port-rack": "$xpdra-port-rack",
+                    "org-openroadm-service:port-shelf": "$xpdra-port-shelf",
+                    "org-openroadm-service:port-slot": "$xpdra-port-slot",
+                    "org-openroadm-service:port-sub-slot": "$xpdra-port-sub-plot"
                 },
-                "lgx": {
-                    "lgx-device-name": "Some lgx-device-name",
-                    "lgx-port-name": "Some lgx-port-name",
-                    "lgx-port-rack": "000000.00",
-                    "lgx-port-shelf": "00"
+                "org-openroadm-service:lgx": {
+                  "org-openroadm-service:lgx-device-name": "$xpdra-lgx-device-name",
+                  "org-openroadm-service:lgx-port-name": "$xpdra-lgx-port-name",
+                  "org-openroadm-service:lgx-port-rack": "$xpdra-lgx-port-rack",
+                  "org-openroadm-service:lgx-port-shelf": "$xpdra-lgx-port-shelf"
                 }
             },
-            "rx-direction": {
-                "port": {
-                    "port-device-name": "<xpdr-client-port>",
-                    "port-type": "fixed",
-                    "port-name": "<xpdr-client-port-number>",
-                    "port-rack": "000000.00",
-                    "port-shelf": "Chassis#1"
+            "org-openroadm-service:rx-direction": {
+                "org-openroadm-service:port": {
+                    "org-openroadm-service:port-device-name": "$xpdra-device-name",
+                    "org-openroadm-service:port-type": "$xpdra-port-type",
+                    "org-openroadm-service:port-name": "$xpdra-port-name",
+                    "org-openroadm-service:port-rack": "$xpdra-port-rack",
+                    "org-openroadm-service:port-shelf": "$xpdra-port-shelf",
+                    "org-openroadm-service:port-slot": "$xpdra-port-slot",
+                    "org-openroadm-service:port-sub-slot": "$xpdra-port-sub-plot"
                 },
-                "lgx": {
-                    "lgx-device-name": "Some lgx-device-name",
-                    "lgx-port-name": "Some lgx-port-name",
-                    "lgx-port-rack": "000000.00",
-                    "lgx-port-shelf": "00"
+                "org-openroadm-service:lgx": {
+                  "org-openroadm-service:lgx-device-name": "$xpdra-lgx-device-name",
+                  "org-openroadm-service:lgx-port-name": "$xpdra-lgx-port-name",
+                  "org-openroadm-service:lgx-port-rack": "$xpdra-lgx-port-rack",
+                  "org-openroadm-service:lgx-port-shelf": "$xpdra-lgx-port-shelf"
                 }
-            },
-            "optic-type": "gray"
+            }
         },
-        "service-z-end": {
-            "service-rate": "100",
-            "node-id": "<xpdr-node-id>",
-            "service-format": "Ethernet",
-            "clli": "<ccli-name>",
-            "tx-direction": {
-                "port": {
-                    "port-device-name": "<xpdr-client-port>",
-                    "port-type": "fixed",
-                    "port-name": "<xpdr-client-port-number>",
-                    "port-rack": "000000.00",
-                    "port-shelf": "Chassis#1"
+        "org-openroadm-service:service-z-end": {
+           "org-openroadm-service:node-id": "$xpdrz",
+            "org-openroadm-service:service-rate": "1",
+            "org-openroadm-service:service-format": "Ethernet",
+            "org-openroadm-service:clli": "$xpdrz_ccli",
+            "org-openroadm-service:tx-direction": {
+                "org-openroadm-service:port": {
+                    "org-openroadm-service:port-device-name": "$xpdrz-device-name",
+                    "org-openroadm-service:port-type": "$xpdrz-port-type",
+                    "org-openroadm-service:port-name": "$xpdrz-port-name",
+                    "org-openroadm-service:port-rack": "$xpdrz-port-rack",
+                    "org-openroadm-service:port-shelf": "$xpdrz-port-shelf",
+                    "org-openroadm-service:port-slot": "$xpdrz-port-slot",
+                    "org-openroadm-service:port-sub-slot": "$xpdrz-port-sub-plot"
                 },
-                "lgx": {
-                    "lgx-device-name": "Some lgx-device-name",
-                    "lgx-port-name": "Some lgx-port-name",
-                    "lgx-port-rack": "000000.00",
-                    "lgx-port-shelf": "00"
+                "org-openroadm-service:lgx": {
+                  "org-openroadm-service:lgx-device-name": "$xpdrz-lgx-device-name",
+                  "org-openroadm-service:lgx-port-name": "$xpdrz-lgx-port-name",
+                  "org-openroadm-service:lgx-port-rack": "$xpdrz-lgx-port-rack",
+                  "org-openroadm-service:lgx-port-shelf": "$xpdrz-lgx-port-shelf"
                 }
             },
-            "rx-direction": {
-                "port": {
-                    "port-device-name": "<xpdr-client-port>",
-                    "port-type": "fixed",
-                    "port-name": "<xpdr-client-port-number>",
-                    "port-rack": "000000.00",
-                    "port-shelf": "Chassis#1"
+            "org-openroadm-service:rx-direction": {
+                "org-openroadm-service:port": {
+                    "org-openroadm-service:port-device-name": "$xpdrz-device-name",
+                    "org-openroadm-service:port-type": "$xpdrz-port-type",
+                    "org-openroadm-service:port-name": "$xpdrz-port-name",
+                    "org-openroadm-service:port-rack": "$xpdrz-port-rack",
+                    "org-openroadm-service:port-shelf": "$xpdrz-port-shelf",
+                    "org-openroadm-service:port-slot": "$xpdrz-port-slot",
+                    "org-openroadm-service:port-sub-slot": "$xpdrz-port-sub-plot"
                 },
-                "lgx": {
-                    "lgx-device-name": "Some lgx-device-name",
-                    "lgx-port-name": "Some lgx-port-name",
-                    "lgx-port-rack": "000000.00",
-                    "lgx-port-shelf": "00"
+                "org-openroadm-service:lgx": {
+                  "org-openroadm-service:lgx-device-name": "$xpdrz-lgx-device-name",
+                  "org-openroadm-service:lgx-port-name": "$xpdrz-lgx-port-name",
+                  "org-openroadm-service:lgx-port-rack": "$xpdrz-lgx-port-rack",
+                  "org-openroadm-service:lgx-port-shelf": "$xpdrz-lgx-port-shelf"
                 }
-            },
-            "optic-type": "gray"
-        },
-        "due-date": "yyyy-mm-ddT00:00:01Z",
-        "operator-contact": "some-contact-info"
+            }
+        }
     }
 }
 END
@@ -344,8 +346,11 @@ echo "create links roadm to roadm..."
 link_roadm_roadm ${NAMES[0]} "DEG1-CTP-TXRX" "0" ${NAMES[1]} "DEG1-CTP-TXRX" "0" #link roadma <-> roadmb
 link_roadm_roadm ${NAMES[1]} "DEG1-CTP-TXRX" "0" ${NAMES[2]} "DEG1-CTP-TXRX" "0" #link roadmb <-> roadmc
 echo "create links roadm to xpdrs..."
-link_xpdr_roadm "${NAMES[3]}" "1" "1" ${NAMES[0]} "1" "DEG1-CTP-TXRX"     #link xpdra -> roadma
-link_roadm_xpdr "${NAMES[4]}" "1" "1" ${NAMES[2]} "1" "DEG1-CTP-TXRX"     #link roadmc -> xpdrc
+link_xpdr_roadm ${NAMES[3]} "1" "1" ${NAMES[0]} "1" "DEG1-CTP-TXRX"     #link xpdra -> roadma
+link_roadm_xpdr ${NAMES[4]} "1" "1" ${NAMES[2]} "1" "DEG1-CTP-TXRX"     #link roadmc -> xpdrc
+echo "done"
+echo "create service"
+create_service "NodeA" ${NAMES[3]} "NodeB" ${NAMES[4]}
 echo "done"
 read -p "Test finished? Press enter to continue"
 
