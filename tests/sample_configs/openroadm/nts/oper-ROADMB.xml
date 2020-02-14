@@ -369,7 +369,7 @@
     <ethernet xmlns="http://org/openroadm/ethernet-interfaces">
       <speed>1000</speed>
       <duplex>full</duplex>
-      <mtu>1800</mtu>
+      <!-- <mtu>1800</mtu> -->
       <auto-negotiation>enabled</auto-negotiation>
       <curr-speed>1000</curr-speed>
       <curr-duplex>FULL</curr-duplex>
@@ -385,7 +385,7 @@
     <ethernet xmlns="http://org/openroadm/ethernet-interfaces">
       <speed>1000</speed>
       <duplex>full</duplex>
-      <mtu>1800</mtu>
+      <!-- <mtu>1800</mtu> -->
       <auto-negotiation>enabled</auto-negotiation>
       <curr-speed>1000</curr-speed>
       <curr-duplex>FULL</curr-duplex>
