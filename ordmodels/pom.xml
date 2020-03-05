@@ -84,20 +84,20 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.opendaylight.netconf</groupId>
-        <artifactId>netconf-artifacts</artifactId>
-        <version>1.6.3-SNAPSHOT</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.opendaylight.mdsal.model</groupId>
-        <artifactId>mdsal-model-artifacts</artifactId>
-        <version>0.13.2</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+<!--       <dependency> -->
+<!--         <groupId>org.opendaylight.netconf</groupId> -->
+<!--         <artifactId>netconf-artifacts</artifactId> -->
+<!--         <version>1.6.1</version> -->
+<!--         <type>pom</type> -->
+<!--         <scope>import</scope> -->
+<!--       </dependency> -->
+<!--       <dependency> -->
+<!--         <groupId>org.opendaylight.mdsal.model</groupId> -->
+<!--         <artifactId>mdsal-model-artifacts</artifactId> -->
+<!--         <version>0.13.2</version> -->
+<!--         <type>pom</type> -->
+<!--         <scope>import</scope> -->
+<!--       </dependency> -->
     </dependencies>
   </dependencyManagement>
 
