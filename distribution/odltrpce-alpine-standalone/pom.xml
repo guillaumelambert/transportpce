@@ -22,7 +22,7 @@
   </organization>
 
   <properties>
-    <base.image.repo>onap/ccsdk-odl-neon-alpine-image:0.7.1-STAGING-20200208T112135Z</base.image.repo>
+    <base.image.repo>onap/ccsdk-odl-neon-alpine-image:0.7.1-STAGING-latest</base.image.repo>
     <image.name>onap/ccsdk-transportpce-alpine-image</image.name>
     <ccsdk.build.timestamp>${maven.build.timestamp}</ccsdk.build.timestamp>
     <ccsdk.project.version>${project.version}</ccsdk.project.version>
@@ -38,7 +38,8 @@
     <sdnr.trpce.repo>mvn:org.opendaylight.transportpce/odl-transportpce/${ccsdk.features.version}/xml/features</sdnr.trpce.repo>
     <odl.repolist.features>${sdnr.trpce.repo}</odl.repolist.features>
 
-    <odl.boot.features.odl>odl-mdsal-all,odl-mdsal-apidocs,odl-daexim-all</odl.boot.features.odl>
+<!--     <odl.boot.features.odl>odl-mdsal-all,odl-mdsal-apidocs,odl-daexim-all</odl.boot.features.odl> -->
+    <odl.boot.features.odl>odl-mdsall-all</odl.boot.features.odl>
     <ccsdk.odl.features>odl-netconf-topology,odl-netconf-connector</ccsdk.odl.features>
     <odl.boot.features.all>${odl.boot.features.odl}</odl.boot.features.all>
   </properties>
