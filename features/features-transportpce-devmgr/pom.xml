@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright © 2016 Orange and others. All rights reserved.
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License v1.0 which accompanies this distribution,
+and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.onap.ccsdk.parent</groupId>
+	<artifactId>feature-repo-parent</artifactId>
+	<version>1.5.2-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>org.onap.ccsdk.features.sdnr.wt</groupId>
+  <artifactId>features-transportpce-devmgr</artifactId>
+  <version>0.7.1-SNAPSHOT</version>
+  <packaging>feature</packaging>
+	
+  <dependencies>
+       <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sdnr-wt-data-provider-feature</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sdnr-wt-websocketmanager2-feature</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sdnr-wt-netconfnode-state-service-feature</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sdnr-wt-devicemanager-feature</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sdnr-wt-devicemanager-osca-feature</artifactId>
+            <version>${project.version}</version>
+            <type>xml</type>
+            <classifier>features</classifier>
+        </dependency>
+  </dependencies>
+      <reporting>
+        <plugins>           
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>           
+        </plugins>    
+    </reporting>
+</project>

@@ -21,12 +21,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <name>transportpce</name>
   <packaging>pom</packaging>
 
-  <scm>
-    <connection>scm:git:ssh://git.opendaylight.org:29418/transportpce.git</connection>
-    <developerConnection>scm:git:ssh://git.opendaylight.org:29418/transportpce.git</developerConnection>
-    <tag>HEAD</tag>
-    <url>https://wiki.opendaylight.org/view/transportpce:Main</url>
-  </scm>
+<!--   <scm> -->
+<!--     <connection>scm:git:ssh://git.opendaylight.org:29418/transportpce.git</connection> -->
+<!--     <developerConnection>scm:git:ssh://git.opendaylight.org:29418/transportpce.git</developerConnection> -->
+<!--     <tag>HEAD</tag> -->
+<!--     <url>https://wiki.opendaylight.org/view/transportpce:Main</url> -->
+<!--   </scm> -->
 
   <modules>
     <module>artifacts</module>
@@ -39,6 +39,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <!--module>tests</module-->
     <module>pce</module>
     <module>servicehandler</module>
+    <module>devicemanager-osca</module>
      <module>features</module>
 <!-- 	<module>karaf</module> -->
 <!--     <module>test-common</module> -->
@@ -57,38 +58,38 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       (proxy, sourceFilesExclude, etc...).
   -->
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <sourcepath>*/target/generated-sources/mdsal-binding/*</sourcepath>
-          <excludePackageNames>*</excludePackageNames>
-        </configuration>
-      </plugin>
-    </plugins>
+<!--     <plugins> -->
+<!--       <plugin> -->
+<!--         <groupId>org.apache.maven.plugins</groupId> -->
+<!--         <artifactId>maven-deploy-plugin</artifactId> -->
+<!--         <configuration> -->
+<!--           <skip>true</skip> -->
+<!--         </configuration> -->
+<!--       </plugin> -->
+<!--       <plugin> -->
+<!--         <groupId>org.apache.maven.plugins</groupId> -->
+<!--         <artifactId>maven-install-plugin</artifactId> -->
+<!--         <configuration> -->
+<!--           <skip>true</skip> -->
+<!--         </configuration> -->
+<!--       </plugin> -->
+<!--       <plugin> -->
+<!--         <groupId>org.apache.maven.plugins</groupId> -->
+<!--         <artifactId>maven-javadoc-plugin</artifactId> -->
+<!--         <configuration> -->
+<!--           <sourcepath>*/target/generated-sources/mdsal-binding/*</sourcepath> -->
+<!--           <excludePackageNames>*</excludePackageNames> -->
+<!--         </configuration> -->
+<!--       </plugin> -->
+<!--     </plugins> -->
   </build>
-      <reporting>
-        <plugins>           
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.9</version>
-            </plugin>           
-        </plugins>    
-    </reporting>
+<!--       <reporting> -->
+<!--         <plugins>            -->
+<!--             <plugin> -->
+<!--                 <groupId>org.apache.maven.plugins</groupId> -->
+<!--                 <artifactId>maven-project-info-reports-plugin</artifactId> -->
+<!--                 <version>2.9</version> -->
+<!--             </plugin>            -->
+<!--         </plugins>     -->
+<!--     </reporting> -->
 </project>

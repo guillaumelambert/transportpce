@@ -40,13 +40,20 @@
   <properties>
     <application.name>sdnc-transportpce-feature-aggregator</application.name>
     <include.transitive.dependencies>true</include.transitive.dependencies>
-    <ccsdk.features.version>${project.version}</ccsdk.features.version>
+    <ccsdk.features.version>0.7.1-SNAPSHOT</ccsdk.features.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.opendaylight.transportpce</groupId>
       <artifactId>features-transportpce</artifactId>
       <version>${project.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+     <dependency>
+      <groupId>org.onap.ccsdk.features.sdnr.wt</groupId>
+      <artifactId>features-transportpce-devmgr</artifactId>
+      <version>${ccsdk.features.version}</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>

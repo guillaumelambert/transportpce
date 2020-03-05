@@ -46,9 +46,9 @@ function install_trpce() {
       BOOTFEATURES="$SDNC_BOOTFEATURES"
   else
 	  if $ENABLE_ODL_CLUSTER ; then
-	    BOOTFEATURES="odl-netconf-clustered-topology,odl-transportpce"
+	    BOOTFEATURES="odl-netconf-clustered-topology,odl-transportpce,features-transportpce-devmgr"
 	  else
-	    BOOTFEATURES="odl-netconf-topology,odl-transportpce"
+	    BOOTFEATURES="odl-netconf-topology,odl-transportpce,features-transportpce-devmgr"
 	  fi
   fi
   addToFeatureBoot "$BOOTFEATURES" $SDNC_REPOSITORY
