@@ -17,7 +17,7 @@ RUN if [ ! -f $ODL_HOME/bin/configure_cluster.sh ] ; then echo "Fix cluster scri
 RUN cp $ODL_HOME/etc/org.apache.karaf.features.cfg $ODL_HOME/etc/org.apache.karaf.features.cfg.orig
 RUN sed /featuresBoot/d $ODL_HOME/etc/org.apache.karaf.features.cfg.orig > $ODL_HOME/etc/org.apache.karaf.features.cfg2
 RUN cat $ODL_HOME/etc/org.apache.karaf.features.cfg2 | sed -e "\|featuresRepositories|s|$|, ${odl.repolist.features}|" > $ODL_HOME/etc/org.apache.karaf.features.cfg
-RUN echo featuresBoot=config,standard,region,package,kar,ssh,management,${odl.boot.features.all} >> $ODL_HOME/etc/org.apache.karaf.features.cfg
+RUN echo featuresBoot=config,standard,region,package,kar,ssh,management,odl-mdsal-all,odl-mdsal-apidocs,odl-daexim-all,odl-netconf-topology,odl-restconf-all >> $ODL_HOME/etc/org.apache.karaf.features.cfg
 
 RUN chmod 755 /opt/onap/ccsdk/bin/startTrpce.sh
 ENTRYPOINT /opt/onap/ccsdk/bin/startTrpce.sh
