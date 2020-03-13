@@ -36,7 +36,7 @@
     <docker.verbose>true</docker.verbose>
 
     <!-- odl.repolist.features and odl.boot.features.all are used by dockerfile. Contains all repos and features to start -->
-    <sdnr.trpce.repo>mvn:org.opendaylight.transportpce/odl-transportpce/${trpce.features.version}/xml/features,mvn:org.onap.ccsdk.features.sdnr.wt/sdnr-wt-feature-aggregator/${ccsdk.features.version}/xml/features,mvn:org.onap.ccsdk.features.sdnr.wt/features-transportpce-devmgr/${ccsdk.features.version}/xml/features</sdnr.trpce.repo>
+    <sdnr.trpce.repo>mvn:org.opendaylight.transportpce/odl-transportpce/${trpce.features.version}/xml/features,mvn:org.onap.ccsdk.features.sdnr.wt/features-transportpce-devmgr/${ccsdk.features.version}/xml/features</sdnr.trpce.repo>
     <odl.repolist.features>${sdnr.trpce.repo}</odl.repolist.features>
   </properties>
 
