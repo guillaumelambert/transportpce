@@ -25,7 +25,7 @@ import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServic
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.OrgOpenroadmDevice;
+
 
 
 public class OscaNetworkElementFactory implements NetworkElementFactory {
@@ -35,13 +35,15 @@ public class OscaNetworkElementFactory implements NetworkElementFactory {
     @Override
     public Optional<NetworkElement> create(NetconfAccessor acessor, DeviceManagerServiceProvider serviceProvider) {
     	
-    	if(acessor.getCapabilites().isSupportingNamespace(OrgOpenroadmDevice.QNAME)){
-    		log.info("Create device {} ", OscaNetworkElement.class.getName());
-    		return Optional.of(new OscaNetworkElement(acessor, serviceProvider.getDataProvider()));
-    	}
-    	else
-		 {
-            return Optional.empty();
-        }
+//    	if(acessor.getCapabilites().isSupportingNamespace(OrgOpenroadmDevice.QNAME)){
+//    		log.info("Create device {} ", OscaNetworkElement.class.getName());
+//    		return Optional.of(new OscaNetworkElement(acessor, serviceProvider.getDataProvider()));
+//    	}
+//    	else
+//		 {
+//            
+//        }
+    	return Optional.empty();
     }
+    
 }
