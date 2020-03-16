@@ -87,14 +87,15 @@
 		<dependency>
 			<groupId>org.opendaylight.mdsal.binding.model.iana</groupId>
 			<artifactId>iana-hardware</artifactId>
-			<version>1.2.8</version>
+			<!-- <version>1.2.8</version> -->
 		</dependency>
 		<dependency>
 			<groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
 			<artifactId>rfc8348-ietf-hardware</artifactId>
-			<version>1.2.8</version>
+			<!-- <version>1.2.8</version> -->
 		</dependency>
 	</dependencies>
+
 
 	<build>
 		<resources>
@@ -118,13 +119,13 @@
 			</plugin>
 		</plugins>
 	</build>
-	      <reporting>
-        <plugins>           
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.9</version>
-            </plugin>           
-        </plugins>    
-    </reporting>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
