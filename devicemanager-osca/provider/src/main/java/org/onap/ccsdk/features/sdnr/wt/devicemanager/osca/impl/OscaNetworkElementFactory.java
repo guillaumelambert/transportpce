@@ -18,11 +18,13 @@
 
 package org.onap.ccsdk.features.sdnr.wt.devicemanager.osca.impl;
 
+import java.util.List;
 import java.util.Optional;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.factory.NetworkElementFactory;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.service.NetworkElement;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServiceProvider;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +36,20 @@ public class OscaNetworkElementFactory implements NetworkElementFactory {
 
     @Override
     public Optional<NetworkElement> create(NetconfAccessor acessor, DeviceManagerServiceProvider serviceProvider) {
+		List<String> capabilities = acessor.getCapabilites().getCapabilities();
+
+		capabilities.forEach(capability -> log.info(capability));
+    	if(acessor.getCapabilites().isSupportingNamespace(OrgOpenroadmDevice.QNAME)){
+    		log.info("Create OSCA device {} ", OscaNetworkElement.class.getName());
+    		log.info("Mountpoint", acessor.getMountpoint().getClass().getSimpleName());
+    		log.info("Node Id read by Acessor:", acessor.getNodeId().getValue());
+    		return Optional.of(new OscaNetworkElement(acessor, serviceProvider.getDataProvider()));
+    	}
+    	else
+		 {
+    		return Optional.empty();
+        }
     	
-//    	if(acessor.getCapabilites().isSupportingNamespace(OrgOpenroadmDevice.QNAME)){
-//    		log.info("Create device {} ", OscaNetworkElement.class.getName());
-//    		return Optional.of(new OscaNetworkElement(acessor, serviceProvider.getDataProvider()));
-//    	}
-//    	else
-//		 {
-//            
-//        }
-    	return Optional.empty();
     }
     
 }

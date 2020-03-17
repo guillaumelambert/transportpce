@@ -15,7 +15,7 @@
  * the License.
  * ============LICENSE_END==========================================================================
  ******************************************************************************/
-package org.onap.ccsdk.features.sdnr.wt.devicemanager.oran.test.mock;
+package org.onap.ccsdk.features.sdnr.wt.devicemanager.osca.test.mock;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -23,8 +23,18 @@ import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.service.NetworkElement;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.service.NetworkElementService;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.alarm.rev191129.Alarm;
 
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.OrgOpenroadmDeviceContainer;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.OrgOpenroadmDeviceData;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.OrgOpenroadmDevice;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.OrgOpenroadmDeviceBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.org.openroadm.device.Info;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.org.openroadm.device.InfoBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev191129.resource.Device;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev191129.resource.DeviceBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev191129.resource.resource.Resource;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.hardware.rev180313.Hardware;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.NetworkElementDeviceType;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
@@ -56,21 +66,27 @@ public class OscaNetworkElement implements NetworkElement {
 	private ListenerRegistration<NotificationListener> oScaFaultListenerRegistrationResult;
 	private @NonNull OscaFaultNotificationListener oScaFaultListener;
 
+	private OscaToInternalDataModel oScaMapper;
+
+
 	OscaNetworkElement(NetconfAccessor netconfAccess, DataProvider databaseService) {
-        
-		log.info("Create {}",OscaNetworkElement.class.getSimpleName());
-        this.netconfAccessor = netconfAccess;
-        this.databaseService = databaseService;
-        this.oScaListenerRegistrationResult = null;
-        this.oScaListener = new OscaChangeNotificationListener(netconfAccessor, databaseService);
-        this.oScaFaultListenerRegistrationResult = null;
-        this.oScaFaultListener = new OscaFaultNotificationListener();
-//        this.oScaMapper = new OscaToInternalDataModel();
+
+		log.info("Create {}", OscaNetworkElement.class.getSimpleName());
+		this.netconfAccessor = netconfAccess;
+		this.databaseService = databaseService;
+		this.oScaListenerRegistrationResult = null;
+		this.oScaListener = new OscaChangeNotificationListener(netconfAccessor, databaseService);
+		this.oScaFaultListenerRegistrationResult = null;
+		this.oScaFaultListener = new OscaFaultNotificationListener();
+
+		log.info("NodeId", this.netconfAccessor.getNodeId().getValue());
+
+		this.oScaMapper = new OscaToInternalDataModel();
+
 //        this.oScaPmDataModel =new PmdataEntityBuilder();
 //        this.oScaPmDataEntity = oScaPmDataModel.build();
 
-   
-    }
+	}
 
 //    public void readPmData() {
 //    	if(this.netconfAccessor.getCapabilites().isSupportingNamespace(PmdataEntity.QNAME)) {
@@ -79,23 +95,36 @@ public class OscaNetworkElement implements NetworkElement {
 //    		databaseService.doWritePerformanceData(pmDataEntries);
 //    	}
 //    }
-	
-
 
 	public void initialReadFromNetworkElement() {
 
-	
-		/*
-		 * Hardware hardware = readHardware(netconfAccessor); if (hardware != null) {
-		 * List<Component> componentList = hardware.getComponent(); if (componentList !=
-		 * null) { for (Component component : componentList) {
-		 * databaseService.writeInventory(
-		 * oRanMapper.getInternalEquipment(netconfAccessor.getNodeId(), component)); } }
-		 * }
-		 */
+//		  Hardware hardware = readHardware(netconfAccessor); if (hardware != null) {
+//		  List<Component> componentList = hardware.getComponent(); if (componentList !=
+//		  null) { for (Component component : componentList) {
+//		  databaseService.writeInventory(
+//		  oRanMapper.getInternalEquipment(netconfAccessor.getNodeId(), component)); } }
+//		  }
+//		 
 
 	}
 
+
+//	private OrgOpenroadmDevice readDevice(NetconfAccessor accessor) {
+//
+//
+//		log.info("DBRead Get Device for class {} from mountpoint {} for uuid {}", OrgOpenroadmDeviceData.class.getSimpleName(),
+//				accessor.getNodeId().getValue());
+//
+//		InstanceIdentifier<OrgOpenroadmDevice> deviceId = InstanceIdentifier.builder(OrgOpenroadmDevice.class, OrgOpenroadmDeviceData.class).build();
+//
+//		OrgOpenroadmDevice device = accessor.getTransactionUtils().readData(accessor.getDataBroker(),
+//				LogicalDatastoreType.OPERATIONAL, deviceId);
+//
+////		OrgOpenroadmDevice device = db.read(LogicalDatastoreType.OPERATIONAL, deviceId);
+//
+//		return device;
+//
+//	}
 
 	@Override
 	public NetworkElementDeviceType getDeviceType() {
@@ -110,12 +139,8 @@ public class OscaNetworkElement implements NetworkElement {
 		this.oScaFaultListenerRegistrationResult = netconfAccessor.doRegisterNotificationListener(oScaFaultListener);
 		// Register netconf stream
 		netconfAccessor.registerNotificationsStream(NetconfAccessor.DefaultNotificationsStream);
-		
-
 
 	}
-
-		
 
 	@Override
 	public void deregister() {
