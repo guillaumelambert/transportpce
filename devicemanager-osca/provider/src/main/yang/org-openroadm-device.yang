@@ -1497,7 +1497,7 @@ module org-openroadm-device {
     uses mc-capabilities-grp;
   }
 
-  grouping org-openroadm-device-container {
+// grouping org-openroadm-device-container {
     container org-openroadm-device {
       container info {
         uses device-common;
@@ -1860,7 +1860,7 @@ module org-openroadm-device {
         }
       }
     }
-  }
+ // }
 
   grouping common-session-parms {
     description
@@ -2169,5 +2169,5 @@ module org-openroadm-device {
       }
     }
   }
-  uses org-openroadm-device-container;
+// uses org-openroadm-device-container;
 }

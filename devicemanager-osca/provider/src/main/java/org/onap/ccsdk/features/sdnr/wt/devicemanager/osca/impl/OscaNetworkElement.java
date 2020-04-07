@@ -17,26 +17,28 @@
  ******************************************************************************/
 package org.onap.ccsdk.features.sdnr.wt.devicemanager.osca.impl;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
+
 import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.service.NetworkElement;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.ne.service.NetworkElementService;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServiceProvider;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.FaultService;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.PerformanceManager;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
-
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.mdsal.binding.api.ReadTransaction;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.OrgOpenroadmDeviceContainer;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.OrgOpenroadmDeviceData;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.OrgOpenroadmDevice;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.OrgOpenroadmDeviceBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.org.openroadm.device.Info;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.container.org.openroadm.device.InfoBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev191129.resource.Device;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev191129.resource.DeviceBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev191129.resource.resource.Resource;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.hardware.rev180313.Hardware;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.OrgOpenroadmDevice;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.circuit.packs.CircuitPacks;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.interfaces.grp.Interface;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.Xponder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.shelf.Slots;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.shelves.Shelves;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.NetworkElementDeviceType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.PmdataEntity;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -49,82 +51,163 @@ import org.slf4j.LoggerFactory;
 public class OscaNetworkElement implements NetworkElement {
 
 	private static final Logger log = LoggerFactory.getLogger(OscaNetworkElement.class);
-
 	private final NetconfAccessor netconfAccessor;
-
 	private final DataProvider databaseService;
+	private final @NonNull FaultService faultEventListener;
 
-//    private final OscaToInternalDataModel oScaMapper;
-//    
-//    public final PmdataEntity oScaPmDataEntity;   
-//    
-//    private final PmdataEntityBuilder oScaPmDataModel;
-//    private List<PmdataEntity> pmDataEntries = null;
 
+	private final long equipmentLevel = 0;
+	private Hashtable<String, Long> circuitPacksRecord = new Hashtable<String, Long>();
 	private ListenerRegistration<NotificationListener> oScaListenerRegistrationResult;
 	private @NonNull final OscaChangeNotificationListener oScaListener;
 	private ListenerRegistration<NotificationListener> oScaFaultListenerRegistrationResult;
 	private @NonNull OscaFaultNotificationListener oScaFaultListener;
+	private OscaInventoryInput oscaInventoryInput;
+	private PmDataBuilderOpenRoadm openRoadmPmData;
+	private Integer sequenceNumber = 1;;
+	private List<PmdataEntity> pmDataEntity = new ArrayList<PmdataEntity>();
 
-	private OscaToInternalDataModel oScaMapper;
-
-
-	OscaNetworkElement(NetconfAccessor netconfAccess, DataProvider databaseService) {
+	OscaNetworkElement(NetconfAccessor netconfAccess, DeviceManagerServiceProvider serviceProvider) {
 
 		log.info("Create {}", OscaNetworkElement.class.getSimpleName());
 		this.netconfAccessor = netconfAccess;
-		this.databaseService = databaseService;
+		this.databaseService = serviceProvider.getDataProvider();
 		this.oScaListenerRegistrationResult = null;
 		this.oScaListener = new OscaChangeNotificationListener(netconfAccessor, databaseService);
 		this.oScaFaultListenerRegistrationResult = null;
-		this.oScaFaultListener = new OscaFaultNotificationListener();
+		this.oScaFaultListener = new OscaFaultNotificationListener(netconfAccessor, databaseService);
+		this.oscaInventoryInput = new OscaInventoryInput(netconfAccess, readDevice(netconfAccess));
+		this.faultEventListener = serviceProvider.getFaultService();
 
-		log.info("NodeId", this.netconfAccessor.getNodeId().getValue());
+		this.openRoadmPmData = new PmDataBuilderOpenRoadm(this.netconfAccessor, serviceProvider.getDataProvider());
 
-		this.oScaMapper = new OscaToInternalDataModel();
+		log.info("NodeId {}", this.netconfAccessor.getNodeId().getValue());
+
+		log.info("oScaMapper details{}", this.oscaInventoryInput.getClass().getName());
 
 //        this.oScaPmDataModel =new PmdataEntityBuilder();
 //        this.oScaPmDataEntity = oScaPmDataModel.build();
 
 	}
 
-//    public void readPmData() {
-//    	if(this.netconfAccessor.getCapabilites().isSupportingNamespace(PmdataEntity.QNAME)) {
-//
-//    		pmDataEntries.add(oScaPmDataEntity);
-//    		databaseService.doWritePerformanceData(pmDataEntries);
-//    	}
-//    }
-
 	public void initialReadFromNetworkElement() {
 
-//		  Hardware hardware = readHardware(netconfAccessor); if (hardware != null) {
-//		  List<Component> componentList = hardware.getComponent(); if (componentList !=
-//		  null) { for (Component component : componentList) {
-//		  databaseService.writeInventory(
-//		  oRanMapper.getInternalEquipment(netconfAccessor.getNodeId(), component)); } }
-//		  }
-//		 
+		OrgOpenroadmDevice device = readDevice(this.netconfAccessor);
+
+		databaseService.writeInventory(this.oscaInventoryInput.getInventoryData(equipmentLevel));
+
+		readShelvesData(device);
+		readXpndrData(device);
+		readCircuitPacketData(device);
+		readInterfaceData(device);
+		faultEventListener.initCurrentProblemStatus(this.netconfAccessor.getNodeId(),
+				oScaFaultListener.writeFaultData(this.sequenceNumber));
+		oScaFaultListener.writeFaultLog(oScaFaultListener.writeFaultData(this.sequenceNumber));
+		this.sequenceNumber = this.sequenceNumber + 1;
+
+		pmDataEntity=this.openRoadmPmData.buildPmDataEntity(this.openRoadmPmData.getPmData(this.netconfAccessor));
+		if(!pmDataEntity.isEmpty()) {
+			this.databaseService.doWritePerformanceData(pmDataEntity);
+			log.info("PmDatEntity is written with size {}", pmDataEntity.size());
+			for(PmdataEntity ent: pmDataEntity) {
+				log.info("GetNode: {}, granPeriod: {}", ent.getNodeName(), ent.getGranularityPeriod().getName());
+			}
+		}
+		else {
+			log.info("PmDatEntity is empty");
+		}
+		
+
 
 	}
 
+	private void readShelvesData(OrgOpenroadmDevice device) {
+		List<Shelves> shelves = device.getShelves();
+		if (shelves != null) {
+			for (Shelves shelf : shelves) {
+				log.info(
+						"Shelf Name: {}, \n Serial Id:{}, \n Product Code;{}, \n Position:{}, \n EquipmetState: {}, \n Hardware version: {}"
+								+ "\n ShelfType:{}, \n Vendor: {}, \n LifecycleState: {} ",
+						shelf.getShelfName(), shelf.getSerialId(), shelf.getProductCode(), shelf.getShelfPosition(),
+						shelf.getEquipmentState(), shelf.getHardwareVersion(), shelf.getShelfType(), shelf.getVendor(),
+						shelf.getLifecycleState());
+				List<Slots> slotList = shelf.getSlots();
+				if (slotList != null) {
+					for (Slots slot : slotList) {
+						log.info("Slots for the shelf: {}", shelf.getShelfName());
+						log.info("\n Slot Name: {}, \n Status: {}, \n Slot label: {} ", slot.getSlotName(),
+								slot.getSlotStatus(), slot.getLabel());
+					}
+				}
 
-//	private OrgOpenroadmDevice readDevice(NetconfAccessor accessor) {
-//
-//
-//		log.info("DBRead Get Device for class {} from mountpoint {} for uuid {}", OrgOpenroadmDeviceData.class.getSimpleName(),
-//				accessor.getNodeId().getValue());
-//
-//		InstanceIdentifier<OrgOpenroadmDevice> deviceId = InstanceIdentifier.builder(OrgOpenroadmDevice.class, OrgOpenroadmDeviceData.class).build();
-//
-//		OrgOpenroadmDevice device = accessor.getTransactionUtils().readData(accessor.getDataBroker(),
-//				LogicalDatastoreType.OPERATIONAL, deviceId);
-//
-////		OrgOpenroadmDevice device = db.read(LogicalDatastoreType.OPERATIONAL, deviceId);
-//
-//		return device;
-//
-//	}
+			}
+
+		}
+	}
+
+	private void readXpndrData(OrgOpenroadmDevice device) {
+		List<Xponder> xponderList = device.getXponder();
+		if (xponderList != null) {
+			for (Xponder xponder : xponderList) {
+				log.info("Xponders: No.: {} , \n Port: {} ,\n Type: {}", xponder.getXpdrNumber(), xponder.getXpdrPort(),
+						xponder.getXpdrType());
+			}
+
+		}
+	}
+
+	private void readCircuitPacketData(OrgOpenroadmDevice device) {
+		List<CircuitPacks> circuitpacklist = device.getCircuitPacks();
+		if (circuitpacklist != null) {
+			for (CircuitPacks cp : circuitpacklist) {
+//				log.info("CP Name:{}", cp.getCircuitPackName());
+				if (cp.getParentCircuitPack() != null) {
+					circuitPacksRecord.put(cp.getCircuitPackName(), (equipmentLevel + 2));
+					databaseService
+							.writeInventory(this.oscaInventoryInput.getCircuitPackInventory(cp, equipmentLevel + 2));
+				} else {
+					circuitPacksRecord.put(cp.getCircuitPackName(), (equipmentLevel + 1));
+					databaseService
+							.writeInventory(this.oscaInventoryInput.getCircuitPackInventory(cp, equipmentLevel + 1));
+				}
+			}
+		}
+
+	}
+
+	private void readInterfaceData(OrgOpenroadmDevice device) {
+		List<Interface> interfaceList = device.getInterface();
+		if (interfaceList != null) {
+			for (Interface deviceInterface : interfaceList) {
+
+//				log.info("\n InterfaceName: {}", deviceInterface.getName());
+				if (circuitPacksRecord.containsKey(deviceInterface.getSupportingCircuitPackName())) {
+					databaseService.writeInventory(this.oscaInventoryInput.getInterfacesInventory(deviceInterface,
+							circuitPacksRecord.get(deviceInterface.getSupportingCircuitPackName()) + 1));
+				} else {
+					databaseService.writeInventory(
+							this.oscaInventoryInput.getInterfacesInventory(deviceInterface, equipmentLevel + 1));
+				}
+			}
+		}
+
+	}
+
+	private OrgOpenroadmDevice readDevice(NetconfAccessor accessor) {
+
+		final Class<OrgOpenroadmDevice> openRoadmDev = OrgOpenroadmDevice.class;
+		log.info("DBRead Get Device for class {} from mountpoint {} for uuid {}",
+				OrgOpenroadmDevice.class.getSimpleName(), accessor.getMountpoint().getClass().getName(),
+				accessor.getNodeId().getValue());
+
+		InstanceIdentifier<OrgOpenroadmDevice> deviceId = InstanceIdentifier.builder(openRoadmDev).build();
+
+		OrgOpenroadmDevice device = accessor.getTransactionUtils().readData(accessor.getDataBroker(),
+				LogicalDatastoreType.OPERATIONAL, deviceId);
+
+		return device;
+
+	}
 
 	@Override
 	public NetworkElementDeviceType getDeviceType() {
@@ -137,7 +220,7 @@ public class OscaNetworkElement implements NetworkElement {
 
 		this.oScaListenerRegistrationResult = netconfAccessor.doRegisterNotificationListener(oScaListener);
 		this.oScaFaultListenerRegistrationResult = netconfAccessor.doRegisterNotificationListener(oScaFaultListener);
-		// Register netconf stream
+//		 Register netconf stream
 		netconfAccessor.registerNotificationsStream(NetconfAccessor.DefaultNotificationsStream);
 
 	}
