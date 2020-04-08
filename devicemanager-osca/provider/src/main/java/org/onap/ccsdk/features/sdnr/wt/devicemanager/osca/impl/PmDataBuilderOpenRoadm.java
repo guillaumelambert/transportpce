@@ -87,6 +87,7 @@ public class PmDataBuilderOpenRoadm {
 			List<HistoricalPm> historicalPmList = pmDataEntry.getHistoricalPm();
 			for (HistoricalPm historicalPm : historicalPmList) {
 				
+				log.info("PmName:{}",historicalPm.getType());
 
 				this.pmDataBuilder.setScannerId(historicalPm.getType().getName());
 				writeperformanceData(historicalPm);

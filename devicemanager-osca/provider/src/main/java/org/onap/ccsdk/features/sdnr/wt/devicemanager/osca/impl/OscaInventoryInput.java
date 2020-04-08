@@ -96,7 +96,7 @@ public class OscaInventoryInput {
 		InventoryBuilder inventoryBuilder = new InventoryBuilder();
 		inventoryBuilder.setNodeId(this.accessor.getNodeId().getValue()).setUuid(circuitPack.getCircuitPackName())
 				.setDate((circuitPack.getManufactureDate() == null) ? "N/A"
-						: circuitPack.getManufactureDate().getValue())
+						: circuitPack.getManufactureDate().getValue().substring(0, 19))
 				.setId(circuitPack.getCircuitPackName()).setManufacturerIdentifier(circuitPack.getVendor())
 				.setModelIdentifier(circuitPack.getModel()).setSerial(circuitPack.getSerialId()).setTreeLevel(treeLevel)
 				.setVersion(circuitPack.getHardwareVersion())

@@ -67,7 +67,7 @@ public class OscaNetworkElement implements NetworkElement {
 	private Integer sequenceNumber = 1;;
 	private List<PmdataEntity> pmDataEntity = new ArrayList<PmdataEntity>();
 
-	OscaNetworkElement(NetconfAccessor netconfAccess, DeviceManagerServiceProvider serviceProvider) {
+	public OscaNetworkElement(NetconfAccessor netconfAccess, DeviceManagerServiceProvider serviceProvider) {
 
 		log.info("Create {}", OscaNetworkElement.class.getSimpleName());
 		this.netconfAccessor = netconfAccess;
