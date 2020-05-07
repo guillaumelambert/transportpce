@@ -1,34 +1,31 @@
 package org.onap.ccsdk.features.sdnr.wt.devicemanager.osca.impl;
 
-import java.util.List;
-
-import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
-import org.onap.ccsdk.features.sdnr.wt.devicemanager.types.FaultData;
+import org.eclipse.jdt.annotation.NonNull;
+//import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServiceProvider;
+import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.FaultService;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.alarm.rev191129.ActiveAlarmList;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.alarm.rev191129.AlarmNotification;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.alarm.rev191129.OrgOpenroadmAlarmListener;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.alarm.rev191129.Severity;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.alarm.rev191129.active.alarm.list.ActiveAlarms;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.alarm.rev191129.alarm.ResourceBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.Faultlog;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.FaultlogBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.FaultlogEntity;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.SeverityType;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OscaFaultNotificationListener implements OrgOpenroadmAlarmListener {
 	private static final Logger log = LoggerFactory.getLogger(OrgOpenroadmAlarmListener.class);
 	private final NetconfAccessor accesor;
-	private final DataProvider databaseProvider;
-	private Integer sequenceNumber = 0;
+//	private final DataProvider databaseProvider;
+	private final @NonNull FaultService faultEventListener;
+	private Integer count = 1;
 
-	public OscaFaultNotificationListener(NetconfAccessor netConfAccessor, DataProvider databaseProvider) {
-		this.databaseProvider = databaseProvider;
+	public OscaFaultNotificationListener(NetconfAccessor netConfAccessor,
+			DeviceManagerServiceProvider serviceProvider) {
+//		this.databaseProvider = serviceProvider.getDataProvider();
 		this.accesor = netConfAccessor;
+		this.faultEventListener = serviceProvider.getFaultService();
 	}
 
 	@Override
@@ -40,51 +37,16 @@ public class OscaFaultNotificationListener implements OrgOpenroadmAlarmListener 
 				.setProblem(notification.getProbableCause().getCause().getName())
 				.setTimestamp(notification.getRaiseTime()).setId(notification.getId())
 				.setNodeId(notification.getResource().getDevice().getNodeId().getValue())
-				.setSeverity(checkSeverityValue(notification.getSeverity())).build();
+				.setSeverity(checkSeverityValue(notification.getSeverity())).setCounter(count).build();
 
-		databaseProvider.writeFaultLog(faultAlarm);
-
-	}
-
-	// Read Alarm Data
-
-	private ActiveAlarmList getActiveAlarmList(NetconfAccessor accessor) {
-		final Class<ActiveAlarmList> classAlarm = ActiveAlarmList.class;
-		log.info("Get PM data for element {}", accessor.getNodeId().getValue());
-		InstanceIdentifier<ActiveAlarmList> alarmDataIid = InstanceIdentifier.builder(classAlarm).build();
-
-		ActiveAlarmList alarmData = accessor.getTransactionUtils().readData(accessor.getDataBroker(),
-				LogicalDatastoreType.OPERATIONAL, alarmDataIid);
-
-		return alarmData;
-	}
-
-// Mapping the alarm data with the fault data
-	protected FaultData writeFaultData(Integer sequenceNumber) {
-		FaultData faultData = new FaultData();
-
-		List<ActiveAlarms> activeAlarms = this.getActiveAlarmList(this.accesor).getActiveAlarms();
-		for (ActiveAlarms activeAlarm : activeAlarms) {
-			faultData.add(this.accesor.getNodeId(), sequenceNumber, activeAlarm.getRaiseTime(),
-					activeAlarm.getResource().getDevice().getNodeId().getValue(),
-					activeAlarm.getProbableCause().getCause().getName(), checkSeverityValue(activeAlarm.getSeverity()));
-
-		
-		}
-
-		return faultData;
+//		this.databaseProvider.writeFaultLog(faultAlarm);
+		this.faultEventListener.faultNotification(faultAlarm);
+		count ++;
+		log.info("Notification is written into the database {}", faultAlarm.getObjectId());
 
 	}
 
-// Write into the FaultLog
-	protected void writeFaultLog(FaultData faultData) {
-		List<Faultlog> faultLog = faultData.getProblemList();
-		for (Faultlog fe : faultLog) {
-			this.databaseProvider.writeFaultLog(fe);
-		}
-	}
-
-	// Mapping Severity of AlarmNotification to SeverityType of FaultLog
+// Mapping Severity of AlarmNotification to SeverityType of FaultLog
 	private SeverityType checkSeverityValue(Severity severity) {
 		SeverityType severityType = null;
 		log.info("Device Severity: {}", severity.getName());

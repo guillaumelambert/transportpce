@@ -37,10 +37,9 @@ public class OscaNetworkElementFactory implements NetworkElementFactory {
 
 	@Override
 	public Optional<NetworkElement> create(NetconfAccessor acessor, DeviceManagerServiceProvider serviceProvider) {
-//		List<String> capabilities = acessor.getCapabilites().getCapabilities();
-//
+		List<String> capabilities = acessor.getCapabilites().getCapabilities();
 
-//		capabilities.forEach(capability -> log.info(capability));
+		capabilities.forEach(capability -> log.info("Capabilities for element are :{}",capability));
 		if (acessor.getCapabilites().isSupportingNamespace(OrgOpenroadmDevice.QNAME)) {
 			log.info("Create OSCA device {} ", OscaNetworkElement.class.getName());
 			log.info("Mountpoint {}", acessor.getMountpoint().getClass().getSimpleName());

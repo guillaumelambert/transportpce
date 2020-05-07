@@ -53,7 +53,6 @@ public class OscaNetworkElement implements NetworkElement {
 	private static final Logger log = LoggerFactory.getLogger(OscaNetworkElement.class);
 	private final NetconfAccessor netconfAccessor;
 	private final DataProvider databaseService;
-	private final @NonNull FaultService faultEventListener;
 
 
 	private final long equipmentLevel = 0;
@@ -64,7 +63,8 @@ public class OscaNetworkElement implements NetworkElement {
 	private @NonNull OscaFaultNotificationListener oScaFaultListener;
 	private OscaInventoryInput oscaInventoryInput;
 	private PmDataBuilderOpenRoadm openRoadmPmData;
-	private Integer sequenceNumber = 1;;
+	private InitialDeviceAlarmReader initialAlarmReader;
+//	private Integer sequenceNumber = 1;
 	private List<PmdataEntity> pmDataEntity = new ArrayList<PmdataEntity>();
 
 	public OscaNetworkElement(NetconfAccessor netconfAccess, DeviceManagerServiceProvider serviceProvider) {
@@ -75,11 +75,12 @@ public class OscaNetworkElement implements NetworkElement {
 		this.oScaListenerRegistrationResult = null;
 		this.oScaListener = new OscaChangeNotificationListener(netconfAccessor, databaseService);
 		this.oScaFaultListenerRegistrationResult = null;
-		this.oScaFaultListener = new OscaFaultNotificationListener(netconfAccessor, databaseService);
+		this.oScaFaultListener = new OscaFaultNotificationListener(netconfAccessor, serviceProvider);
 		this.oscaInventoryInput = new OscaInventoryInput(netconfAccess, readDevice(netconfAccess));
-		this.faultEventListener = serviceProvider.getFaultService();
+
 
 		this.openRoadmPmData = new PmDataBuilderOpenRoadm(this.netconfAccessor, serviceProvider.getDataProvider());
+		this.initialAlarmReader= new InitialDeviceAlarmReader(this.netconfAccessor, serviceProvider);
 
 		log.info("NodeId {}", this.netconfAccessor.getNodeId().getValue());
 
@@ -100,10 +101,12 @@ public class OscaNetworkElement implements NetworkElement {
 		readXpndrData(device);
 		readCircuitPacketData(device);
 		readInterfaceData(device);
-		faultEventListener.initCurrentProblemStatus(this.netconfAccessor.getNodeId(),
-				oScaFaultListener.writeFaultData(this.sequenceNumber));
-		oScaFaultListener.writeFaultLog(oScaFaultListener.writeFaultData(this.sequenceNumber));
-		this.sequenceNumber = this.sequenceNumber + 1;
+//		Writing initial alarms at the time of device registration
+		initialAlarmReader.faultService();
+//		faultEventListener.initCurrentProblemStatus(this.netconfAccessor.getNodeId(),
+//				oScaFaultListener.writeFaultData(this.sequenceNumber));
+//		oScaFaultListener.writeAlarmLog(oScaFaultListener.writeFaultData(this.sequenceNumber));
+//		this.sequenceNumber = this.sequenceNumber + 1;
 
 		pmDataEntity=this.openRoadmPmData.buildPmDataEntity(this.openRoadmPmData.getPmData(this.netconfAccessor));
 		if(!pmDataEntity.isEmpty()) {
@@ -220,6 +223,7 @@ public class OscaNetworkElement implements NetworkElement {
 
 		this.oScaListenerRegistrationResult = netconfAccessor.doRegisterNotificationListener(oScaListener);
 		this.oScaFaultListenerRegistrationResult = netconfAccessor.doRegisterNotificationListener(oScaFaultListener);
+
 //		 Register netconf stream
 		netconfAccessor.registerNotificationsStream(NetconfAccessor.DefaultNotificationsStream);
 
