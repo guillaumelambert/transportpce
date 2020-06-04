@@ -12,8 +12,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
@@ -21,11 +20,12 @@ import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfa
 import org.opendaylight.transportpce.olm.util.OlmUtils;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerTurndownInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.nodes.MappingKey;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.NodeTypes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfo.OpenroadmVersion;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.OpticalControlMode;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeTypes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.Interface;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.Interface1;
 import org.slf4j.Logger;
@@ -57,6 +57,7 @@ public class PowerMgmtImpl implements PowerMgmt {
      * @return true/false based on status of operation.
      */
     //TODO Need to Case Optical Power mode/NodeType in case of 2.2 devices
+    //@SuppressFBwarnings("DM_CONVERT_CASE")
     public Boolean setPower(ServicePowerSetupInput input) {
         LOG.info("Olm-setPower initiated");
         for (int i = 0; i < input.getNodes().size(); i++) {
@@ -66,12 +67,12 @@ public class PowerMgmtImpl implements PowerMgmt {
             Optional<Nodes> inputNodeOptional = OlmUtils.getNode(nodeId, this.db);
             // If node type is transponder
             if (inputNodeOptional.isPresent()
-                    && (inputNodeOptional.get().getNodeType() != null)
-                    && inputNodeOptional.get().getNodeType().equals(NodeTypes.Xpdr)) {
+                    && (inputNodeOptional.get().getNodeInfo().getNodeType() != null)
+                    && inputNodeOptional.get().getNodeInfo().getNodeType().equals(NodeTypes.Xpdr)) {
 
                 Nodes inputNode = inputNodeOptional.get();
-                Nodes.OpenroadmVersion openroadmVersion = inputNode.getOpenroadmVersion();
-                LOG.info("Getting data from input node {}", inputNode.getNodeType());
+                OpenroadmVersion openroadmVersion = inputNode.getNodeInfo().getOpenroadmVersion();
+                LOG.info("Getting data from input node {}", inputNode.getNodeInfo().getNodeType());
                 LOG.info("Getting mapping data for node is {}", inputNode.getMapping().stream().filter(o -> o.key()
                         .equals(new MappingKey(destTpId))).findFirst().toString());
                 // If its A-End transponder
@@ -82,10 +83,10 @@ public class PowerMgmtImpl implements PowerMgmt {
                         String circuitPackName = mappingObject.get().getSupportingCircuitPackName();
                         String portName = mappingObject.get().getSupportingPort();
                         Map<String, Double> txPowerRangeMap = new HashMap<>();
-                        if (openroadmVersion.equals(Nodes.OpenroadmVersion._121)) {
+                        if (openroadmVersion.getIntValue() == 1) {
                             txPowerRangeMap = PowerMgmtVersion121.getXponderPowerRange(circuitPackName, portName,
                                     nodeId, deviceTransactionManager);
-                        } else if (openroadmVersion.equals(Nodes.OpenroadmVersion._221)) {
+                        } else if (openroadmVersion.getIntValue() == 2) {
                             txPowerRangeMap = PowerMgmtVersion221.getXponderPowerRange(circuitPackName, portName,
                                     nodeId, deviceTransactionManager);
                         }
@@ -100,12 +101,12 @@ public class PowerMgmtImpl implements PowerMgmt {
                                                     .equals(new MappingKey(srgId))).findFirst());
                             if (mappingObjectSRG.isPresent()) {
 
-                                if (openroadmVersion.equals(Nodes.OpenroadmVersion._121)) {
+                                if (openroadmVersion.getIntValue() == 1) {
                                     rxSRGPowerRangeMap = PowerMgmtVersion121.getSRGRxPowerRange(nextNodeId, srgId,
                                             deviceTransactionManager, mappingObjectSRG.get()
                                             .getSupportingCircuitPackName(),
                                             mappingObjectSRG.get().getSupportingPort());
-                                } else if (inputNode.getOpenroadmVersion().equals(Nodes.OpenroadmVersion._221)) {
+                                } else if (openroadmVersion.getIntValue() == 2) {
                                     rxSRGPowerRangeMap = PowerMgmtVersion221.getSRGRxPowerRange(nextNodeId, srgId,
                                             deviceTransactionManager, mappingObjectSRG.get()
                                             .getSupportingCircuitPackName(),
@@ -137,7 +138,20 @@ public class PowerMgmtImpl implements PowerMgmt {
                                     LOG.info("Transponder OCH connection: {} power update failed ", interfaceName);
                                 }
                             } else {
-                                LOG.info("SRG Power Range not found");
+                                LOG.info("SRG Power Range not found, setting the Transponder range to default");
+                                String interfaceName = destTpId + "-" + input.getWaveNumber();
+                                if (callSetTransponderPower(nodeId, interfaceName, new BigDecimal(-5),
+                                    openroadmVersion)) {
+                                    LOG.info("Transponder OCH connection: {} power updated ", interfaceName);
+                                    try {
+                                        Thread.sleep(OlmUtils.OLM_TIMER_1);
+                                    } catch (InterruptedException e) {
+                                        // TODO Auto-generated catch block
+                                        LOG.info("Transponder warmup failed for OCH connection: {}", interfaceName, e);
+                                    }
+                                } else {
+                                    LOG.info("Transponder OCH connection: {} power update failed ", interfaceName);
+                                }
                             }
                         } else {
                             LOG.info("Tranponder range not available setting to default power for nodeId: {}", nodeId);
@@ -162,11 +176,11 @@ public class PowerMgmtImpl implements PowerMgmt {
                     LOG.info("{} is a drop node. Net power settings needed", nodeId);
                 }
             } else if (inputNodeOptional.isPresent()
-                    && (inputNodeOptional.get().getNodeType() != null)
-                    && inputNodeOptional.get().getNodeType().equals(NodeTypes.Rdm)) {
+                    && (inputNodeOptional.get().getNodeInfo().getNodeType() != null)
+                    && inputNodeOptional.get().getNodeInfo().getNodeType().equals(NodeTypes.Rdm)) {
                 // If Degree is transmitting end then set power
                 Nodes inputNode = inputNodeOptional.get();
-                Nodes.OpenroadmVersion openroadmVersion = inputNode.getOpenroadmVersion();
+                OpenroadmVersion openroadmVersion = inputNode.getNodeInfo().getOpenroadmVersion();
                 LOG.info("This is a roadm {} device", openroadmVersion.getName());
                 String connectionNumber = srcTpId + "-" + destTpId + "-" + input.getWaveNumber();
                 LOG.info("Connection number is {}", connectionNumber);
@@ -178,7 +192,7 @@ public class PowerMgmtImpl implements PowerMgmt {
                         LOG.info("Dest point is Degree {}", mappingObjectOptional.get());
                         Mapping portMapping = mappingObjectOptional.get();
                         // debut reprise
-                        if (openroadmVersion.equals(Nodes.OpenroadmVersion._121)) {
+                        if (openroadmVersion.getIntValue() == 1) {
                             Optional<Interface> interfaceOpt;
                             try {
                                 interfaceOpt =
@@ -206,7 +220,7 @@ public class PowerMgmtImpl implements PowerMgmt {
                                     nodeId);
                                 return false;
                             }
-                        } else if (openroadmVersion.equals(Nodes.OpenroadmVersion._221)) {
+                        } else if (openroadmVersion.getIntValue() == 2) {
                             Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp
                                 .Interface> interfaceOpt;
                             try {
@@ -257,15 +271,15 @@ public class PowerMgmtImpl implements PowerMgmt {
                         }
                         try {
                             Boolean setXconnPowerSuccessVal = crossConnect.setPowerLevel(nodeId,
-                                    OpticalControlMode.Power, powerValue, connectionNumber);
+                                OpticalControlMode.Power.getName(), powerValue, connectionNumber);
                             LOG.info("Success Value is {}", setXconnPowerSuccessVal);
                             if (setXconnPowerSuccessVal) {
-                                LOG.info("Roadm-connection: {} updated ");
+                                LOG.info("Roadm-connection: {} updated ", connectionNumber);
                                 //The value recommended by the white paper is 20 seconds and not 60.
                                 //TODO - commented code because one vendor is not supporting
                                 //GainLoss with target-output-power
                                 Thread.sleep(OlmUtils.OLM_TIMER_1);
-                                crossConnect.setPowerLevel(nodeId, OpticalControlMode.GainLoss, powerValue,
+                                crossConnect.setPowerLevel(nodeId, OpticalControlMode.GainLoss.getName(), powerValue,
                                         connectionNumber);
                             } else {
                                 LOG.info("Set Power failed for Roadm-connection: {} on Node: {}", connectionNumber,
@@ -273,15 +287,17 @@ public class PowerMgmtImpl implements PowerMgmt {
                                 return false;
                             }
                         } catch (InterruptedException e) {
-                            LOG.error("Olm-setPower wait failed {}", e);
+                            LOG.error("Olm-setPower wait failed :", e);
                             return false;
                         }
                     }
                     // If Drop node leave node is power mode
                 } else if (destTpId.toLowerCase().contains("srg")) {
                     LOG.info("Setting power at drop node");
-                    crossConnect.setPowerLevel(nodeId, OpticalControlMode.Power, null, connectionNumber);
+                    crossConnect.setPowerLevel(nodeId, OpticalControlMode.Power.getName(), null, connectionNumber);
                 }
+            } else {
+                LOG.error("OLM-PowerMgmtImpl : Error with node type for node {}", nodeId);
             }
         }
         return true;
@@ -315,25 +331,26 @@ public class PowerMgmtImpl implements PowerMgmt {
             String nodeId = input.getNodes().get(i).getNodeId();
             String srcTpId =  input.getNodes().get(i).getSrcTp();
             String destTpId = input.getNodes().get(i).getDestTp();
-            Long wlNumber = input.getWaveNumber();
+            Long wlNumber = input.getWaveNumber().toJava();
             String connectionNumber =  srcTpId + "-" + destTpId + "-" + wlNumber;
             if (destTpId.toLowerCase().contains("srg")) {
-                crossConnect.setPowerLevel(nodeId, OpticalControlMode.Off, null, connectionNumber);
+                crossConnect.setPowerLevel(nodeId, OpticalControlMode.Off.getName(), null, connectionNumber);
             } else if (destTpId.toLowerCase().contains("deg")) {
                 try {
-                    if (!crossConnect.setPowerLevel(nodeId, OpticalControlMode.Power , new BigDecimal(-60),
+                    if (!crossConnect.setPowerLevel(nodeId, OpticalControlMode.Power.getName(), new BigDecimal(-60),
                             connectionNumber)) {
                         LOG.warn("Power down failed for Roadm-connection: {}", connectionNumber);
                         return false;
                     }
                     Thread.sleep(OlmUtils.OLM_TIMER_2);
-                    if (! crossConnect.setPowerLevel(nodeId, OpticalControlMode.Off , null, connectionNumber)) {
+                    if (! crossConnect.setPowerLevel(nodeId, OpticalControlMode.Off.getName(), null,
+                        connectionNumber)) {
                         LOG.warn("Setting power-control mode off failed for Roadm-connection: {}", connectionNumber);
                         return false;
                     }
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
-                    LOG.error("Olm-powerTurnDown wait failed {}",e);
+                    LOG.error("Olm-powerTurnDown wait failed: ",e);
                     return false;
                 }
             }
@@ -341,7 +358,7 @@ public class PowerMgmtImpl implements PowerMgmt {
         return true;
     }
 
-    /**
+    /*
      * This method does an edit-config on roadm connection subtree for a given
      * connection number in order to set power level for use by the optical
      * power control.
@@ -358,22 +375,22 @@ public class PowerMgmtImpl implements PowerMgmt {
      *            WaveLength number part of request
      * @return true/false based on status of operation.
      */
-    private boolean setTransponderPowerTx(Nodes inputNode, String destTpId, String srgId,
+    /*private boolean setTransponderPowerTx(Nodes inputNode, String destTpId, String srgId,
                                           String nextNodeId, Long waveLength) {
         Map<String, Double> txPowerRangeMap = null;
         Map<String, Double> rxSRGPowerRangeMap = null;
-        Nodes.OpenroadmVersion openroadmVersion;
+        OpenroadmVersion openroadmVersion;
         Optional<Mapping> mappingObject = inputNode.getMapping().stream().filter(o -> o.key()
                 .equals(new MappingKey(destTpId))).findFirst();
         String nodeId = inputNode.getNodeId();
         if (mappingObject.isPresent()) {
             String circuitPackName = mappingObject.get().getSupportingCircuitPackName();
             String portName = mappingObject.get().getSupportingPort();
-            openroadmVersion = inputNode.getOpenroadmVersion();
-            if (inputNode.getOpenroadmVersion().equals(Nodes.OpenroadmVersion._121)) {
+            openroadmVersion = inputNode.getNodeInfo().getOpenroadmVersion();
+            if (openroadmVersion.getIntValue() == 1) {
                 txPowerRangeMap = PowerMgmtVersion121.getXponderPowerRange(circuitPackName, portName,
                         nodeId, deviceTransactionManager);
-            } else if (inputNode.getOpenroadmVersion().equals(Nodes.OpenroadmVersion._221)) {
+            } else if (openroadmVersion.getIntValue() == 2) {
                 txPowerRangeMap = PowerMgmtVersion221.getXponderPowerRange(circuitPackName, portName,
                         nodeId, deviceTransactionManager);
             }
@@ -388,11 +405,11 @@ public class PowerMgmtImpl implements PowerMgmt {
                                         .equals(new MappingKey(srgId))).findFirst());
                 if (mappingObjectSRG.isPresent()) {
                     LOG.info("Transponder range exists for nodeId: {}", nodeId);
-                    if (inputNode.getOpenroadmVersion().equals(Nodes.OpenroadmVersion._121)) {
+                    if (openroadmVersion.getIntValue() == 1) {
                         rxSRGPowerRangeMap = PowerMgmtVersion121.getSRGRxPowerRange(nextNodeId, srgId,
                                 deviceTransactionManager, mappingObjectSRG.get().getSupportingCircuitPackName(),
                                 mappingObjectSRG.get().getSupportingPort());
-                    } else if (inputNode.getOpenroadmVersion().equals(Nodes.OpenroadmVersion._221)) {
+                    } else if (openroadmVersion.getIntValue() == 2) {
                         rxSRGPowerRangeMap = PowerMgmtVersion221.getSRGRxPowerRange(nextNodeId, srgId,
                                 deviceTransactionManager, mappingObjectSRG.get().getSupportingCircuitPackName(),
                                 mappingObjectSRG.get().getSupportingPort());
@@ -452,7 +469,7 @@ public class PowerMgmtImpl implements PowerMgmt {
             LOG.info("Mapping object not found for nodeId: {}", nodeId);
             return false;
         }
-    }
+    }*/
 
     /**
      * This method retrieves transponder OCH interface and
@@ -469,10 +486,10 @@ public class PowerMgmtImpl implements PowerMgmt {
      * @return true/false based on status of operation
      */
     private boolean callSetTransponderPower(String nodeId, String interfaceName, BigDecimal txPower,
-                                            Nodes.OpenroadmVersion openroadmVersion) {
+                                            OpenroadmVersion openroadmVersion) {
         boolean powerSetupResult = false;
         try {
-            if (openroadmVersion.equals(Nodes.OpenroadmVersion._121)) {
+            if (openroadmVersion.getIntValue() == 1) {
                 Optional<Interface> interfaceOptional;
                 interfaceOptional = openRoadmInterfaces.getInterface(nodeId, interfaceName);
                 if (interfaceOptional.isPresent()) {
@@ -482,7 +499,7 @@ public class PowerMgmtImpl implements PowerMgmt {
                     LOG.error("Interface {} on node {} is not present!", interfaceName, nodeId);
                     return false;
                 }
-            } else if (openroadmVersion.equals(Nodes.OpenroadmVersion._221)) {
+            } else if (openroadmVersion.getIntValue() == 2) {
                 Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp
                         .Interface> interfaceOptional;
                 interfaceOptional = openRoadmInterfaces.getInterface(nodeId, interfaceName);
@@ -509,7 +526,7 @@ public class PowerMgmtImpl implements PowerMgmt {
         }
     }
 
-    /**
+    /*
      * This method retrieves transponder OCH interface and
      * sets power.
      *
@@ -523,8 +540,8 @@ public class PowerMgmtImpl implements PowerMgmt {
      *            Wavelength Number    *
      * @return true/false based on status of operation
      */
-    private boolean callSetRoadmPowerTx(String nodeId, String interfaceName,
-                                        Nodes.OpenroadmVersion openroadmVersion,
+    /*private boolean callSetRoadmPowerTx(String nodeId, String interfaceName,
+                                        OpenroadmVersion openroadmVersion,
                                         Long wavelength, String connectionNumber) {
         if (interfaceName == null) {
             crossConnect.setPowerLevel(nodeId,
@@ -532,7 +549,7 @@ public class PowerMgmtImpl implements PowerMgmt {
             return true;
         }
         try {
-            if (openroadmVersion.equals(Nodes.OpenroadmVersion._121)) {
+            if (openroadmVersion.getIntValue() == 1) {
                 Optional<Interface> interfaceOpt;
                 interfaceOpt = openRoadmInterfaces.getInterface(nodeId, interfaceName);
                 if (interfaceOpt.isPresent()) {
@@ -559,7 +576,7 @@ public class PowerMgmtImpl implements PowerMgmt {
                     LOG.error("Interface {} on node {} is not present!", interfaceName, nodeId);
                     return false;
                 }
-            } else if (openroadmVersion.equals(Nodes.OpenroadmVersion._221)) {
+            } else if (openroadmVersion.getIntValue() == 2) {
                 Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces
                         .grp.Interface> interfaceOpt;
                 interfaceOpt = openRoadmInterfaces.getInterface(nodeId, interfaceName);
@@ -591,6 +608,6 @@ public class PowerMgmtImpl implements PowerMgmt {
             return false;
         }
         return false;
-    }
+    }*/
 
 }

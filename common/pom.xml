@@ -10,35 +10,28 @@
     <parent>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>3.0.9</version>
+        <version>5.0.10</version>
         <relativePath />
     </parent>
 
     <groupId>org.opendaylight.transportpce</groupId>
     <artifactId>transportpce-common</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.opendaylight.controller</groupId>
-                <artifactId>mdsal-artifacts</artifactId>
-                <version>1.9.2-SNAPSHOT</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
                 <groupId>org.opendaylight.netconf</groupId>
                 <artifactId>netconf-artifacts</artifactId>
-                <version>1.6.2-SNAPSHOT</version>
+                <version>1.8.1-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
-                <groupId>org.opendaylight.mdsal.model</groupId>
-                <artifactId>mdsal-model-artifacts</artifactId>
-                <version>0.13.2</version>
+                <groupId>org.opendaylight.mdsal</groupId>
+                <artifactId>mdsal-artifacts</artifactId>
+                <version>5.0.10</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -47,61 +40,37 @@
 
     <dependencies>
         <dependency>
+            <groupId>${project.groupId}.ordmodels</groupId>
+            <artifactId>transportpce-ordmodels-device</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transportpce-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-binding-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opendaylight.controller.model</groupId>
-            <artifactId>model-topology</artifactId>
-        </dependency>
-<!-- Bump to  Fluorine
-        <dependency>
-            <groupId>org.opendaylight.mdsal.model</groupId>
-            <artifactId>ietf-network-2015-06-08</artifactId>
-        </dependency>
--->
-        <dependency>
             <groupId>org.opendaylight.netconf</groupId>
             <artifactId>sal-netconf-connector</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.ordmodels</groupId>
-            <artifactId>transportpce-ordmodels-device</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.opendaylight.mdsal</groupId>
+            <artifactId>mdsal-binding-dom-adapter</artifactId>
         </dependency>
 
+        <!-- Sodium bump: javax.annotation.Nullable and friends -->
         <dependency>
-            <groupId>org.opendaylight.controller</groupId>
-            <artifactId>sal-binding-broker-impl</artifactId>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <optional>true</optional>
         </dependency>
-
         <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-data-codec-xml</artifactId>
+	        <groupId>org.onap.ccsdk.features.sdnr.wt</groupId>
+			<artifactId>sdnr-wt-odl-client</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.opendaylight.yangtools</groupId>
-            <artifactId>yang-data-codec-gson</artifactId>
-        </dependency>
-
-        <!-- Testing Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
+        	
     </dependencies>
 
 <!-- skipping test since this is a util project / folder -->
@@ -117,6 +86,5 @@
       </plugin>
     </plugins>
   </build>
-
 
 </project>

@@ -15,22 +15,21 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.MountPoint;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.MountPoint;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
-import org.opendaylight.transportpce.networkmodel.util.OpenRoadmFactory;
+import org.opendaylight.transportpce.networkmodel.util.TopologyUtils;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.networkutils.rev170818.InitRoadmNodesInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.Network;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.NodesKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.nodes.CpToDegree;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.Network;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.NodesKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.CpToDegree;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev170929.Direction;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.Protocols;
@@ -39,6 +38,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev161014.lldp.conta
 import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev161014.lldp.container.lldp.nbr.list.IfName;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,13 +49,11 @@ public class R2RLinkDiscovery {
     private final DataBroker dataBroker;
     private final NetworkTransactionService networkTransactionService;
     private final DeviceTransactionManager deviceTransactionManager;
-    private final OpenRoadmFactory openRoadmFactory;
 
     public R2RLinkDiscovery(final DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
-        OpenRoadmFactory openRoadmFactory, NetworkTransactionService networkTransactionService) {
+        NetworkTransactionService networkTransactionService) {
         this.dataBroker = dataBroker;
         this.deviceTransactionManager = deviceTransactionManager;
-        this.openRoadmFactory = openRoadmFactory;
         this.networkTransactionService = networkTransactionService;
     }
 
@@ -150,9 +148,8 @@ public class R2RLinkDiscovery {
     public Direction getDegreeDirection(Integer degreeCounter, NodeId nodeId) {
         InstanceIdentifier<Nodes> nodesIID = InstanceIdentifier.builder(Network.class)
             .child(Nodes.class, new NodesKey(nodeId.getValue())).build();
-        try (ReadOnlyTransaction readTx = this.dataBroker.newReadOnlyTransaction()) {
-            Optional<Nodes> nodesObject = readTx.read(LogicalDatastoreType.CONFIGURATION, nodesIID)
-                .get().toJavaUtil();
+        try (ReadTransaction readTx = this.dataBroker.newReadOnlyTransaction()) {
+            Optional<Nodes> nodesObject = readTx.read(LogicalDatastoreType.CONFIGURATION, nodesIID).get();
             if (nodesObject.isPresent() && (nodesObject.get().getMapping() != null)) {
                 List<Mapping> mappingList = nodesObject.get().getMapping();
                 mappingList = mappingList.stream().filter(mp -> mp.getLogicalConnectionPoint().contains("DEG"
@@ -223,10 +220,10 @@ public class R2RLinkDiscovery {
             "Found a neighbor SrcNodeId: {} , SrcDegId: {} , SrcTPId: {}, DestNodeId:{} , DestDegId: {}, DestTPId: {}",
             nodeId.getValue(), srcDegId, srcTpTx, destNodeId, destDegId, destTpRx);
         InitRoadmNodesInputBuilder r2rlinkBuilderAToZ = new InitRoadmNodesInputBuilder();
-        r2rlinkBuilderAToZ.setRdmANode(nodeId.getValue()).setDegANum(srcDegId.shortValue())
-            .setTerminationPointA(srcTpTx).setRdmZNode(destNodeId.getValue()).setDegZNum(destDegId.shortValue())
+        r2rlinkBuilderAToZ.setRdmANode(nodeId.getValue()).setDegANum(Uint8.valueOf(srcDegId))
+            .setTerminationPointA(srcTpTx).setRdmZNode(destNodeId.getValue()).setDegZNum(Uint8.valueOf(destDegId))
             .setTerminationPointZ(destTpRx);
-        if (!OrdLink.createRdm2RdmLinks(r2rlinkBuilderAToZ.build(), this.openRoadmFactory, this.dataBroker)) {
+        if (!OrdLink.createRdm2RdmLinks(r2rlinkBuilderAToZ.build(), this.dataBroker)) {
             LOG.error("OMS Link creation failed between node: {} and nodeId: {} in A->Z direction", nodeId.getValue(),
                 destNodeId.getValue());
             return false;
@@ -237,11 +234,14 @@ public class R2RLinkDiscovery {
                 + ", SrcTPId: {}, DestNodeId:{} , DestDegId: {}, DestTPId: {}",
             destNodeId, destDegId, destTpTx, nodeId.getValue(), srcDegId, srcTpRx);
 
-        InitRoadmNodesInputBuilder r2rlinkBuilderZToA = new InitRoadmNodesInputBuilder();
-        r2rlinkBuilderZToA.setRdmANode(destNodeId.getValue()).setDegANum(destDegId.shortValue())
-            .setTerminationPointA(destTpTx).setRdmZNode(nodeId.getValue()).setDegZNum(srcDegId.shortValue())
+        InitRoadmNodesInputBuilder r2rlinkBuilderZToA = new InitRoadmNodesInputBuilder()
+            .setRdmANode(destNodeId.getValue())
+            .setDegANum(Uint8.valueOf(destDegId))
+            .setTerminationPointA(destTpTx)
+            .setRdmZNode(nodeId.getValue())
+            .setDegZNum(Uint8.valueOf(srcDegId))
             .setTerminationPointZ(srcTpRx);
-        if (!OrdLink.createRdm2RdmLinks(r2rlinkBuilderZToA.build(), this.openRoadmFactory, this.dataBroker)) {
+        if (!OrdLink.createRdm2RdmLinks(r2rlinkBuilderZToA.build(), this.dataBroker)) {
             LOG.error("OMS Link creation failed between node: {} and nodeId: {} in Z->A direction",
                 destNodeId.getValue(), nodeId.getValue());
             return false;
@@ -294,26 +294,23 @@ public class R2RLinkDiscovery {
             destTpTx = "DEG" + destDegId + "-TTP-TX";
             destTpRx = "DEG" + destDegId + "-TTP-RX";
         }
-        return this.openRoadmFactory.deleteLink(nodeId.getValue() + "-" + srcDegId.toString(),
-                destNodeId.getValue() + "-" + destDegId.toString(),
-                srcTpTx.toString(), destTpRx.toString(),networkTransactionService)
-            && this.openRoadmFactory.deleteLink(destNodeId.getValue() + "-" + destDegId.toString(),
-                nodeId.getValue() + "-" + srcDegId.toString(), destTpTx, srcTpRx,
-                networkTransactionService);
+        return TopologyUtils.deleteLink(nodeId.getValue() + "-" + srcDegId, destNodeId.getValue() + "-" + destDegId,
+            srcTpTx, destTpRx, networkTransactionService)
+            && TopologyUtils.deleteLink(destNodeId.getValue() + "-" + destDegId, nodeId.getValue() + "-" + srcDegId,
+                destTpTx, srcTpRx, networkTransactionService);
     }
 
     private Integer getDegFromInterface(NodeId nodeId, String interfaceName) {
         InstanceIdentifier<Nodes> nodesIID = InstanceIdentifier.builder(Network.class)
             .child(Nodes.class, new NodesKey(nodeId.getValue())).build();
-        try (ReadOnlyTransaction readTx = this.dataBroker.newReadOnlyTransaction()) {
-            Optional<Nodes> nodesObject = readTx.read(LogicalDatastoreType.CONFIGURATION, nodesIID)
-                .get().toJavaUtil();
+        try (ReadTransaction readTx = this.dataBroker.newReadOnlyTransaction()) {
+            Optional<Nodes> nodesObject = readTx.read(LogicalDatastoreType.CONFIGURATION, nodesIID).get();
             if (nodesObject.isPresent() && (nodesObject.get().getCpToDegree() != null)) {
                 List<CpToDegree> cpToDeg = nodesObject.get().getCpToDegree();
                 Stream cpToDegStream = cpToDeg.stream().filter(cp -> cp.getInterfaceName() != null)
                     .filter(cp -> cp.getInterfaceName().equals(interfaceName));
                 if (cpToDegStream != null) {
-                    Optional<CpToDegree> firstCpToDegree = cpToDegStream.findFirst();
+                    @SuppressWarnings("unchecked") Optional<CpToDegree> firstCpToDegree = cpToDegStream.findFirst();
                     if (firstCpToDegree.isPresent() && (firstCpToDegree != null)) {
                         LOG.debug("Found and returning {}",firstCpToDegree.get().getDegreeNumber().intValue());
                         return firstCpToDegree.get().getDegreeNumber().intValue();

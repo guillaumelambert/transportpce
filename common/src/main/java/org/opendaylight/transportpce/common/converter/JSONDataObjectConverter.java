@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -27,6 +28,7 @@ import org.opendaylight.yangtools.yang.data.api.schema.NormalizedNode;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.api.schema.stream.NormalizedNodeWriter;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactory;
+import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactorySupplier;
 import org.opendaylight.yangtools.yang.data.codec.gson.JSONNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
@@ -76,13 +78,8 @@ public final class JSONDataObjectConverter extends AbstractDataObjectConverter {
     @Override
     public Optional<NormalizedNode<? extends YangInstanceIdentifier.PathArgument, ?>> transformIntoNormalizedNode(
             @Nonnull InputStream inputStream) {
-        try {
-            JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
-            return parseInputJSON(reader);
-        } catch (IOException e) {
-            LOG.warn(e.getMessage(), e);
-            return Optional.empty();
-        }
+        JsonReader reader = new JsonReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        return parseInputJSON(reader);
     }
 
     @Override
@@ -103,7 +100,8 @@ public final class JSONDataObjectConverter extends AbstractDataObjectConverter {
             ConvertType<T> convertType) {
         Writer writer = new StringWriter();
         JsonWriter jsonWriter = new JsonWriter(writer);
-        JSONCodecFactory jsonCodecFactory = JSONCodecFactory.createLazy(getSchemaContext());
+        JSONCodecFactory jsonCodecFactory =
+            JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.createLazy(getSchemaContext());
         NormalizedNodeStreamWriter create =
             JSONNormalizedNodeStreamWriter.createExclusiveWriter(jsonCodecFactory,
             (org.opendaylight.yangtools.yang.model.api.DataNodeContainer)null, null, jsonWriter);
@@ -133,11 +131,12 @@ public final class JSONDataObjectConverter extends AbstractDataObjectConverter {
             JsonReader reader) {
         NormalizedNodeResult result = new NormalizedNodeResult();
         try (NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
-            JsonParserStream jsonParser = JsonParserStream.create(streamWriter, getSchemaContext(),
+            JsonParserStream jsonParser = JsonParserStream.create(streamWriter,
+                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.getShared(getSchemaContext()),
                 getSchemaContext())) {
             jsonParser.parse(reader);
         } catch (IOException e) {
-            LOG.warn("An error {} occured during parsing Json input stream", e.getMessage(), e);
+            LOG.warn("An error occured during parsing Json input stream", e);
             return Optional.empty();
         }
         return Optional.ofNullable(result.getResult());

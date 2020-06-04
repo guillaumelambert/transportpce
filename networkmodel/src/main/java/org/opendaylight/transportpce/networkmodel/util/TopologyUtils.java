@@ -10,8 +10,7 @@ package org.opendaylight.transportpce.networkmodel.util;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1;
@@ -32,7 +31,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public  final class TopologyUtils {
+public final class TopologyUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(TopologyUtils.class);
 
@@ -40,31 +39,38 @@ public  final class TopologyUtils {
     }
 
     // This method returns the linkBuilder object for given source and destination
-    public static LinkBuilder createLink(String srcNode, String dstNode, String srcTp, String destTp) {
+    public static LinkBuilder createLink(String srcNode, String dstNode, String srcTp, String destTp,
+        String otnPrefix) {
 
         // Create Destination for link
-        DestinationBuilder dstNodeBldr = new DestinationBuilder();
-        dstNodeBldr.setDestTp(destTp);
-        dstNodeBldr.setDestNode(new NodeId(dstNode));
+        DestinationBuilder dstNodeBldr = new DestinationBuilder()
+            .setDestTp(destTp)
+            .setDestNode(new NodeId(dstNode));
 
         // Create Source for the link
-        SourceBuilder srcNodeBldr = new SourceBuilder();
-        srcNodeBldr.setSourceNode(new NodeId(srcNode));
-        srcNodeBldr.setSourceTp(srcTp);
+        SourceBuilder srcNodeBldr = new SourceBuilder()
+            .setSourceNode(new NodeId(srcNode))
+            .setSourceTp(srcTp);
+
+        LinkId linkId;
+        LinkId oppositeLinkId;
+        if (otnPrefix == null) {
+            linkId = LinkIdUtil.buildLinkId(srcNode, srcTp, dstNode, destTp);
+            oppositeLinkId = LinkIdUtil.buildLinkId(dstNode, destTp, srcNode, srcTp);
+        } else {
+            linkId = LinkIdUtil.buildOtnLinkId(srcNode, srcTp, dstNode, destTp, otnPrefix);
+            oppositeLinkId = LinkIdUtil.buildOtnLinkId(dstNode, destTp, srcNode, srcTp, otnPrefix);
+        }
+        //set opposite link
+        Link1 lnk1 = new Link1Builder().setOppositeLink(oppositeLinkId).build();
 
         // set link builder attribute
-        LinkBuilder lnkBldr = new LinkBuilder();
-
-        lnkBldr.setDestination(dstNodeBldr.build());
-        lnkBldr.setSource(srcNodeBldr.build());
-        lnkBldr.setLinkId(LinkIdUtil.buildLinkId(srcNode, srcTp, dstNode, destTp));
-        lnkBldr.withKey(new LinkKey(lnkBldr.getLinkId()));
-
-        //set opposite link
-        Link1Builder lnk1Bldr = new Link1Builder();
-        LinkId oppositeLinkId = LinkIdUtil.getOppositeLinkId(srcNode, srcTp, dstNode, destTp);
-        lnk1Bldr.setOppositeLink(oppositeLinkId);
-        lnkBldr.addAugmentation(Link1.class,lnk1Bldr.build());
+        LinkBuilder lnkBldr = new LinkBuilder()
+            .setDestination(dstNodeBldr.build())
+            .setSource(srcNodeBldr.build())
+            .setLinkId(linkId)
+            .withKey(new LinkKey(linkId))
+            .addAugmentation(Link1.class,lnk1);
         return lnkBldr;
     }
 
@@ -74,7 +80,7 @@ public  final class TopologyUtils {
         LOG.info("deleting link for {}-{}", srcNode, dstNode);
         LinkId linkId = LinkIdUtil.buildLinkId(srcNode, srcTp, dstNode, destTp);
         if (deleteLinkLinkId(linkId, networkTransactionService)) {
-            LOG.debug("Link Id {} updated to have admin state down");
+            LOG.debug("Link Id {} updated to have admin state down", linkId);
             return true;
         } else {
             LOG.debug("Link Id not found for Source {} and Dest {}", srcNode, dstNode);
@@ -84,22 +90,21 @@ public  final class TopologyUtils {
 
     // This method returns the linkBuilder object for given source and destination
     public static boolean deleteLinkLinkId(LinkId linkId , NetworkTransactionService networkTransactionService) {
-        LOG.info("deleting link for LinkId: {}", linkId);
+        LOG.info("deleting link for LinkId: {}", linkId.getValue());
         try {
             InstanceIdentifier.InstanceIdentifierBuilder<Link> linkIID = InstanceIdentifier.builder(Networks.class)
                 .child(Network.class, new NetworkKey(new NetworkId(NetworkUtils.OVERLAY_NETWORK_ID)))
                 .augmentation(Network1.class).child(Link.class, new LinkKey(linkId));
-            com.google.common.base.Optional<Link> link =
+            java.util.Optional<Link> link =
                 networkTransactionService.read(LogicalDatastoreType.CONFIGURATION,linkIID.build()).get();
             if (link.isPresent()) {
                 LinkBuilder linkBuilder = new LinkBuilder(link.get());
                 Link1Builder link1Builder = new Link1Builder(linkBuilder.augmentation(Link1.class));
-//                link1Builder.setAdministrativeState(State.OutOfService);
                 linkBuilder.removeAugmentation(Link1.class);
                 linkBuilder.addAugmentation(Link1.class,link1Builder.build());
                 networkTransactionService.merge(LogicalDatastoreType.CONFIGURATION, linkIID.build(),
                     linkBuilder.build());
-                networkTransactionService.submit().get(1, TimeUnit.SECONDS);
+                networkTransactionService.commit().get(1, TimeUnit.SECONDS);
                 return true;
             } else {
                 LOG.error("No link found for given LinkId: {}",
@@ -108,7 +113,7 @@ public  final class TopologyUtils {
             }
 
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Error deleting link {}", linkId.getValue(), e);
             return false;
         }
     }

@@ -54,6 +54,7 @@ public class OpenRoadmInterfacesImpl implements OpenRoadmInterfaces {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Optional<T>  getInterface(String nodeId, String interfaceName) throws OpenRoadmInterfaceException {
 
         String openRoadmVersion = mappingUtils.getOpenRoadmVersion(nodeId);
@@ -66,7 +67,7 @@ public class OpenRoadmInterfacesImpl implements OpenRoadmInterfaces {
             LOG.info("getInterface for 2.2.1 device {}", nodeId);
             return (Optional<T>) openRoadmInterfacesImpl221.getInterface(nodeId,interfaceName);
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -98,6 +99,20 @@ public class OpenRoadmInterfacesImpl implements OpenRoadmInterfaces {
             openRoadmInterfacesImpl221.postEquipmentState(nodeId, circuitPackName, activate);
         }
 
+    }
+
+    @Override
+    public <T> void postOTNInterface(String nodeId, T ifBuilder) throws OpenRoadmInterfaceException {
+        org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceBuilder
+                ifBuilder22 = (org.opendaylight.yang.gen.v1.http.org.openroadm
+                .device.rev181019.interfaces.grp.InterfaceBuilder) ifBuilder;
+        openRoadmInterfacesImpl221.postInterface(nodeId,ifBuilder22);
+    }
+
+    @Override
+    public void postOTNEquipmentState(String nodeId, String circuitPackName, boolean activate)
+        throws OpenRoadmInterfaceException {
+        openRoadmInterfacesImpl221.postEquipmentState(nodeId, circuitPackName, activate);
     }
 
     private <T> T convertInstanceOfInterface(Object object, Class<T> classToCast) {

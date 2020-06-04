@@ -28,14 +28,14 @@ equipment\_ and Optical Line Management (OLM) is associated with a generic block
 relying on open models, each of them communicating through published APIs.
 
 
-.. figure:: ./images/tpce_architecture.jpg
+.. figure:: ./images/TransportPCE-Diagramm-Magnesium.jpg
    :alt: TransportPCE architecture
 
    TransportPCE architecture
 
-The current version of transportPCE is dedicated to the control of WDM transport
-infrastructure. OTN layer will be integrated in a later step. The WDM layer is
-built from colorless ROADMs and transponders.
+Fluorine, Neon and Sodium releases of transportPCE are dedicated to the control
+of WDM transport infrastructure. The WDM layer is built from colorless ROADMs
+and transponders.
 
 The interest of using a controller to provision automatically services strongly
 relies on its ability to handle end to end optical services that spans through
@@ -43,9 +43,18 @@ the different network domains, potentially equipped with equipment coming from
 different suppliers. Thus, interoperability in the optical layer is a key
 element to get the benefit of automated control.
 
-Initial design of TransportPCE leverages Open ROADM Multi-Source-Agreement (MSA)
+Initial design of TransportPCE leverages OpenROADM Multi-Source-Agreement (MSA)
 which defines interoperability specifications, consisting of both Optical
 interoperability and Yang data models.
+
+Experimental support of OTN layer is introduced in Magnesium release of
+OpenDaylight. By experimental, we mean not all features can be accessed through
+northbound API based on RESTCONF encoded OpenROADM Service model. In the meanwhile,
+"east/west" APIs shall be used to trigger a path computation in the PCE (using
+path-computation-request RPC) and to create services (using otn-service-path RPC).
+OTN support will be improved in the following magnesium releases.
+
+
 
 Module description
 ~~~~~~~~~~~~~~~~~~
@@ -65,12 +74,14 @@ Renderer and the OLM to delete connections and reset power levels associated wit
 service. The service-list is updated following a successful service deletion. In Neon SR0 is
 added the support for service from ROADM to ROADM, which brings additional flexibility and
 notably allows reserving resources when transponders are not in place at day one.
+The full support of OTN services, including OTU, HO-ODU and LO-ODU will be introduced
+in next release of Magnesium.
 
 PCE
-^^^^^^^^^^^^^^
+^^^
 
 The Path Computation Element (PCE) is the component responsible for path
-calculation. An interface allows the Renderer or external components such as an
+calculation. An interface allows the Service Handler or external components such as an
 orchestrator to request a path computation and get a response from the PCE
 including the computed path(s) in case of success, or errors and indication of
 the reason for the failure in case the request cannot be satisfied. Additional
@@ -82,20 +93,38 @@ about current and planned services is available in the MD-SAL data store.
 Current implementation of PCE allows finding the shortest path, minimizing either the hop
 count (default) or the propagation delay. Wavelength is assigned considering a fixed grid of
 96 wavelengths. In Neon SR0, the PCE calculates the OSNR, on the base of incremental
-noise specifications provided in Open RAODM MSA. The support of unidirectional ports is
+noise specifications provided in Open ROADM MSA. The support of unidirectional ports is
 also added. PCE handles the following constraints as hard constraints:
 
 -   **Node exclusion**
 -   **SRLG exclusion**
 -   **Maximum latency**
 
+In Magnesium SR0, the interconnection of the PCE with GNPY (Gaussian Noise Python), an
+open-source library developed in the scope of the Telecom Infra Project for building route
+planning and optimizing performance in optical mesh networks, is fully supported.
+
+If the OSNR calculated by the PCE is too close to the limit defined in OpenROADM
+specifications, the PCE forwards through a REST interface to GNPY external tool the topology
+and the pre-computed path translated in routing constraints. GNPy calculates a set of Quality of
+Transmission metrics for this path using its own library which includes models for OpenROADM.
+The result is sent back to the PCE. If the path is validated, the PCE sends back a response to
+the service handler. In case of invalidation of the path by GNPY, the PCE sends a new request to
+GNPY, including only the constraints expressed in the path-computation-request initiated by the
+Service Handler. GNPy then tries to calculate a path based on these relaxed constraints. The result
+of the path computation is provided to the PCE which translates the path according to the topology
+handled in transportPCE and forwards the results to the Service Handler.
+
+GNPy relies on SNR and takes into account the linear and non-linear impairments
+to check feasibility. In the related tests, GNPy module runs externally in a
+docker and the communication with T-PCE is ensured via HTTPs.
 
 Topology Management
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
 
 Topology management module builds the Topology according to the Network model
-defined in OpenROADM. The topology is aligned with I2RS model. It includes
-several network layers:
+defined in OpenROADM. The topology is aligned with IETF I2RS RFC8345 model.
+It includes several network layers:
 
 -  **CLLI layer corresponds to the locations that host equipment**
 -  **Network layer corresponds to a first level of disaggregation where we
@@ -103,9 +132,13 @@ several network layers:
 -  **Topology layer introduces a second level of disaggregation where ROADMs
    Add/Drop modules ("SRGs") are separated from the degrees which includes line
    amplifiers and WSS that switch wavelengths from one to another degree**
+-  **OTN layer introduced in Magnesium includes transponders as well as switch-ponders and
+   mux-ponders having the ability to switch OTN containers from client to line cards. SR0 release
+   includes creation of the switching pool (used to model cross-connect matrices),
+   tributary-ports and tributary-slots at the initial connection of NETCONF devices.
+   However, the population of OTN links, and the adjustment of the tributary ports/slots
+   pull occupancy when OTN services are created will be handled in later Magnesium release.**
 
-OTN layer which includes OTN elements having or not the ability to switch OTN
-containers from client to line cards is not currently implemented.
 
 Renderer
 ^^^^^^^^
@@ -115,12 +148,16 @@ implementation-request /service delete rpc, sets/deletes the path corresponding 
 service between A and Z ends. The path description provided by the service-handler to the
 renderer is based on abstracted resources (nodes, links and termination-points), as provided
 by the PCE module. The renderer converts this path-description in a path topology based on
-device resources (circuit-packs, ports,…). The conversion from abstracted resources to
-device resources is performed relying on the portmapping module which maintains the
-connections between these different resource types. In Neon (SR0), portmapping modules
-has been enriched to support both openroadm 1.2.1 and 2.2 device models. The full support
-of openroadm 2.2 device models (both in the topology management and the rendering
-function) is planned at a later step (ORD2.2 full support is targeted for Neon SR1).
+device resources (circuit-packs, ports,…).
+
+The conversion from abstracted resources to device resources is performed relying on the
+portmapping module which maintains the connections between these different resource types.
+Portmapping module also allows to keep the topology independant from the devices releases.
+In Neon (SR0), portmapping module has been enriched to support both openroadm 1.2.1 and 2.2.1
+device models. The full support of openroadm 2.2.1 device models (both in the topology management
+and the rendering function) has been added in Neon SR1. In Magnesium, portmapping is enriched with
+the supported-interface-capability, OTN supporting-interfaces, and switching-pools (reflecting
+cross-connection capabilities of OTN switch-ponders).
 
 After the path is provided, the renderer first checks what are the existing interfaces on the
 ports of the different nodes that the path crosses. It then creates missing interfaces. After all
@@ -130,8 +167,14 @@ notifies the Service Handler on the status of the path creation. Path is created
 rollback function is called to set the equipment on the path back to their initial configuration
 (as they were before invoking the Renderer).
 
+Magnesium brings the support of OTN services. SR0 supports the creation of OTU4, ODU4, ODU2/ODU2e
+and ODU0 interfaces. The creation of these low-order otn interfaces must be triggered through
+otn-service-path RPC. Full support (service-implementation-request /service delete rpc, topology
+alignement after the service has been created) will be provided in later releases of Magnesium.
+
+
 OLM
-^^^^^^^^
+^^^
 
 Optical Line Management module implements two main features: it is responsible
 for setting up the optical power levels on the different interfaces, and is in
@@ -150,6 +193,57 @@ for the Add/Drop ports (SRG) of the ROADM. OLM has the responsibility of
 calculating the right power settings, sending it to the device, and check the
 PM retrieved from the device to verify that the setting was correctly applied
 and the configuration was successfully completed.
+
+
+Inventory
+^^^^^^^^^
+
+TransportPCE Inventory module is responsible to keep track of devices connected in an external MariaDB database.
+Other databases may be used as long as they comply with SQL and are compatible with OpenDaylight (for example MySQL).
+At present, the module supports extracting and persisting inventory of devices OpenROADM MSA version 1.2.1.
+Inventory module changes to support newer device models (2.2.1, etc) and other models (network, service, etc)
+will be progressively included.
+
+The inventory module can be activated by the associated karaf feature (odl-transporpce-inventory)
+The database properties are supplied in the “opendaylight-release” and “opendaylight-snapshots” profiles.
+Below is the settings.xml with properties included in the distribution.
+The module can be rebuild from sources with different parameters.
+
+Sample entry in settings.xml to declare an external inventory database:
+::
+
+    <profiles>
+      <profile>
+          <id>opendaylight-release</id>
+    [..]
+         <properties>
+                 <transportpce.db.host><<hostname>>:3306</transportpce.db.host>
+                 <transportpce.db.database><<databasename>></transportpce.db.database>
+                 <transportpce.db.username><<username>></transportpce.db.username>
+                 <transportpce.db.password><<password>></transportpce.db.password>
+                 <karaf.localFeature>odl-transportpce-inventory</karaf.localFeature>
+         </properties>
+    </profile>
+    [..]
+    <profile>
+          <id>opendaylight-snapshots</id>
+    [..]
+         <properties>
+                 <transportpce.db.host><<hostname>>:3306</transportpce.db.host>
+                 <transportpce.db.database><<databasename>></transportpce.db.database>
+                 <transportpce.db.username><<username>></transportpce.db.username>
+                 <transportpce.db.password><<password>></transportpce.db.password>
+                 <karaf.localFeature>odl-transportpce-inventory</karaf.localFeature>
+         </properties>
+        </profile>
+    </profiles>
+
+
+Once the project built and when karaf is started, the cfg file is generated in etc folder with the corresponding
+properties supplied in settings.xml. When devices with OpenROADM 1.2.1 device model are mounted, the device listener in
+the inventory module loads several device attributes to various tables as per the supplied database.
+The database structure details can be retrieved from the file tests/inventory/initdb.sql inside project sources.
+Installation scripts and a docker file are also provided.
 
 Key APIs and Interfaces
 -----------------------
@@ -203,7 +297,6 @@ Netconf Service
 
    -  node list : composed of netconf nodes in topology-netconf
 
-
 Internal APIs
 ~~~~~~~~~~~~~
 
@@ -245,14 +338,27 @@ Renderer Service
 
    - service-path-rpc-result : result of service RPC
 
+Device Renderer
+^^^^^^^^^^^^^^^
+
+-  RPC call
+
+   -  service-path used in SR0 as an intermediate solution to address directly the renderer
+      from a REST NBI to create OCH-OTU4-ODU4 interfaces on network port of otn devices.
+
+   -  otn-service-path used in SR0 as an intermediate solution to address directly the renderer
+      from a REST NBI for otn-service creation. Otn service-creation through
+      service-implementation-request call from the Service Handler will be supported in later
+      Magnesium releases
+
 Topology Management Service
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 -  Data structure
 
    -  network list : composed of networks(openroadm-topology, netconf-topology)
-   -  node list : composed of node-id
-   -  link list : composed of link-id
+   -  node list : composed of nodes identified by their node-id
+   -  link list : composed of links identified by their link-id
    -  node : composed of roadm, xponder
       link : composed of links of different types (roadm-to-roadm, express, add-drop ...)
 
@@ -279,6 +385,25 @@ odl-transportpce-stubmodels
    -  This feature provides function to be able to stub some of TransportPCE modules, pce and
       renderer (Stubpce and Stubrenderer).
       Stubs are used for development purposes and can be used for some of the functionnal tests.
+
+Interfaces to external software
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It defines the interfaces implemented to interconnect TransportPCE modules with other software in
+order to perform specific tasks
+
+GNPy interface
+^^^^^^^^^^^^^^
+
+-  Request structure
+
+   -  topology : composed of list of elements and connections
+   -  service : source, destination, explicit-route-objects, path-constraints
+
+-  Response structure
+
+   -  path-properties/path-metric : OSNR-0.1nm, OSNR-bandwidth, SNR-0.1nm, SNR-bandwidth,
+   -  path-properties/path-route-objects : composed of path elements
 
 
 Running transportPCE project
@@ -347,16 +472,13 @@ Use the following JSON RPC to check that function internally named *portMapping*
 
 .. note::
 
-    in Neon SR0, the support of openroadm 2.2 device model is added. Thus 2.2 nodes can be
-    discovered and added to the portmapping node list. However, full topology management
-    support (and notably link discovery) is not provided for 2.2 nodes. The support for link
-    discovery and full topology management with 1.2.1 and 2.2 nodes will be added in a next release.
-
-.. note::
-
-    In ``org-openroadm-device.yang``, two types of optical nodes can be managed:
+    In ``org-openroadm-device.yang``, four types of optical nodes can be managed:
         * rdm: ROADM device (optical switch)
         * xpdr: Xponder device (device that converts client to optical channel interface)
+        * ila: in line amplifier (optical amplifier)
+        * extplug: external pluggable (an optical pluggable that can be inserted in an external unit such as a router)
+
+    TransportPCE currently supports rdm and xpdr
 
 Depending on the kind of open ROADM device connected, different kind of *Logical Connection Points*
 should appear, if the node configuration is not empty:
@@ -449,9 +571,81 @@ From rdm to xpdr:
       }
     }
 
+OTN topology
+~~~~~~~~~~~~
+
+Before creating an OTN service, your topology must contain at least two xpdr devices of MUXPDR
+or SWITCH type connected to two different rdm devices. To check that these xpdr are present in the
+OTN topology, use the following command on the REST API :
+
+**REST API** : *GET /restconf/config/ietf-network:network/otn-topology*
+
+An optical connectivity service shall have been created in a first setp. In Magnesium SR0, the OTN
+links are not automatically populated in the topology after the Och, OTU4 and ODU4 interfaces have
+been created on the two network ports of the xpdr. Thus the otn link must be posted manually through
+the REST API (as APIDoc for example).
+
+**REST API** : *POST /restconf/config/ietf-network:networks/network/otn-topology/ietf-network-topology:link/<link-id>*
+
+**Sample JSON Data**
+
+.. code:: json
+
+   {
+   "ietf-network-topology:link": [
+     {
+       "link-id": "<link-id>",
+         "source": {
+           "source-node": "<xpdr-node-id>",
+           "source-tp": "<xpdr-network-port-id>"
+         },
+         "org-openroadm-common-network:link-type": "OTN-LINK",
+         "destination": {
+           "dest-node": "<xpdr-node-id>",
+           "dest-tp": "<xpdr-network-port-id>"
+         }
+       }
+     ]
+   }
+
 
 Creating a service
 ~~~~~~~~~~~~~~~~~~
+
+Use the *service handler* module to create any end-to-end connectivity service on an OpenROADM
+network. Two kind of end-to-end services are managed by TransportPCE :
+- 100GE service from client port to client port of two transponders (TPDR)
+- Optical Channel (OC) service from client add/drop port (PP port of SRG) to client add/drop port of
+two ROADMs.
+
+For these services, TransportPCE automatically invokes *renderer* module to create all required
+interfaces and cross-connection on each device supporting the service.
+As an example, the creation of a 100GE service implies among other things, the creation of OCH, OTU4
+and ODU4 interfaces on the Network port of TPDR devices.
+
+In Magnesium SR0, the *service handler* module does not manage directly the end-to-end aspect of otn
+connectivity services. OTN services must be manualy created invoking directly the *renderer* module.
+
+
+Before creating a low-order otn service (1GE or 10GE services terminating on client port of MUXPDR
+or SWITCH), the user must ensure that a high-order ODU4 container exists and has previously been
+configured (low-order structured) to support low-order OTN containers. Thus, otn service creation
+implies two steps:
+1. OCH, OTU-4 and ODU-4 service from network port to network port of two OTN Xponders
+(MUXPDR or SWITCH)
+2. 1GE or 10GE service creation from client port to client port of two OTN Xponders
+(MUXPDR or SWITCH)
+
+Since in Magnesium SR0 otn service creation is not automatically done by TransportPCE, the user has
+to check the connectivity between nodes using the internal API of the *PCE* module, through the
+path-computation-request rpc.
+Afterwards, for the first step otn service creation, the user has to use the internal service-path
+rpc of the *renderer* module.
+Finally, the 1GE and 10GE services creation is performed using internal otn-service-path rpc of the
+*renderer* module.
+
+100GE service creation
+^^^^^^^^^^^^^^^^^^^^^^
 
 Use the following REST RPC to invoke *service handler* module in order to create a bidirectional
 end-to-end optical connectivity service between two xpdr over an optical network composed of rdm
@@ -557,8 +751,197 @@ on xpdr nodes.This RPC invokes the *PCE* module to compute a path over the *open
 then invokes *renderer* and *OLM* to implement the end-to-end path into the devices.
 
 
+OC service creation
+^^^^^^^^^^^^^^^^^^^
+
+Use the following REST RPC to invoke *service handler* module in order to create a bidirectional
+end-to end Optical Channel (OC) connectivity service between two add/drop ports (PP port of SRG
+node) over an optical network only composed of rdm nodes.
+
+**REST API** : *POST /restconf/operations/org-openroadm-service:service-create*
+
+**Sample JSON Data**
+
+.. code:: json
+
+    {
+        "input": {
+            "sdnc-request-header": {
+                "request-id": "request-1",
+                "rpc-action": "service-create",
+                "request-system-id": "appname"
+            },
+            "service-name": "something",
+            "common-id": "commonId",
+            "connection-type": "roadm-line",
+            "service-a-end": {
+                "service-rate": "100",
+                "node-id": "<xpdr-node-id>",
+                "service-format": "OC",
+                "clli": "<ccli-name>",
+                "tx-direction": {
+                    "port": {
+                        "port-device-name": "<xpdr-client-port>",
+                        "port-type": "fixed",
+                        "port-name": "<xpdr-client-port-number>",
+                        "port-rack": "000000.00",
+                        "port-shelf": "Chassis#1"
+                    },
+                    "lgx": {
+                        "lgx-device-name": "Some lgx-device-name",
+                        "lgx-port-name": "Some lgx-port-name",
+                        "lgx-port-rack": "000000.00",
+                        "lgx-port-shelf": "00"
+                    }
+                },
+                "rx-direction": {
+                    "port": {
+                        "port-device-name": "<xpdr-client-port>",
+                        "port-type": "fixed",
+                        "port-name": "<xpdr-client-port-number>",
+                        "port-rack": "000000.00",
+                        "port-shelf": "Chassis#1"
+                    },
+                    "lgx": {
+                        "lgx-device-name": "Some lgx-device-name",
+                        "lgx-port-name": "Some lgx-port-name",
+                        "lgx-port-rack": "000000.00",
+                        "lgx-port-shelf": "00"
+                    }
+                },
+                "optic-type": "gray"
+            },
+            "service-z-end": {
+                "service-rate": "100",
+                "node-id": "<xpdr-node-id>",
+                "service-format": "OC",
+                "clli": "<ccli-name>",
+                "tx-direction": {
+                    "port": {
+                        "port-device-name": "<xpdr-client-port>",
+                        "port-type": "fixed",
+                        "port-name": "<xpdr-client-port-number>",
+                        "port-rack": "000000.00",
+                        "port-shelf": "Chassis#1"
+                    },
+                    "lgx": {
+                        "lgx-device-name": "Some lgx-device-name",
+                        "lgx-port-name": "Some lgx-port-name",
+                        "lgx-port-rack": "000000.00",
+                        "lgx-port-shelf": "00"
+                    }
+                },
+                "rx-direction": {
+                    "port": {
+                        "port-device-name": "<xpdr-client-port>",
+                        "port-type": "fixed",
+                        "port-name": "<xpdr-client-port-number>",
+                        "port-rack": "000000.00",
+                        "port-shelf": "Chassis#1"
+                    },
+                    "lgx": {
+                        "lgx-device-name": "Some lgx-device-name",
+                        "lgx-port-name": "Some lgx-port-name",
+                        "lgx-port-rack": "000000.00",
+                        "lgx-port-shelf": "00"
+                    }
+                },
+                "optic-type": "gray"
+            },
+            "due-date": "yyyy-mm-ddT00:00:01Z",
+            "operator-contact": "some-contact-info"
+        }
+    }
+
+As for the previous RPC, this RPC invokes the *PCE* module to compute a path over the
+*openroadm-topology* and then invokes *renderer* and *OLM* to implement the end-to-end path into
+the devices.
+
+OTN OCH, OTU4 and ODU4 service creation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use the following REST RPC to invoke *renderer* module in order to create adequate interfaces on
+otn device in order to support a bidirectional end-to-end Low-Order OTN connectivity service on
+network port of a MUXPDR or SWITCH xpdr node.
+
+**REST API** : *POST /restconf/operations/transportpce-device-renderer:service-path*
+
+**Sample JSON Data**
+
+.. code:: json
+
+   {
+     "input": {
+       "nodes": [
+         {
+           "node-id": "<otn-node-id>",
+           "dest-tp": "<otn-network-port-logical-connection-point>"
+         }
+       ],
+           "modulation-format": "qpsk",
+           "operation": "create",
+           "service-name": "<service-name>",
+           "wave-number": "<wavenumber-returned-by-PCE>"
+     }
+   }
+
+1GE/ODU0 and 10GE/ODU2e service creation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use the following REST RPC to invoke *renderer* module and create adequate interfaces on otn xpdr
+device (MUXPDR or SWITCH) in order to support a low-order otn service on its client port.
+
+- 1GE and ODU0 interfaces for 1GE services
+- 10GE and ODU2e interfaces for 10GE services
+
+The following example corresponds to the creation of a 10GE service
+
+*REST API** : *POST /restconf/operations/transportpce-device-renderer:otn-service-path*
+
+**Sample JSON Data**
+
+.. code:: json
+
+   {
+     "input": {
+       "service-rate": "10G",
+       "service-type": "Ethernet",
+       "ethernet-encoding": "something",
+       "trib-slot": "<trib-slot-number-inside-supported-ODU4>",
+       "trib-port-number": "<trib-port-number-inside-supported-ODU4>",
+       "operation": "create",
+       "service-name": "something",
+       "nodes": [
+         {
+         "node-id": "<otn-node-id>",
+         "client-tp": "<client-port-logical-connection-point>",
+         "network-tp": "<network-port-logical-connection-point>"
+         }
+       ]
+     }
+   }
+
+.. note::
+    OTN links are not automatically populated in the topology after the ODU2e interfaces have
+    been created on the two client ports of the xpdr. The otn link can be posted manually through
+    the REST API (APIDoc).
+
+.. note::
+    With Magnesium SR0, the service-list corresponding to 1GE/10GE and OTU4/ODU4 services is not
+    updated in the datastore after the interfaces have been created in the device.
+
+.. note::
+    trib-slot is used when the equipment supports contiguous trib-slot allocation (supported in
+    Magnesium SR0). The trib-slot provided corresponds to the first of the used trib-slots.
+    complex-trib-slots will be used when the equipment does not support contiguous trib-slot
+    allocation. In this case a list of the different trib-slots to be used shall be provided.
+    The support for non contiguous trib-slot allocation is planned for later Magnesium release.
+
 Deleting a service
 ~~~~~~~~~~~~~~~~~~
+
+Deleting a 100GE and OC service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Use the following REST RPC to invoke *service handler* module in order to delete a given optical
 connectivity service.
@@ -578,7 +961,7 @@ connectivity service.
                 "notification-url": "http://localhost:8585/NotificationServer/notify"
             },
             "service-delete-req-info": {
-                "service-name": "test1",
+                "service-name": "something",
                 "tail-retention": "no"
             }
         }
@@ -586,11 +969,187 @@ connectivity service.
 
 Most important parameters for this REST RPC is the *service-name*.
 
+Deleting 1GE/ODU0 or 10GE/ODU2e
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use the following REST RPC to invoke *renderer* module and delete adequate interfaces on otn node.
+The following example corresponds to the deletion of a 10GE service
+
+*REST API** : *POST /restconf/operations/transportpce-device-renderer:otn-service-path*
+
+**Sample JSON Data**
+
+.. code:: json
+
+   {
+     "input": {
+       "service-rate": "10G",
+       "service-type": "Ethernet",
+       "ethernet-encoding": "something",
+       "trib-slot": "<trib-slot-number-inside-supported-ODU4>",
+       "trib-port-number": "<trib-port-number-inside-supported-ODU4>",
+       "operation": "delete",
+       "service-name": "something",
+       "nodes": [
+         {
+         "node-id": "<otn-node-id>",
+         "client-tp": "<client-port-logical-connection-point>",
+         "network-tp": "<network-port-logical-connection-point>"
+         }
+       ]
+     }
+   }
+
+
+Deleting OTN OCH, OTU4 and ODU4 service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use the following REST RPC to invoke *renderer* module in order to delete adequate interfaces on
+otn node.
+
+**REST API** : *POST /restconf/operations/transportpce-device-renderer:service-path*
+
+**Sample JSON Data**
+
+.. code:: json
+
+   {
+     "input": {
+       "nodes": [
+         {
+           "node-id": "<otn-node-id>",
+           "dest-tp": "<otn-network-port-logical-connection-point>"
+         }
+       ],
+       "modulation-format": "qpsk",
+       "operation": "delete",
+       "service-name": "<service-name>",
+       "wave-number": "<wavenumber-returned-by-PCE>",
+     }
+   }
+
+.. note::
+    Be sure to have deleted all low-order otn services before deleting high-order OTN container
+
+
+Invoking PCE module
+~~~~~~~~~~~~~~~~~~~
+
+Use the following REST RPCs to invoke *PCE* module in order to check connectivity between xponder
+nodes and the availability of a supporting optical connectivity between the network-ports of the
+nodes.
+
+Checking OTU4 service connectivity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**REST API** : *POST /restconf/operations/transportpce-pce:path-computation-request*
+
+**Sample JSON Data**
+
+.. code:: json
+
+   {
+      "input": {
+           "service-name": "something",
+           "resource-reserve": "true",
+           "service-handler-header": {
+             "request-id": "request1"
+           },
+           "service-a-end": {
+             "service-rate": "100",
+             "clli": "<clli-node>",
+             "service-format": "OTU",
+             "node-id": "<otn-node-id>"
+           },
+           "service-z-end": {
+             "service-rate": "100",
+             "clli": "<clli-node>",
+             "service-format": "OTU",
+             "node-id": "<otn-node-id>"
+             },
+           "pce-metric": "hop-count"
+       }
+   }
+
+.. note::
+    here, the <otn-node-id> corresponds to the node-id as appearing in "openroadm-network" topology
+    layer
+
+Checking ODU4 service connectivity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**REST API** : *POST /restconf/operations/transportpce-pce:path-computation-request*
+
+**Sample JSON Data**
+
+.. code:: json
+
+   {
+      "input": {
+           "service-name": "something",
+           "resource-reserve": "true",
+           "service-handler-header": {
+             "request-id": "request1"
+           },
+           "service-a-end": {
+             "service-rate": "100",
+             "clli": "<clli-node>",
+             "service-format": "ODU",
+             "node-id": "<otn-node-id>"
+           },
+           "service-z-end": {
+             "service-rate": "100",
+             "clli": "<clli-node>",
+             "service-format": "ODU",
+             "node-id": "<otn-node-id>"
+             },
+           "pce-metric": "hop-count"
+       }
+   }
+
+.. note::
+    here, the <otn-node-id> corresponds to the node-id as appearing in "otn-topology" layer
+
+Checking 10GE/ODU2e service connectivity
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**REST API** : *POST /restconf/operations/transportpce-pce:path-computation-request*
+
+**Sample JSON Data**
+
+.. code:: json
+
+   {
+      "input": {
+           "service-name": "something",
+           "resource-reserve": "true",
+           "service-handler-header": {
+             "request-id": "request1"
+           },
+           "service-a-end": {
+             "service-rate": "10",
+             "clli": "<clli-node>",
+             "service-format": "Ethernet",
+             "node-id": "<otn-node-id>"
+           },
+           "service-z-end": {
+             "service-rate": "10",
+             "clli": "<clli-node>",
+             "service-format": "Ethernet",
+             "node-id": "<otn-node-id>"
+             },
+           "pce-metric": "hop-count"
+       }
+   }
+
+.. note::
+    here, the <otn-node-id> corresponds to the node-id as appearing in "otn-topology" layer
+
 
 Help
 ----
 
--  `TransportPCE Wiki <https://wiki.opendaylight.org/view/TransportPCE:Main>`__
+-  `TransportPCE Wiki archive <https://wiki-archive.opendaylight.org/view/TransportPCE:Main>`__
 
 -  TransportPCE Mailing List
    (`developer <https://lists.opendaylight.org/mailman/listinfo/transportpce-dev>`__)

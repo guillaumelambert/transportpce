@@ -7,7 +7,7 @@
  */
 package org.opendaylight.transportpce.common.crossconnect;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.opendaylight.controller.md.sal.binding.api.MountPoint;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.sal.binding.api.RpcConsumerRegistry;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.MountPoint;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.device.DeviceTransaction;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
@@ -82,14 +84,14 @@ public class CrossConnectImpl121 {
 
         // post the cross connect on the device
         deviceTx.put(LogicalDatastoreType.CONFIGURATION, rdmConnectionIID, rdmConnBldr.build());
-        ListenableFuture<Void> submit =
-                deviceTx.submit(Timeouts.DEVICE_WRITE_TIMEOUT, Timeouts.DEVICE_WRITE_TIMEOUT_UNIT);
+        FluentFuture<? extends @NonNull CommitInfo> commit =
+                deviceTx.commit(Timeouts.DEVICE_WRITE_TIMEOUT, Timeouts.DEVICE_WRITE_TIMEOUT_UNIT);
         try {
-            submit.get();
+            commit.get();
             LOG.info("Roadm-connection successfully created: {}-{}-{}", srcTp, destTp, waveNumber);
             return Optional.of(connectionNumber);
         } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("Failed to post {}. Exception: {}", rdmConnBldr.build(), e);
+            LOG.warn("Failed to post {}. Exception: ", rdmConnBldr.build(), e);
         }
         return Optional.empty();
     }
@@ -122,10 +124,10 @@ public class CrossConnectImpl121 {
 
         // post the cross connect on the device
         deviceTx.delete(LogicalDatastoreType.CONFIGURATION, generateRdmConnectionIID(connectionNumber));
-        ListenableFuture<Void> submit =
-                deviceTx.submit(Timeouts.DEVICE_WRITE_TIMEOUT, Timeouts.DEVICE_WRITE_TIMEOUT_UNIT);
+        FluentFuture<? extends @NonNull CommitInfo> commit =
+                deviceTx.commit(Timeouts.DEVICE_WRITE_TIMEOUT, Timeouts.DEVICE_WRITE_TIMEOUT_UNIT);
         try {
-            submit.get();
+            commit.get();
             LOG.info("Roadm connection successfully deleted ");
             return interfList;
         } catch (InterruptedException | ExecutionException e) {
@@ -147,7 +149,7 @@ public class CrossConnectImpl121 {
             LOG.error("Failed to obtain mount point for device {}!", nodeId);
             return Collections.emptyList();
         }
-        final Optional<RpcConsumerRegistry> service = mountPoint.getService(RpcConsumerRegistry.class).toJavaUtil();
+        final Optional<RpcConsumerRegistry> service = mountPoint.getService(RpcConsumerRegistry.class);
         if (!service.isPresent()) {
             LOG.error("Failed to get RpcService for node {}", nodeId);
         }
@@ -187,12 +189,12 @@ public class CrossConnectImpl121 {
         return srcTp + "-" + destTp + "-" + waveNumber;
     }
 
-    public boolean setPowerLevel(String deviceId, Enum mode, BigDecimal powerValue, String connectionNumber) {
+    public boolean setPowerLevel(String deviceId, OpticalControlMode mode, BigDecimal powerValue, String ctNumber) {
 
-        Optional<RoadmConnections> rdmConnOpt = getCrossConnect(deviceId, connectionNumber);
+        Optional<RoadmConnections> rdmConnOpt = getCrossConnect(deviceId, ctNumber);
         if (rdmConnOpt.isPresent()) {
-            RoadmConnectionsBuilder rdmConnBldr = new RoadmConnectionsBuilder(rdmConnOpt.get());
-            rdmConnBldr.setOpticalControlMode(OpticalControlMode.class.cast(mode));
+            RoadmConnectionsBuilder rdmConnBldr = new RoadmConnectionsBuilder(rdmConnOpt.get())
+                    .setOpticalControlMode(mode);
             if (powerValue != null) {
                 rdmConnBldr.setTargetOutputPower(new PowerDBm(powerValue));
             }
@@ -216,12 +218,12 @@ public class CrossConnectImpl121 {
 
             // post the cross connect on the device
             InstanceIdentifier<RoadmConnections> roadmConnIID = InstanceIdentifier.create(OrgOpenroadmDevice.class)
-                    .child(RoadmConnections.class, new RoadmConnectionsKey(connectionNumber));
+                    .child(RoadmConnections.class, new RoadmConnectionsKey(ctNumber));
             deviceTx.put(LogicalDatastoreType.CONFIGURATION, roadmConnIID, newRdmConn);
-            ListenableFuture<Void> submit = deviceTx.submit(Timeouts.DEVICE_WRITE_TIMEOUT,
-                    Timeouts.DEVICE_WRITE_TIMEOUT_UNIT);
+            FluentFuture<? extends @NonNull CommitInfo> commit =
+                deviceTx.commit(Timeouts.DEVICE_WRITE_TIMEOUT, Timeouts.DEVICE_WRITE_TIMEOUT_UNIT);
             try {
-                submit.get();
+                commit.get();
                 LOG.info("Roadm connection power level successfully set ");
                 return true;
             } catch (InterruptedException | ExecutionException ex) {
@@ -229,7 +231,7 @@ public class CrossConnectImpl121 {
             }
 
         } else {
-            LOG.warn("Roadm-Connection is null in set power level ({})", connectionNumber);
+            LOG.warn("Roadm-Connection is null in set power level ({})", ctNumber);
         }
         return false;
     }

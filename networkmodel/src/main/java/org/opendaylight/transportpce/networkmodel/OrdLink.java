@@ -9,12 +9,12 @@
 package org.opendaylight.transportpce.networkmodel;
 
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.networkmodel.util.LinkIdUtil;
-import org.opendaylight.transportpce.networkmodel.util.OpenRoadmFactory;
+import org.opendaylight.transportpce.networkmodel.util.TopologyUtils;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.networkutils.rev170818.InitRoadmNodesInput;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1Builder;
@@ -39,29 +39,26 @@ final class OrdLink {
 
     /**Method to create OMS links if not discovered by LLDP. This is helpful
      to create test topologies using simulators**/
-    public static boolean createRdm2RdmLinks(InitRoadmNodesInput input,
-                                             OpenRoadmFactory openRoadmFactory, DataBroker dataBroker) {
+    public static boolean createRdm2RdmLinks(InitRoadmNodesInput input, DataBroker dataBroker) {
 
         LinkId oppositeLinkId = LinkIdUtil.getRdm2RdmOppositeLinkId(input);
 
         //For setting up attributes for openRoadm augment
-        Link1Builder link1Builder = new Link1Builder();
-        OMSAttributesBuilder omsAttributesBuilder = new OMSAttributesBuilder();
-        omsAttributesBuilder.setOppositeLink(oppositeLinkId);
-        link1Builder.setOMSAttributes(omsAttributesBuilder.build());
+        OMSAttributesBuilder omsAttributesBuilder = new OMSAttributesBuilder().setOppositeLink(oppositeLinkId);
+        Link1Builder link1Builder = new Link1Builder().setOMSAttributes(omsAttributesBuilder.build());
 
         //For opposite link augment
         org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1Builder oppsiteLinkBuilder =
-            new org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1Builder();
-        oppsiteLinkBuilder.setOppositeLink(oppositeLinkId);
-        link1Builder.setLinkType(OpenroadmLinkType.ROADMTOROADM);
+            new org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1Builder()
+                .setOppositeLink(oppositeLinkId)
+                .setLinkType(OpenroadmLinkType.ROADMTOROADM);
         String srcNode = new StringBuilder(input.getRdmANode()).append("-DEG").append(input.getDegANum()).toString();
         String srcTp = input.getTerminationPointA();
         String destNode = new StringBuilder(input.getRdmZNode()).append("-DEG").append(input.getDegZNum()).toString();
         String destTp = input.getTerminationPointZ();
 
         //IETF link builder
-        LinkBuilder linkBuilder = openRoadmFactory.createLink(srcNode, destNode, srcTp, destTp);
+        LinkBuilder linkBuilder = TopologyUtils.createLink(srcNode, destNode, srcTp, destTp, null);
 
         linkBuilder.addAugmentation(Link1.class,link1Builder.build());
         linkBuilder.addAugmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130
@@ -76,7 +73,7 @@ final class OrdLink {
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, linkIID.build(), linkBuilder.build());
         try {
-            writeTransaction.submit().get();
+            writeTransaction.commit().get();
             LOG.info("A new link with linkId: {} added into {} layer.",
                 linkId.getValue(), NetworkUtils.OVERLAY_NETWORK_ID);
             return true;

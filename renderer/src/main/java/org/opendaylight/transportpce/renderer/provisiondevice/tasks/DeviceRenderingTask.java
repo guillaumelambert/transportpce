@@ -13,8 +13,8 @@ import org.opendaylight.transportpce.renderer.ServicePathInputData;
 import org.opendaylight.transportpce.renderer.provisiondevice.DeviceRendererService;
 import org.opendaylight.transportpce.renderer.provisiondevice.DeviceRenderingResult;
 import org.opendaylight.transportpce.renderer.provisiondevice.servicepath.ServicePathDirection;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.ServicePathOutput;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev170907.olm.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathOutput;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.renderer.input.Nodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class DeviceRenderingTask implements Callable<DeviceRenderingResult> {
     public DeviceRenderingResult call() throws Exception {
         ServicePathOutput output = this.deviceRenderer.setupServicePath(this.servicePathInputData.getServicePathInput(),
                 this.direction);
-        if (! output.isSuccess()) {
+        if (!output.isSuccess()) {
             LOG.warn("Device rendering not successfully finished.");
             return DeviceRenderingResult.failed("Operation Failed");
         }

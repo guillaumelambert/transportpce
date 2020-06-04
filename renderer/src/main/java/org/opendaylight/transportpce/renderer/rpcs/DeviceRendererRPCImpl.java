@@ -11,14 +11,18 @@ package org.opendaylight.transportpce.renderer.rpcs;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.renderer.provisiondevice.DeviceRendererService;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.CreateOtsOmsInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.CreateOtsOmsOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.RendererRollbackInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.RendererRollbackOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.ServicePathInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.ServicePathOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.ServicePathOutputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.TransportpceDeviceRendererService;
+import org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRendererService;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.TransportpceDeviceRendererService;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
@@ -28,9 +32,12 @@ public class DeviceRendererRPCImpl implements TransportpceDeviceRendererService 
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceRendererRPCImpl.class);
     private DeviceRendererService deviceRenderer;
+    private OtnDeviceRendererService otnDeviceRendererService;
 
-    public DeviceRendererRPCImpl(DeviceRendererService deviceRenderer) {
+    public DeviceRendererRPCImpl(DeviceRendererService deviceRenderer,
+                                 OtnDeviceRendererService otnDeviceRendererService) {
         this.deviceRenderer = deviceRenderer;
+        this.otnDeviceRendererService = otnDeviceRendererService;
     }
 
     /**
@@ -59,14 +66,36 @@ public class DeviceRendererRPCImpl implements TransportpceDeviceRendererService 
      */
     @Override
     public ListenableFuture<RpcResult<ServicePathOutput>> servicePath(ServicePathInput input) {
-        if (input.getOperation().getIntValue() == 1) {
-            LOG.info("Create operation request received");
-            return RpcResultBuilder.success(this.deviceRenderer.setupServicePath(input, null)).buildFuture();
-        } else if (input.getOperation().getIntValue() == 2) {
-            LOG.info("Delete operation request received");
-            return RpcResultBuilder.success(this.deviceRenderer.deleteServicePath(input)).buildFuture();
+        if (input.getOperation() != null) {
+            if (input.getOperation().getIntValue() == 1) {
+                LOG.info("Create operation request received");
+                return RpcResultBuilder.success(
+                        this.deviceRenderer.setupServicePath(input, null))
+                        .buildFuture();
+            } else if (input.getOperation().getIntValue() == 2) {
+                LOG.info("Delete operation request received");
+                return RpcResultBuilder
+                        .success(this.deviceRenderer.deleteServicePath(input))
+                        .buildFuture();
+            }
         }
         return RpcResultBuilder.success(new ServicePathOutputBuilder().setResult("Invalid operation")).buildFuture();
+    }
+
+    @Override
+    public ListenableFuture<RpcResult<OtnServicePathOutput>> otnServicePath(OtnServicePathInput input) {
+        if (input.getOperation() != null) {
+            if (input.getOperation().getIntValue() == 1) {
+                LOG.info("Create operation request received");
+                return RpcResultBuilder.success(this.otnDeviceRendererService
+                        .setupOtnServicePath(input)).buildFuture();
+            } else if (input.getOperation().getIntValue() == 2) {
+                LOG.info("Delete operation request received");
+                return RpcResultBuilder.success(this.otnDeviceRendererService
+                        .deleteOtnServicePath(input)).buildFuture();
+            }
+        }
+        return RpcResultBuilder.success(new OtnServicePathOutputBuilder().setResult("Invalid operation")).buildFuture();
     }
 
     /**

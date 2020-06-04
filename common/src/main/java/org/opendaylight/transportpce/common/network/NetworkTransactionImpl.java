@@ -8,13 +8,13 @@
 
 package org.opendaylight.transportpce.common.network;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
 
 
 public class NetworkTransactionImpl implements NetworkTransactionService {
@@ -26,8 +26,8 @@ public class NetworkTransactionImpl implements NetworkTransactionService {
 
     }
 
-    public <T extends DataObject> CheckedFuture<com.google.common.base.Optional<T>,
-        ReadFailedException> read(LogicalDatastoreType store, InstanceIdentifier<T> path) {
+    public <T extends DataObject> ListenableFuture<java.util.Optional<T>>
+        read(LogicalDatastoreType store, InstanceIdentifier<T> path) {
         return requestProcessor.read(store, path);
     }
 
@@ -37,7 +37,7 @@ public class NetworkTransactionImpl implements NetworkTransactionService {
         requestProcessor.delete(store, path);
     }
 
-
+    @Deprecated
     public <T extends DataObject> void put(LogicalDatastoreType store,
         InstanceIdentifier<T> path, T data, boolean createMissingParents) {
 
@@ -50,8 +50,8 @@ public class NetworkTransactionImpl implements NetworkTransactionService {
         requestProcessor.put(store, path, data);
     }
 
-    public ListenableFuture<Void> submit() {
-        return requestProcessor.submit();
+    public FluentFuture<? extends @NonNull CommitInfo> commit() {
+        return requestProcessor.commit();
     }
 
     @Override
@@ -65,6 +65,7 @@ public class NetworkTransactionImpl implements NetworkTransactionService {
         requestProcessor.merge(store, path, data);
     }
 
+    @Deprecated
     public <T extends DataObject> void merge(LogicalDatastoreType store,
         InstanceIdentifier<T> path, T data, boolean createMissingParents) {
 

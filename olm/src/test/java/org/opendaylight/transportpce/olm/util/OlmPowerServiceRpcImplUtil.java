@@ -10,7 +10,6 @@ package org.opendaylight.transportpce.olm.util;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.CalculateSpanlossBaseInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.CalculateSpanlossBaseInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.CalculateSpanlossCurrentInput;
@@ -27,14 +26,15 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev18113
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1Builder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.pm.types.rev161014.PmGranularity;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.types.rev161014.ResourceTypeEnum;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev170907.olm.get.pm.input.ResourceIdentifierBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev170907.olm.renderer.input.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev170907.olm.renderer.input.NodesBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.get.pm.input.ResourceIdentifierBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.renderer.input.NodesBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.LinkId;
 
 public final class OlmPowerServiceRpcImplUtil {
 
-    private OlmPowerServiceRpcImplUtil() {}
+    private OlmPowerServiceRpcImplUtil() {
+    }
 
     public static GetPmInput  getGetPmInput() {
         GetPmInput input = new GetPmInputBuilder().setGranularity(PmGranularity._15min).setNodeId("node1")
@@ -98,18 +98,68 @@ public final class OlmPowerServiceRpcImplUtil {
         nodes.add(node1);
         nodes.add(node2);
         ServicePowerTurndownInput input = new ServicePowerTurndownInputBuilder()
-            .setNodes(nodes)
-            .setServiceName("service 1")
-            .setWaveNumber(Long.valueOf("1234")).build();
+                .setNodes(nodes)
+                .setServiceName("service 1")
+                .setWaveNumber(Long.valueOf("1234")).build();
 
         return input;
     }
 
-    public static CalculateSpanlossBaseInput getCalculateSpanlossBaseInput() {
+    public static ServicePowerTurndownInput getServicePowerTurndownInput2() {
+        Nodes node1 = new NodesBuilder().setDestTp("destdeg").setSrcTp("src").setNodeId("node 1").build();
+        Nodes node2 = new NodesBuilder().setDestTp("destdeg").setSrcTp("src").setNodeId("node 2").build();
+        List<Nodes> nodes = new ArrayList<>();
+        nodes.add(node1);
+        nodes.add(node2);
+        ServicePowerTurndownInput input = new ServicePowerTurndownInputBuilder()
+                .setNodes(nodes)
+                .setServiceName("service 1")
+                .setWaveNumber(Long.valueOf("1234")).build();
+
+        return input;
+    }
+
+    public static ServicePowerTurndownInput getServicePowerTurndownInput3() {
+        Nodes node1 = new NodesBuilder().setDestTp("destsrg").setSrcTp("src").setNodeId("node 1").build();
+        Nodes node2 = new NodesBuilder().setDestTp("destsrg").setSrcTp("src").setNodeId("node 2").build();
+        List<Nodes> nodes = new ArrayList<>();
+        nodes.add(node1);
+        nodes.add(node2);
+        ServicePowerTurndownInput input = new ServicePowerTurndownInputBuilder()
+                .setNodes(nodes)
+                .setServiceName("service 1")
+                .setWaveNumber(Long.valueOf("1234")).build();
+
+        return input;
+    }
+
+    public static ServicePowerTurndownInput getServicePowerTurndownInput4() {
+        Nodes node1 = new NodesBuilder().setDestTp("destdeg").setSrcTp("src").setNodeId("node 1").build();
+        Nodes node2 = new NodesBuilder().setDestTp("destdeg").setSrcTp("src").setNodeId("node 2").build();
+        List<Nodes> nodes = new ArrayList<>();
+        nodes.add(node1);
+        nodes.add(node2);
+        ServicePowerTurndownInput input = new ServicePowerTurndownInputBuilder()
+                .setNodes(nodes)
+                .setServiceName("service 1")
+                .setWaveNumber(Long.valueOf("1234")).build();
+
+        return input;
+    }
+
+    public static CalculateSpanlossBaseInput getCalculateSpanlossBaseInputLink() {
         CalculateSpanlossBaseInput input = new CalculateSpanlossBaseInputBuilder()
-            .setLinkId(new LinkId("link 1"))
-            .setSrcType(CalculateSpanlossBaseInput.SrcType.Link)
-            .addAugmentation(null, null).build();
+                .setLinkId(new LinkId("ROADM-A1-to-ROADM-C1"))
+                .setSrcType(CalculateSpanlossBaseInput.SrcType.Link)
+                .addAugmentation(null, null).build();
+        return input;
+    }
+
+    public static CalculateSpanlossBaseInput getCalculateSpanlossBaseInputAll() {
+        CalculateSpanlossBaseInput input = new CalculateSpanlossBaseInputBuilder()
+                .setLinkId(new LinkId("ROADM-A1-to-ROADM-C1"))
+                .setSrcType(CalculateSpanlossBaseInput.SrcType.All)
+                .addAugmentation(null, null).build();
         return input;
     }
 
@@ -132,5 +182,4 @@ public final class OlmPowerServiceRpcImplUtil {
             .setServiceName("service 1").build();
         return input;
     }
-
 }

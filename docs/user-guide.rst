@@ -17,11 +17,11 @@ request coming from a higher layer controller and/or an orchestrator.
 This capability may rely on the controller only or it may be delegated to
 distributed (standardized) protocols.
 
-It provides alarm/fault and performance
-monitoring, but this function might be externalized to improve the scalability.
-A Graphical User Interface could be developed in a later step, but is not
-considered as a priority since automated control does not imply user
-interactions at the transport controller level.
+It provides basic alarm/fault and performance monitoring,
+but this function might be externalized to improve the scalability.
+A Graphical User Interface has been developped separately and is not proposed
+here since automated control does not imply user interactions at the transport
+controller level.
 
 TransportPCE modular architecture is described on the next diagram. Each main
 function such as Topology management, Path Calculation Engine (PCE), Service
@@ -29,7 +29,7 @@ handler, Renderer responsible for the path configuration through optical
 equipment and Optical Line Management (OLM) is associated with a generic block
 relying on open models, each of them communicating through published APIs.
 
-.. figure:: ./images/tpce_architecture.jpg
+.. figure:: ./images/TransportPCE-Diagramm-Magnesium.jpg
    :alt: TransportPCE architecture
 
    TransportPCE architecture
@@ -41,18 +41,19 @@ TransportPCE User-Facing Features
    -  This feature contains all other features/bundles of TransportPCE project.
       If you install it, it provides all functions that the TransportPCE project
       can support.
-
--  **odl-transportpce-api**
-
-   -  This feature contains all Transportpce project specific models defined in "Service-path".
+      It exposes all Transportpce project specific models defined in "Service-path".
       These models complement OpenROADM models describing South and Northbound APIs, and define the
       data structure used to interconnect the generic blocks/functions described on the previous
       diagram.
 
--  **odl-transportpce-ordmodels**
+-  **feature odl-transportpce-tapi**
 
-   -  This feature contains all OpenROADM models : Common, Device, Network and Service models.
+   -  This feature provides transportPCE a limited support of TAPI version 2.1.2 Northbound interface.
 
+-  **feature odl-transportpce-inventory**
+
+   -  This feature is considered experimental. It provides transportPCE with an external connector to
+      a MariaDB inventory currently limited to OpenROADM 1.2.1 devices.
 
 How To Start
 ------------
@@ -60,9 +61,8 @@ How To Start
 Preparing for Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. Devices must support the standard OpenROADM Models more precisely versions
-   1.2.1 and 2.1. Experimental support is provided for 2.2 and 2.2.1 devices
-   (portmapping only at this moment).
+1. Devices must support the standard OpenROADM Models more precisely versions 1.2.1 and 2.2.1.
+   Since Magnesium SR0, an OTN experimental support is provided for OpenROADM devices 2.2.1.
 
 2. Devices must support configuration through NETCONF protocol/API.
 
@@ -74,5 +74,13 @@ Installation Feature
 Run OpenDaylight and install TransportPCE Service *odl-transportpce* as below::
 
    feature:install odl-transportpce
+
+if you need TAPI limited support, then run::
+
+   feature:install odl-transportpce-tapi
+
+if you need the inventory external connector support limited to 1.2.1 OpenROADM devices, then run::
+
+   feature:install odl-transportpce-inventory
 
 For a more detailed overview of the TransportPCE, see the :ref:`transportpce-dev-guide`.

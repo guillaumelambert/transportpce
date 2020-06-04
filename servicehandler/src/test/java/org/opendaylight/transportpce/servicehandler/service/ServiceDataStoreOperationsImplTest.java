@@ -8,31 +8,32 @@
 package org.opendaylight.transportpce.servicehandler.service;
 
 import java.util.Optional;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.transportpce.common.OperationResult;
 import org.opendaylight.transportpce.common.ResponseCodes;
 import org.opendaylight.transportpce.servicehandler.ServiceInput;
 import org.opendaylight.transportpce.servicehandler.utils.ServiceDataUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.PathComputationRequestOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.PathComputationRequestOutputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev161014.configuration.response.common.ConfigurationResponseCommon;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev161014.configuration.response.common.ConfigurationResponseCommonBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.State;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.ServiceCreateInput;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.TempServiceCreateInput;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.service.list.Services;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.configuration.response.common.ConfigurationResponseCommon;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.configuration.response.common.ConfigurationResponseCommonBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.state.types.rev181130.State;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev181130.AdminStates;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.ServiceCreateInput;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.TempServiceCreateInput;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.Services;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.AToZDirectionBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.ZToADirectionBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.response.parameters.sp.ResponseParameters;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.response.parameters.sp.ResponseParametersBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.response.parameters.sp.response.parameters.PathDescriptionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.ResponseParameters;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.ResponseParametersBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.response.parameters.PathDescriptionBuilder;
 
-
+//writeOrModifyOrDeleteServiceList deprecated method should not raise warnings in tests
+@SuppressWarnings("deprecation")
 public class ServiceDataStoreOperationsImplTest extends AbstractTest {
 
     private ServiceDataStoreOperationsImpl serviceDataStoreOperations;
@@ -46,9 +47,9 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
     @Test
     public void modifyIfServiceNotPresent() {
         OperationResult result =
-                this.serviceDataStoreOperations.modifyService("service 1", State.InService, State.InService);
+                this.serviceDataStoreOperations.modifyService("service 1", State.InService, AdminStates.InService);
         Assert.assertFalse(result.isSuccess());
-        Assert.assertEquals("Service " + "service 1" + " is not present!", result.getResultMessage());
+        Assert.assertEquals("Service service 1 is not present!", result.getResultMessage());
     }
 
     @Test
@@ -166,13 +167,13 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
         ServiceCreateInput createInput = ServiceDataUtils.buildServiceCreateInput();
         this.serviceDataStoreOperations.createService(createInput);
         OperationResult result = this.serviceDataStoreOperations.modifyService(createInput.getServiceName(),
-            State.InService, State.InService);
+            State.InService, AdminStates.InService);
         Assert.assertTrue(result.isSuccess());
     }
 
     @Test
     public void getTempServiceFromEmptyDataStoreShouldBeEmpty() {
-        Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+        Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                 .Services> optService = this.serviceDataStoreOperations.getTempService("service 1");
         Assert.assertFalse(optService.isPresent());
     }
@@ -189,7 +190,7 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
         TempServiceCreateInput createInput = ServiceDataUtils.buildTempServiceCreateInput();
         this.serviceDataStoreOperations.createTempService(createInput);
 
-        Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+        Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                 .Services> optService = this.serviceDataStoreOperations.getTempService(createInput.getCommonId());
         Assert.assertTrue(optService.isPresent());
         Assert.assertEquals(createInput.getCommonId(), optService.get().getCommonId());
@@ -208,7 +209,7 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
         TempServiceCreateInput createInput = ServiceDataUtils.buildTempServiceCreateInput();
         this.serviceDataStoreOperations.createTempService(createInput);
         OperationResult result = this.serviceDataStoreOperations.modifyTempService(createInput.getCommonId(),
-            State.InService, State.InService);
+            State.InService, AdminStates.InService);
         Assert.assertTrue(result.isSuccess());
     }
 

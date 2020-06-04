@@ -8,13 +8,14 @@
 package org.opendaylight.transportpce.renderer.provisiondevice;
 
 import com.google.common.collect.Sets;
-
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
@@ -22,11 +23,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
@@ -34,41 +36,44 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
+import org.opendaylight.transportpce.networkmodel.service.NetworkModelService;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterfaceFactory;
 import org.opendaylight.transportpce.renderer.provisiondevice.servicepath.ServiceListTopology;
 import org.opendaylight.transportpce.renderer.provisiondevice.servicepath.ServicePathDirection;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.alarmsuppression.rev171102.ServiceNodelist;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.alarmsuppression.rev171102.service.nodelist.NodelistBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.alarmsuppression.rev171102.service.nodelist.NodelistKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev170228.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.CreateOtsOmsInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.CreateOtsOmsOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.CreateOtsOmsOutputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.RendererRollbackInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.RendererRollbackOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.RendererRollbackOutputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.ServicePathInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.ServicePathOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.ServicePathOutputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.renderer.rollback.output.FailedToRollback;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.renderer.rollback.output.FailedToRollbackBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev170228.renderer.rollback.output.FailedToRollbackKey;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev161014.service.Topology;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.renderer.rollback.output.FailedToRollback;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.renderer.rollback.output.FailedToRollbackBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.renderer.rollback.output.FailedToRollbackKey;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.Topology;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev161014.OchAttributes.ModulationFormat;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev161014.R100G;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.ServiceList;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.service.list.Services;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.service.list.ServicesBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.service.list.ServicesKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev170907.node.interfaces.NodeInterface;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev170907.node.interfaces.NodeInterfaceBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev170907.node.interfaces.NodeInterfaceKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev170907.olm.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.ServiceList;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.Services;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.ServicesBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.ServicesKey;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterface;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterfaceBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterfaceKey;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.transportpce.topology.rev200129.OtnLinkType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class DeviceRendererServiceImpl implements DeviceRendererService {
+    private static final String ODU4 = "-ODU4";
     private static final Logger LOG = LoggerFactory.getLogger(DeviceRendererServiceImpl.class);
     private final DataBroker dataBroker;
     private final DeviceTransactionManager deviceTransactionManager;
@@ -76,16 +81,18 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
     private final OpenRoadmInterfaces openRoadmInterfaces;
     private final CrossConnect crossConnect;
     private final PortMapping portMapping;
+    private final NetworkModelService networkModelService;
 
     public DeviceRendererServiceImpl(DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
             OpenRoadmInterfaceFactory openRoadmInterfaceFactory, OpenRoadmInterfaces openRoadmInterfaces,
-            CrossConnect crossConnect, PortMapping portMapping) {
+            CrossConnect crossConnect, PortMapping portMapping, NetworkModelService networkModelService) {
         this.dataBroker = dataBroker;
         this.deviceTransactionManager = deviceTransactionManager;
         this.openRoadmInterfaceFactory = openRoadmInterfaceFactory;
         this.openRoadmInterfaces = openRoadmInterfaces;
         this.crossConnect = crossConnect;
         this.portMapping = portMapping;
+        this.networkModelService = networkModelService;
     }
 
     @Override
@@ -98,6 +105,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         ConcurrentLinkedQueue<String> results = new ConcurrentLinkedQueue<>();
         Set<NodeInterface> nodeInterfaces = Sets.newConcurrentHashSet();
         Set<String> nodesProvisioned = Sets.newConcurrentHashSet();
+        CopyOnWriteArrayList<Nodes> otnNodesProvisioned = new CopyOnWriteArrayList<>();
         ServiceListTopology topology = new ServiceListTopology();
         AtomicBoolean success = new AtomicBoolean(true);
         ForkJoinPool forkJoinPool = new ForkJoinPool();
@@ -115,18 +123,21 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                 if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
                     String srcTp = node.getSrcTp();
                     String destTp = node.getDestTp();
-                    Long waveNumber = input.getWaveNumber();
+                    Long waveNumber = input.getWaveNumber().toJava();
                     if ((destTp != null) && destTp.contains(StringConstants.NETWORK_TOKEN)) {
                         crossConnectFlag++;
-                        // create OpenRoadm Xponder Line Interfaces
                         String supportingOchInterface = this.openRoadmInterfaceFactory.createOpenRoadmOchInterface(
-                                nodeId, destTp, waveNumber, R100G.class, ModulationFormat.DpQpsk);
+                                nodeId, destTp, waveNumber, ModulationFormat.DpQpsk);
                         createdOchInterfaces.add(supportingOchInterface);
                         String supportingOtuInterface = this.openRoadmInterfaceFactory
                                 .createOpenRoadmOtu4Interface(nodeId, destTp, supportingOchInterface);
                         createdOtuInterfaces.add(supportingOtuInterface);
-                        createdOduInterfaces.add(this.openRoadmInterfaceFactory.createOpenRoadmOdu4Interface(nodeId,
-                                destTp, supportingOtuInterface));
+                        if (srcTp == null) {
+                            otnNodesProvisioned.add(node);
+                        } else {
+                            createdOduInterfaces.add(this.openRoadmInterfaceFactory.createOpenRoadmOdu4Interface(nodeId,
+                                    destTp, supportingOtuInterface));
+                        }
                     }
                     if ((srcTp != null) && srcTp.contains(StringConstants.CLIENT_TOKEN)) {
                         crossConnectFlag++;
@@ -138,13 +149,23 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                         crossConnectFlag++;
                         // create OpenRoadm Xponder Line Interfaces
                         String supportingOchInterface = this.openRoadmInterfaceFactory.createOpenRoadmOchInterface(
-                                nodeId, srcTp, waveNumber, R100G.class, ModulationFormat.DpQpsk);
+                                nodeId, srcTp, waveNumber, ModulationFormat.DpQpsk);
                         createdOchInterfaces.add(supportingOchInterface);
                         String supportingOtuInterface = this.openRoadmInterfaceFactory
                                 .createOpenRoadmOtu4Interface(nodeId, srcTp, supportingOchInterface);
                         createdOtuInterfaces.add(supportingOtuInterface);
                         createdOduInterfaces.add(this.openRoadmInterfaceFactory.createOpenRoadmOdu4Interface(nodeId,
                                 srcTp, supportingOtuInterface));
+                        Mapping mapping = this.portMapping.getMapping(nodeId,srcTp);
+                        if (mapping != null && mapping.getXponderType() != null
+                            && (mapping.getXponderType().getIntValue() == 3
+                            || mapping.getXponderType().getIntValue() == 2)) {
+                            createdOduInterfaces.add(this.openRoadmInterfaceFactory
+                                .createOpenRoadmOtnOdu4Interface(nodeId, destTp, supportingOtuInterface));
+                        } else {
+                            createdOduInterfaces.add(this.openRoadmInterfaceFactory.createOpenRoadmOdu4Interface(nodeId,
+                                    destTp, supportingOtuInterface));
+                        }
                     }
                     if ((destTp != null) && destTp.contains(StringConstants.CLIENT_TOKEN)) {
                         crossConnectFlag++;
@@ -186,14 +207,14 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                 processErrorMessage("Setup service path failed! Exception:" + ex.toString(), forkJoinPool, results);
                 success.set(false);
             }
-            NodeInterfaceBuilder nodeInterfaceBuilder = new NodeInterfaceBuilder();
-            nodeInterfaceBuilder.withKey(new NodeInterfaceKey(nodeId));
-            nodeInterfaceBuilder.setNodeId(nodeId);
-            nodeInterfaceBuilder.setConnectionId(createdConnections);
-            nodeInterfaceBuilder.setEthInterfaceId(createdEthInterfaces);
-            nodeInterfaceBuilder.setOtuInterfaceId(createdOtuInterfaces);
-            nodeInterfaceBuilder.setOduInterfaceId(createdOduInterfaces);
-            nodeInterfaceBuilder.setOchInterfaceId(createdOchInterfaces);
+            NodeInterfaceBuilder nodeInterfaceBuilder = new NodeInterfaceBuilder()
+                .withKey(new NodeInterfaceKey(nodeId))
+                .setNodeId(nodeId)
+                .setConnectionId(createdConnections)
+                .setEthInterfaceId(createdEthInterfaces)
+                .setOtuInterfaceId(createdOtuInterfaces)
+                .setOduInterfaceId(createdOduInterfaces)
+                .setOchInterfaceId(createdOchInterfaces);
             nodeInterfaces.add(nodeInterfaceBuilder.build());
         }));
         try {
@@ -206,25 +227,26 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         if (success.get()) {
             results.add("Roadm-connection successfully created for nodes: " + String.join(", ", nodesProvisioned));
         }
-        ServicePathOutputBuilder setServBldr = new ServicePathOutputBuilder();
-        setServBldr.setNodeInterface(new ArrayList<>(nodeInterfaces));
-        setServBldr.setSuccess(success.get());
-        setServBldr.setResult(String.join("\n", results));
         // setting topology in the service list data store
         try {
             setTopologyForService(input.getServiceName(), topology.getTopology());
+            updateOtnTopology(otnNodesProvisioned, false);
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
             LOG.warn("Failed to write topologies for service {}.", input.getServiceName(), e);
         }
         if (!alarmSuppressionNodeRemoval(input.getServiceName())) {
             LOG.error("Alarm suppresion node removal failed!!!!");
         }
+        ServicePathOutputBuilder setServBldr = new ServicePathOutputBuilder()
+            .setNodeInterface(new ArrayList<>(nodeInterfaces))
+            .setSuccess(success.get())
+            .setResult(String.join("\n", results));
         return setServBldr.build();
     }
 
     private ConcurrentLinkedQueue<String> processErrorMessage(String message, ForkJoinPool forkJoinPool,
             ConcurrentLinkedQueue<String> messages) {
-        LOG.warn(message);
+        LOG.warn("Received error message {}", message);
         messages.add(message);
         forkJoinPool.shutdown();
         return messages;
@@ -238,62 +260,38 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         if (!alarmSuppressionNodeRegistration(input)) {
             LOG.warn("Alarm suppresion node registraion failed!!!!");
         }
+        CopyOnWriteArrayList<Nodes> otnNodesProvisioned = new CopyOnWriteArrayList<>();
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         ForkJoinTask forkJoinTask = forkJoinPool.submit(() -> nodes.parallelStream().forEach(node -> {
             List<String> interfacesToDelete = new LinkedList<>();
             String nodeId = node.getNodeId();
             LOG.info("Deleting service setup on node {}", nodeId);
-            String srcTp = node.getSrcTp();
-            String destTp = node.getDestTp();
-            Long waveNumber = input.getWaveNumber();
-            if ((srcTp == null) || (destTp == null)) {
-                LOG.error("Source ({}) or destination ({}) termination point is null.", srcTp, destTp);
+            String srcTp;
+            String destTp;
+            Long waveNumber = input.getWaveNumber().toJava();
+            if (node.getDestTp() == null) {
+                LOG.error("Destination termination point must not be null.");
                 return;
+            } else {
+                destTp = node.getDestTp();
+            }
+            if (node.getSrcTp() != null) {
+                srcTp = node.getSrcTp();
+            } else {
+                srcTp = "";
+                otnNodesProvisioned.add(node);
             }
             // if the node is currently mounted then proceed.
             if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
-                if (destTp.contains(StringConstants.NETWORK_TOKEN)
-                        || srcTp.contains(StringConstants.CLIENT_TOKEN)
-                        || srcTp.contains(StringConstants.NETWORK_TOKEN)
-                        || destTp.contains(StringConstants.CLIENT_TOKEN)) {
-                    if (destTp.contains(StringConstants.NETWORK_TOKEN)) {
-                        interfacesToDelete.add(destTp + "-ODU");
-                        interfacesToDelete.add(destTp + "-OTU");
-                        interfacesToDelete.add(
-                                this.openRoadmInterfaceFactory.createOpenRoadmOchInterfaceName(destTp, waveNumber));
-                    }
-                    if (srcTp.contains(StringConstants.NETWORK_TOKEN)) {
-                        interfacesToDelete.add(srcTp + "-ODU");
-                        interfacesToDelete.add(srcTp + "-OTU");
-                        interfacesToDelete
-                                .add(this.openRoadmInterfaceFactory.createOpenRoadmOchInterfaceName(srcTp, waveNumber));
-                    }
-                    if (srcTp.contains(StringConstants.CLIENT_TOKEN)) {
-                        interfacesToDelete.add(srcTp + "-ETHERNET");
-                    }
-                    if (destTp.contains(StringConstants.CLIENT_TOKEN)) {
-                        interfacesToDelete.add(destTp + "-ETHERNET");
-                    }
-                } else {
-                    String connectionNumber = srcTp + "-" + destTp + "-" + waveNumber;
-                    List<String> intToDelete = this.crossConnect.deleteCrossConnect(nodeId, connectionNumber);
-                    connectionNumber = destTp + "-" + srcTp + "-" + waveNumber;
-                    if (intToDelete != null) {
-                        for (String interf : intToDelete) {
-                            if (!this.openRoadmInterfaceFactory.isUsedbyXc(nodeId, interf, connectionNumber,
-                                this.deviceTransactionManager)) {
-                                interfacesToDelete.add(interf);
-                            }
-                        }
-                    }
-                }
+                interfacesToDelete.addAll(getInterfaces2delete(nodeId, srcTp, destTp, waveNumber));
             } else {
                 String result = nodeId + " is not mounted on the controller";
                 results.add(result);
                 success.set(false);
                 LOG.warn(result);
                 forkJoinPool.shutdown();
-                return; // TODO should deletion end here?
+                return;
+                //TODO should deletion end here?
             }
             for (String interfaceId : interfacesToDelete) {
                 try {
@@ -312,6 +310,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             LOG.error("Error while deleting service paths!", e);
         }
         forkJoinPool.shutdown();
+        updateOtnTopology(otnNodesProvisioned, true);
         if (!alarmSuppressionNodeRemoval(input.getServiceName())) {
             LOG.error("Alarm suppresion node removal failed!!!!");
         }
@@ -324,6 +323,57 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         }
     }
 
+    private List<String>  getInterfaces2delete(
+            String nodeId, String srcTp, String destTp, Long waveNumber) {
+        List<String> interfacesToDelete = new LinkedList<>();
+        if (destTp.contains(StringConstants.NETWORK_TOKEN)
+                || srcTp.contains(StringConstants.CLIENT_TOKEN)
+                || srcTp.contains(StringConstants.NETWORK_TOKEN)
+                || destTp.contains(StringConstants.CLIENT_TOKEN)) {
+            if (destTp.contains(StringConstants.NETWORK_TOKEN)) {
+                try {
+                    if (this.openRoadmInterfaces.getInterface(nodeId, destTp + "-ODU").isPresent()) {
+                        interfacesToDelete.add(destTp + "-ODU");
+                    }
+                    if (this.openRoadmInterfaces.getInterface(nodeId, destTp + ODU4).isPresent()) {
+                        interfacesToDelete.add(destTp + ODU4);
+                    }
+                }
+                catch (OpenRoadmInterfaceException e) {
+                    LOG.error("impossible to get interface {} or {}", destTp + "-ODU", destTp + ODU4, e);
+                }
+                interfacesToDelete.add(destTp + "-OTU");
+                interfacesToDelete.add(
+                        this.openRoadmInterfaceFactory.createOpenRoadmOchInterfaceName(destTp, waveNumber));
+            }
+            if (srcTp.contains(StringConstants.NETWORK_TOKEN)) {
+                interfacesToDelete.add(srcTp + "-ODU");
+                interfacesToDelete.add(srcTp + "-OTU");
+                interfacesToDelete
+                        .add(this.openRoadmInterfaceFactory.createOpenRoadmOchInterfaceName(srcTp, waveNumber));
+            }
+            if (srcTp.contains(StringConstants.CLIENT_TOKEN)) {
+                interfacesToDelete.add(srcTp + "-ETHERNET");
+            }
+            if (destTp.contains(StringConstants.CLIENT_TOKEN)) {
+                interfacesToDelete.add(destTp + "-ETHERNET");
+            }
+        } else {
+            String connectionNumber = srcTp + "-" + destTp + "-" + waveNumber;
+            List<String> intToDelete = this.crossConnect.deleteCrossConnect(nodeId, connectionNumber, false);
+            connectionNumber = destTp + "-" + srcTp + "-" + waveNumber;
+            if (intToDelete != null) {
+                for (String interf : intToDelete) {
+                    if (!this.openRoadmInterfaceFactory.isUsedByXc(nodeId, interf, connectionNumber,
+                        this.deviceTransactionManager)) {
+                        interfacesToDelete.add(interf);
+                    }
+                }
+            }
+        }
+        return interfacesToDelete;
+    }
+
     @Override
     public RendererRollbackOutput rendererRollback(RendererRollbackInput input) {
         boolean success = true;
@@ -332,7 +382,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             List<String> failedInterfaces = new ArrayList<>();
             String nodeId = nodeInterfaces.getNodeId();
             for (String connectionId : nodeInterfaces.getConnectionId()) {
-                List<String> listInter = this.crossConnect.deleteCrossConnect(nodeId, connectionId);
+                List<String> listInter = this.crossConnect.deleteCrossConnect(nodeId, connectionId, false);
                 if (listInter != null) {
                     LOG.info("Cross connect {} on node {} successfully deleted.", connectionId, nodeId);
                 } else {
@@ -379,9 +429,9 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
     }
 
     private boolean alarmSuppressionNodeRegistration(ServicePathInput input) {
-        NodelistBuilder nodeListBuilder = new NodelistBuilder();
-        nodeListBuilder.withKey(new NodelistKey(input.getServiceName()));
-        nodeListBuilder.setServiceName(input.getServiceName());
+        NodelistBuilder nodeListBuilder = new NodelistBuilder()
+            .withKey(new NodelistKey(input.getServiceName()))
+            .setServiceName(input.getServiceName());
         List<org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.alarmsuppression.rev171102.service
             .nodelist.nodelist.Nodes> nodeList =
                 new ArrayList<>();
@@ -400,9 +450,9 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                                 new NodelistKey(input.getServiceName()));
         final WriteTransaction writeTransaction = this.dataBroker.newWriteOnlyTransaction();
         writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, nodeListIID, nodeListBuilder.build());
-        Future<Void> submit = writeTransaction.submit();
+        FluentFuture<? extends @NonNull CommitInfo> commit = writeTransaction.commit();
         try {
-            submit.get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+            commit.get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
             LOG.info("Nodes are register for alarm suppression for service: {}", input.getServiceName());
             return true;
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
@@ -420,9 +470,9 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                                 new NodelistKey(serviceName));
         final WriteTransaction writeTransaction = this.dataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, nodeListIID);
-        Future<Void> submit = writeTransaction.submit();
+        FluentFuture<? extends @NonNull CommitInfo> commit = writeTransaction.commit();
         try {
-            submit.get(Timeouts.DATASTORE_DELETE, TimeUnit.MILLISECONDS);
+            commit.get(Timeouts.DATASTORE_DELETE, TimeUnit.MILLISECONDS);
             LOG.info("Nodes are unregister for alarm suppression for service: {}", serviceName);
             return true;
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
@@ -439,20 +489,19 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         InstanceIdentifier<Services> iid =
                 InstanceIdentifier.create(ServiceList.class).child(Services.class, serviceKey);
         Optional<Services> services;
-        try (ReadOnlyTransaction readTx = this.dataBroker.newReadOnlyTransaction()) {
-            Future<com.google.common.base.Optional<Services>> future =
+        try (ReadTransaction readTx = this.dataBroker.newReadOnlyTransaction()) {
+            Future<java.util.Optional<Services>> future =
                     readTx.read(LogicalDatastoreType.OPERATIONAL, iid);
-            services = future.get(Timeouts.DATASTORE_READ, TimeUnit.MILLISECONDS).toJavaUtil();
+            services = future.get(Timeouts.DATASTORE_READ, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw e;
         }
         if (services.isPresent()) {
             LOG.info("service {} already exists", name);
-            servicesBuilder = new ServicesBuilder(services.get());
-            servicesBuilder.setTopology(topo);
+            servicesBuilder = new ServicesBuilder(services.get()).setTopology(topo);
             WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
             writeTx.merge(LogicalDatastoreType.OPERATIONAL, iid, servicesBuilder.build());
-            writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+            writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
         } else {
             LOG.warn("Service {} does not exist - topology can not be updated", name);
         }
@@ -509,7 +558,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             }
         } else {
             result = input.getNodeId() + " is not mounted on the controller";
-            LOG.warn(result);
+            LOG.warn("{} is not mounted on the controller",input.getNodeId());
         }
         return output.setResult(result).setSuccess(success).build();
     }
@@ -525,5 +574,21 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             }
         }
         return result;
+    }
+
+    private void updateOtnTopology(CopyOnWriteArrayList<Nodes> nodes, boolean isDeletion) {
+        if (nodes.size() != 2) {
+            LOG.error("Error with OTU4 links to update in otn-topology");
+            return;
+        }
+        if (isDeletion) {
+            LOG.info("updating otn-topology removing OTU4 links");
+            this.networkModelService.deleteOtnLinks(nodes.get(0).getNodeId(), nodes.get(0).getDestTp(),
+                nodes.get(1).getNodeId(), nodes.get(1).getDestTp(), OtnLinkType.OTU4);
+        } else {
+            LOG.info("updating otn-topology adding OTU4 links");
+            this.networkModelService.createOtnLinks(nodes.get(0).getNodeId(), nodes.get(0).getDestTp(),
+                nodes.get(1).getNodeId(), nodes.get(1).getDestTp(), OtnLinkType.OTU4);
+        }
     }
 }

@@ -17,7 +17,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -59,6 +58,9 @@ public final class XMLDataObjectConverter extends AbstractDataObjectConverter {
     private XMLDataObjectConverter(SchemaContext schemaContext, BindingNormalizedNodeSerializer codecRegistry) {
         super(schemaContext, codecRegistry);
         this.xmlInputFactory = XMLInputFactory.newInstance();
+        // set external DTD and schema to null to avoid vulnerability (sonar report)
+        this.xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        this.xmlInputFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
     }
 
     /**
@@ -98,7 +100,7 @@ public final class XMLDataObjectConverter extends AbstractDataObjectConverter {
             XMLStreamReader reader = this.xmlInputFactory.createXMLStreamReader(inputStream);
             return parseInputXML(reader);
         } catch (XMLStreamException e) {
-            LOG.warn(e.getMessage(), e);
+            LOG.warn("XMLStreamException: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -109,7 +111,7 @@ public final class XMLDataObjectConverter extends AbstractDataObjectConverter {
             XMLStreamReader reader = this.xmlInputFactory.createXMLStreamReader(inputReader);
             return parseInputXML(reader, parentSchema);
         } catch (XMLStreamException e) {
-            LOG.warn(e.getMessage(), e);
+            LOG.warn("XMLStreamException: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -127,7 +129,7 @@ public final class XMLDataObjectConverter extends AbstractDataObjectConverter {
             XMLStreamReader reader = this.xmlInputFactory.createXMLStreamReader(inputReader);
             return parseInputXML(reader);
         } catch (XMLStreamException e) {
-            LOG.warn(e.getMessage(), e);
+            LOG.warn("XMLStreamException: {}", e.getMessage());
             return Optional.empty();
         }
     }
@@ -192,9 +194,8 @@ public final class XMLDataObjectConverter extends AbstractDataObjectConverter {
         try (NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
              XmlParserStream xmlParser = XmlParserStream.create(streamWriter, getSchemaContext(), parentSchemaNode)) {
             xmlParser.parse(reader);
-        } catch (XMLStreamException | URISyntaxException | IOException | ParserConfigurationException
-                | SAXException e) {
-            LOG.warn("An error {} occured during parsing XML input stream", e.getMessage(), e);
+        } catch (XMLStreamException | URISyntaxException | IOException | SAXException e) {
+            LOG.warn("An error occured during parsing XML input stream", e);
             return Optional.empty();
         }
         return Optional.ofNullable(result.getResult());
@@ -233,7 +234,7 @@ public final class XMLDataObjectConverter extends AbstractDataObjectConverter {
             factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
             xmlStreamWriter = factory.createXMLStreamWriter(backingWriter);
         } catch (XMLStreamException | FactoryConfigurationError e) {
-            LOG.error("Error [{}] while creating XML writer", e.getMessage(), e);
+            LOG.error("Error while creating XML writer: ", e);
             throw new IllegalStateException(e);
         }
         return xmlStreamWriter;

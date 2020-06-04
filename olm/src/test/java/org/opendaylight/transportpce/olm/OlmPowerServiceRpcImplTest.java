@@ -9,7 +9,6 @@
 package org.opendaylight.transportpce.olm;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +17,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.opendaylight.controller.md.sal.binding.api.MountPoint;
-import org.opendaylight.controller.md.sal.binding.api.MountPointService;
+import org.opendaylight.mdsal.binding.api.MountPoint;
+import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnectImpl;
@@ -28,6 +27,7 @@ import org.opendaylight.transportpce.common.crossconnect.CrossConnectImpl221;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManagerImpl;
 import org.opendaylight.transportpce.common.mapping.MappingUtils;
+import org.opendaylight.transportpce.common.mapping.MappingUtilsImpl;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.mapping.PortMappingImpl;
 import org.opendaylight.transportpce.common.mapping.PortMappingVersion121;
@@ -71,6 +71,8 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev161014.resour
 import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.types.rev161014.ResourceTypeEnum;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
+
 
 public class OlmPowerServiceRpcImplTest extends AbstractTest {
 
@@ -96,7 +98,7 @@ public class OlmPowerServiceRpcImplTest extends AbstractTest {
         this.mountPoint = new MountPointStub(this.getDataBroker());
         this.mountPointService = new MountPointServiceStub(mountPoint);
         this.deviceTransactionManager = new DeviceTransactionManagerImpl(mountPointService, 3000);
-        this.mappingUtils = Mockito.spy(MappingUtils.class);
+        this.mappingUtils = Mockito.spy(new MappingUtilsImpl(getDataBroker()));
         Mockito.doReturn(StringConstants.OPENROADM_DEVICE_VERSION_1_2_1).when(mappingUtils)
                 .getOpenRoadmVersion(Mockito.anyString());
         this.deviceTransactionManager = new DeviceTransactionManagerImpl(mountPointService, 3000);
@@ -112,8 +114,7 @@ public class OlmPowerServiceRpcImplTest extends AbstractTest {
                 new PortMappingVersion221(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
         this.portMappingVersion121 =
                 new PortMappingVersion121(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
-        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22, this.mappingUtils,
-                this.portMappingVersion121);
+        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22, this.portMappingVersion121);
         this.portMapping = Mockito.spy(this.portMapping);
         this.powerMgmt = new PowerMgmtImpl(this.getDataBroker(), this.openRoadmInterfaces, this.crossConnect,
             this.deviceTransactionManager);
@@ -146,7 +147,7 @@ public class OlmPowerServiceRpcImplTest extends AbstractTest {
                 .setPmParameterName(new PmParameterNameBuilder()
                 .setExtension("123")
                 .setType(PmNamesEnum.DefectSeconds).build())
-                .setPmParameterValue(new PmDataType(BigInteger.valueOf(1234))).build())
+                .setPmParameterValue(new PmDataType(Uint64.valueOf(1234))).build())
             .build();
         List<Measurements> measurementsList = new ArrayList<Measurements>();
         measurementsList.add(measurements);

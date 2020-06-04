@@ -7,21 +7,19 @@
  */
 package org.opendaylight.transportpce.servicehandler.stub;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.OperationResult;
 import org.opendaylight.transportpce.common.ResponseCodes;
 import org.opendaylight.transportpce.common.Timeouts;
@@ -37,10 +35,10 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceRpcResultSpBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.service.rpc.result.sp.PathTopology;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.service.rpc.result.sp.PathTopologyBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev161014.configuration.response.common.ConfigurationResponseCommonBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.RpcStatusEx;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.ServicePathNotificationTypes;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.service.path.PathDescription;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.configuration.response.common.ConfigurationResponseCommonBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.RpcStatusEx;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.ServicePathNotificationTypes;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.path.PathDescription;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.ServicePathList;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.service.path.list.ServicePaths;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.service.path.list.ServicePathsKey;
@@ -73,7 +71,7 @@ public class StubRendererServiceOperations implements RendererServiceOperations 
             LOG.info("putting notification : {}", notif);
             notificationPublishService.putNotification(notif);
         } catch (InterruptedException e) {
-            LOG.info("notification offer rejected : ", e.getMessage());
+            LOG.info("notification offer rejected: ", e);
         }
     }
 
@@ -97,7 +95,7 @@ public class StubRendererServiceOperations implements RendererServiceOperations 
                 ServiceImplementationRequestOutput output = null;
                 try {
                     LOG.info("Wait for 5s til beginning the Renderer serviceImplementation request");
-                    Thread.sleep(5000); // sleep for 1s
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     message = "renderer failed !";
                     rpcStatusEx = RpcStatusEx.Failed;
@@ -171,7 +169,7 @@ public class StubRendererServiceOperations implements RendererServiceOperations 
                 ServiceDeleteOutput output = null;
                 try {
                     LOG.info("Wait for 5s til beginning the Renderer serviceDelete request");
-                    Thread.sleep(5000); // sleep for 1s
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     message = "deleting service failed !";
                     LOG.error("deleting service failed !", e);
@@ -235,7 +233,7 @@ public class StubRendererServiceOperations implements RendererServiceOperations 
     private Optional<PathDescription> getPathDescriptionFromDatastore(String serviceName) {
         InstanceIdentifier<PathDescription> pathDescriptionIID = InstanceIdentifier.create(ServicePathList.class)
                 .child(ServicePaths.class, new ServicePathsKey(serviceName)).child(PathDescription.class);
-        ReadOnlyTransaction pathDescReadTx = this.dataBroker.newReadOnlyTransaction();
+        ReadTransaction pathDescReadTx = this.dataBroker.newReadOnlyTransaction();
         try {
             LOG.debug("Getting path description for service {}", serviceName);
             return pathDescReadTx.read(LogicalDatastoreType.OPERATIONAL, pathDescriptionIID)
@@ -243,7 +241,7 @@ public class StubRendererServiceOperations implements RendererServiceOperations 
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOG.warn("Exception while getting path description from datastore {} for service {}!", pathDescriptionIID,
                     serviceName, e);
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

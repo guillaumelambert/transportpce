@@ -8,43 +8,44 @@
 
 package org.opendaylight.transportpce.renderer.stub;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import org.opendaylight.controller.md.sal.binding.api.BindingService;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.MountPoint;
-import org.opendaylight.controller.sal.binding.api.RpcConsumerRegistry;
+import org.opendaylight.mdsal.binding.api.BindingService;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.MountPoint;
+import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class MountPointStub  implements MountPoint {
+public class MountPointStub implements MountPoint {
 
     private DataBroker dataBroker;
 
     private RpcConsumerRegistry rpcConsumerRegistry;
 
     public MountPointStub(DataBroker dataBroker) {
-
         this.dataBroker = dataBroker;
     }
 
-    public void setRpcConsumerRegistry(RpcConsumerRegistry rpcConsumerRegistry) {
+    public void setRpcConsumerRegistry(
+            RpcConsumerRegistry rpcConsumerRegistry) {
         this.rpcConsumerRegistry = rpcConsumerRegistry;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends BindingService> Optional<T> getService(Class<T> service) {
         if (service.isInstance(dataBroker)) {
-            return Optional.fromNullable((T)dataBroker);
+            return Optional.ofNullable((T) dataBroker);
         }
         if (service.isInstance(rpcConsumerRegistry)) {
-            return Optional.fromNullable((T)rpcConsumerRegistry);
+            return Optional.ofNullable((T) rpcConsumerRegistry);
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Nonnull
     @Override
     public InstanceIdentifier<?> getIdentifier() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

@@ -7,7 +7,7 @@
  */
 package org.opendaylight.transportpce.servicehandler.listeners;
 
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.transportpce.common.OperationResult;
 import org.opendaylight.transportpce.pce.service.PathComputationService;
 import org.opendaylight.transportpce.servicehandler.ServiceInput;
@@ -15,9 +15,10 @@ import org.opendaylight.transportpce.servicehandler.service.PCEServiceWrapper;
 import org.opendaylight.transportpce.servicehandler.service.ServiceDataStoreOperations;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceRpcResultSp;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.TransportpceRendererListener;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev161014.ServiceNotificationTypes;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.State;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.RpcStatusEx;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.ServiceNotificationTypes;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.state.types.rev181130.State;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev181130.AdminStates;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.RpcStatusEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,21 +53,22 @@ public class RendererListenerImpl implements TransportpceRendererListener {
             LOG.info("Renderer '{}' Notification received : {}", serviceRpcResultSp.getNotificationType().getName(),
                     notification);
             switch (notifType) {
-                case 3 : /** service-implementation-request. */
+                /* service-implementation-request. */
+                case 3 :
                     if (serviceRpcResultSp.getStatus() == RpcStatusEx.Successful) {
                         LOG.info("Service implemented !");
                         OperationResult operationResult = null;
                         if (tempService) {
                             operationResult = this.serviceDataStoreOperations.modifyTempService(
                                     serviceRpcResultSp.getServiceName(),
-                                    State.InService, State.InService);
+                                    State.InService, AdminStates.InService);
                             if (!operationResult.isSuccess()) {
                                 LOG.warn("Temp Service status not updated in datastore !");
                             }
                         } else {
                             operationResult = this.serviceDataStoreOperations.modifyService(
                                     serviceRpcResultSp.getServiceName(),
-                                    State.InService, State.InService);
+                                    State.InService, AdminStates.InService);
                             if (!operationResult.isSuccess()) {
                                 LOG.warn("Service status not updated in datastore !");
                             }
@@ -93,8 +95,8 @@ public class RendererListenerImpl implements TransportpceRendererListener {
                         }
                     }
                     break;
-
-                case 4 : /** service-delete. */
+                /* service-delete. */
+                case 4 :
                     if (serviceRpcResultSp.getStatus() == RpcStatusEx.Successful) {
                         LOG.info("Service '{}' deleted !", serviceName);
                         if (this.input != null) {

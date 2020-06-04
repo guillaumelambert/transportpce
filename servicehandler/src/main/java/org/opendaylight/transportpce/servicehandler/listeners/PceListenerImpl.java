@@ -7,7 +7,7 @@
  */
 package org.opendaylight.transportpce.servicehandler.listeners;
 
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
 import org.opendaylight.transportpce.common.OperationResult;
 import org.opendaylight.transportpce.pce.service.PathComputationService;
 import org.opendaylight.transportpce.renderer.provisiondevice.RendererServiceOperations;
@@ -15,16 +15,16 @@ import org.opendaylight.transportpce.servicehandler.ModelMappingUtils;
 import org.opendaylight.transportpce.servicehandler.ServiceInput;
 import org.opendaylight.transportpce.servicehandler.service.PCEServiceWrapper;
 import org.opendaylight.transportpce.servicehandler.service.ServiceDataStoreOperations;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.PathComputationRequestOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.PathComputationRequestOutputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.ServicePathRpcResult;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.TransportpcePceListener;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.service.path.rpc.result.PathDescription;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.service.path.rpc.result.PathDescriptionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.ServicePathRpcResult;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.TransportpcePceListener;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.service.path.rpc.result.PathDescription;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.service.path.rpc.result.PathDescriptionBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceImplementationRequestInput;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.RpcStatusEx;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.response.parameters.sp.ResponseParameters;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev171016.response.parameters.sp.ResponseParametersBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.RpcStatusEx;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.ResponseParameters;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.ResponseParametersBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,8 @@ public class PceListenerImpl implements TransportpcePceListener {
             servicePathRpcResult = notification;
             PathDescription pathDescription = null;
             switch (servicePathRpcResult.getNotificationType().getIntValue()) {
-                case 1: /** path-computation-request. */
+                /* path-computation-request. */
+                case 1:
                     LOG.info("PCE '{}' Notification received : {}",servicePathRpcResult.getNotificationType().getName(),
                             notification);
                     if (servicePathRpcResult.getStatus() == RpcStatusEx.Successful) {
@@ -89,9 +90,10 @@ public class PceListenerImpl implements TransportpcePceListener {
                                     }
                                 }
                                 ResponseParameters responseParameters = new ResponseParametersBuilder()
-                                        .setPathDescription(new org.opendaylight.yang.gen.v1.http.org.transportpce.b.c
-                                                ._interface.service.types.rev171016.response.parameters.sp.response
-                                                .parameters.PathDescriptionBuilder(pathDescription).build())
+                                        .setPathDescription(new org.opendaylight.yang.gen.v1.http.org
+                                                .transportpce.b.c._interface.service.types.rev200128
+                                                .response.parameters.sp.response.parameters
+                                                .PathDescriptionBuilder(pathDescription).build())
                                         .build();
                                 PathComputationRequestOutput pceResponse = new PathComputationRequestOutputBuilder()
                                         .setResponseParameters(responseParameters).build();
@@ -116,7 +118,8 @@ public class PceListenerImpl implements TransportpcePceListener {
                         return;
                     }
                     break;
-                case 2: /** cancel-resource-reserve. */
+                /* cancel-resource-reserve. */
+                case 2:
                     if (servicePathRpcResult.getStatus() == RpcStatusEx.Successful) {
                         LOG.info("PCE cancel resource done OK !");
                         OperationResult deleteServicePathOperationResult =

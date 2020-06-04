@@ -7,31 +7,34 @@
  */
 package org.opendaylight.transportpce.servicehandler.service;
 
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.OperationResult;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.servicehandler.ModelMappingUtils;
 import org.opendaylight.transportpce.servicehandler.ServiceInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev190624.PathComputationRequestOutput;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.State;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.ServiceCreateInput;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.ServiceList;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.ServiceListBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.TempServiceCreateInput;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.TempServiceList;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.TempServiceListBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.service.list.Services;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.service.list.ServicesBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.service.list.ServicesKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestOutput;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.state.types.rev181130.State;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev181130.AdminStates;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.ServiceCreateInput;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.ServiceList;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.ServiceListBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.TempServiceCreateInput;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.TempServiceList;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.TempServiceListBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.Services;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.ServicesBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.ServicesKey;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.ServicePathList;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.service.path.list.ServicePaths;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.service.path.list.ServicePathsKey;
@@ -61,7 +64,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
             InstanceIdentifier<ServiceList> iid = InstanceIdentifier.create(ServiceList.class);
             ServiceList initialRegistry = new ServiceListBuilder().build();
             transaction.put(LogicalDatastoreType.OPERATIONAL, iid, initialRegistry);
-            Future<Void> future = transaction.submit();
+            FluentFuture<? extends @NonNull CommitInfo> future = transaction.commit();
             future.get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOG.warn("init failed: {}", e.getMessage());
@@ -75,7 +78,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
             InstanceIdentifier<TempServiceList> iid = InstanceIdentifier.create(TempServiceList.class);
             TempServiceList initialRegistry = new TempServiceListBuilder().build();
             transaction.put(LogicalDatastoreType.OPERATIONAL, iid, initialRegistry);
-            Future<Void> future = transaction.submit();
+            FluentFuture<? extends @NonNull CommitInfo> future = transaction.commit();
             future.get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOG.warn("init failed: {}", e.getMessage());
@@ -85,12 +88,12 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
     @Override
     public Optional<Services> getService(String serviceName) {
         try {
-            ReadOnlyTransaction readTx = this.dataBroker.newReadOnlyTransaction();
+            ReadTransaction readTx = this.dataBroker.newReadOnlyTransaction();
             InstanceIdentifier<Services> iid =
                     InstanceIdentifier.create(ServiceList.class).child(Services.class, new ServicesKey(serviceName));
-            Future<com.google.common.base.Optional<Services>> future =
+            Future<java.util.Optional<Services>> future =
                     readTx.read(LogicalDatastoreType.OPERATIONAL, iid);
-            return future.get(Timeouts.DATASTORE_READ, TimeUnit.MILLISECONDS).toJavaUtil();
+            return future.get(Timeouts.DATASTORE_READ, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOG.warn("Reading service {} failed:", serviceName, e);
         }
@@ -98,18 +101,18 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
     }
 
     @Override
-    public Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+    public Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
         .Services> getTempService(String serviceName) {
         try {
-            ReadOnlyTransaction readTx = this.dataBroker.newReadOnlyTransaction();
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+            ReadTransaction readTx = this.dataBroker.newReadOnlyTransaction();
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                 .Services> iid = InstanceIdentifier.create(TempServiceList.class).child(org.opendaylight.yang.gen.v1
-                        .http.org.openroadm.service.rev161014.temp.service.list.Services.class,
-                        new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+                        .http.org.openroadm.service.rev190531.temp.service.list.Services.class,
+                        new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                             .ServicesKey(serviceName));
-            Future<com.google.common.base.Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014
+            Future<java.util.Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531
                 .temp.service.list.Services>> future =  readTx.read(LogicalDatastoreType.OPERATIONAL, iid);
-            return future.get(Timeouts.DATASTORE_READ, TimeUnit.MILLISECONDS).toJavaUtil();
+            return future.get(Timeouts.DATASTORE_READ, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOG.warn("Reading service {} failed:", serviceName, e);
         }
@@ -124,7 +127,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
             InstanceIdentifier<Services> iid =
                     InstanceIdentifier.create(ServiceList.class).child(Services.class, new ServicesKey(serviceName));
             writeTx.delete(LogicalDatastoreType.OPERATIONAL, iid);
-            writeTx.submit().get(Timeouts.DATASTORE_DELETE, TimeUnit.MILLISECONDS);
+            writeTx.commit().get(Timeouts.DATASTORE_DELETE, TimeUnit.MILLISECONDS);
             return OperationResult.ok(SUCCESSFUL_MESSAGE);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             String message = "Failed to delete service " + serviceName + " from Service List";
@@ -138,13 +141,13 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
         LOG.debug("Deleting '{}' Service", commonId);
         try {
             WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                 .Services> iid = InstanceIdentifier.create(TempServiceList.class).child(org.opendaylight.yang.gen.v1
-                        .http.org.openroadm.service.rev161014.temp.service.list.Services.class,
-                        new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+                        .http.org.openroadm.service.rev190531.temp.service.list.Services.class,
+                        new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                             .ServicesKey(commonId));
             writeTx.delete(LogicalDatastoreType.OPERATIONAL, iid);
-            writeTx.submit().get(Timeouts.DATASTORE_DELETE, TimeUnit.MILLISECONDS);
+            writeTx.commit().get(Timeouts.DATASTORE_DELETE, TimeUnit.MILLISECONDS);
             return OperationResult.ok(SUCCESSFUL_MESSAGE);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             String message = "Failed to delete service " + commonId + " from Service List";
@@ -154,7 +157,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
     }
 
     @Override
-    public OperationResult modifyService(String serviceName, State operationalState, State administrativeState) {
+    public OperationResult modifyService(String serviceName, State operationalState, AdminStates administrativeState) {
         LOG.debug("Modifying '{}' Service", serviceName);
         Optional<Services> readService = getService(serviceName);
         if (readService.isPresent()) {
@@ -166,7 +169,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
                         .setAdministrativeState(administrativeState)
                         .build();
                 writeTx.merge(LogicalDatastoreType.OPERATIONAL, iid, services);
-                writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+                writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
                 return OperationResult.ok(SUCCESSFUL_MESSAGE);
             } catch (TimeoutException | InterruptedException | ExecutionException e) {
                 String message = "Failed to modify service " + serviceName + " from Service List";
@@ -181,25 +184,26 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
     }
 
     @Override
-    public OperationResult modifyTempService(String serviceName, State operationalState, State administrativeState) {
+    public OperationResult modifyTempService(String serviceName, State operationalState,
+        AdminStates administrativeState) {
         LOG.debug("Modifying '{}' Temp Service", serviceName);
-        Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+        Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
             .Services> readService = getTempService(serviceName);
         if (readService.isPresent()) {
             try {
                 WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
-                InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+                InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                     .Services> iid = InstanceIdentifier.create(TempServiceList.class)
-                        .child(org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
-                                .Services.class, new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014
+                        .child(org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
+                                .Services.class, new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531
                                     .temp.service.list.ServicesKey(serviceName));
-                org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
-                    .Services services = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp
+                org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
+                    .Services services = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp
                         .service.list.ServicesBuilder(readService.get()).setOperationalState(operationalState)
                             .setAdministrativeState(administrativeState)
                             .build();
                 writeTx.merge(LogicalDatastoreType.OPERATIONAL, iid, services);
-                writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+                writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
                 return OperationResult.ok(SUCCESSFUL_MESSAGE);
             } catch (TimeoutException | InterruptedException | ExecutionException e) {
                 String message = "Failed to modify temp service " + serviceName + " from Temp Service List";
@@ -222,7 +226,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
             Services service = ModelMappingUtils.mappingServices(serviceCreateInput, null);
             WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
             writeTx.put(LogicalDatastoreType.OPERATIONAL, iid, service);
-            writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+            writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
             return OperationResult.ok(SUCCESSFUL_MESSAGE);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             String message = "Failed to create service " + serviceCreateInput.getServiceName() + " to Service List";
@@ -235,16 +239,16 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
     public OperationResult createTempService(TempServiceCreateInput tempServiceCreateInput) {
         LOG.debug("Writing '{}' Temp Service", tempServiceCreateInput.getCommonId());
         try {
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                 .Services> iid = InstanceIdentifier.create(TempServiceList.class)
-                    .child(org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
-                            .Services.class, new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp
+                    .child(org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
+                            .Services.class, new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp
                                 .service.list.ServicesKey(tempServiceCreateInput.getCommonId()));
-            org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev161014.temp.service.list
+            org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list
                 .Services service = ModelMappingUtils.mappingServices(tempServiceCreateInput);
             WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
             writeTx.put(LogicalDatastoreType.OPERATIONAL, iid, service);
-            writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+            writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
             return OperationResult.ok(SUCCESSFUL_MESSAGE);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             String message = "Failed to create Temp service " + tempServiceCreateInput.getCommonId()
@@ -263,7 +267,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
             ServicePaths servicePath = ModelMappingUtils.mappingServicePaths(serviceInput, outputFromPce);
             WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
             writeTx.put(LogicalDatastoreType.OPERATIONAL, servicePathsIID, servicePath);
-            writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+            writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
             return OperationResult.ok(SUCCESSFUL_MESSAGE);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
             String message = "Failed to create servicePath " + serviceInput.getCommonId() + " to ServicePath List";
@@ -280,7 +284,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
         WriteTransaction servicePathsWriteTx = this.dataBroker.newWriteOnlyTransaction();
         servicePathsWriteTx.delete(LogicalDatastoreType.OPERATIONAL, servicePathsIID);
         try {
-            servicePathsWriteTx.submit().get(Timeouts.DATASTORE_DELETE, TimeUnit.MILLISECONDS);
+            servicePathsWriteTx.commit().get(Timeouts.DATASTORE_DELETE, TimeUnit.MILLISECONDS);
             return OperationResult.ok(SUCCESSFUL_MESSAGE);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             String message = "Unable to delete service path " + serviceName;
@@ -321,7 +325,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
             switch (choice) {
                 case 0 : /* Modify. */
                     LOG.debug("Modifying '{}' Service", serviceName);
-                    service.setOperationalState(State.InService).setAdministrativeState(State.InService);
+                    service.setOperationalState(State.InService).setAdministrativeState(AdminStates.InService);
                     writeTx.merge(LogicalDatastoreType.OPERATIONAL, iid, service.build());
                     action = "modifyService";
                     break;
@@ -335,20 +339,23 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
                     break;
             }
             try {
-                writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+                writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 LOG.error("Failed to {} service from Service List", action, e);
                 result = "Failed to " + action + " service from Service List";
             }
         } else {
-            if (choice == 2) { /* Write Service */
+            /*
+             * Write Service.
+             */
+            if (choice == 2) {
                 LOG.debug("Writing '{}' Service", serviceName);
                 InstanceIdentifier<Services> iid = InstanceIdentifier.create(ServiceList.class)
                         .child(Services.class, new ServicesKey(serviceName));
                 Services service = ModelMappingUtils.mappingServices(input, null);
                 writeTx.put(LogicalDatastoreType.OPERATIONAL, iid, service);
                 try {
-                    writeTx.submit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
+                    writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
                     result = null;
                 } catch (InterruptedException | TimeoutException | ExecutionException e) {
                     LOG.error("Failed to createService service to Service List", e);
