@@ -23,6 +23,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
@@ -48,6 +50,7 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
     private static final TimeUnit GET_DATA_SUBMIT_TIME_UNIT = TimeUnit.MILLISECONDS;
     private static final TimeUnit MAX_DURATION_TO_SUBMIT_TIMEUNIT = TimeUnit.MILLISECONDS;
 
+    private final RemoteOpendaylightClient remoteOdlClient;
     private final MountPointService mountPointService;
     private final ScheduledExecutorService checkingExecutor;
     private final ListeningExecutorService listeningExecutor;
@@ -55,12 +58,13 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
     // TODO set reasonable value in blueprint for maxDurationToSubmitTransaction
     private final long maxDurationToSubmitTransaction;
 
-    public DeviceTransactionManagerImpl(MountPointService mountPointService, long maxDurationToSubmitTransaction) {
+    public DeviceTransactionManagerImpl(MountPointService mountPointService, long maxDurationToSubmitTransaction,RemoteOpendaylightClient odlClient) {
         this.mountPointService = mountPointService;
         this.maxDurationToSubmitTransaction = maxDurationToSubmitTransaction;
         this.deviceLocks = new ConcurrentHashMap<>();
         this.checkingExecutor = Executors.newScheduledThreadPool(NUMBER_OF_THREADS);
         this.listeningExecutor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
+        this.remoteOdlClient = odlClient;
     }
 
     @Override
@@ -129,6 +133,10 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
     }
 
     private Optional<DataBroker> getDeviceDataBroker(String deviceId) {
+    	if(this.remoteOdlClient!=null) {
+    		LOG.debug("using remote odl to get device databroker for {}",deviceId);
+    		return Optional.ofNullable(this.remoteOdlClient.getRemoteDeviceDataBroker(deviceId));
+    	}
         Optional<MountPoint> netconfNode = getDeviceMountPoint(deviceId);
         if (netconfNode.isPresent()) {
             return netconfNode.get().getService(DataBroker.class);
@@ -140,6 +148,10 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
 
     @Override
     public Optional<MountPoint> getDeviceMountPoint(String deviceId) {
+    	if(this.remoteOdlClient!=null) {
+    		LOG.debug("using remote odl to get mountpoint for {}",deviceId);
+    		return Optional.ofNullable(this.remoteOdlClient.getMountPoint(deviceId));
+    	}
         InstanceIdentifier<Node> netconfNodeIID = InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class,
                 new NodeKey(new NodeId(deviceId)));
         return mountPointService.getMountPoint(netconfNodeIID);
