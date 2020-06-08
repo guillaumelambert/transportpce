@@ -154,9 +154,10 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
         return null;
     }
 
+
     @Override
-    public <T extends DataObject> @NonNull ListenerRegistration registerDataTreeChangeListener(
-            @NonNull DataTreeIdentifier<T> create, DataTreeChangeListener<T> topologyListener) {
+    public <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull DataTreeIdentifier<T> treeId, @NonNull L listener) {
         // TODO Auto-generated method stub
         return null;
     }
