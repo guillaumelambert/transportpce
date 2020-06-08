@@ -12,7 +12,8 @@
     <reference id="portMapping" interface="org.opendaylight.transportpce.common.mapping.PortMapping" />
     <reference id="networkTransactionImpl" interface="org.opendaylight.transportpce.common.network.NetworkTransactionService" />
     <reference id="mappingUtils" interface="org.opendaylight.transportpce.common.mapping.MappingUtils" />
-
+	<reference id="odlClient" interface="org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient" />
+	
     <bean id="networkModelService" class="org.opendaylight.transportpce.networkmodel.service.NetworkModelServiceImpl">
         <argument ref="networkTransactionImpl" />
         <argument ref="linkDiscoveryImpl" />
@@ -26,6 +27,7 @@
         <argument ref="rpcProviderService" />
         <argument ref="networkutilsServiceImpl" />
         <argument ref="netconfTopologyListener" />
+        <argument ref="odlClient" />
     </bean>
 
     <bean id="netconfTopologyListener" class="org.opendaylight.transportpce.networkmodel.NetConfTopologyListener">

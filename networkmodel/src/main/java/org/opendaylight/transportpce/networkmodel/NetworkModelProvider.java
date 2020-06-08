@@ -7,6 +7,7 @@
  */
 package org.opendaylight.transportpce.networkmodel;
 
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
@@ -30,18 +31,21 @@ public class NetworkModelProvider {
     private final RpcProviderService rpcProviderService;
     private final TransportpceNetworkutilsService networkutilsService;
     private final NetConfTopologyListener topologyListener;
+    private final RemoteOpendaylightClient odlClient;
     private ListenerRegistration<NetConfTopologyListener> dataTreeChangeListenerRegistration;
     private ObjectRegistration<TransportpceNetworkutilsService> networkutilsServiceRpcRegistration;
     private TpceNetwork tpceNetwork;
 
+
     public NetworkModelProvider(NetworkTransactionService networkTransactionService, final DataBroker dataBroker,
         final RpcProviderService rpcProviderService, final TransportpceNetworkutilsService networkutilsService,
-        final NetConfTopologyListener topologyListener) {
+        final NetConfTopologyListener topologyListener,RemoteOpendaylightClient odlClient) {
         this.dataBroker = dataBroker;
         this.rpcProviderService = rpcProviderService;
         this.networkutilsService = networkutilsService;
         this.topologyListener = topologyListener;
         this.tpceNetwork = new TpceNetwork(networkTransactionService);
+        this.odlClient = odlClient;
     }
 
     /**
@@ -53,11 +57,18 @@ public class NetworkModelProvider {
         tpceNetwork.createLayer(NetworkUtils.UNDERLAY_NETWORK_ID);
         tpceNetwork.createLayer(NetworkUtils.OVERLAY_NETWORK_ID);
         tpceNetwork.createLayer(NetworkUtils.OTN_NETWORK_ID);
-        dataTreeChangeListenerRegistration =
-            dataBroker.registerDataTreeChangeListener(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)), topologyListener);
-        networkutilsServiceRpcRegistration =
-            rpcProviderService.registerRpcImplementation(TransportpceNetworkutilsService.class, networkutilsService);
+        dataTreeChangeListenerRegistration = this.odlClient == null
+                ? dataBroker.registerDataTreeChangeListener(
+                        DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
+                                InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
+                        topologyListener)
+                : this.odlClient.registerDataTreeChangeListener(
+                        DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
+                                InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
+                        topologyListener);
+
+        networkutilsServiceRpcRegistration = rpcProviderService
+                .registerRpcImplementation(TransportpceNetworkutilsService.class, networkutilsService);
     }
 
         /**

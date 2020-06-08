@@ -7,8 +7,13 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.MountPoint;
+import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 public interface RemoteOpendaylightClient {
 
@@ -19,4 +24,7 @@ public interface RemoteOpendaylightClient {
     boolean isDevicePresent(String nodeId);
 
     MountPoint getMountPoint(String deviceId);
+
+    <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
 }

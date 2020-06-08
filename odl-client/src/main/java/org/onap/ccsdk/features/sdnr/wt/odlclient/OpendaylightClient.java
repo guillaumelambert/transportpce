@@ -22,6 +22,8 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketCallback;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWtWebsocket;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
@@ -34,6 +36,8 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
+import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,6 +150,13 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
 
     @Override
     public MountPoint getMountPoint(String deviceId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public <T extends DataObject> @NonNull ListenerRegistration registerDataTreeChangeListener(
+            @NonNull DataTreeIdentifier<T> create, DataTreeChangeListener<T> topologyListener) {
         // TODO Auto-generated method stub
         return null;
     }
