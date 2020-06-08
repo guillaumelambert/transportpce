@@ -25,6 +25,6 @@ public interface RemoteOpendaylightClient {
 
     MountPoint getMountPoint(String deviceId);
 
-    <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
-            @NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
+    <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
+        registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
 }
