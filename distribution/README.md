@@ -46,7 +46,11 @@ docker-compose up -d
 
 like ONAP but with additional Simulators implementing OpenROADM
 
+prerequisites:
+  * docker image of NetconfServerSimulator(https://github.com/Melacon/WirelessTransportEmulator)  
+
 ```
 docker-compose -f docker-compose-ext.yml up -d
 ```
+
 
