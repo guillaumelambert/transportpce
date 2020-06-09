@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  transportpce:
+    image: odl/transportpce
+    depends_on: 
+      - sdnr
+  sdncweb:
+    image: nexus3.onap.org:10001/onap/sdnc-web-image:latest
+    environment: 
+      - SDNRHOST=sdnr
+    depends_on: 
+      - sdnr
+  sdnr:
+    image: nexus3.onap.org:10001/onap/sdnc-image:1.8.4-STAGING-latest
+    environment: 
+      - SDNRONLY=true
+      - SDNRINIT=true
+      - SDNRDM=true
+      - SDNRWT=true
+      - SDNRDBURL=http://sdnrdb:9200
+    entrypoint: /opt/onap/sdnc/bin/startODL.oom.sh
+    depends_on: 
+      - sdnrdb
+  sdnrdb:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.4
+    environment: 
+      - discovery.type=single-node
+  roadma:
+    image: netconfserversimulator
+    environment: 
+      - XMLFILE=xmlNeModel/openroadm-A.xml
+      - PORT=4000
+    depends_on: 
+      - sdnr
+  roadmb:
+    image: netconfserversimulator
+    environment: 
+      - XMLFILE=xmlNeModel/openroadm-B.xml
+      - PORT=4000
+    depends_on: 
+      - sdnr
+  roadmc:
+    image: netconfserversimulator
+    environment: 
+      - XMLFILE=xmlNeModel/openroadm-C.xml
+      - PORT=4000
+    depends_on: 
+      - sdnr  
+  xpdra:
+    image: netconfserversimulator
+    environment: 
+      - XMLFILE=xmlNeModel/openroadm-XPDR-A.xml
+      - PORT=4000
+    depends_on: 
+      - sdnr      
+  xpdrc:
+    image: netconfserversimulator
+    environment: 
+      - XMLFILE=xmlNeModel/openroadm-XPDR-C.xml
+      - PORT=4000
+    depends_on: 
+      - sdnr
+                                          

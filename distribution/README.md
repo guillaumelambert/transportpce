@@ -41,3 +41,12 @@ prerequisites:
 docker-compose up -d
 ```
 
+
+### extended startup
+
+like ONAP but with additional Simulators implementing OpenROADM
+
+```
+docker-compose -f docker-compose-ext.yml up -d
+```
+
