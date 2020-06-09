@@ -13,7 +13,8 @@ ENV TRPCE_REPO mvn:org.opendaylight.transportpce/odl-transportpce/${trpce.featur
 # copy ODL
 COPY odl/karaf-${odl.karaf.version} $ODL_HOME
 # copy apps dependencies
-COPY system $ODL_HOME/system
+COPY system /tmp/system
+RUN rsync -a --ignore-existing /tmp/system $ODL_HOME
 # copy scripts
 COPY opt /opt
 

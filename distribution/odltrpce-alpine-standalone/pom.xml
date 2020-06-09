@@ -137,24 +137,6 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>copy-with-alternalte-repo-2</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.apache.aries.quiesce</groupId>
-									<artifactId>org.apache.aries.quiesce.manager</artifactId>
-									<version>1.0.0</version>
-									<overWrite>true</overWrite>
-								</artifactItem>
-							</artifactItems>
-							<localRepositoryDirectory>${project.build.directory}/docker-stage/system</localRepositoryDirectory>
-						</configuration>
-					</execution>
-					<execution>
 						<id>get-odl-distribution</id>
 						<phase>generate-sources</phase>
 						<goals>
