@@ -19,17 +19,17 @@ public class RemoteOdlConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemoteOdlConfig.class);
     private static final String FILENAME = "etc/remoteodl.properties";
-    private static final String KEY_BASEURL = "baseurl";
-    private static final String KEY_WSURL = "wsurl";
-    private static final String KEY_AUTHMETHOD = "auth";
-    private static final String KEY_USERNAME = "username";
-    private static final String KEY_PASSWORD = "password";
+    public static final String KEY_BASEURL = "baseurl";
+    public static final String KEY_WSURL = "wsurl";
+    public static final String KEY_AUTHMETHOD = "auth";
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_PASSWORD = "password";
+    public static final String KEY_ENABLED = "enabled";
     private static final String DEFAULT_BASEURL = "http://sdnr:8181";
     private static final String DEFAULT_WSURL = "ws://sdnr:8181/websocket";
     private static final String DEFAULT_AUTHMETHOD = AuthMethod.BASIC.name();
     private static final String DEFAULT_USERNAME = "admin";
     private static final String DEFAULT_PASSWORD = "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U";
-    private static final String KEY_ENABLED = "enabled";
     private static final String DEFAULT_ENABLED = "true";
 
     private final String baseUrl;
