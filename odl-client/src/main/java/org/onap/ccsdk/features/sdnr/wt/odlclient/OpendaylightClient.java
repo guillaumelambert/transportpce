@@ -80,9 +80,9 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
     public OpendaylightClient() throws Exception {
         this.config = new RemoteOdlConfig();
         if (this.config.isEnabled()) {
-            this.restClient = new RestconfHttpClient(this.config.getBaseUrl(), TRUSTALLCERTS,
-                    this.config.getAuthenticationMethod(), this.config.getCredentialUsername(),
-                    this.config.getCredentialPassword());
+            this.restClient = new RestconfHttpClient(this.config.getBaseUrl(),
+                    this.config.trustAllCerts(), this.config.getAuthenticationMethod(),
+                    this.config.getCredentialUsername(), this.config.getCredentialPassword());
             this.wsClient = this.config.getWebsocketUrl() == null ? null : new WebSocketClient();
             if (this.wsClient != null) {
                 this.wsClient.start();
