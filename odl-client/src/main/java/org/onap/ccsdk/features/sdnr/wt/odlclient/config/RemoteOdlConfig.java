@@ -7,9 +7,30 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.config;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RemoteOdlConfig {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteOdlConfig.class);
     private static final String FILENAME = "etc/remoteodl.properties";
+    private static final String KEY_BASEURL = "baseurl";
+    private static final String KEY_WSURL = "wsurl";
+    private static final String KEY_AUTHMETHOD = "auth";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_PASSWORD = "password";
+    private static final String DEFAULT_BASEURL = "http://sdnr:8181";
+    private static final String DEFAULT_WSURL = "ws://sdnr:8181/websocket";
+    private static final String DEFAULT_AUTHMETHOD = AuthMethod.BASIC.name();
+    private static final String DEFAULT_USERNAME = "admin";
+    private static final String DEFAULT_PASSWORD = "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U";
+    private static final String KEY_ENABLED = "enabled";
+    private static final String DEFAULT_ENABLED = "true";
 
     private final String baseUrl;
     private final String wsUrl;
@@ -20,12 +41,37 @@ public class RemoteOdlConfig {
     private final boolean enabled;
 
     public RemoteOdlConfig() {
-        this.baseUrl = "http://sdnr:8181";
-        this.wsUrl = "ws://sdnr:8181/websocket";
-        this.authMethod = AuthMethod.BASIC;
-        this.username = "admin";
-        this.password = "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U";
-        this.enabled = true;
+        this(FILENAME);
+    }
+
+    public RemoteOdlConfig(String filename) {
+        // try to load
+        File file = new File(filename);
+        Properties prop = null;
+        if (file.exists() && file.isFile() && file.canRead()) {
+            try (InputStream input = new FileInputStream(file)) {
+                prop = new Properties();
+                prop.load(input);
+
+            } catch (IOException ex) {
+                LOG.warn("problem loading config file {}: ",filename,ex);
+            }
+        }
+        if (prop != null) {
+            this.baseUrl = prop.getProperty(KEY_BASEURL, DEFAULT_BASEURL);
+            this.wsUrl = prop.getProperty(KEY_WSURL, DEFAULT_WSURL);
+            this.authMethod = AuthMethod.valueOf(prop.getProperty(KEY_AUTHMETHOD, DEFAULT_AUTHMETHOD));
+            this.username = prop.getProperty(KEY_USERNAME, DEFAULT_USERNAME);
+            this.password = prop.getProperty(KEY_PASSWORD, DEFAULT_PASSWORD);
+            this.enabled = "true".equals(prop.getProperty(KEY_ENABLED, DEFAULT_ENABLED));
+        } else {
+            this.baseUrl = DEFAULT_BASEURL;
+            this.wsUrl = DEFAULT_WSURL;
+            this.authMethod = AuthMethod.BASIC;
+            this.username = DEFAULT_USERNAME;
+            this.password = DEFAULT_PASSWORD;
+            this.enabled = true;
+        }
     }
 
     public String getBaseUrl() {
