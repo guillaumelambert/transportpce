@@ -35,8 +35,8 @@ public class RemoteOdlConfig {
     private static final String DEFAULT_WSURL = "ws://sdnr:8181/websocket";
     private static final String DEFAULT_AUTHMETHOD = AuthMethod.BASIC.name();
     private static final String DEFAULT_USERNAME = "admin";
-    private static final String DEFAULT_PASSWORD = "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U";
-    private static final boolean DEFAULT_ENABLED = true;
+    private static final String DEFAULT_PASSWORD = "admin";
+    private static final boolean DEFAULT_ENABLED = false;
     private static final boolean DEFAULT_TRUSTALL = false;
 
     private static final String ENVVARIABLE = "${";
