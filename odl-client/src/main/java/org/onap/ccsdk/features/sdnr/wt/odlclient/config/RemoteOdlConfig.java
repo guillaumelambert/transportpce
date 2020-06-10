@@ -9,9 +9,13 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +38,10 @@ public class RemoteOdlConfig {
     private static final String DEFAULT_PASSWORD = "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U";
     private static final boolean DEFAULT_ENABLED = true;
     private static final boolean DEFAULT_TRUSTALL = false;
+
+    private static final String ENVVARIABLE = "${";
+    private static final String REGEXENVVARIABLE = "(\\$\\{[A-Z0-9_-]+\\})";
+    private static final Pattern PATTERN = Pattern.compile(REGEXENVVARIABLE);
 
     private final String baseUrl;
     private final String wsUrl;
@@ -61,14 +69,15 @@ public class RemoteOdlConfig {
             }
         }
         if (prop != null) {
-            this.baseUrl = prop.getProperty(KEY_BASEURL, DEFAULT_BASEURL);
-            this.wsUrl = prop.getProperty(KEY_WSURL, DEFAULT_WSURL);
-            this.authMethod = AuthMethod.valueOf(prop.getProperty(KEY_AUTHMETHOD, DEFAULT_AUTHMETHOD));
-            this.username = prop.getProperty(KEY_USERNAME, DEFAULT_USERNAME);
-            this.password = prop.getProperty(KEY_PASSWORD, DEFAULT_PASSWORD);
-            this.enabled = "true".equals(prop.getProperty(KEY_ENABLED, String.valueOf(DEFAULT_ENABLED)));
+            this.baseUrl = getProperty(prop, KEY_BASEURL, DEFAULT_BASEURL);
+            this.wsUrl = getProperty(prop, KEY_WSURL, DEFAULT_WSURL);
+            this.authMethod = AuthMethod.valueOf(getProperty(prop, KEY_AUTHMETHOD, DEFAULT_AUTHMETHOD));
+            this.username = getProperty(prop, KEY_USERNAME, DEFAULT_USERNAME);
+            this.password = getProperty(prop, KEY_PASSWORD, DEFAULT_PASSWORD);
+            this.enabled = "true"
+                    .equals(getProperty(prop, KEY_ENABLED, String.valueOf(DEFAULT_ENABLED)));
             this.trustall = "true"
-                    .equals(prop.getProperty(KEY_TRUSTALL, String.valueOf(DEFAULT_TRUSTALL)));
+                    .equals(getProperty(prop, KEY_TRUSTALL, String.valueOf(DEFAULT_TRUSTALL)));
         } else {
             this.baseUrl = DEFAULT_BASEURL;
             this.wsUrl = DEFAULT_WSURL;
@@ -77,7 +86,68 @@ public class RemoteOdlConfig {
             this.password = DEFAULT_PASSWORD;
             this.enabled = DEFAULT_ENABLED;
             this.trustall = DEFAULT_TRUSTALL;
+            this.saveFile(filename);
         }
+    }
+
+    private void saveFile(String filename) {
+        try (OutputStream output = new FileOutputStream(filename)) {
+
+            Properties prop = new Properties();
+
+            // set the properties value
+            prop.setProperty(KEY_BASEURL, this.baseUrl);
+            prop.setProperty(KEY_WSURL, this.wsUrl);
+            prop.setProperty(KEY_AUTHMETHOD, this.authMethod.name());
+            prop.setProperty(KEY_USERNAME, "****");
+            prop.setProperty(KEY_PASSWORD, "****");
+            prop.setProperty(KEY_ENABLED, String.valueOf(this.enabled));
+            prop.setProperty(KEY_TRUSTALL, String.valueOf(this.trustall));
+            // save properties to project root folder
+            prop.store(output, null);
+
+        } catch (IOException io) {
+            LOG.warn("problem writing property file to {}: ",filename, io);
+        }
+
+    }
+
+
+    /**
+     * get property for key. with ability to have env var expression as value like
+     * mykey=${MYENV_VAR}
+     *
+     * @param prop     property object
+     * @param key      property key
+     * @param defValue default value
+     * @return its value, if env var then the value of this or if not exists then
+     *         defValue
+     */
+    private static String getProperty(final Properties prop, final String key, final String defValue) {
+        String value = prop.getProperty(key, defValue);
+        LOG.debug("try to get property for {} with def {}", key, defValue);
+
+        // try to read env var
+        if (value != null && value.contains(ENVVARIABLE)) {
+
+            LOG.debug("try to find env var(s) for {}", value);
+            final Matcher matcher = PATTERN.matcher(value);
+            String tmp = new String(value);
+            while (matcher.find() && matcher.groupCount() > 0) {
+                final String mkey = matcher.group(1);
+                if (mkey != null) {
+                    try {
+                        LOG.debug("match found for v={} and env key={}", tmp, mkey);
+                        String env = System.getenv(mkey.substring(2, mkey.length() - 1));
+                        tmp = tmp.replace(mkey, env == null ? "" : env);
+                    } catch (SecurityException e) {
+                        LOG.warn("unable to read env {}: {}", value, e);
+                    }
+                }
+            }
+            value = tmp;
+        }
+        return value;
     }
 
     public String getBaseUrl() {
