@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.http.BaseHTTPClient;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -32,12 +33,16 @@ public class RestconfHttpClient extends BaseHTTPClient {
     private static final Logger LOG = LoggerFactory.getLogger(RestconfHttpClient.class);
     private final Map<String, String> jsonHeaders;
 
-    public RestconfHttpClient(String base, boolean trustAllCerts) {
+    public RestconfHttpClient(String base, boolean trustAllCerts, AuthMethod authMethod, String username,
+            String password) throws Exception {
         super(base, trustAllCerts);
+        if (authMethod == AuthMethod.TOKEN) {
+            throw new Exception("not yet implemented");
+        }
         this.jsonHeaders = new HashMap<>();
         this.jsonHeaders.put("Content-Type", "application/json");
-        this.jsonHeaders.put("Authorization", BaseHTTPClient.getAuthorizationHeaderValue("admin",
-                "Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U"));
+        this.jsonHeaders.put("Authorization",
+                BaseHTTPClient.getAuthorizationHeaderValue(username, password));
         this.jsonHeaders.put("Accept", "application/xml");
     }
 
@@ -76,8 +81,8 @@ public class RestconfHttpClient extends BaseHTTPClient {
                 instanceIdentifier.getTargetType());
     }
 
-    public <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(
-            LogicalDatastoreType store, InstanceIdentifier<T> instanceIdentifier)
+    public <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(LogicalDatastoreType store,
+            InstanceIdentifier<T> instanceIdentifier)
             throws ClassNotFoundException, NoSuchFieldException, SecurityException,
             IllegalArgumentException, IllegalAccessException, IOException {
         return this.read(store, instanceIdentifier, null);

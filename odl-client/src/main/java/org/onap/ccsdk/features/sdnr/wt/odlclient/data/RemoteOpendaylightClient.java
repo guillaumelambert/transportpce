@@ -27,4 +27,6 @@ public interface RemoteOpendaylightClient {
 
     <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
         registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
+
+    boolean isEnabled();
 }

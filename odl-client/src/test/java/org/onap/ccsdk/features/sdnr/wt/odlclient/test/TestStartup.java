@@ -9,6 +9,7 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.test;
 
 import org.junit.Test;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.OpendaylightClient;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,11 +17,14 @@ public class TestStartup {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestStartup.class);
     private static final String NODEID = "roadmaa";
+    private static final String ODL_USERNAME = "admin";
+    private static final String ODLPASSWORD = "admin";
 
     @Test
     public void test() throws Exception {
-        OpendaylightClient odlClient = new OpendaylightClient("http://sdnr:8181", "ws://sdnr:8181/websocket");
-        LOG.info("device is present={}",odlClient.isDevicePresent(NODEID));
+        OpendaylightClient odlClient = new OpendaylightClient("http://sdnr:8181",
+                "ws://sdnr:8181/websocket", AuthMethod.BASIC, ODL_USERNAME, ODLPASSWORD);
+        LOG.info("device is present={}", odlClient.isDevicePresent(NODEID));
         sleep(5000);
         odlClient.close();
         LOG.info("test finished");

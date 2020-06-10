@@ -57,7 +57,7 @@ public class NetworkModelProvider {
         tpceNetwork.createLayer(NetworkUtils.UNDERLAY_NETWORK_ID);
         tpceNetwork.createLayer(NetworkUtils.OVERLAY_NETWORK_ID);
         tpceNetwork.createLayer(NetworkUtils.OTN_NETWORK_ID);
-        dataTreeChangeListenerRegistration = this.odlClient == null
+        dataTreeChangeListenerRegistration = !this.odlClient.isEnabled()
                 ? dataBroker.registerDataTreeChangeListener(
                         DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
                                 InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),

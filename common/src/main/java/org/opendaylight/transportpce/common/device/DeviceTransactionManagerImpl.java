@@ -144,7 +144,7 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
     }
 
     private Optional<DataBroker> getDeviceDataBroker(String deviceId) {
-        if (this.remoteOdlClient != null) {
+        if (this.remoteOdlClient.isEnabled()) {
             LOG.debug("using remote odl to get device databroker for {}", deviceId);
             return Optional.ofNullable(this.remoteOdlClient.getRemoteDeviceDataBroker(deviceId));
         }
@@ -159,7 +159,7 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
 
     @Override
     public Optional<MountPoint> getDeviceMountPoint(String deviceId) {
-        if (this.remoteOdlClient != null) {
+        if (this.remoteOdlClient.isEnabled()) {
             LOG.debug("using remote odl to get mountpoint for {}", deviceId);
             return Optional.ofNullable(this.remoteOdlClient.getMountPoint(deviceId));
         }

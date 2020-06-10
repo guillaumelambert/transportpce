@@ -17,6 +17,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketCallback;
@@ -73,13 +75,27 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
     };
     private final DataBroker dataBroker;
     private final Map<String, DataBroker> deviceDataBrokers;
+    private final RemoteOdlConfig config = new RemoteOdlConfig();
 
     public OpendaylightClient() throws Exception {
-        this("http://sdnr:8181", "ws://sdnr:8181/websocket");
+        this.restClient = new RestconfHttpClient(this.config.getBaseUrl(), TRUSTALLCERTS,
+                this.config.getAuthenticationMethod(), this.config.getCredentialUsername(),
+                this.config.getCredentialPassword());
+        this.wsClient = this.config.getWebsocketUrl() == null ? null : new WebSocketClient();
+        if (this.wsClient != null) {
+            this.wsClient.start();
+            ClientUpgradeRequest request = new ClientUpgradeRequest();
+            this.wsClient.connect(new SdnrWtWebsocket(this.wsCallback),
+                    new URI(this.config.getWebsocketUrl()), request);
+        }
+        this.dataBroker = new RemoteDataBroker(this.restClient);
+        this.deviceDataBrokers = new HashMap<>();
     }
 
-    public OpendaylightClient(String baseUrl, @Nullable String wsUrl) throws Exception {
-        this.restClient = new RestconfHttpClient(baseUrl, TRUSTALLCERTS);
+    public OpendaylightClient(String baseUrl, @Nullable String wsUrl, AuthMethod authMethod,
+            String username, String password) throws Exception {
+
+        this.restClient = new RestconfHttpClient(baseUrl, TRUSTALLCERTS, authMethod, username, password);
         this.wsClient = wsUrl == null ? null : new WebSocketClient();
         if (this.wsClient != null) {
             this.wsClient.start();
@@ -154,12 +170,16 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
         return null;
     }
 
-
     @Override
     public <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
         registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.config.isEnabled();
     }
 
 }
