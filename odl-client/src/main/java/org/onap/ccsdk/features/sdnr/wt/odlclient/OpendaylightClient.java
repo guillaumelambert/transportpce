@@ -75,26 +75,33 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
     };
     private final DataBroker dataBroker;
     private final Map<String, DataBroker> deviceDataBrokers;
-    private final RemoteOdlConfig config = new RemoteOdlConfig();
+    private final RemoteOdlConfig config;
 
     public OpendaylightClient() throws Exception {
-        this.restClient = new RestconfHttpClient(this.config.getBaseUrl(), TRUSTALLCERTS,
-                this.config.getAuthenticationMethod(), this.config.getCredentialUsername(),
-                this.config.getCredentialPassword());
-        this.wsClient = this.config.getWebsocketUrl() == null ? null : new WebSocketClient();
-        if (this.wsClient != null) {
-            this.wsClient.start();
-            ClientUpgradeRequest request = new ClientUpgradeRequest();
-            this.wsClient.connect(new SdnrWtWebsocket(this.wsCallback),
-                    new URI(this.config.getWebsocketUrl()), request);
+        this.config = new RemoteOdlConfig();
+        if (this.config.isEnabled()) {
+            this.restClient = new RestconfHttpClient(this.config.getBaseUrl(), TRUSTALLCERTS,
+                    this.config.getAuthenticationMethod(), this.config.getCredentialUsername(),
+                    this.config.getCredentialPassword());
+            this.wsClient = this.config.getWebsocketUrl() == null ? null : new WebSocketClient();
+            if (this.wsClient != null) {
+                this.wsClient.start();
+                ClientUpgradeRequest request = new ClientUpgradeRequest();
+                this.wsClient.connect(new SdnrWtWebsocket(this.wsCallback),
+                        new URI(this.config.getWebsocketUrl()), request);
+            }
+            this.dataBroker = new RemoteDataBroker(this.restClient);
+        } else {
+            this.restClient = null;
+            this.dataBroker = null;
+            this.wsClient = null;
         }
-        this.dataBroker = new RemoteDataBroker(this.restClient);
         this.deviceDataBrokers = new HashMap<>();
     }
 
     public OpendaylightClient(String baseUrl, @Nullable String wsUrl, AuthMethod authMethod,
             String username, String password) throws Exception {
-
+        this.config = null;
         this.restClient = new RestconfHttpClient(baseUrl, TRUSTALLCERTS, authMethod, username, password);
         this.wsClient = wsUrl == null ? null : new WebSocketClient();
         if (this.wsClient != null) {
@@ -105,20 +112,6 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
         this.dataBroker = new RemoteDataBroker(this.restClient);
         this.deviceDataBrokers = new HashMap<>();
     }
-    // @Override
-    // public <T extends DataObject> Optional<T> getConfigData(InstanceIdentifier<T>
-    // iif,String nodeId) throws IOException, ClassNotFoundException,
-    // NoSuchFieldException, SecurityException, IllegalArgumentException,
-    // IllegalAccessException{
-    // return this.restClient.readConfig(iif,nodeId);
-    // }
-    // @Override
-    // public <T extends DataObject> Optional<T>
-    // getOperationalData(InstanceIdentifier<T> iif,String nodeId) throws
-    // IOException, ClassNotFoundException, NoSuchFieldException, SecurityException,
-    // IllegalArgumentException, IllegalAccessException{
-    // return this.restClient.readOperational(iif,nodeId);
-    // }
 
     @Override
     public void close() throws Exception {
@@ -171,15 +164,15 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
-        registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener) {
+    public <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull DataTreeIdentifier<T> treeId, @NonNull L listener) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public boolean isEnabled() {
-        return this.config.isEnabled();
+        return this.config == null ? false : this.config.isEnabled();
     }
 
 }
