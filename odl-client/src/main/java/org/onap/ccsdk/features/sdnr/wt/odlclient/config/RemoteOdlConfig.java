@@ -88,6 +88,8 @@ public class RemoteOdlConfig {
             this.trustall = DEFAULT_TRUSTALL;
             this.saveFile(filename);
         }
+        LOG.info("loaded remote ODL config with enabled={}, remoteODL={}, wsUrl={} and trustall={}",
+                this.enabled, this.baseUrl, this.wsUrl, this.trustall);
     }
 
     private void saveFile(String filename) {
@@ -107,11 +109,10 @@ public class RemoteOdlConfig {
             prop.store(output, null);
 
         } catch (IOException io) {
-            LOG.warn("problem writing property file to {}: ",filename, io);
+            LOG.warn("problem writing property file to {}: ", filename, io);
         }
 
     }
-
 
     /**
      * get property for key. with ability to have env var expression as value like
