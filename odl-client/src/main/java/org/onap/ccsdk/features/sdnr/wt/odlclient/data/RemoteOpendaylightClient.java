@@ -12,8 +12,8 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.MountPoint;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 
 public interface RemoteOpendaylightClient {
 
@@ -25,8 +25,8 @@ public interface RemoteOpendaylightClient {
 
     MountPoint getMountPoint(String deviceId);
 
-    <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
-        registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener);
+    <L extends DataTreeChangeListener<Node>> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull DataTreeIdentifier<Node> treeId, @NonNull L listener);
 
     boolean isEnabled();
 }

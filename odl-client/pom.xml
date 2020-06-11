@@ -48,10 +48,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20131018</version>
-        </dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20131018</version>
+		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-client</artifactId>
@@ -91,55 +91,25 @@
 		</dependency>
 	</dependencies>
 
-
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<configuration>
-						<skip>true</skip>
-					</configuration>
-					<executions>
-						<execution>
-							<id>checkstyle-validation</id>
-							<phase>none</phase>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-
-		</pluginManagement>
 		<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<configuration>
-						<skip>true</skip>
-					</configuration>
-					<executions>
-						<execution>
-							<id>checkstyle-validation</id>
-							<phase>none</phase>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
+		<!-- have to overwrite checkstyle plugin due library with a default exception thrown which I have to catch -->
+			<plugin>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<failOnViolation>false</failOnViolation>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
-
-	<!-- <reporting> -->
-	<!-- <plugins> -->
-	<!-- <plugin> -->
-	<!-- <groupId>org.apache.maven.plugins</groupId> -->
-	<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
-	<!-- <configuration> -->
-	<!-- <sourcepath>*/target/generated-sources/mdsal-binding/*</sourcepath> -->
-	<!-- <excludePackageNames>*</excludePackageNames> -->
-	<!-- </configuration> -->
-	<!-- </plugin> -->
-	<!-- </plugins> -->
-	<!-- </reporting> -->
 	<reporting>
 		<plugins>
 			<plugin>

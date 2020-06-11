@@ -8,21 +8,20 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
-import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.eclipse.jetty.websocket.api.Session;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketCallback;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWtWebsocket;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -39,7 +38,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +50,7 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
                     new TopologyKey(new TopologyId(TopologyNetconf.QNAME.getLocalName())));
     private static final boolean TRUSTALLCERTS = false;
     private final RestconfHttpClient restClient;
-    private final WebSocketClient wsClient;
+    private final SdnrWebsocketClient wsClient;
     private final SdnrWebsocketCallback wsCallback = new SdnrWebsocketCallback() {
 
         @Override
@@ -68,7 +66,19 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
         }
 
         @Override
-        public void onDisconnect(SdnrWtWebsocket socket) {
+        public void onDisconnect(int statusCode, String reason) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onConnect(Session lsession) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onNotificationReceived(SdnrNotification notification) {
             // TODO Auto-generated method stub
 
         }
@@ -83,12 +93,11 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
             this.restClient = new RestconfHttpClient(this.config.getBaseUrl(),
                     this.config.trustAllCerts(), this.config.getAuthenticationMethod(),
                     this.config.getCredentialUsername(), this.config.getCredentialPassword());
-            this.wsClient = this.config.getWebsocketUrl() == null ? null : new WebSocketClient();
+            this.wsClient = this.config.getWebsocketUrl() == null ? null
+                    : new SdnrWebsocketClient(this.config.getWebsocketUrl(), this.wsCallback);
             if (this.wsClient != null) {
                 this.wsClient.start();
-                ClientUpgradeRequest request = new ClientUpgradeRequest();
-                this.wsClient.connect(new SdnrWtWebsocket(this.wsCallback),
-                        new URI(this.config.getWebsocketUrl()), request);
+
             }
             this.dataBroker = new RemoteDataBroker(this.restClient);
         } else {
@@ -103,12 +112,7 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
             String username, String password) throws Exception {
         this.config = null;
         this.restClient = new RestconfHttpClient(baseUrl, TRUSTALLCERTS, authMethod, username, password);
-        this.wsClient = wsUrl == null ? null : new WebSocketClient();
-        if (this.wsClient != null) {
-            this.wsClient.start();
-            ClientUpgradeRequest request = new ClientUpgradeRequest();
-            this.wsClient.connect(new SdnrWtWebsocket(this.wsCallback), new URI(wsUrl), request);
-        }
+        this.wsClient = wsUrl == null ? null : new SdnrWebsocketClient(wsUrl, this.wsCallback);
         this.dataBroker = new RemoteDataBroker(this.restClient);
         this.deviceDataBrokers = new HashMap<>();
     }
@@ -164,15 +168,17 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
-        registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener) {
+    public boolean isEnabled() {
+        return this.config == null ? false : this.config.isEnabled();
+    }
+
+    @Override
+    public <L extends DataTreeChangeListener<Node>> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull DataTreeIdentifier<Node> treeId, @NonNull L listener) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return this.config == null ? false : this.config.isEnabled();
-    }
+
 
 }

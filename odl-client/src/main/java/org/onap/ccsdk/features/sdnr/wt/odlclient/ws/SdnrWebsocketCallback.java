@@ -7,11 +7,18 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.ws;
 
+import org.eclipse.jetty.websocket.api.Session;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
+
 public interface SdnrWebsocketCallback {
+
+    void onConnect(Session lsession);
 
     void onMessageReceived(String msg);
 
-    void onDisconnect(SdnrWtWebsocket socket);
+    void onDisconnect(int statusCode, String reason);
 
     void onError(Throwable cause);
+
+    void onNotificationReceived(SdnrNotification notification);
 }

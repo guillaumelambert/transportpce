@@ -7,39 +7,60 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.ws;
 
+import java.io.IOException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotificationMapperXml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebSocket(maxTextMessageSize = 128 * 1024)
-public class SdnrWtWebsocket {
+public class SdnrWebsocket {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SdnrWtWebsocket.class);
-
-    @SuppressWarnings("unused")
-    private Session session;
+    private static final Logger LOG = LoggerFactory.getLogger(SdnrWebsocket.class);
+    private static final String MESSAGE_NOTIFICATION_REGISTER = "{\"data\":\"scopes\","
+            + "\"scopes\":[\"ObjectCreationNotification\",\"ObjectDeletionNotification\","
+            + "\"AttributeValueChangedNotification\",\"ProblemNotification\"]}";
 
     private final SdnrWebsocketCallback callback;
+    private final SdnrNotificationMapperXml mappper;
+    private Session session;
 
-    public SdnrWtWebsocket(SdnrWebsocketCallback cb) {
+    public SdnrWebsocket(SdnrWebsocketCallback cb) {
         this.callback = cb;
+        this.mappper = new SdnrNotificationMapperXml();
+    }
+
+    public boolean sendNotificationRegistration() {
+        if (this.session != null && this.session.isOpen()) {
+            try {
+                this.session.getRemote().sendString(MESSAGE_NOTIFICATION_REGISTER);
+                return true;
+            } catch (IOException e) {
+                LOG.warn("unable to send register message: ", e);
+                return false;
+            }
+        }
+        return false;
     }
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         LOG.debug("Connection closed: {} - {}", statusCode, reason);
         this.session = null;
+        this.callback.onDisconnect(statusCode, reason);
     }
 
     @OnWebSocketConnect
     public void onConnect(Session lsession) {
         LOG.debug("Got connect: {}", lsession);
         this.session = lsession;
+        this.callback.onConnect(lsession);
 
     }
 
@@ -47,6 +68,14 @@ public class SdnrWtWebsocket {
     public void onMessage(String msg) {
         LOG.debug("Got msg: {}", msg);
         this.callback.onMessageReceived(msg);
+        this.handleIncomingMessage(msg);
+    }
+
+    private void handleIncomingMessage(String msg) {
+        SdnrNotification notification = this.mappper.read(msg);
+        if (notification != null) {
+            this.callback.onNotificationReceived(notification);
+        }
     }
 
     @OnWebSocketError
