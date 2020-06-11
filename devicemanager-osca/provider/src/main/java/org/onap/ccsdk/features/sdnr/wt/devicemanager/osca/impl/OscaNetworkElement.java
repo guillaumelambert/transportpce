@@ -37,6 +37,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.interfac
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.Xponder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.shelf.Slots;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.shelves.Shelves;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.xponder.XpdrPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.NetworkElementDeviceType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.PmdataEntity;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
@@ -56,11 +57,15 @@ public class OscaNetworkElement implements NetworkElement {
 
 
 	private final long equipmentLevel = 0;
-	private Hashtable<String, Long> circuitPacksRecord = new Hashtable<String, Long>();
+	private Hashtable<String, Long> circuitPacksRecord;
+	private Hashtable<String, Long> shelfProvisionedcircuitPacks;
 	private ListenerRegistration<NotificationListener> oScaListenerRegistrationResult;
 	private @NonNull final OscaChangeNotificationListener oScaListener;
 	private ListenerRegistration<NotificationListener> oScaFaultListenerRegistrationResult;
 	private @NonNull OscaFaultNotificationListener oScaFaultListener;
+	private ListenerRegistration<NotificationListener> oScaDeviceListenerRegistrationResult;
+	private OscaDeviceChangeNotificationListener oScaDeviceListener;
+	
 	private OscaInventoryInput oscaInventoryInput;
 	private PmDataBuilderOpenRoadm openRoadmPmData;
 	private InitialDeviceAlarmReader initialAlarmReader;
@@ -76,7 +81,12 @@ public class OscaNetworkElement implements NetworkElement {
 		this.oScaListener = new OscaChangeNotificationListener(netconfAccessor, databaseService);
 		this.oScaFaultListenerRegistrationResult = null;
 		this.oScaFaultListener = new OscaFaultNotificationListener(netconfAccessor, serviceProvider);
+		this.oScaDeviceListenerRegistrationResult = null;
+		this.oScaDeviceListener = new OscaDeviceChangeNotificationListener(netconfAccessor, databaseService);
+		
 		this.oscaInventoryInput = new OscaInventoryInput(netconfAccess, readDevice(netconfAccess));
+		this.circuitPacksRecord = new Hashtable<String, Long>();
+		this.shelfProvisionedcircuitPacks = new Hashtable<String, Long>();
 
 
 		this.openRoadmPmData = new PmDataBuilderOpenRoadm(this.netconfAccessor, serviceProvider.getDataProvider());
@@ -134,14 +144,19 @@ public class OscaNetworkElement implements NetworkElement {
 						shelf.getShelfName(), shelf.getSerialId(), shelf.getProductCode(), shelf.getShelfPosition(),
 						shelf.getEquipmentState(), shelf.getHardwareVersion(), shelf.getShelfType(), shelf.getVendor(),
 						shelf.getLifecycleState());
+				databaseService.writeInventory(this.oscaInventoryInput.getShelvesInventory(shelf, equipmentLevel + 1));
 				List<Slots> slotList = shelf.getSlots();
 				if (slotList != null) {
 					for (Slots slot : slotList) {
+						if(!slot.getProvisionedCircuitPack().isEmpty()) {
+							this.shelfProvisionedcircuitPacks.put(slot.getProvisionedCircuitPack(), equipmentLevel+2);
+						}
 						log.info("Slots for the shelf: {}", shelf.getShelfName());
 						log.info("\n Slot Name: {}, \n Status: {}, \n Slot label: {} ", slot.getSlotName(),
 								slot.getSlotStatus(), slot.getLabel());
 					}
 				}
+				log.info("size of shelfProvisionedcircuitPacks: {} ", shelfProvisionedcircuitPacks.size());
 
 			}
 
@@ -152,8 +167,19 @@ public class OscaNetworkElement implements NetworkElement {
 		List<Xponder> xponderList = device.getXponder();
 		if (xponderList != null) {
 			for (Xponder xponder : xponderList) {
+				databaseService.writeInventory(this.oscaInventoryInput.getXponderInventory(xponder, equipmentLevel+1));
 				log.info("Xponders: No.: {} , \n Port: {} ,\n Type: {}", xponder.getXpdrNumber(), xponder.getXpdrPort(),
 						xponder.getXpdrType());
+				List<XpdrPort> xpdrportlist =xponder.getXpdrPort();
+				if(xpdrportlist!= null) {
+					for(XpdrPort xpdrport: xpdrportlist)
+						if(!xpdrport.getCircuitPackName().isEmpty()) {
+							this.shelfProvisionedcircuitPacks.put(xpdrport.getCircuitPackName(), equipmentLevel+2);
+							log.info("Size of dict{}", this.shelfProvisionedcircuitPacks.size());
+						}
+					
+
+				}
 			}
 
 		}
@@ -161,19 +187,48 @@ public class OscaNetworkElement implements NetworkElement {
 
 	private void readCircuitPacketData(OrgOpenroadmDevice device) {
 		List<CircuitPacks> circuitpacklist = device.getCircuitPacks();
+		for(String s: this.shelfProvisionedcircuitPacks.keySet()) {
+			log.info("key {}", s);
+		}
 		if (circuitpacklist != null) {
 			for (CircuitPacks cp : circuitpacklist) {
-//				log.info("CP Name:{}", cp.getCircuitPackName());
-				if (cp.getParentCircuitPack() != null) {
-					circuitPacksRecord.put(cp.getCircuitPackName(), (equipmentLevel + 2));
-					databaseService
-							.writeInventory(this.oscaInventoryInput.getCircuitPackInventory(cp, equipmentLevel + 2));
-				} else {
-					circuitPacksRecord.put(cp.getCircuitPackName(), (equipmentLevel + 1));
-					databaseService
-							.writeInventory(this.oscaInventoryInput.getCircuitPackInventory(cp, equipmentLevel + 1));
+				log.info("CP Name:{}", cp.getCircuitPackName());
+				if(!this.shelfProvisionedcircuitPacks.isEmpty() && this.shelfProvisionedcircuitPacks.containsKey(cp.getCircuitPackName())) {
+
+					this.circuitPacksRecord.put(cp.getCircuitPackName(), (equipmentLevel + 2));
+					databaseService.writeInventory(this.oscaInventoryInput.getCircuitPackInventory(cp, this.shelfProvisionedcircuitPacks.get(cp.getCircuitPackName())));
+					log.info("shelf has circuit pack");
 				}
+				else {
+					if (cp.getParentCircuitPack() == null) {
+						this.circuitPacksRecord.put(cp.getCircuitPackName(), (equipmentLevel + 1));
+						databaseService
+								.writeInventory(this.oscaInventoryInput.getCircuitPackInventory(cp, equipmentLevel + 1));
+						log.info("Cp has no parent circuit pack and no shelf");
+
+					} 
+					else {
+						if(this.shelfProvisionedcircuitPacks.containsKey(cp.getParentCircuitPack().getCircuitPackName())) {
+							this.circuitPacksRecord.put(cp.getCircuitPackName(), (equipmentLevel + 3));
+							databaseService
+									.writeInventory(this.oscaInventoryInput.getCircuitPackInventory(cp, equipmentLevel + 3));
+							log.info("Cp {} has parent circuit pack and shelf", cp.getCircuitPackName());
+						}
+						else {
+							this.circuitPacksRecord.put(cp.getCircuitPackName(), (equipmentLevel + 2));
+							databaseService
+									.writeInventory(this.oscaInventoryInput.getCircuitPackInventory(cp, equipmentLevel + 2));
+							log.info("Cp {} has parent circuit pack but no shelf", cp.getCircuitPackName());
+
+						}
+
+						
+					}
+				}	
+				
+				
 			}
+
 		}
 
 	}
@@ -183,10 +238,21 @@ public class OscaNetworkElement implements NetworkElement {
 		if (interfaceList != null) {
 			for (Interface deviceInterface : interfaceList) {
 
-//				log.info("\n InterfaceName: {}", deviceInterface.getName());
-				if (circuitPacksRecord.containsKey(deviceInterface.getSupportingCircuitPackName())) {
-					databaseService.writeInventory(this.oscaInventoryInput.getInterfacesInventory(deviceInterface,
-							circuitPacksRecord.get(deviceInterface.getSupportingCircuitPackName()) + 1));
+				log.info("\n InterfaceName: {}", deviceInterface.getName());
+				log.info("Supporting CP {}",this.circuitPacksRecord.size());
+				for (String s : this.circuitPacksRecord.keySet()) {
+					log.info("{} value {}", s, this.circuitPacksRecord.get(s));
+				}
+				log.info("Interface {} and their supporting CP {}", deviceInterface.getName(), deviceInterface.getSupportingCircuitPackName());
+				
+
+				if (deviceInterface.getSupportingCircuitPackName() !=null)
+					{
+					if(this.circuitPacksRecord.containsKey(deviceInterface.getSupportingCircuitPackName())) {
+						databaseService.writeInventory(this.oscaInventoryInput.getInterfacesInventory(deviceInterface,
+								this.circuitPacksRecord.get(deviceInterface.getSupportingCircuitPackName()) + 1));
+					}
+
 				} else {
 					databaseService.writeInventory(
 							this.oscaInventoryInput.getInterfacesInventory(deviceInterface, equipmentLevel + 1));
@@ -223,7 +289,7 @@ public class OscaNetworkElement implements NetworkElement {
 
 		this.oScaListenerRegistrationResult = netconfAccessor.doRegisterNotificationListener(oScaListener);
 		this.oScaFaultListenerRegistrationResult = netconfAccessor.doRegisterNotificationListener(oScaFaultListener);
-
+		this.oScaDeviceListenerRegistrationResult = netconfAccessor.doRegisterNotificationListener(oScaDeviceListener);
 //		 Register netconf stream
 		netconfAccessor.registerNotificationsStream(NetconfAccessor.DefaultNotificationsStream);
 
@@ -237,7 +303,9 @@ public class OscaNetworkElement implements NetworkElement {
 		if (oScaFaultListenerRegistrationResult != null) {
 			this.oScaFaultListenerRegistrationResult.close();
 		}
-		;
+		if(oScaDeviceListenerRegistrationResult != null) {
+			this.oScaDeviceListenerRegistrationResult.close();
+		}
 	}
 
 	@Override

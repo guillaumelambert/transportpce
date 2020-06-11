@@ -1,6 +1,8 @@
 package org.onap.ccsdk.features.sdnr.wt.devicemanager.osca.impl;
 
+
 import org.eclipse.jdt.annotation.NonNull;
+import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 //import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.DeviceManagerServiceProvider;
 import org.onap.ccsdk.features.sdnr.wt.devicemanager.service.FaultService;
@@ -16,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class OscaFaultNotificationListener implements OrgOpenroadmAlarmListener {
 	private static final Logger log = LoggerFactory.getLogger(OrgOpenroadmAlarmListener.class);
-	private final NetconfAccessor accesor;
+	//private final NetconfAccessor accesor;
 //	private final DataProvider databaseProvider;
 	private final @NonNull FaultService faultEventListener;
 	private Integer count = 1;
@@ -24,8 +26,9 @@ public class OscaFaultNotificationListener implements OrgOpenroadmAlarmListener 
 	public OscaFaultNotificationListener(NetconfAccessor netConfAccessor,
 			DeviceManagerServiceProvider serviceProvider) {
 //		this.databaseProvider = serviceProvider.getDataProvider();
-		this.accesor = netConfAccessor;
+		//this.accesor = netConfAccessor;
 		this.faultEventListener = serviceProvider.getFaultService();
+	
 	}
 
 	@Override
@@ -45,6 +48,7 @@ public class OscaFaultNotificationListener implements OrgOpenroadmAlarmListener 
 		log.info("Notification is written into the database {}", faultAlarm.getObjectId());
 
 	}
+	
 
 // Mapping Severity of AlarmNotification to SeverityType of FaultLog
 	private SeverityType checkSeverityValue(Severity severity) {

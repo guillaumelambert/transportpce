@@ -29,6 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.pro
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.data.provider.rev190801.InventoryBuilder;
 
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.interfaces.grp.Interface;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.org.openroadm.device.Xponder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,6 @@ public class OscaInventoryInput {
 	}
 
 	private static final Logger log = LoggerFactory.getLogger(OscaInventoryInput.class);
-	
 
 	public Inventory getInventoryData(long treeLevel) {
 		InventoryBuilder inventoryBuilder = new InventoryBuilder();
@@ -65,13 +65,23 @@ public class OscaInventoryInput {
 				.setVersion(this.openRoadmDevice.getInfo().getOpenroadmVersion().getName())
 				.setDescription("org-openroadm-device").setParentUuid("None")
 				.setTypeName(this.openRoadmDevice.getInfo().getNodeType().getName()).setPartTypeId("device");
-//		log.info("Inventory data written for {}", this.openRoadmDevice.getInfo().getNodeId().getValue());
+		log.info("Inventory data written for {}", this.openRoadmDevice.getInfo().getNodeId().getValue());
 		return inventoryBuilder.build();
 	}
 
-	public Inventory getShelvesInventory(Shelves shelf) {
+	public Inventory getShelvesInventory(Shelves shelf, long treeLevel) {
 		InventoryBuilder inventoryBuilder = new InventoryBuilder();
-
+		inventoryBuilder.setNodeId(this.accessor.getNodeId().getValue()).setId(shelf.getShelfName())
+				.setDescription((shelf.getUserDescription() == null)
+						? ("Position: " + shelf.getShelfPosition() + "\nState: " + shelf.getOperationalState())
+						: (shelf.getUserDescription()) + "\nPosition: " + shelf.getShelfPosition() + "\nState: "
+								+ shelf.getOperationalState())
+				.setSerial(shelf.getSerialId()).setUuid(shelf.getShelfName())
+				.setParentUuid(this.openRoadmDevice.getInfo().getNodeId().getValue()).setTreeLevel(treeLevel)
+				.setTypeName(shelf.getShelfType()).setPartTypeId(shelf.getClei())
+				.setManufacturerIdentifier(shelf.getVendor()).setModelIdentifier(shelf.getModel())
+				.setVersion(shelf.getHardwareVersion()).setDate(shelf.getManufactureDate().getValue());
+		log.info("Inventory data written for {}", shelf.getShelfName());
 		return inventoryBuilder.build();
 	}
 
@@ -84,10 +94,9 @@ public class OscaInventoryInput {
 				.setTypeName(
 						deviceInterface.getType().getName().substring(69, deviceInterface.getType().getName().length()))
 				.setPartTypeId("Interface").setManufacturerIdentifier(this.openRoadmDevice.getInfo().getVendor())
-				.setModelIdentifier(this.openRoadmDevice.getInfo().getModel())
-				.setVersion("N/A")
+				.setModelIdentifier(this.openRoadmDevice.getInfo().getModel()).setVersion("N/A")
 				.setDate(this.openRoadmDevice.getInfo().getCurrentDatetime().getValue());
-//		log.info("Inventory data written for {}", deviceInterface.getName());
+		log.info("Inventory data written for {}", deviceInterface.getName());
 
 		return inventoryBuilder.build();
 	}
@@ -103,11 +112,28 @@ public class OscaInventoryInput {
 				.setDescription("ProductCode: " + circuitPack.getProductCode() + "  " + "Mode: "
 						+ circuitPack.getCircuitPackMode())
 				.setTypeName((circuitPack.getType() == null) ? circuitPack.getCircuitPackType() : circuitPack.getType())
-				.setPartTypeId((circuitPack.getClei()== null)? circuitPack.getType():circuitPack.getClei())
-				.setParentUuid((circuitPack.getParentCircuitPack() == null)
-						? this.openRoadmDevice.getInfo().getNodeId().getValue()
-						: circuitPack.getParentCircuitPack().getCircuitPackName());
-//		log.info("Inventory data written for {}", circuitPack.getCircuitPackName());
+				.setPartTypeId((circuitPack.getClei() == null) ? circuitPack.getType() : circuitPack.getClei())
+				.setParentUuid((circuitPack.getParentCircuitPack() != null)
+						? circuitPack.getParentCircuitPack().getCircuitPackName()
+						: (circuitPack.getShelf() != null) ? circuitPack.getShelf()
+								: this.openRoadmDevice.getInfo().getNodeId().getValue());
+		log.info("Inventory data written for {}", circuitPack.getCircuitPackName());
+
+		return inventoryBuilder.build();
+	}
+
+	public Inventory getXponderInventory(Xponder xpdr, long treeLevel) {
+		InventoryBuilder inventoryBuilder = new InventoryBuilder();
+		inventoryBuilder.setNodeId(this.accessor.getNodeId().getValue()).setId(xpdr.getXpdrNumber().toString())
+				.setDescription("Xponder\nLifecycleState: " + xpdr.getLifecycleState().getName())
+				.setUuid(xpdr.getXpdrNumber().toString()).setSerial(xpdr.getXpdrNumber().toString())
+				.setParentUuid(this.openRoadmDevice.getInfo().getNodeId().getValue()).setTreeLevel(treeLevel)
+				.setTypeName(xpdr.getXpdrType().getName()).setPartTypeId(xpdr.getXpdrType().getName())
+				.setManufacturerIdentifier(this.openRoadmDevice.getInfo().getVendor())
+				.setModelIdentifier(this.openRoadmDevice.getInfo().getModel())
+				.setVersion(this.openRoadmDevice.getInfo().getOpenroadmVersion().getName())
+				.setDate(this.openRoadmDevice.getInfo().getCurrentDatetime().getValue());
+		log.info("Inventory data written for {}", xpdr.getXpdrNumber());
 
 		return inventoryBuilder.build();
 	}

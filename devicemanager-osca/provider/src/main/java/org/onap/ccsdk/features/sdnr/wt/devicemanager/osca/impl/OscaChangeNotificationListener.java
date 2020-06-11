@@ -18,8 +18,11 @@
 package org.onap.ccsdk.features.sdnr.wt.devicemanager.osca.impl;
 
 import java.util.List;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.dataprovider.model.DataProvider;
 import org.onap.ccsdk.features.sdnr.wt.netconfnodestateservice.NetconfAccessor;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.ChangeNotification;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.notifications.rev120206.IetfNetconfNotificationsListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.notifications.rev120206.NetconfCapabilityChange;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.netconf.notifications.rev120206.NetconfConfigChange;
@@ -94,6 +97,34 @@ public class OscaChangeNotificationListener  implements IetfNetconfNotifications
             databaseService.writeEventLog(eventlogBuilder.build());
         }
         log.info("onNetconfConfigChange (2) {}", sb);
+    }
+    
+    public void onDeviceConfigChange(ChangeNotification notification) {
+    	log.info("onDeviceConfigChange(1){}", notification);
+        StringBuffer sb = new StringBuffer();
+        @NonNull List<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.change.notification.Edit> editList = notification.nonnullEdit();
+        for (org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev191129.change.notification.Edit edit : editList) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append(edit);
+
+            EventlogBuilder eventlogBuilder = new EventlogBuilder();
+
+            InstanceIdentifier<?> target = edit.getTarget();
+            if (target != null) {
+                eventlogBuilder.setObjectId(target.toString());
+                log.info("TARGET: {} {} {}", target.getClass(), target.getTargetType());
+                for (PathArgument pa : target.getPathArguments()) {
+                    log.info("PathArgument {}", pa);
+                }
+            }
+            eventlogBuilder.setNodeId(netconfAccessor.getNodeId().getValue());
+            eventlogBuilder.setNewValue(String.valueOf(edit.getOperation()));
+            databaseService.writeEventLog(eventlogBuilder.build());
+    	
+    }
+        log.info("onDeviceConfigChange (2) {}", sb);
     }
 
 }
