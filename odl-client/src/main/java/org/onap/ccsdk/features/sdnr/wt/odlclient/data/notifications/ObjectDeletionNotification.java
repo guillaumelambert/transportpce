@@ -8,10 +8,9 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 
 @XmlRootElement(name = "ObjectDeletionNotification")
-public class ObjectDeletionNotification extends BaseNotification implements SdnrNotification {
+public class ObjectDeletionNotification extends BaseNotification {
 
     @Override
     public String toString() {

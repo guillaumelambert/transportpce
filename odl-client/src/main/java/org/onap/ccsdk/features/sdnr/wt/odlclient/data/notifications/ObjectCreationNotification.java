@@ -8,10 +8,9 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 
 @XmlRootElement(name = "ObjectCreationNotification")
-public class ObjectCreationNotification extends BaseNotification implements SdnrNotification {
+public class ObjectCreationNotification extends BaseNotification {
 
     @Override
     public String toString() {

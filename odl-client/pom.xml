@@ -93,7 +93,8 @@
 
 	<build>
 		<plugins>
-		<!-- have to overwrite checkstyle plugin due library with a default exception thrown which I have to catch -->
+			<!-- have to overwrite checkstyle plugin due library with a default exception 
+				thrown which I have to catch -->
 			<plugin>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<executions>

@@ -3,6 +3,15 @@ version: '3'
 services:
   transportpce:
     image: odl/transportpce
+    volumes: 
+      - ./conf/remoteodl.properties:/opt/opendaylight/etc/remoteodl.properties
+    environment: 
+      - REMOTE_SDNRURL=http://sdnr:8181
+      - REMOTE_WSURL="ws://sdnr:8181/websocket"
+      - REMOTE_ODL_USERNAME=admin
+      - REMOTE_ODL_PASSWORD=Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U
+      - REMOTE_ODL_ENABLED=true
+      - REMOTE_ODL_TRUSTALL=false
     depends_on: 
       - sdnr
   sdncweb:

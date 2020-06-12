@@ -19,6 +19,10 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDataBroker;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDataTreeChangeProvider;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDeviceDataBroker;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteMountPoint;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketCallback;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketClient;
@@ -79,12 +83,15 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
 
         @Override
         public void onNotificationReceived(SdnrNotification notification) {
-            // TODO Auto-generated method stub
+            if(notification.isControllerNotification()) {
+                dataTreeChangeProvider.onControllerNotification(notification);
+            }
 
         }
     };
     private final DataBroker dataBroker;
     private final Map<String, DataBroker> deviceDataBrokers;
+    private final RemoteDataTreeChangeProvider<Node> dataTreeChangeProvider;
     private final RemoteOdlConfig config;
 
     public OpendaylightClient() throws Exception {
@@ -104,7 +111,9 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
             this.restClient = null;
             this.dataBroker = null;
             this.wsClient = null;
+
         }
+        this.dataTreeChangeProvider = new RemoteDataTreeChangeProvider<>(this.restClient);
         this.deviceDataBrokers = new HashMap<>();
     }
 
@@ -114,6 +123,7 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
         this.restClient = new RestconfHttpClient(baseUrl, TRUSTALLCERTS, authMethod, username, password);
         this.wsClient = wsUrl == null ? null : new SdnrWebsocketClient(wsUrl, this.wsCallback);
         this.dataBroker = new RemoteDataBroker(this.restClient);
+        this.dataTreeChangeProvider = new RemoteDataTreeChangeProvider<>(this.restClient);
         this.deviceDataBrokers = new HashMap<>();
     }
 
@@ -163,8 +173,7 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
 
     @Override
     public MountPoint getMountPoint(String deviceId) {
-        // TODO Auto-generated method stub
-        return null;
+        return new RemoteMountPoint(this.restClient, deviceId);
     }
 
     @Override
@@ -175,8 +184,7 @@ public class OpendaylightClient implements AutoCloseable, RemoteOpendaylightClie
     @Override
     public <L extends DataTreeChangeListener<Node>> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
             @NonNull DataTreeIdentifier<Node> treeId, @NonNull L listener) {
-        // TODO Auto-generated method stub
-        return null;
+        return this.dataTreeChangeProvider.register(treeId, listener);
     }
 
 

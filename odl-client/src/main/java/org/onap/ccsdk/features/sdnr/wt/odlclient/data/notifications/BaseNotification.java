@@ -7,9 +7,13 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 
-public abstract class BaseNotification {
+public abstract class BaseNotification implements SdnrNotification {
 
     private static String EMPTY = "empty";
 
@@ -53,4 +57,11 @@ public abstract class BaseNotification {
         return this.getClass().getSimpleName();
     }
 
+    @Override
+    public boolean isControllerNotification() {
+        final String regex = "^SDN-Controller-[0-9]*$";
+        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        final Matcher matcher = pattern.matcher(this.nodeName);
+        return matcher.find();
+    }
 }

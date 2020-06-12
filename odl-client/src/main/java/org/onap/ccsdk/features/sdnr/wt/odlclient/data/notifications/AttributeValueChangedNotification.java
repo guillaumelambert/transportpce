@@ -7,9 +7,7 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications;
 
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
-
-public class AttributeValueChangedNotification extends BaseNotification implements SdnrNotification {
+public class AttributeValueChangedNotification extends BaseNotification {
 
     private String attributeName;
     private String newValue;

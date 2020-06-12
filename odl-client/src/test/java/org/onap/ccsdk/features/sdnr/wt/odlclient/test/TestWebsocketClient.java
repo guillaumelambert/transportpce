@@ -24,9 +24,9 @@ public class TestWebsocketClient {
     private static final Logger LOG = LoggerFactory.getLogger(TestWebsocketClient.class);
 
     private static final String ATTRIBUTEVALUECHANGED_NOTIFICATION = "<?xml version=\"1.0\" "
-            + "encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-            + "<AttributeValueChangedNotification>\n" + "    <counter>6</counter>\n"
-            + "    <nodeName>SDN-Controller-0</nodeName>\n" + "    <objectId>ROADM-A</objectId>\n"
+            + "encoding=\"UTF-8\" standalone=\"yes\"?>\n" + "<AttributeValueChangedNotification>\n"
+            + "    <counter>6</counter>\n" + "    <nodeName>SDN-Controller-0</nodeName>\n"
+            + "    <objectId>ROADM-A</objectId>\n"
             + "    <timeStamp>2020-06-10T08:58:37.0Z</timeStamp>\n"
             + "    <attributeName>ConnectionStatus</attributeName>\n"
             + "    <newValue>connecting</newValue>\n" + "</AttributeValueChangedNotification>\n" + "";
@@ -41,7 +41,7 @@ public class TestWebsocketClient {
             + "    <objectId>ROADM-A</objectId>\n"
             + "    <timeStamp>2020-06-10T08:58:36.7Z</timeStamp>\n" + "</ObjectDeletionNotification>";
 
-    // @Test
+    @Test
     public void test() throws URISyntaxException {
 
         SdnrWebsocketCallback callback = new SdnrWebsocketCallback() {
@@ -69,8 +69,7 @@ public class TestWebsocketClient {
 
             @Override
             public void onNotificationReceived(SdnrNotification notification) {
-                // TODO Auto-generated method stub
-
+                LOG.info("notification: {}", notification);
             }
         };
         SdnrWebsocketClient wsClient = new SdnrWebsocketClient("ws://172.19.0.4:8080/websocket",
