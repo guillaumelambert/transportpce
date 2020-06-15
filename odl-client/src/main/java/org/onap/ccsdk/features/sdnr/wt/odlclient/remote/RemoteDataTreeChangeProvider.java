@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
+import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
@@ -22,39 +23,41 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 public class RemoteDataTreeChangeProvider<N extends Node, D extends DataTreeChangeListener<N>> {
 
-	private final RestconfHttpClient client;
-	private final List<RemoteListenerRegistration<D, N>> listeners;
+    private final RestconfHttpClient client;
+    private final List<RemoteListenerRegistration<D, N>> listeners;
 
-	public RemoteDataTreeChangeProvider(RestconfHttpClient restClient) {
-		this.client = restClient;
-		this.listeners = new ArrayList<>();
-	}
+    public RemoteDataTreeChangeProvider(RestconfHttpClient restClient) {
+        this.client = restClient;
+        this.listeners = new ArrayList<>();
+    }
 
-	private final CloseCallback<D, N> closeCallback = new CloseCallback<>() {
+    private final CloseCallback<D, N> closeCallback = new CloseCallback<D, N>() {
 
-		@Override
-		public void onClose(RemoteListenerRegistration<D, N> reg) {
-			listeners.remove(reg);
-		}
-	};
+        @Override
+        public void onClose(RemoteListenerRegistration<D, N> reg) {
+            listeners.remove(reg);
+        }
+    };
 
-	public void onControllerNotification(SdnrNotification notification) {
-		for (RemoteListenerRegistration<D, N> reg : this.listeners) {
-			@NonNull
-			Collection<DataTreeModification<N>> changes = Arrays.asList(this.createModification(notification));
-			reg.getInstance().onDataTreeChanged(changes);
-		}
-	}
+    public void onControllerNotification(SdnrNotification notification) {
+        for (RemoteListenerRegistration<D, N> reg : this.listeners) {
+            @NonNull
+            Collection<DataTreeModification<N>> changes = Arrays
+                    .asList(this.createModification(notification));
+            reg.getInstance().onDataTreeChanged(changes);
+        }
+    }
 
-	private DataTreeModification<N> createModification(SdnrNotification notification) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private DataTreeModification<N> createModification(SdnrNotification notification) {
+        return new RemoteDataTreeModification<N>(notification);
+    }
 
-	public @NonNull ListenerRegistration<D> register(@NonNull DataTreeIdentifier<N> treeId, @NonNull D listener) {
-		RemoteListenerRegistration<D, N> reg = new RemoteListenerRegistration<>(listener, this.closeCallback);
-		this.listeners.add(reg);
-		return reg;
-	}
+    public @NonNull ListenerRegistration<D> register(@NonNull DataTreeIdentifier<N> treeId,
+            @NonNull D listener) {
+        RemoteListenerRegistration<D, N> reg = new RemoteListenerRegistration<>(listener,
+                this.closeCallback);
+        this.listeners.add(reg);
+        return reg;
+    }
 
 }

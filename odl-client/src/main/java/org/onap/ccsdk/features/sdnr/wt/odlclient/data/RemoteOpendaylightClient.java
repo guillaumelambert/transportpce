@@ -17,17 +17,22 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 
 public interface RemoteOpendaylightClient<N extends Node, D extends DataTreeChangeListener<N>> {
 
-	DataBroker getRemoteDeviceDataBroker(String nodeId);
+    DataBroker getRemoteDeviceDataBroker(String nodeId);
 
-	DataBroker getRemoteDataBroker();
+    DataBroker getRemoteDataBroker();
 
-	boolean isDevicePresent(String nodeId);
+    boolean isDevicePresent(String nodeId);
 
-	MountPoint getMountPoint(String deviceId);
+    MountPoint getMountPoint(String deviceId);
 
-	@NonNull ListenerRegistration<D> registerDataTreeChangeListener(
-            @NonNull DataTreeIdentifier<N> treeId, @NonNull D listener);
+    @NonNull
+    ListenerRegistration<D> registerDataTreeChangeListener(@NonNull DataTreeIdentifier<N> treeId,
+            @NonNull D listener);
 
-	boolean isEnabled();
+    void registerDeviceConnectionChangeListener(DeviceConnectionChangedHandler listener);
+
+    boolean isEnabled();
+
+    void unregisterDeviceConnectionChangeListener(DeviceConnectionChangedHandler listener);
 
 }

@@ -37,8 +37,8 @@ public class RemoteDataBroker implements DataBroker {
     }
 
     @Override
-    public <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L>
-        registerDataTreeChangeListener(@NonNull DataTreeIdentifier<T> treeId, @NonNull L listener) {
+    public <T extends DataObject, L extends DataTreeChangeListener<T>> @NonNull ListenerRegistration<L> registerDataTreeChangeListener(
+            @NonNull DataTreeIdentifier<T> treeId, @NonNull L listener) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -84,7 +84,6 @@ public class RemoteDataBroker implements DataBroker {
         @Override
         public <T extends DataObject> @NonNull FluentFuture<java.util.Optional<T>> read(
                 @NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path) {
-            // TODO Auto-generated method stub
             try {
                 return this.client.read(store, path);
             } catch (ClassNotFoundException | NoSuchFieldException | SecurityException

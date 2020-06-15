@@ -66,7 +66,9 @@ public class NetworkModelProvider {
                         DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
                                 InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
                         topologyListener);
-
+        if(this.odlClient.isEnabled()) {
+            this.odlClient.registerDeviceConnectionChangeListener(topologyListener);
+        }
         networkutilsServiceRpcRegistration = rpcProviderService
                 .registerRpcImplementation(TransportpceNetworkutilsService.class, networkutilsService);
     }
@@ -82,5 +84,6 @@ public class NetworkModelProvider {
         if (networkutilsServiceRpcRegistration != null) {
             networkutilsServiceRpcRegistration.close();
         }
+        this.odlClient.unregisterDeviceConnectionChangeListener(topologyListener);
     }
 }
