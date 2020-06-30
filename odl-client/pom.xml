@@ -61,6 +61,11 @@
 			<artifactId>yang-binding</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.opendaylight.yangtools</groupId>
+			<artifactId>yang-data-codec-xml</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>
@@ -88,6 +93,12 @@
 			<groupId>${transportpce.groupId}</groupId>
 			<artifactId>transportpce-api</artifactId>
 			<version>${transportpce.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<version>1.6</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

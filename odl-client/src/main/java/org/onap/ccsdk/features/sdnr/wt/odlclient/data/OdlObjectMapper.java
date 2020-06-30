@@ -19,10 +19,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder.Value;
@@ -30,6 +32,9 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
+import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -44,9 +49,11 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeIdType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.EquipmentEntity;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.credentials.Credentials;
 import org.opendaylight.yangtools.concepts.Builder;
+import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.slf4j.Logger;
@@ -64,9 +71,12 @@ public class OdlObjectMapper extends ObjectMapper {
         setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
         setSerializationInclusion(Include.NON_NULL);
         setAnnotationIntrospector(new YangToolsBuilderAnnotationIntrospector());
+
         SimpleModule customSerializerModule = new SimpleModule();
         customSerializerModule.addSerializer(DateAndTime.class, new CustomDateAndTimeSerializer());
+        customSerializerModule.addSerializer(EquipmentEntity.class, new CustomChoiceSerializer());
         customSerializerModule.setDeserializerModifier(new CustomOdlDeserializer());
+
         customSerializerModule.addKeyDeserializer(DataObject.class, new KeyDeserializer() {
 
             @Override
@@ -223,6 +233,8 @@ public class OdlObjectMapper extends ObjectMapper {
             final JavaType type = beanDesc.getType();
             final JsonDeserializer<?> deser = super.modifyDeserializer(config, beanDesc, deserializer);
             if (!implementsInterface(type.getRawClass(), TypeObject.class)) {
+                if(!implementsInterface(type.getRawClass(), ChoiceIn.class))
+
                 return deser;
             }
             return new JsonDeserializer<TypeObject>() {
@@ -271,6 +283,33 @@ public class OdlObjectMapper extends ObjectMapper {
 
     }
 
+    public static class CustomChoiceSerializer extends StdSerializer<ChoiceIn>{
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        protected CustomChoiceSerializer(Class<ChoiceIn> t) {
+            super(t);
+            // TODO Auto-generated constructor stub
+        }
+
+        public CustomChoiceSerializer() {
+           this(null);
+        }
+
+        @Override
+        public void serialize(ChoiceIn value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+//            gen.writeStartObject();
+//            gen.writeNumberField("id", 4);
+//            gen.writeStringField("itemName", "name");
+//            gen.writeNumberField("owner", 55);
+//            gen.writeEndObject();
+            gen.writeString("innerchoice");
+        }
+
+    }
     public static class CustomDateAndTimeSerializer extends StdSerializer<DateAndTime> {
 
         private static final long serialVersionUID = 1L;
@@ -303,7 +342,7 @@ public class OdlObjectMapper extends ObjectMapper {
         return this.readValue(input, clazz);
     }
 
-    private static boolean implementsInterface(Class<?> clz, Class<?> ifToImplement) {
+    public static boolean implementsInterface(Class<?> clz, Class<?> ifToImplement) {
         Class<?>[] ifs = clz.getInterfaces();
         for (Class<?> iff : ifs) {
             if (iff.equals(ifToImplement)) {

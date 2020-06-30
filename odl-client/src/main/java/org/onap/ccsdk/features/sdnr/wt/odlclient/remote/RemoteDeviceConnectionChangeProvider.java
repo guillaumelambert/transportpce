@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-
 import org.eclipse.jdt.annotation.Nullable;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.DeviceConnectionChangedHandler;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
@@ -60,9 +59,9 @@ public class RemoteDeviceConnectionChangeProvider {
                 this.pushDisconnect(nodeId);
 
             } else if (notification instanceof AttributeValueChangedNotification) {
-                AttributeValueChangedNotification n = (AttributeValueChangedNotification) notification;
-                if (n.getAttributeName().equals("ConnectionStatus")) {
-                    String nodeId = n.getObjectId();
+                AttributeValueChangedNotification notification2 = (AttributeValueChangedNotification) notification;
+                if (notification2.getAttributeName().equals("ConnectionStatus")) {
+                    String nodeId = notification2.getObjectId();
                     this.handleChange(nodeId);
                 }
             } else {
@@ -77,9 +76,9 @@ public class RemoteDeviceConnectionChangeProvider {
         InstanceIdentifier<NetconfNode> nodeIif = NETCONF_TOPO_IID.child(Node.class)
                 .augmentation(NetconfNode.class);
         try {
-            Optional<NetconfNode> nNode = this.client.read(LogicalDatastoreType.OPERATIONAL, nodeIif)
+            Optional<NetconfNode> netconfNode = this.client.read(LogicalDatastoreType.OPERATIONAL, nodeIif)
                     .get();
-            this.handleChange(nodeId, nNode.isPresent() ? nNode.get() : null);
+            this.handleChange(nodeId, netconfNode.isPresent() ? netconfNode.get() : null);
         } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
                 | IllegalArgumentException | IllegalAccessException | InterruptedException
                 | ExecutionException | IOException e) {
@@ -88,16 +87,16 @@ public class RemoteDeviceConnectionChangeProvider {
 
     }
 
-    private void handleChange(String nodeId, NetconfNode nNode) {
+    private void handleChange(String nodeId, NetconfNode netconfNode) {
         @Nullable
-        ConnectionStatus csts = nNode.getConnectionStatus();
+        ConnectionStatus csts = netconfNode.getConnectionStatus();
         if (csts != null) {
             if (csts == ConnectionStatus.Connected) {
-                this.pushConnect(nodeId, nNode);
+                this.pushConnect(nodeId, netconfNode);
             } else if (csts == ConnectionStatus.Connecting) {
-                this.pushConnecting(nodeId, nNode);
+                this.pushConnecting(nodeId, netconfNode);
             } else if (csts == ConnectionStatus.UnableToConnect) {
-                this.pushUnableToConnect(nodeId, nNode);
+                this.pushUnableToConnect(nodeId, netconfNode);
             }
 
         } else {
@@ -105,19 +104,19 @@ public class RemoteDeviceConnectionChangeProvider {
         }
     }
 
-    private void pushConnect(String nodeId, NetconfNode nNode) {
+    private void pushConnect(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
-            listener.onRemoteDeviceConnected(nodeId, nNode);
+            listener.onRemoteDeviceConnected(nodeId, netconfNode);
         }
     }
 
-    private void pushConnecting(String nodeId, NetconfNode nNode) {
+    private void pushConnecting(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
             listener.onRemoteDeviceConnecting(nodeId);
         }
     }
 
-    private void pushUnableToConnect(String nodeId, NetconfNode nNode) {
+    private void pushUnableToConnect(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
             listener.onRemoteDeviceUnableToConnect(nodeId);
         }

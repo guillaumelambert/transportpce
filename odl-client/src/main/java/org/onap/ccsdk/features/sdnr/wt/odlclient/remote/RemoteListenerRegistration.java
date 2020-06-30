@@ -16,9 +16,9 @@ public class RemoteListenerRegistration<L extends DataTreeChangeListener<T>, T e
         implements ListenerRegistration<L> {
 
     private @NonNull L instance;
-    private CloseCallback<L,T> callback;
+    private CloseCallback<L, T> callback;
 
-    public RemoteListenerRegistration(@NonNull L listener,CloseCallback<L, T> cb) {
+    public RemoteListenerRegistration(@NonNull L listener, CloseCallback<L, T> cb) {
         this.instance = listener;
         this.callback = cb;
     }
@@ -30,11 +30,10 @@ public class RemoteListenerRegistration<L extends DataTreeChangeListener<T>, T e
 
     @Override
     public void close() {
-       if(this.callback!=null) {
-           this.callback.onClose(this);
-       }
+        if (this.callback != null) {
+            this.callback.onClose(this);
+        }
 
     }
 
-   
 }

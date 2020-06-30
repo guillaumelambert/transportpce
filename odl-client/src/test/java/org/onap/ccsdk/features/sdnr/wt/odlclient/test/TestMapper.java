@@ -7,49 +7,62 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import java.io.IOException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.TransformerException;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapperXml;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml2;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlInputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.equipment.entity.ShelfBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
+import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 public class TestMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestMapper.class);
 
     private static final String INFOSTRING = " {\n" + "    \"org-openroadm-device:info\": {\n"
-            + "        \"current-datetime\": \"2017-10-22T15:23:43Z\",\n"
-            + "        \"vendor\": \"vendorA\",\n" + "        \"model\": \"model2\",\n"
-            + "        \"softwareVersion\": \"swversion1234\",\n" + "        \"max-degrees\": 2,\n"
-            + "        \"current-ipAddress\": \"127.0.0.11\",\n" + "        \"node-id\": \"ROADM-B1\",\n"
-            + "        \"current-defaultGateway\": \"127.0.0.20\",\n" + "        \"clli\": \"NodeB\",\n"
-            + "        \"prefix-length\": 28,\n" + "        \"current-prefix-length\": 28,\n"
-            + "        \"macAddress\": \"00:01:02:03:04:05\",\n" + "        \"source\": \"static\",\n"
-            + "        \"openroadm-version\": \"2.2.1\",\n" + "        \"geoLocation\": {\n"
-            + "            \"latitude\": 1.0000,\n" + "            \"longitude\": 2.0000\n" + "        },\n"
+            + "        \"current-datetime\": \"2017-10-22T15:23:43Z\",\n" + "        \"vendor\": \"vendorA\",\n"
+            + "        \"model\": \"model2\",\n" + "        \"softwareVersion\": \"swversion1234\",\n"
+            + "        \"max-degrees\": 2,\n" + "        \"current-ipAddress\": \"127.0.0.11\",\n"
+            + "        \"node-id\": \"ROADM-B1\",\n" + "        \"current-defaultGateway\": \"127.0.0.20\",\n"
+            + "        \"clli\": \"NodeB\",\n" + "        \"prefix-length\": 28,\n"
+            + "        \"current-prefix-length\": 28,\n" + "        \"macAddress\": \"00:01:02:03:04:05\",\n"
+            + "        \"source\": \"static\",\n" + "        \"openroadm-version\": \"2.2.1\",\n"
+            + "        \"geoLocation\": {\n" + "            \"latitude\": 1.0000,\n"
+            + "            \"longitude\": 2.0000\n" + "        },\n"
             + "        \"max-num-bin-24hour-historical-pm\": 7,\n" + "        \"serial-id\": \"0002\",\n"
             + "        \"max-srgs\": 3,\n" + "        \"max-num-bin-15min-historical-pm\": 32,\n"
             + "        \"template\": \"template_1\",\n" + "        \"node-type\": \"rdm\",\n"
             + "        \"node-number\": 3,\n" + "        \"ipAddress\": \"127.0.0.11\",\n"
             + "        \"defaultGateway\": \"127.0.0.20\"\n" + "    }\n" + "}";
     private static final String INFOSTRING_XML = "<info xmlns=\"http://org/openroadm/device\">\n"
-            + "    <current-datetime>2017-10-22T15:23:43Z</current-datetime>\n"
-            + "    <vendor>vendorA</vendor>\n" + "    <model>model2</model>\n"
-            + "    <softwareVersion>swversion1234</softwareVersion>\n" + "    <max-degrees>2</max-degrees>\n"
-            + "    <current-ipAddress>127.0.0.11</current-ipAddress>\n" + "    <node-id>ROADM-B1</node-id>\n"
-            + "    <current-defaultGateway>127.0.0.20</current-defaultGateway>\n" + "    <clli>NodeB</clli>\n"
-            + "    <prefix-length>28</prefix-length>\n"
+            + "    <current-datetime>2017-10-22T15:23:43Z</current-datetime>\n" + "    <vendor>vendorA</vendor>\n"
+            + "    <model>model2</model>\n" + "    <softwareVersion>swversion1234</softwareVersion>\n"
+            + "    <max-degrees>2</max-degrees>\n" + "    <current-ipAddress>127.0.0.11</current-ipAddress>\n"
+            + "    <node-id>ROADM-B1</node-id>\n" + "    <current-defaultGateway>127.0.0.20</current-defaultGateway>\n"
+            + "    <clli>NodeB</clli>\n" + "    <prefix-length>28</prefix-length>\n"
             + "    <current-prefix-length>28</current-prefix-length>\n"
             + "    <macAddress>00:01:02:03:04:05</macAddress>\n" + "    <source>static</source>\n"
             + "    <openroadm-version>2.2.1</openroadm-version>\n" + "    <geoLocation>\n"
             + "        <latitude>1.0000</latitude>\n" + "        <longitude>2.0000</longitude>\n"
-            + "    </geoLocation>\n"
-            + "    <max-num-bin-24hour-historical-pm>7</max-num-bin-24hour-historical-pm>\n"
+            + "    </geoLocation>\n" + "    <max-num-bin-24hour-historical-pm>7</max-num-bin-24hour-historical-pm>\n"
             + "    <serial-id>0002</serial-id>\n" + "    <max-srgs>3</max-srgs>\n"
             + "    <max-num-bin-15min-historical-pm>32</max-num-bin-15min-historical-pm>\n"
             + "    <template>template_1</template>\n" + "    <node-type>rdm</node-type>\n"
@@ -93,8 +106,7 @@ public class TestMapper {
             + "openroadm-flexo-interfaces\"},"
             + "{\"capability-origin\":\"device-advertised\",\"capability\":\"(http://org/openroadm/otn-common-"
             + "types?revision=2019-11-29)org-openroadm-otn-common-types\"},{\"capability-origin\":"
-            + "\"device-advertised\","
-            + "\"capability\":\"(http://org/openroadm/service-format?revision=2019-11-29)"
+            + "\"device-advertised\"," + "\"capability\":\"(http://org/openroadm/service-format?revision=2019-11-29)"
             + "org-openroadm-service-format\"},"
             + "{\"capability-origin\":\"device-advertised\",\"capability\":\"(http://org/openroadm/resource?"
             + "revision=2019-11-29)"
@@ -215,17 +227,16 @@ public class TestMapper {
             + "    <unavailable-capabilities xmlns=\"urn:opendaylight:netconf-node-topology\">\n"
             + "        <unavailable-capability>\n"
             + "            <capability>(http://openconfig.net/yang/telemetry?revision=2017-08-24)"
-            + "openconfig-telemetry</capability>\n"
-            + "            <failure-reason>unable-to-resolve</failure-reason>\n"
+            + "openconfig-telemetry</capability>\n" + "            <failure-reason>unable-to-resolve</failure-reason>\n"
             + "        </unavailable-capability>\n" + "        <unavailable-capability>\n"
             + "            <capability>(http://openconfig.net/yang/telemetry-types?"
             + "revision=2017-08-24)openconfig-telemetry-types</capability>\n"
-            + "            <failure-reason>missing-source</failure-reason>\n"
-            + "        </unavailable-capability>\n" + "        <unavailable-capability>\n"
+            + "            <failure-reason>missing-source</failure-reason>\n" + "        </unavailable-capability>\n"
+            + "        <unavailable-capability>\n"
             + "            <capability>(http://org/openroadm/telemetry-types?revision=2019-11-29)"
             + "org-openroadm-telemetry-types</capability>\n"
-            + "            <failure-reason>unable-to-resolve</failure-reason>\n"
-            + "        </unavailable-capability>\n" + "    </unavailable-capabilities>\n"
+            + "            <failure-reason>unable-to-resolve</failure-reason>\n" + "        </unavailable-capability>\n"
+            + "    </unavailable-capabilities>\n"
             + "    <reconnect-on-changed-schema xmlns=\"urn:opendaylight:netconf-node-topology\">"
             + "false</reconnect-on-changed-schema>\n"
             + "    <password xmlns=\"urn:opendaylight:netconf-node-topology\">undefind</password>\n"
@@ -251,8 +262,8 @@ public class TestMapper {
             + "        </available-capability>\n" + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/common-attributes?"
-            + "revision=2019-11-29)org-openroadm-common-attributes</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "revision=2019-11-29)org-openroadm-common-attributes</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/media-channel-interfaces?"
             + "revision=2019-11-29)org-openroadm-media-channel-interfaces</capability>\n"
@@ -271,16 +282,16 @@ public class TestMapper {
             + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(urn:ietf:params:xml:ns:yang:ietf-netconf-with-defaults?"
-            + "revision=2011-06-01)ietf-netconf-with-defaults</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "revision=2011-06-01)ietf-netconf-with-defaults</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/network-resource?revision=2019-11-29)"
             + "org-openroadm-network-resource</capability>\n" + "        </available-capability>\n"
             + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(urn:ietf:params:xml:ns:yang:ietf-netconf-notifications?"
-            + "revision=2012-02-06)ietf-netconf-notifications</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "revision=2012-02-06)ietf-netconf-notifications</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability>(http://org/openroadm/otn-odu-interfaces?revision=2019-11-29)"
             + "org-openroadm-otn-odu-interfaces</capability>\n" + "        </available-capability>\n"
             + "        <available-capability>\n"
@@ -326,8 +337,8 @@ public class TestMapper {
             + "        </available-capability>\n" + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/common-node-types?"
-            + "revision=2019-11-29)org-openroadm-common-node-types</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "revision=2019-11-29)org-openroadm-common-node-types</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(urn:ietf:params:xml:ns:netconf:notification:1.0?"
             + "revision=2008-07-14)notifications</capability>\n" + "        </available-capability>\n"
@@ -378,9 +389,8 @@ public class TestMapper {
             + "        </available-capability>\n" + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/de/operations?"
-            + "revision=2019-11-29)org-openroadm-de-operations</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
-            + "            <capability>(http://org/openroadm/ethernet-interfaces?"
+            + "revision=2019-11-29)org-openroadm-de-operations</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n" + "            <capability>(http://org/openroadm/ethernet-interfaces?"
             + "revision=2019-11-29)org-openroadm-ethernet-interfaces</capability>\n"
             + "        </available-capability>\n" + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
@@ -400,16 +410,16 @@ public class TestMapper {
             + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/layerRate?"
-            + "revision=2019-11-29)org-openroadm-layerRate</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "revision=2019-11-29)org-openroadm-layerRate</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/probableCause?"
-            + "revision=2019-11-29)org-openroadm-probable-cause</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "revision=2019-11-29)org-openroadm-probable-cause</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/common-link-types?"
-            + "revision=2019-11-29)org-openroadm-common-link-types</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "revision=2019-11-29)org-openroadm-common-link-types</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(urn:ietf:params:xml:ns:netmod:notification?"
             + "revision=2008-07-14)nc-notifications</capability>\n" + "        </available-capability>\n"
@@ -497,8 +507,8 @@ public class TestMapper {
             + "        </available-capability>\n" + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/common-optical-channel-types?revision=2019-11-29)"
-            + "org-openroadm-common-optical-channel-types</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "org-openroadm-common-optical-channel-types</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/flexogroup-interfaces?revision=2019-11-29)"
             + "org-openroadm-flexogroup-interfaces</capability>\n" + "        </available-capability>\n"
@@ -521,8 +531,8 @@ public class TestMapper {
             + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(urn:ietf:params:xml:ns:yang:ietf-netconf-monitoring?"
-            + "revision=2010-10-04)ietf-netconf-monitoring</capability>\n"
-            + "        </available-capability>\n" + "        <available-capability>\n"
+            + "revision=2010-10-04)ietf-netconf-monitoring</capability>\n" + "        </available-capability>\n"
+            + "        <available-capability>\n"
             + "            <capability-origin>device-advertised</capability-origin>\n"
             + "            <capability>(http://org/openroadm/switching-pool-types?revision=2019-11-29)"
             + "org-openroadm-switching-pool-types</capability>\n" + "        </available-capability>\n"
@@ -547,7 +557,7 @@ public class TestMapper {
             + "    <connection-status xmlns=\"urn:opendaylight:netconf-node-topology\">connected</connection-status>\n"
             + "</node>";
 
-    @Test
+    // @Test
     public void testMapRoadmInfo()
             throws ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
         OdlObjectMapper jsonMapper = new OdlObjectMapper();
@@ -556,12 +566,72 @@ public class TestMapper {
         LOG.info("outputxml={}", xmlMapper.readValue(INFOSTRING_XML, Info.class));
     }
 
-    @Test
+    // @Test
     public void testNodeInfo() throws JsonParseException, JsonMappingException, IOException {
         OdlObjectMapper jsonMapper = new OdlObjectMapper();
         OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml();
         LOG.info("outputjson={}", jsonMapper.readValue(NODEINFO, NetconfNode.class, "network-topology:node"));
         LOG.info("outputxml={}", xmlMapper.readValue(NODEINFO_XML, NetconfNode.class));
+
+    }
+
+    private static SchemaContext SCHEMA_CONTEXT;
+
+    @BeforeClass
+    public static void beforeClass() {
+        // SCHEMA_CONTEXT = YangParserTestUtils.parseYangResourceDirectory("/yang");
+        try {
+            SCHEMA_CONTEXT = YangParserTestUtils.parseYangResources("/yang/ietf-yang-types@2013-07-15.yang",
+                    "/yang/ietf-inet-types@2013-07-15.yang", "/yang/ietf-netconf-acm@2018-02-14.yang",
+                    "/yang/ietf-netconf@2011-06-01.yang",
+
+                    "/yang/org-openroadm-common-types@2019-11-29.yang",
+                    "/yang/org-openroadm-common-alarm-pm-types@2019-11-29.yang",
+                    "/yang/org-openroadm-common-equipment-types@2019-11-29.yang",
+                    "/yang/org-openroadm-common-state-types@2019-11-29.yang",
+                    "/yang/org-openroadm-common-amplifier-types@2019-11-29.yang",
+                    "/yang/org-openroadm-common-link-types@2019-11-29.yang",
+                    "/yang/org-openroadm-common-node-types@2019-11-29.yang",
+                    "/yang/org-openroadm-common-optical-channel-types@2019-11-29.yang",
+                    "/yang/org-openroadm-device-types@2019-11-29.yang",
+                    "/yang/org-openroadm-resource-types@2019-11-29.yang",
+                    "/yang/org-openroadm-physical-types@2019-11-29.yang",
+                    "/yang/org-openroadm-user-mgmt@2019-11-29.yang", "/yang/org-openroadm-port-types@2019-11-29.yang",
+                    "/yang/org-openroadm-interfaces@2019-11-29.yang", "/yang/org-openroadm-swdl@2019-11-29.yang",
+                    "/yang/org-openroadm-equipment-states-types@2019-11-29.yang",
+                    "/yang/org-openroadm-switching-pool-types@2019-11-29.yang",
+                    "/yang/org-openroadm-device@2019-11-29.yang");
+            LOG.info("schema read succeeded");
+        } catch (Exception e) {
+            LOG.error("unable to read all schemas: ", e);
+        }
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        SCHEMA_CONTEXT = null;
+    }
+
+    @Test
+    public void testRpcSerializer() throws JsonProcessingException, XMLStreamException, ParserConfigurationException, TransformerException {
+        final String LEDRPCINPUT = "<input><enabled>true</enabled><shelf-name>1/0</shelf-name></input>";
+        if (SCHEMA_CONTEXT == null) {
+            fail();
+        }
+        OdlRpcObjectMapperXml2 mapper = new OdlRpcObjectMapperXml2();
+
+        final LedControlInputBuilder builder = new LedControlInputBuilder();
+        builder.setEnabled(true).setEquipmentEntity(new ShelfBuilder().setShelfName("1/0").build());
+        String inputPayload = mapper.writeValueAsString(builder.build());
+        try {
+            XMLUnit.compareXML(LEDRPCINPUT, inputPayload);
+        } catch (SAXException | IOException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testLeafListSerializing() {
 
     }
 }

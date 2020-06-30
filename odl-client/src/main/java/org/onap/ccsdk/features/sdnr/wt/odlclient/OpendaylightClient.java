@@ -83,8 +83,9 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
             // TODO Auto-generated method stub
 
         }
+
         /**
-         * forward notifications to specific change providers
+         * forward notifications to specific change providers.
          */
         @Override
         public void onNotificationReceived(SdnrNotification notification) {

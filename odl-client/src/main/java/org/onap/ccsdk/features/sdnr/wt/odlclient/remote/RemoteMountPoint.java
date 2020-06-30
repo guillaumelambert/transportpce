@@ -8,7 +8,6 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.remote;
 
 import java.util.Optional;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.mountpoint.RemoteRpcConsumerRegistry;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
@@ -17,26 +16,29 @@ import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class RemoteMountPoint implements MountPoint{
+public class RemoteMountPoint implements MountPoint {
 
     private final RestconfHttpClient restClient;
     private final String nodeId;
 
     public RemoteMountPoint(RestconfHttpClient client, String nodeId) {
-        this.restClient =client;
+        this.restClient = client;
         this.nodeId = nodeId;
     }
+
     @Override
     public @NonNull InstanceIdentifier<?> getIdentifier() {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends BindingService> @NonNull Optional<T> getService(@NonNull Class<T> service) {
 
-        if(service.getClass().equals(RpcConsumerRegistry.class)){
-            return (@NonNull Optional<T>) Optional.of(new RemoteRpcConsumerRegistry(this.restClient));
+        if (service.equals(RpcConsumerRegistry.class)) {
+            return (@NonNull Optional<T>) Optional
+                    .of(new RemoteRpcConsumerRegistry(this.restClient, this.nodeId));
         }
         // TODO Auto-generated method stub
         return null;

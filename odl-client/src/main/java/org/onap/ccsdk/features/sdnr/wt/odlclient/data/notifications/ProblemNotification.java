@@ -7,7 +7,7 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications;
 
-public class ProblemNotification extends BaseNotification  {
+public class ProblemNotification extends BaseNotification {
 
     @Override
     public String toString() {

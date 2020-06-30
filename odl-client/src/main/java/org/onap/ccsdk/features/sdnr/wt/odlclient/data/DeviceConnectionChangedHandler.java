@@ -10,8 +10,12 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 
 public interface DeviceConnectionChangedHandler {
-    void onRemoteDeviceConnected(final String nodeId, NetconfNode nNode);
-    void onRemoteDeviceDisConnected(final String nodeId);
-    void onRemoteDeviceUnableToConnect(final String nodeId);
-    void onRemoteDeviceConnecting(final String nodeId);
+
+    void onRemoteDeviceConnected(String nodeId, NetconfNode netconfNode);
+
+    void onRemoteDeviceDisConnected(String nodeId);
+
+    void onRemoteDeviceUnableToConnect(String nodeId);
+
+    void onRemoteDeviceConnecting(String nodeId);
 }

@@ -9,7 +9,6 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 
