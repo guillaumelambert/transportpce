@@ -575,49 +575,10 @@ public class TestMapper {
 
     }
 
-    private static SchemaContext SCHEMA_CONTEXT;
-
-    @BeforeClass
-    public static void beforeClass() {
-        // SCHEMA_CONTEXT = YangParserTestUtils.parseYangResourceDirectory("/yang");
-        try {
-            SCHEMA_CONTEXT = YangParserTestUtils.parseYangResources("/yang/ietf-yang-types@2013-07-15.yang",
-                    "/yang/ietf-inet-types@2013-07-15.yang", "/yang/ietf-netconf-acm@2018-02-14.yang",
-                    "/yang/ietf-netconf@2011-06-01.yang",
-
-                    "/yang/org-openroadm-common-types@2019-11-29.yang",
-                    "/yang/org-openroadm-common-alarm-pm-types@2019-11-29.yang",
-                    "/yang/org-openroadm-common-equipment-types@2019-11-29.yang",
-                    "/yang/org-openroadm-common-state-types@2019-11-29.yang",
-                    "/yang/org-openroadm-common-amplifier-types@2019-11-29.yang",
-                    "/yang/org-openroadm-common-link-types@2019-11-29.yang",
-                    "/yang/org-openroadm-common-node-types@2019-11-29.yang",
-                    "/yang/org-openroadm-common-optical-channel-types@2019-11-29.yang",
-                    "/yang/org-openroadm-device-types@2019-11-29.yang",
-                    "/yang/org-openroadm-resource-types@2019-11-29.yang",
-                    "/yang/org-openroadm-physical-types@2019-11-29.yang",
-                    "/yang/org-openroadm-user-mgmt@2019-11-29.yang", "/yang/org-openroadm-port-types@2019-11-29.yang",
-                    "/yang/org-openroadm-interfaces@2019-11-29.yang", "/yang/org-openroadm-swdl@2019-11-29.yang",
-                    "/yang/org-openroadm-equipment-states-types@2019-11-29.yang",
-                    "/yang/org-openroadm-switching-pool-types@2019-11-29.yang",
-                    "/yang/org-openroadm-device@2019-11-29.yang");
-            LOG.info("schema read succeeded");
-        } catch (Exception e) {
-            LOG.error("unable to read all schemas: ", e);
-        }
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        SCHEMA_CONTEXT = null;
-    }
-
     @Test
     public void testRpcSerializer() throws JsonProcessingException, XMLStreamException, ParserConfigurationException, TransformerException {
         final String LEDRPCINPUT = "<input><enabled>true</enabled><shelf-name>1/0</shelf-name></input>";
-        if (SCHEMA_CONTEXT == null) {
-            fail();
-        }
+
         OdlRpcObjectMapperXml2 mapper = new OdlRpcObjectMapperXml2();
 
         final LedControlInputBuilder builder = new LedControlInputBuilder();
