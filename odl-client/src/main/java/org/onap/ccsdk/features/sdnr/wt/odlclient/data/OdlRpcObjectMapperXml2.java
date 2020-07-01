@@ -8,53 +8,51 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
 
-import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 public class OdlRpcObjectMapperXml2 {
 
     private static final Logger LOG = LoggerFactory.getLogger(OdlRpcObjectMapperXml2.class);
 
+    private boolean nullValueExcluded;
+
+    public void setNullValueExcluded(boolean exclude) {
+        this.nullValueExcluded = exclude;
+    }
+
+    public boolean isExcludeNullValue() {
+        return this.nullValueExcluded;
+    }
+
     public OdlRpcObjectMapperXml2() {
 
     }
 
-    public String writeValueAsString(Object value) throws ParserConfigurationException, TransformerException {
+    public String writeValueAsString(Object value) {
         return this.writeValueAsString(value, "input");
     }
 
-    public String writeValueAsString(Object value, String rootKey)
-            throws ParserConfigurationException, TransformerException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        Document doc = factory.newDocumentBuilder().newDocument();
-        Element root = doc.createElement(rootKey);
-        doc.appendChild(root);
-        this.writeRecurseProperties(doc, root, value, 0);
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        StringWriter writer = new StringWriter();
-        transformer.transform(new DOMSource(doc), new StreamResult(writer));
-        String output = writer.getBuffer().toString().replaceAll("\n|\r", "");
-        return output;
+    public String writeValueAsString(Object value, String rootKey) {
+
+        StringBuilder sb = new StringBuilder();
+        this.startElem(sb, rootKey);
+        this.writeRecurseProperties(sb, value, 0);
+        this.stopElem(sb, rootKey);
+        return sb.toString();
     }
 
-    private void writeRecurseProperties(Document doc, Element root, Object object, int level) {
+    @SuppressWarnings("unchecked")
+    private void writeRecurseProperties(StringBuilder sb, Object object, int level) {
         if (level > 15) {
             System.out.println("Level to deep protection.");
         } else {
@@ -66,52 +64,79 @@ public class OdlRpcObjectMapperXml2 {
                     field.setAccessible(true);
                     Object value = field.get(object);
                     //only _xxx properties are interesting
-                    if (value != null && name.startsWith("_")) {
+                    if (name.startsWith("_")) {
+                        if (this.nullValueExcluded && value == null) {
+                            continue;
+                        }
                         Class<?> type = field.getType();
                         //convert property name to kebab-case (yang-spec writing)
                         name = name.substring(1).replaceAll("([a-z0-9])([A-Z])", "$1-$2").toLowerCase();
                         //if has inner childs
                         if (DataObject.class.isAssignableFrom(type)) {
-                            Element xobj = doc.createElement(name);
-                            root.appendChild(xobj);
-                            this.writeRecurseProperties(doc, xobj, value, level + 1);
+                            this.startElem(sb, name);
+                            this.writeRecurseProperties(sb, value, level + 1);
+                            this.stopElem(sb, name);
                         } else {
-                            //if is basic value element => write element to root node
-                            if (isValueElementType(type)) {
-                                Element xobj = doc.createElement(name);
-                                xobj.setTextContent(String.valueOf(value));
-                                root.appendChild(xobj);
-
+                            //if enum
+                            if (Enum.class.isAssignableFrom(type)) {
+                                this.startElem(sb, name);
+                                String svalue = String.valueOf(value);
+                                this.writeElemValue(sb, svalue.substring(0, 1).toLowerCase() + svalue.substring(1));
+                                this.stopElem(sb, name);
+                            }
+                            // type object (new type of base type) => use getValue()
+                            else if (TypeObject.class.isAssignableFrom(type)) {
+                                this.startElem(sb, name);
+                                this.writeElemValue(sb, this.getTypeObjectStringValue(value, type));
+                                this.stopElem(sb, name);
                             }
                             //if choice then jump over field and step into next java level, but not in xml
                             else if (ChoiceIn.class.isAssignableFrom(type)) {
-                                this.writeRecurseProperties(doc, root, value, level);
+                                this.writeRecurseProperties(sb, value, level);
                             }
-                            else if (List.class.isAssignableFrom(type)) {
+                            //if list of elems
+                            else if (value!=null && List.class.isAssignableFrom(type)) {
                                 for (Object listObject : (List<Object>) value) {
-                                    Element xobj = doc.createElement(name);
-                                    root.appendChild(xobj);
-                                    this.writeRecurseProperties(doc, xobj,listObject, level + 1);
+                                    this.startElem(sb, name);
+                                    this.writeRecurseProperties(sb, listObject, level + 1);
+                                    this.stopElem(sb, name);
                                 }
                             }
-
+                            //by exclude all others it is basic value element
+                            else {
+                                this.startElem(sb, name);
+                                this.writeElemValue(sb, value);
+                                this.stopElem(sb, name);
+                            }
                         }
                     }
                 } catch (IllegalArgumentException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    LOG.warn("problem accessing value during mapping: ", e);
                 }
             }
         }
-
     }
 
-    private boolean isValueElementType(Class<?> type) {
-        if (Boolean.class.isAssignableFrom(type)) {
-            return true;
+    private void startElem(StringBuilder sb, String elem) {
+        sb.append(String.format("<%s>", elem));
+    }
+
+    private void writeElemValue(StringBuilder sb, Object elemValue) {
+        sb.append(String.valueOf(elemValue));
+    }
+
+    private void stopElem(StringBuilder sb, String elem) {
+        sb.append(String.format("</%s>", elem));
+    }
+
+    private String getTypeObjectStringValue(Object value, Class<?> type) {
+        try {
+            Method method = type.getMethod("getValue");
+            return String.valueOf(method.invoke(value));
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            LOG.warn("problem calling getValue fn: ", e);
         }
-        if (String.class.isAssignableFrom(type)) {
-            return true;
-        }
-        return false;
+        return "";
     }
 }
