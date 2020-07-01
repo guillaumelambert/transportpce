@@ -7,11 +7,9 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
@@ -23,17 +21,12 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.eclipse.jetty.util.resource.Resource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapperXml;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml2;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlXmlSerializer;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.equipment.entity.ShelfBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDeviceBuilder;
@@ -44,7 +37,6 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.Usern
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.User.Group;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.UserBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
-import org.opendaylight.yangtools.yang.model.api.SchemaContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -592,14 +584,15 @@ public class TestMapper {
     }
 
     @Test
-    public void testRpcSerializer() throws JsonProcessingException, XMLStreamException, ParserConfigurationException, TransformerException {
-        OdlRpcObjectMapperXml2 mapper = new OdlRpcObjectMapperXml2();
+    public void testRpcSerializer() {
+        OdlXmlSerializer mapper = new OdlXmlSerializer();
         final LedControlInputBuilder builder = new LedControlInputBuilder();
         builder.setEnabled(true).setEquipmentEntity(new ShelfBuilder().setShelfName("1/0").build());
-        String inputPayload = mapper.writeValueAsString(builder.build());
+        String inputPayload = mapper.writeValueAsString(builder.build(), "input");
         LOG.info(inputPayload);
         try {
-            assertTrue(XMLUnit.compareXML(this.getTrimmedFileContent("/xml/roadm-rpc-input1.xml"), inputPayload).similar());
+            assertTrue(XMLUnit.compareXML(this.getTrimmedFileContent("/xml/roadm-rpc-input1.xml"), inputPayload)
+                    .similar());
         } catch (SAXException | IOException e) {
             fail(e.getMessage());
         }
@@ -611,29 +604,34 @@ public class TestMapper {
         OrgOpenroadmDeviceBuilder builder = new OrgOpenroadmDeviceBuilder();
         builder.setUsers(new UsersBuilder().setUser(Arrays.asList(
                 //new UserBuilder().setName(new UsernameType("openroadm")).setPassword(new PasswordType("openroadm")).setGroup(Group.Sudo).build(),
-                new UserBuilder().setName(new UsernameType("openroadm2")).setPassword(new PasswordType("openroadm")).setGroup(Group.Sudo).build()
-                )).build());
+                new UserBuilder().setName(new UsernameType("openroadm2")).setPassword(new PasswordType("openroadm"))
+                        .setGroup(Group.Sudo).build()))
+                .build());
 
-        OdlRpcObjectMapperXml2 mapper = new OdlRpcObjectMapperXml2();
-        String inputPayload = mapper.writeValueAsString(builder.build(),"org-openroadm-device");
+        OdlXmlSerializer mapper = new OdlXmlSerializer();
+        String inputPayload = mapper.writeValueAsString(builder.build(), "org-openroadm-device");
         try {
             LOG.info(inputPayload);
-            assertTrue(XMLUnit.compareXML(this.getTrimmedFileContent("/xml/roadm-device2.xml"), inputPayload).similar());
+            assertTrue(
+                    XMLUnit.compareXML(this.getTrimmedFileContent("/xml/roadm-device2.xml"), inputPayload).similar());
         } catch (SAXException | IOException e) {
 
             fail(e.getMessage());
         }
     }
 
-    private String getTrimmedFileContent(String filename)  throws IOException{
-        ImmutableList<String> lines = Files.asCharSource(new File(TestMapper.class.getResource(filename).getFile()), StandardCharsets.UTF_8).readLines();
+    private String getTrimmedFileContent(String filename) throws IOException {
+        ImmutableList<String> lines =
+                Files.asCharSource(new File(TestMapper.class.getResource(filename).getFile()), StandardCharsets.UTF_8)
+                        .readLines();
         StringBuilder sb = new StringBuilder();
-        for(String line:lines) {
+        for (String line : lines) {
             sb.append(line.trim());
         }
-        LOG.info("input={}",sb.toString());
+        LOG.info("input={}", sb.toString());
         return sb.toString();
     }
+
     private Reader getFileReader(String filename) throws FileNotFoundException {
         return new FileReader(new File(TestMapper.class.getResource(filename).getFile()));
     }

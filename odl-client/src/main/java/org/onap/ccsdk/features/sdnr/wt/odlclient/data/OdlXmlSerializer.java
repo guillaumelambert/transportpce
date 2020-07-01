@@ -7,24 +7,25 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OdlRpcObjectMapperXml2 {
+public class OdlXmlSerializer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OdlRpcObjectMapperXml2.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OdlXmlSerializer.class);
 
     private boolean nullValueExcluded;
+
+    public OdlXmlSerializer() {
+
+    }
 
     public void setNullValueExcluded(boolean exclude) {
         this.nullValueExcluded = exclude;
@@ -32,14 +33,6 @@ public class OdlRpcObjectMapperXml2 {
 
     public boolean isExcludeNullValue() {
         return this.nullValueExcluded;
-    }
-
-    public OdlRpcObjectMapperXml2() {
-
-    }
-
-    public String writeValueAsString(Object value) {
-        return this.writeValueAsString(value, "input");
     }
 
     public String writeValueAsString(Object value, String rootKey) {

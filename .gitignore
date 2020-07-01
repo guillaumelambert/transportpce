@@ -1,7 +1,8 @@
 *.class
 *.iml
 **/target
-bin/
+bin/*
+!integration/bin
 dist
 **/logs
 *~

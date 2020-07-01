@@ -55,7 +55,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
         this.headers.put("Authorization",
                 BaseHTTPClient.getAuthorizationHeaderValue(username, password));
         this.headers.put("Accept", "application/xml");
-        this.mapper = new OdlRpcObjectMapperXml(null);
+        this.mapper = new OdlRpcObjectMapperXml();
 
     }
 
@@ -174,7 +174,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
                     input == null ? "" : this.mapper.writeValueAsString(input), this.headers,
                     DEFAULT_TIMEOUT);
             if (response.isSuccess()) {
-                Builder<O> outputBuilder = null;
+                Builder<O> outputBuilder = this.mapper.readerFor(clazz).readValue(response.body);
                 result = RpcResultBuilder.success(outputBuilder);
             } else {
                 result = RpcResultBuilder.failed();

@@ -17,8 +17,6 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.cfg.MapperConfig;
-import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanSerializerBuilder;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
@@ -28,8 +26,8 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomChoi
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomDateAndTimeSerializer;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomOdlDeserializer;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.YangToolsBuilderAnnotationIntrospector;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.EquipmentEntity;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
+import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
@@ -89,4 +87,27 @@ public class OdlObjectMapperXml extends XmlMapper {
         this.registerModule(customSerializerModule);
         this.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
     }
+    public <O extends DataObject> Builder<O> readValueFrommString(String xml, Class<O> clazz) {
+        Builder<O> builder = this.getBuilder(clazz);
+
+        return builder;
+    }
+    /**
+     * Get Builder object for yang tools interface.
+     * @param <T> yang-tools base datatype
+     * @param clazz class with interface.
+     * @return builder for interface or null if not existing
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends DataObject> Builder<T> getBuilder(Class<T> clazz) {
+        String builder = clazz.getName() + "Builder";
+        try {
+            Class<?> clazzBuilder = Class.forName(builder);
+            return (Builder<T>) clazzBuilder.newInstance();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+            LOG.debug("Problem ", e);
+            return null;
+        }
+    }
+
 }
