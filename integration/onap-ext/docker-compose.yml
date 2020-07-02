@@ -8,10 +8,10 @@ services:
     environment: 
       - REMOTE_SDNRURL=http://sdnr:8181
       - REMOTE_WSURL="ws://sdnr:8181/websocket"
-      - REMOTE_ODL_USERNAME=admin
-      - REMOTE_ODL_PASSWORD=Kp8bJ4SXszM0WXlhak3eHlcse2gAw84vaoGGmJvUy2U
-      - REMOTE_ODL_ENABLED=true
-      - REMOTE_ODL_TRUSTALL=false
+      - REMOTE_ODL_USERNAME=${SDNR_USERNAME}
+      - REMOTE_ODL_PASSWORD=${SDNR_PASSWORD}
+      - REMOTE_ODL_ENABLED=${REMOTE_ODL_ENABLED}
+      - REMOTE_ODL_TRUSTALL=${TRUSTALL}
     depends_on: 
       - sdnr
   sdncweb:
