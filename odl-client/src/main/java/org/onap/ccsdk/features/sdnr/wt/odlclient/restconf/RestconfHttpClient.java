@@ -174,8 +174,8 @@ public class RestconfHttpClient extends BaseHTTPClient {
                     input == null ? "" : this.mapper.writeValueAsString(input), this.headers,
                     DEFAULT_TIMEOUT);
             if (response.isSuccess()) {
-                Builder<O> outputBuilder = this.mapper.readerFor(clazz).readValue(response.body);
-                result = RpcResultBuilder.success(outputBuilder);
+                O output = this.mapper.readValue(response.body,clazz);
+                result = RpcResultBuilder.success(output);
             } else {
                 result = RpcResultBuilder.failed();
             }
