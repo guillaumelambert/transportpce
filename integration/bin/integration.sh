@@ -130,6 +130,64 @@ function unmount_all(){
     do_unmount $PRE"_sdnr_1" $PRE"_xpdra_1"
     do_unmount $PRE"_sdnr_1" $PRE"_xpdrc_1"
 }
+function show_status_of(){
+    SDNRNAME="$1"
+    SIMNAME="$2"
+    
+    #get ip address of sdnr
+    info=$(docker inspect $SDNRNAME)
+    re="\"IPAddress\": \"([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\""
+    if [[ "$info" =~ $re ]]; then
+        SDNRIP="${BASH_REMATCH[1]}"; 
+    else
+        echo "unable to unmount $SIMNAME. sdnr not found"
+        return
+    fi
+    info=$(docker inspect $SIMNAME)
+    re="\"IPAddress\": \"([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\""
+    if [[ "$info" =~ $re ]]; then
+        #clean up simname (no underscores or so)
+        SIMNAME=$(echo $SIMNAME | sed -e "s/-//g" | sed -e "s/_//g")
+        URL="http://$SDNRIP:8181/rests/data/network-topology:network-topology/topology=topology-netconf?fields=node(node-id;netconf-node-topology:connection-status)"
+        #execute curl command
+        data=$(curl -s -X GET -u "$SDNR_USERNAME":"$SDNR_PASSWORD" "$URL")
+        status=$(echo "$data" | jq '.["network-topology:topology"] | .[0] | .["node"] | .[] |  select(.["node-id"] == "'$SIMNAME'") | .["netconf-node-topology:connection-status"]')
+    else
+        status="offline"    
+    fi
+
+    pad_right $SIMNAME
+    #pad_right $IP 
+    echo $(echo $status | sed -e 's/"//g')
+}
+function show_status(){
+    PRE=$1
+    show_status_of $PRE"_sdnr_1" $PRE"_roadma_1"
+    show_status_of $PRE"_sdnr_1" $PRE"_roadmb_1"
+    show_status_of $PRE"_sdnr_1" $PRE"_roadmc_1"
+    show_status_of $PRE"_sdnr_1" $PRE"_xpdra_1"
+    show_status_of $PRE"_sdnr_1" $PRE"_xpdrc_1"
+
+}
+function init_link(){
+    TRPCEIP="$1"
+
+}
+function init_topo(){
+    PRE=$1
+    TRPCE_NAME="$PRE_transportpce_1"
+    #get ip address of sdnr
+    info=$(docker inspect $TRPCE_NAME)
+    re="\"IPAddress\": \"([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)\""
+    if [[ "$info" =~ $re ]]; then
+       TRPCEIP="${BASH_REMATCH[1]}"; 
+    else
+        echo "unable to unmount $SIMNAME. transportpce instance not found"
+        exit 1
+    fi
+
+    init_link $TRPCEIP
+}
 function print_help(){
     echo "integration script for transportPCE and ONAP"
     echo "============================================"
@@ -138,13 +196,31 @@ function print_help(){
     echo " ../bin/integration.sh COMMAND [PREFIX]"
     echo "commands:"
     echo "  * info    : show ip and status of containers"
+    echo "  * status  : show restconf status about of nodes"
     echo "  * mount   : mount sims to sdnr container"
     echo "  * unmount : unmount sims from sdnr container"
     echo ""
 }
+function check_prerequisites(){
+    CURL=$(which curl)
+    JQ=$(which jq)
 
+    if [ -z "$CURL" ]; then
+        echo "curl is needed please install";
+        exit 1
+    fi
+    if [ -z "$JQ" ]; then
+        echo "jq is needed please install";
+        exit 1
+    fi
+    
+}
 DIRBIN="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DIRCUR="${PWD##*/}"
+PYTHON=$(which python3)
+BASH=$(which bash)
+
+check_prerequisites
 
 source $(pwd)/.env
 
@@ -153,21 +229,32 @@ if [ ! -z "$2" ]; then
 else
     PREFIX=$(echo $DIRCUR | sed -e "s/-//g" | sed -e "s/ /_/g")
 fi
-case "$1" in
+$BASH --rcfile "$(pwd)/.env" -c "$DIRBIN/integration.py $1 $PREFIX"
 
-    "info")
-        show_info "$PREFIX"
-    ;;
-    "mount")
-        mount_all "$PREFIX"
-    ;;
-    "unmount")
-        unmount_all "$PREFIX"
-    ;;
-    *)
-        print_help
-        exit 1
-    ;;
+#$PYTHON $DIRBIN/integration.py $1 $PREFIX
 
-
-esac;
+#case "$1" in
+#
+#    "info")
+#        show_info "$PREFIX"
+#    ;;
+#    "mount")
+#        mount_all "$PREFIX"
+#    ;;
+#    "unmount")
+#        unmount_all "$PREFIX"
+#    ;;
+#    "status")
+#        show_status "$PREFIX"
+#    ;;
+#    "init-topology")
+#        init_topo "$PREFIX"
+#    ;;
+#    *)
+#        print_help
+#        exit 1
+#    ;;
+#
+#
+#esac;
+#
