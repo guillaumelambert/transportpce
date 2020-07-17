@@ -57,6 +57,7 @@ class OdlClient:
         response = self.requestRest('/rests/data/network-topology:network-topology/topology=topology-netconf',
                                     'POST', self.defaultJsonHeaders, payload)
         print(name + " mounted "+str(response.code))
+        return response.isSucceeded()
 
     def unmount(self, name):
         response = self.requestRest('/rests/data/network-topology:network-topology/topology=topology-netconf/node='+name,
