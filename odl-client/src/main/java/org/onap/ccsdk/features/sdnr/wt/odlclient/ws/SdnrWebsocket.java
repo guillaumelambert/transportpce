@@ -19,13 +19,13 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotificationMapperXml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@WebSocket(maxTextMessageSize = 128 * 1024)
+@WebSocket(maxTextMessageSize = 128 * 1024, maxIdleTime = Integer.MAX_VALUE)
 public class SdnrWebsocket {
 
     private static final Logger LOG = LoggerFactory.getLogger(SdnrWebsocket.class);
-    private static final String MESSAGE_NOTIFICATION_REGISTER = "{\"data\":\"scopes\","
-            + "\"scopes\":[\"ObjectCreationNotification\",\"ObjectDeletionNotification\","
-            + "\"AttributeValueChangedNotification\",\"ProblemNotification\"]}";
+    private static final String MESSAGE_NOTIFICATION_REGISTER =
+            "{\"data\":\"scopes\"," + "\"scopes\":[\"ObjectCreationNotification\",\"ObjectDeletionNotification\","
+                    + "\"AttributeValueChangedNotification\",\"ProblemNotification\"]}";
 
     private final SdnrWebsocketCallback callback;
     private final SdnrNotificationMapperXml mappper;
@@ -38,6 +38,7 @@ public class SdnrWebsocket {
 
     public boolean sendNotificationRegistration() {
         if (this.session != null && this.session.isOpen()) {
+            LOG.debug("sending notification registration");
             try {
                 this.session.getRemote().sendString(MESSAGE_NOTIFICATION_REGISTER);
                 return true;
@@ -51,16 +52,18 @@ public class SdnrWebsocket {
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        LOG.debug("Connection closed: {} - {}", statusCode, reason);
+        LOG.info("Connection closed: {} - {}", statusCode, reason);
         this.session = null;
         this.callback.onDisconnect(statusCode, reason);
     }
 
     @OnWebSocketConnect
     public void onConnect(Session lsession) {
-        LOG.debug("Got connect: {}", lsession);
+        LOG.info("Got connect: {}", lsession);
         this.session = lsession;
+        this.sendNotificationRegistration();
         this.callback.onConnect(lsession);
+
 
     }
 

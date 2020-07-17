@@ -19,12 +19,12 @@ import java.util.Map;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotImplementedException;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.http.BaseHTTPClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.http.BaseHTTPResponse;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
-import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.Identifier;
@@ -45,10 +45,10 @@ public class RestconfHttpClient extends BaseHTTPClient {
     private final OdlRpcObjectMapperXml mapper;
 
     public RestconfHttpClient(String base, boolean trustAllCerts, AuthMethod authMethod, String username,
-            String password) throws Exception {
+            String password) throws NotImplementedException  {
         super(base, trustAllCerts);
         if (authMethod == AuthMethod.TOKEN) {
-            throw new Exception("not yet implemented");
+            throw new NotImplementedException();
         }
         this.headers = new HashMap<>();
         this.headers.put("Content-Type", "application/xml");

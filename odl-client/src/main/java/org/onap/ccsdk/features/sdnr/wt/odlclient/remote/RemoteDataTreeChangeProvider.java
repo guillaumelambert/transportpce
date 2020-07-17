@@ -43,7 +43,7 @@ public class RemoteDataTreeChangeProvider<N extends Node, D extends DataTreeChan
             @NonNull
             Collection<DataTreeModification<N>> changes = Arrays
                     .asList(this.createModification(notification));
-            reg.getInstance().onDataTreeChanged(changes);
+            //reg.getInstance().onDataTreeChanged(changes);
         }
     }
 

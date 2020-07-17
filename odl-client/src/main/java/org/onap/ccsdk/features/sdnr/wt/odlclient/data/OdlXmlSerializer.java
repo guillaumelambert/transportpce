@@ -12,7 +12,7 @@ import org.opendaylight.yangtools.yang.common.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OdlXmlSerializer extends OdlDataSerializer<StringBuilder>{
+public class OdlXmlSerializer extends OdlDataSerializer<StringBuilder> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OdlXmlSerializer.class);
 
@@ -21,14 +21,14 @@ public class OdlXmlSerializer extends OdlDataSerializer<StringBuilder>{
     }
 
     @Override
-    void preValueWrite(StringBuilder sb, String key,Object o) {
+    void preValueWrite(StringBuilder sb, String key, Object o) {
         sb.append(String.format("<%s %s>", key, this.getXmlNameSpace(o)));
 
     }
 
     @Override
     void postValueWrite(StringBuilder sb, String key) {
-        sb.append(String.format("</%s>",key));
+        sb.append(String.format("</%s>", key));
 
     }
 
@@ -40,22 +40,24 @@ public class OdlXmlSerializer extends OdlDataSerializer<StringBuilder>{
 
     @Override
     StringBuilder instantiateBuilder() {
-       return new StringBuilder();
+        return new StringBuilder();
     }
 
     private String getXmlNameSpace(Object o) {
-        Field f;
-        Object couldQName=null;
-        try {
+        if (o != null) {
+            Field f;
+            Object couldQName = null;
+            try {
 
-            f = o.getClass().getField("QNAME");
-            couldQName = f.get(o);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException  e) {
-           //no need to handle this
-        }
-        if (couldQName instanceof QName) {
-            QName qname = (QName) couldQName;
-            return  "xmlns=\""+qname.getNamespace().toString()+"\"" ;
+                f = o.getClass().getField("QNAME");
+                couldQName = f.get(o);
+            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+                //no need to handle this
+            }
+            if (couldQName instanceof QName) {
+                QName qname = (QName) couldQName;
+                return "xmlns=\"" + qname.getNamespace().toString() + "\"";
+            }
         }
         return "";
     }

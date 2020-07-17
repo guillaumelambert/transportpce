@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
 
-    private static final long MAX_RETRIES = 5;
+    private static final long MAX_RETRIES = 50;
     private static final Logger LOG = LoggerFactory.getLogger(WebsocketWatchDog.class);
 
     private static final int DELAY_BETWEEN_CONNECTIONTRIALS = 5000;
@@ -29,12 +29,14 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
         @Override
         public void run() {
 
+            LOG.info("start watchdog");
             while (!closed) {
                 if (!isConnected() && triggered) {
-                    triggered = false;
-                    LOG.info("tick");
-                    final long now = new Date().getTime();
+                     final long now = new Date().getTime();
+                    LOG.info("tick(diff = {})",timeToConnect-now);
                     if (now > timeToConnect) {
+                        triggered = false;
+                        LOG.info("time to reconnect");
                         try {
                             reconnect();
                         } catch (Exception e) {
@@ -45,7 +47,7 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
                 }
                 trySleep(1000);
             }
-
+            LOG.info("quit watchdog");
         }
 
         private void trySleep(int sleepMs) {
@@ -59,6 +61,7 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
         @Override
         void trigger(int delay) {
             this.timeToConnect = new Date().getTime() + delay;
+            LOG.info("triggered. next connect on {}",this.timeToConnect);
             triggered = true;
         }
 
@@ -108,7 +111,9 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
 
     @Override
     public void onError(Throwable cause) {
+        this.session = null;
         this.remoteCallback.onError(cause);
+        this.decrementAndTriggerDelayed();
     }
 
     @Override

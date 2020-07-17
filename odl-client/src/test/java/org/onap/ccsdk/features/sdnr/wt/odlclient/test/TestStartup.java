@@ -25,7 +25,7 @@ public class TestStartup {
         OpendaylightClient odlClient = new OpendaylightClient("http://sdnr:8181",
                 "ws://sdnr:8181/websocket", AuthMethod.BASIC, ODL_USERNAME, ODLPASSWORD);
         LOG.info("device is present={}", odlClient.isDevicePresent(NODEID));
-        sleep(5000);
+        sleep(45000);
         odlClient.close();
         LOG.info("test finished");
     }

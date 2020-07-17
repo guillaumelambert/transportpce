@@ -19,12 +19,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder.Value;
@@ -32,9 +30,6 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializerModifier;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
-import com.fasterxml.jackson.databind.ser.DefaultSerializerProvider;
-import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -74,7 +69,7 @@ public class OdlObjectMapper extends ObjectMapper {
 
         SimpleModule customSerializerModule = new SimpleModule();
         customSerializerModule.addSerializer(DateAndTime.class, new CustomDateAndTimeSerializer());
-        customSerializerModule.addSerializer(EquipmentEntity.class, new CustomChoiceSerializer());
+//        customSerializerModule.addSerializer(EquipmentEntity.class, new CustomChoiceSerializer());
         customSerializerModule.setDeserializerModifier(new CustomOdlDeserializer());
 
         customSerializerModule.addKeyDeserializer(DataObject.class, new KeyDeserializer() {
@@ -283,33 +278,33 @@ public class OdlObjectMapper extends ObjectMapper {
 
     }
 
-    public static class CustomChoiceSerializer extends StdSerializer<ChoiceIn>{
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 1L;
-
-        protected CustomChoiceSerializer(Class<ChoiceIn> t) {
-            super(t);
-            // TODO Auto-generated constructor stub
-        }
-
-        public CustomChoiceSerializer() {
-           this(null);
-        }
-
-        @Override
-        public void serialize(ChoiceIn value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-//            gen.writeStartObject();
-//            gen.writeNumberField("id", 4);
-//            gen.writeStringField("itemName", "name");
-//            gen.writeNumberField("owner", 55);
-//            gen.writeEndObject();
-            gen.writeString("innerchoice");
-        }
-
-    }
+//    public static class CustomChoiceSerializer extends StdSerializer<ChoiceIn>{
+//
+//        /**
+//         *
+//         */
+//        private static final long serialVersionUID = 1L;
+//
+//        protected CustomChoiceSerializer(Class<ChoiceIn> t) {
+//            super(t);
+//            // TODO Auto-generated constructor stub
+//        }
+//
+//        public CustomChoiceSerializer() {
+//           this(null);
+//        }
+//
+//        @Override
+//        public void serialize(ChoiceIn value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+////            gen.writeStartObject();
+////            gen.writeNumberField("id", 4);
+////            gen.writeStringField("itemName", "name");
+////            gen.writeNumberField("owner", 55);
+////            gen.writeEndObject();
+//            gen.writeString("innerchoice");
+//        }
+//
+//    }
     public static class CustomDateAndTimeSerializer extends StdSerializer<DateAndTime> {
 
         private static final long serialVersionUID = 1L;

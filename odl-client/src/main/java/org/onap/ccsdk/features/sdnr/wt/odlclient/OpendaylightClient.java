@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.DeviceConnectionChangedHandler;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotImplementedException;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDataBroker;
@@ -52,8 +54,8 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
         implements AutoCloseable, RemoteOpendaylightClient<N, D> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpendaylightClient.class);
-    private static final InstanceIdentifier<Topology> NETCONF_TOPO_IID = InstanceIdentifier
-            .create(NetworkTopology.class).child(Topology.class,
+    private static final InstanceIdentifier<Topology> NETCONF_TOPO_IID =
+            InstanceIdentifier.create(NetworkTopology.class).child(Topology.class,
                     new TopologyKey(new TopologyId(TopologyNetconf.QNAME.getLocalName())));
     private static final boolean TRUSTALLCERTS = false;
     private final RestconfHttpClient restClient;
@@ -62,25 +64,25 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
 
         @Override
         public void onMessageReceived(String msg) {
-            // TODO Auto-generated method stub
+
 
         }
 
         @Override
         public void onError(Throwable cause) {
-            // TODO Auto-generated method stub
+           LOG.error("ws connection error: {}",cause.getMessage());
 
         }
 
         @Override
         public void onDisconnect(int statusCode, String reason) {
-            // TODO Auto-generated method stub
+            LOG.warn("ws connection to sdnr broken: {} {}", statusCode, reason);
 
         }
 
         @Override
         public void onConnect(Session lsession) {
-            // TODO Auto-generated method stub
+            LOG.info("ws connection to sdnr established");
 
         }
 
@@ -89,6 +91,7 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
          */
         @Override
         public void onNotificationReceived(SdnrNotification notification) {
+            LOG.debug("received notification from sdnr: {}", notification);
             if (notification.isControllerNotification()) {
                 dataTreeChangeProvider.onControllerNotification(notification);
                 deviceConnectionChangeProvider.onControllerNotification(notification);
@@ -106,12 +109,13 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
     public OpendaylightClient() throws Exception {
         this.config = new RemoteOdlConfig();
         if (this.config.isEnabled()) {
-            this.restClient = new RestconfHttpClient(this.config.getBaseUrl(),
-                    this.config.trustAllCerts(), this.config.getAuthenticationMethod(),
-                    this.config.getCredentialUsername(), this.config.getCredentialPassword());
+            this.restClient = new RestconfHttpClient(this.config.getBaseUrl(), this.config.trustAllCerts(),
+                    this.config.getAuthenticationMethod(), this.config.getCredentialUsername(),
+                    this.config.getCredentialPassword());
             this.wsClient = this.config.getWebsocketUrl() == null ? null
                     : new SdnrWebsocketClient(this.config.getWebsocketUrl(), this.wsCallback);
             if (this.wsClient != null) {
+                LOG.info("starting wsclient");
                 this.wsClient.start();
 
             }
@@ -127,11 +131,16 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
         this.deviceDataBrokers = new HashMap<>();
     }
 
-    public OpendaylightClient(String baseUrl, @Nullable String wsUrl, AuthMethod authMethod,
-            String username, String password) throws Exception {
+    public OpendaylightClient(String baseUrl, @Nullable String wsUrl, AuthMethod authMethod, String username,
+            String password) throws NotImplementedException, URISyntaxException {
         this.config = null;
         this.restClient = new RestconfHttpClient(baseUrl, TRUSTALLCERTS, authMethod, username, password);
         this.wsClient = wsUrl == null ? null : new SdnrWebsocketClient(wsUrl, this.wsCallback);
+        if (this.wsClient != null) {
+            LOG.info("starting wsclient");
+            this.wsClient.start();
+
+        }
         this.dataBroker = new RemoteDataBroker(this.restClient);
         this.dataTreeChangeProvider = new RemoteDataTreeChangeProvider<>(this.restClient);
         this.deviceConnectionChangeProvider = new RemoteDeviceConnectionChangeProvider(this.restClient);
@@ -150,17 +159,14 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
     @Override
     public boolean isDevicePresent(String nodeId) {
 
-        InstanceIdentifier<NetconfNode> iif = NETCONF_TOPO_IID
-                .child(Node.class, new NodeKey(new NodeId(nodeId))).augmentation(NetconfNode.class);
+        InstanceIdentifier<NetconfNode> iif =
+                NETCONF_TOPO_IID.child(Node.class, new NodeKey(new NodeId(nodeId))).augmentation(NetconfNode.class);
         try {
             @NonNull
-            Optional<NetconfNode> node = this.restClient.read(LogicalDatastoreType.OPERATIONAL, iif)
-                    .get();
-            return node.isPresent() ? node.get().getConnectionStatus() == ConnectionStatus.Connected
-                    : false;
-        } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException | IOException | InterruptedException
-                | ExecutionException e) {
+            Optional<NetconfNode> node = this.restClient.read(LogicalDatastoreType.OPERATIONAL, iif).get();
+            return node.isPresent() ? node.get().getConnectionStatus() == ConnectionStatus.Connected : false;
+        } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
+                | IllegalAccessException | IOException | InterruptedException | ExecutionException e) {
             LOG.warn("unable to read netconfnode {}:", nodeId, e);
 
         }
@@ -193,8 +199,8 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
     }
 
     @Override
-    public @NonNull ListenerRegistration<D> registerDataTreeChangeListener(
-            @NonNull DataTreeIdentifier<N> treeId, @NonNull D listener) {
+    public @NonNull ListenerRegistration<D> registerDataTreeChangeListener(@NonNull DataTreeIdentifier<N> treeId,
+            @NonNull D listener) {
         return this.dataTreeChangeProvider.register(treeId, listener);
     }
 

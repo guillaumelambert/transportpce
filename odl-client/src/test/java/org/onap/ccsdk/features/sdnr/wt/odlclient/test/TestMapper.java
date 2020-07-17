@@ -568,6 +568,21 @@ public class TestMapper {
             + "    <connection-status xmlns=\"urn:opendaylight:netconf-node-topology\">connected</connection-status>\n"
             + "</node>";
 
+    private static final String NETCONFNODE_CONNECTING_XML="<node xmlns=\"urn:TBD:params:xml:ns:yang:network-topology\">\n" +
+            "  <node-id>onapextroadmb1</node-id>\n" +
+            "  <reconnect-on-changed-schema xmlns=\"urn:opendaylight:netconf-node-topology\">false</reconnect-on-changed-schema>\n" +
+            "  <sleep-factor xmlns=\"urn:opendaylight:netconf-node-topology\">1.5</sleep-factor>\n" +
+            "  <password xmlns=\"urn:opendaylight:netconf-node-topology\">asd</password>\n" +
+            "  <username xmlns=\"urn:opendaylight:netconf-node-topology\">asd</username>\n" +
+            "  <max-connection-attempts xmlns=\"urn:opendaylight:netconf-node-topology\">100</max-connection-attempts>\n" +
+            "  <connection-timeout-millis xmlns=\"urn:opendaylight:netconf-node-topology\">20000</connection-timeout-millis>\n" +
+            "  <tcp-only xmlns=\"urn:opendaylight:netconf-node-topology\">false</tcp-only>\n" +
+            "  <port xmlns=\"urn:opendaylight:netconf-node-topology\">4000</port>\n" +
+            "  <host xmlns=\"urn:opendaylight:netconf-node-topology\">172.29.0.7</host>\n" +
+            "  <between-attempts-timeout-millis xmlns=\"urn:opendaylight:netconf-node-topology\">2000</between-attempts-timeout-millis>\n" +
+            "  <keepalive-delay xmlns=\"urn:opendaylight:netconf-node-topology\">120</keepalive-delay>\n" +
+            "  <connection-status xmlns=\"urn:opendaylight:netconf-node-topology\">connecting</connection-status>\n" +
+            "</node>";
     // @Test
     public void testMapRoadmInfo()
             throws ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
@@ -577,16 +592,16 @@ public class TestMapper {
         LOG.info("outputxml={}", xmlMapper.readValue(INFOSTRING_XML, Info.class));
     }
 
-    // @Test
+    @Test
     public void testNodeInfo() throws JsonParseException, JsonMappingException, IOException {
         OdlObjectMapper jsonMapper = new OdlObjectMapper();
         OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml();
-        LOG.info("outputjson={}", jsonMapper.readValue(NODEINFO, NetconfNode.class, "network-topology:node"));
+       // LOG.info("outputjson={}", jsonMapper.readValue(NODEINFO, NetconfNode.class, "network-topology:node"));
         LOG.info("outputxml={}", xmlMapper.readValue(NODEINFO_XML, NetconfNode.class));
 
     }
 
-    @Test
+    //@Test
     public void testRpcSerializer() {
         OdlXmlSerializer mapper = new OdlXmlSerializer();
         final LedControlInputBuilder builder = new LedControlInputBuilder();
@@ -641,5 +656,12 @@ public class TestMapper {
 
     private Reader getFileReader(String filename) throws FileNotFoundException {
         return new FileReader(new File(TestMapper.class.getResource(filename).getFile()));
+    }
+
+    @Test
+    public void testNetconfNodeDeserializer() throws JsonParseException, JsonMappingException, IOException {
+        OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml();
+        NetconfNode nNode = xmlMapper.readValue(NETCONFNODE_CONNECTING_XML, NetconfNode.class);
+        LOG.info("res={}",nNode);
     }
 }

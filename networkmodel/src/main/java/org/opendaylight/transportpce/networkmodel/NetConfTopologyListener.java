@@ -100,27 +100,28 @@ public class NetConfTopologyListener
                     this.dataBroker);
             LOG.info("Registering notification listener on OrgOpenroadmAlarmListener for node: {}",
                     nodeId);
-            final ListenerRegistration<OrgOpenroadmAlarmListener> accessAlarmNotificationListenerRegistration = notificationService
-                    .get().registerNotificationListener(alarmListener);
+            final ListenerRegistration<OrgOpenroadmAlarmListener> accessAlarmNotificationListenerRegistration =
+                    notificationService.get().registerNotificationListener(alarmListener);
 
             final OrgOpenroadmDeOperationsListener deOperationsListener = new DeOperationsListener();
             LOG.info(
                     "Registering notification listener on OrgOpenroadmDeOperationsListener for node: {}",
                     nodeId);
-            final ListenerRegistration<OrgOpenroadmDeOperationsListener> accessDeOperationasNotificationListenerRegistration = notificationService
+            final ListenerRegistration<OrgOpenroadmDeOperationsListener>
+                accessDeOperationasNotificationListenerRegistration = notificationService
                     .get().registerNotificationListener(deOperationsListener);
 
             final OrgOpenroadmDeviceListener deviceListener = new DeviceListener();
             LOG.info("Registering notification listener on OrgOpenroadmDeviceListener for node: {}",
                     nodeId);
-            final ListenerRegistration<OrgOpenroadmDeviceListener> accessDeviceNotificationListenerRegistration = notificationService
-                    .get().registerNotificationListener(deviceListener);
+            final ListenerRegistration<OrgOpenroadmDeviceListener> accessDeviceNotificationListenerRegistration =
+                    notificationService.get().registerNotificationListener(deviceListener);
 
             TcaListener tcaListener = new TcaListener();
             LOG.info("Registering notification listener on OrgOpenroadmTcaListener for node: {}",
                     nodeId);
-            final ListenerRegistration<OrgOpenroadmTcaListener> accessTcaNotificationListenerRegistration = notificationService
-                    .get().registerNotificationListener(tcaListener);
+            final ListenerRegistration<OrgOpenroadmTcaListener> accessTcaNotificationListenerRegistration =
+                    notificationService.get().registerNotificationListener(tcaListener);
 
             String streamName = "NETCONF";
 
@@ -136,7 +137,8 @@ public class NetConfTopologyListener
                 if (rpcService == null) {
                     LOG.error("Failed to get RpcService for node {}", nodeId);
                 } else {
-                    final CreateSubscriptionInputBuilder createSubscriptionInputBuilder = new CreateSubscriptionInputBuilder();
+                    final CreateSubscriptionInputBuilder createSubscriptionInputBuilder =
+                            new CreateSubscriptionInputBuilder();
                     createSubscriptionInputBuilder.setStream(new StreamNameType(streamName));
                     LOG.info("Triggering notification stream {} for node {}", streamName, nodeId);
                     rpcService.createSubscription(createSubscriptionInputBuilder.build());

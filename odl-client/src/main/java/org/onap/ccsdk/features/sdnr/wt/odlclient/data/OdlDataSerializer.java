@@ -58,62 +58,64 @@ public abstract class OdlDataSerializer<T> {
         if (level > 15) {
             System.out.println("Level to deep protection.");
         } else {
-            Class<?> clazz = object.getClass();
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    String name = field.getName();
-                    field.setAccessible(true);
-                    Object value = field.get(object);
-                    //only _xxx properties are interesting
-                    if (name.startsWith("_")) {
-                        if (this.nullValueExcluded && value == null) {
-                            continue;
-                        }
-                        Class<?> type = field.getType();
-                        //convert property name to kebab-case (yang-spec writing)
-                        name = name.substring(1).replaceAll("([a-z0-9])([A-Z])", "$1-$2").toLowerCase();
-                        //if has inner childs
-                        if (DataObject.class.isAssignableFrom(type)) {
-                            this.startElem(sb, name,value);
-                            this.writeRecurseProperties(sb, value, level + 1);
-                            this.stopElem(sb, name);
-                        } else {
-                            //if enum
-                            if (Enum.class.isAssignableFrom(type)) {
+            if(object!=null) {
+                Class<?> clazz = object.getClass();
+                Field[] fields = clazz.getDeclaredFields();
+                for (Field field : fields) {
+                    try {
+                        String name = field.getName();
+                        field.setAccessible(true);
+                        Object value = field.get(object);
+                        //only _xxx properties are interesting
+                        if (name.startsWith("_")) {
+                            if (this.nullValueExcluded && value == null) {
+                                continue;
+                            }
+                            Class<?> type = field.getType();
+                            //convert property name to kebab-case (yang-spec writing)
+                            name = name.substring(1).replaceAll("([a-z0-9])([A-Z])", "$1-$2").toLowerCase();
+                            //if has inner childs
+                            if (DataObject.class.isAssignableFrom(type)) {
                                 this.startElem(sb, name,value);
-                                String svalue = String.valueOf(value);
-                                this.writeElemValue(sb, svalue.substring(0, 1).toLowerCase() + svalue.substring(1));
+                                this.writeRecurseProperties(sb, value, level + 1);
                                 this.stopElem(sb, name);
-                            }
-                            // type object (new type of base type) => use getValue()
-                            else if (TypeObject.class.isAssignableFrom(type)) {
-                                this.startElem(sb, name,value);
-                                this.writeElemValue(sb, this.getTypeObjectStringValue(value, type));
-                                this.stopElem(sb, name);
-                            }
-                            //if choice then jump over field and step into next java level, but not in xml
-                            else if (ChoiceIn.class.isAssignableFrom(type)) {
-                                this.writeRecurseProperties(sb, value, level);
-                            }
-                            //if list of elems
-                            else if (value != null && List.class.isAssignableFrom(type)) {
-                                for (Object listObject : (List<Object>) value) {
-                                    this.startElem(sb, name,listObject);
-                                    this.writeRecurseProperties(sb, listObject, level + 1);
+                            } else {
+                                //if enum
+                                if (Enum.class.isAssignableFrom(type)) {
+                                    this.startElem(sb, name,value);
+                                    String svalue = String.valueOf(value);
+                                    this.writeElemValue(sb, svalue.substring(0, 1).toLowerCase() + svalue.substring(1));
+                                    this.stopElem(sb, name);
+                                }
+                                // type object (new type of base type) => use getValue()
+                                else if (TypeObject.class.isAssignableFrom(type)) {
+                                    this.startElem(sb, name,value);
+                                    this.writeElemValue(sb, this.getTypeObjectStringValue(value, type));
+                                    this.stopElem(sb, name);
+                                }
+                                //if choice then jump over field and step into next java level, but not in xml
+                                else if (ChoiceIn.class.isAssignableFrom(type)) {
+                                    this.writeRecurseProperties(sb, value, level);
+                                }
+                                //if list of elems
+                                else if (value != null && List.class.isAssignableFrom(type)) {
+                                    for (Object listObject : (List<Object>) value) {
+                                        this.startElem(sb, name,listObject);
+                                        this.writeRecurseProperties(sb, listObject, level + 1);
+                                        this.stopElem(sb, name);
+                                    }
+                                }
+                                //by exclude all others it is basic value element
+                                else {
+                                    this.startElem(sb, name,value);
+                                    this.writeElemValue(sb, value);
                                     this.stopElem(sb, name);
                                 }
                             }
-                            //by exclude all others it is basic value element
-                            else {
-                                this.startElem(sb, name,value);
-                                this.writeElemValue(sb, value);
-                                this.stopElem(sb, name);
-                            }
                         }
+                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        LOG.warn("problem accessing value during mapping: ", e);
                     }
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    LOG.warn("problem accessing value during mapping: ", e);
                 }
             }
         }
