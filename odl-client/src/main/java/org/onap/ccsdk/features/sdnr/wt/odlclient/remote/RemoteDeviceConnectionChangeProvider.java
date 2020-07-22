@@ -53,15 +53,18 @@ public class RemoteDeviceConnectionChangeProvider {
     public void onControllerNotification(SdnrNotification notification) {
         if (notification.isControllerNotification()) {
             if (notification instanceof ObjectCreationNotification) {
+                LOG.debug("handle create notification");
                 String nodeId = ((ObjectCreationNotification) notification).getObjectId();
                 this.handleChange(nodeId);
 
             } else if (notification instanceof ObjectDeletionNotification) {
+                LOG.debug("handle delete notification");
                 String nodeId = ((ObjectCreationNotification) notification).getObjectId();
                 this.pushDisconnect(nodeId);
 
             } else if (notification instanceof AttributeValueChangedNotification) {
                 AttributeValueChangedNotification notification2 = (AttributeValueChangedNotification) notification;
+                LOG.debug("handle change notification for {}",notification2.getAttributeName());
                 if (notification2.getAttributeName().equals("ConnectionStatus")) {
                     String nodeId = notification2.getObjectId();
                     this.handleChange(nodeId);
@@ -78,6 +81,7 @@ public class RemoteDeviceConnectionChangeProvider {
         InstanceIdentifier<NetconfNode> nodeIif = NETCONF_TOPO_IID.child(Node.class,new NodeKey(new NodeId(nodeId)))
                 .augmentation(NetconfNode.class);
         try {
+            LOG.debug("read remote netconfnode");
             Optional<NetconfNode> netconfNode = this.client.read(LogicalDatastoreType.CONFIGURATION, nodeIif)
                     .get();
             this.handleChange(nodeId, netconfNode.isPresent() ? netconfNode.get() : null);
@@ -92,6 +96,7 @@ public class RemoteDeviceConnectionChangeProvider {
     private void handleChange(String nodeId, NetconfNode netconfNode) {
         @Nullable
         ConnectionStatus csts = netconfNode.getConnectionStatus();
+        LOG.debug("handle change for connection status {}",csts);
         if (csts != null) {
             if (csts == ConnectionStatus.Connected) {
                 this.pushConnect(nodeId, netconfNode);
@@ -108,24 +113,28 @@ public class RemoteDeviceConnectionChangeProvider {
 
     private void pushConnect(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
+            LOG.debug("push connected to {}",listener.getClass());
             listener.onRemoteDeviceConnected(nodeId, netconfNode);
         }
     }
 
     private void pushConnecting(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
+            LOG.debug("push connecting to {}",listener.getClass());
             listener.onRemoteDeviceConnecting(nodeId);
         }
     }
 
     private void pushUnableToConnect(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
+            LOG.debug("push unable to connect to {}",listener.getClass());
             listener.onRemoteDeviceUnableToConnect(nodeId);
         }
     }
 
     private void pushDisconnect(String nodeId) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
+            LOG.debug("push disconnect to {}",listener.getClass());
             listener.onRemoteDeviceDisConnected(nodeId);
         }
     }

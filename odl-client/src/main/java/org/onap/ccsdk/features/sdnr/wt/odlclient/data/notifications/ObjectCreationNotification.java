@@ -18,5 +18,4 @@ public class ObjectCreationNotification extends BaseNotification {
                 + getCounter() + ", getTimeStamp()=" + getTimeStamp() + ", getObjectId()="
                 + getObjectId() + ", getType()=" + getType() + "]";
     }
-
 }

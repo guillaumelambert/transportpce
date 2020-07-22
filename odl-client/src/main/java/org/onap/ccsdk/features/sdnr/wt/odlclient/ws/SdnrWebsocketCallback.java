@@ -21,4 +21,5 @@ public interface SdnrWebsocketCallback {
     void onError(Throwable cause);
 
     void onNotificationReceived(SdnrNotification notification);
+
 }

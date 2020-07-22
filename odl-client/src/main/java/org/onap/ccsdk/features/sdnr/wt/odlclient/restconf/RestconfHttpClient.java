@@ -188,4 +188,8 @@ public class RestconfHttpClient extends BaseHTTPClient {
         return result.buildFuture();
     }
 
+    public void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path, String nodeId) {
+       LOG.warn("delete is not yet implemented");
+    }
+
 }

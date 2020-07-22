@@ -8,7 +8,9 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.ws;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.eclipse.jetty.websocket.api.Session;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 import org.slf4j.Logger;
@@ -32,8 +34,8 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
             LOG.info("start watchdog");
             while (!closed) {
                 if (!isConnected() && triggered) {
-                     final long now = new Date().getTime();
-                    LOG.info("tick(diff = {})",timeToConnect-now);
+                    final long now = new Date().getTime();
+                    LOG.info("tick(diff = {})", timeToConnect - now);
                     if (now > timeToConnect) {
                         triggered = false;
                         LOG.info("time to reconnect");
@@ -61,7 +63,7 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
         @Override
         void trigger(int delay) {
             this.timeToConnect = new Date().getTime() + delay;
-            LOG.info("triggered. next connect on {}",this.timeToConnect);
+            LOG.info("triggered. next connect on {}", this.timeToConnect);
             triggered = true;
         }
 
@@ -73,10 +75,11 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
         return this.session == null ? false : this.session.isOpen();
     }
 
-//    private long lastConnect;
+    //    private long lastConnect;
     private long retries = MAX_RETRIES;
 
     private final SdnrWebsocketCallback remoteCallback;
+    private final List<SdnrWebsocketCallback> listeners;
     private final Thread watcherThread;
     private Session session;
     private boolean closed;
@@ -84,6 +87,7 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
     public WebsocketWatchDog(SdnrWebsocketCallback callback) {
         this.remoteCallback = callback;
         this.watcherThread = new Thread(this.runner);
+        this.listeners = new ArrayList<>();
     }
 
     private void decrementAndTriggerDelayed() {
@@ -100,12 +104,18 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
     @Override
     public void onMessageReceived(String msg) {
         this.remoteCallback.onMessageReceived(msg);
+        for (SdnrWebsocketCallback cb : this.listeners) {
+            cb.onMessageReceived(msg);
+        }
     }
 
     @Override
     public void onDisconnect(int statusCode, String reason) {
         this.session = null;
         this.remoteCallback.onDisconnect(statusCode, reason);
+        for (SdnrWebsocketCallback cb : this.listeners) {
+            cb.onDisconnect(statusCode, reason);
+        }
         this.decrementAndTriggerDelayed();
     }
 
@@ -113,6 +123,9 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
     public void onError(Throwable cause) {
         this.session = null;
         this.remoteCallback.onError(cause);
+        for (SdnrWebsocketCallback cb : this.listeners) {
+            cb.onError(cause);
+        }
         this.decrementAndTriggerDelayed();
     }
 
@@ -121,14 +134,20 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
         this.session = lsession;
         // reset connection retries
         this.retries = MAX_RETRIES;
-//        this.lastConnect = new Date().getTime();
+        //        this.lastConnect = new Date().getTime();
         this.remoteCallback.onConnect(lsession);
+        for (SdnrWebsocketCallback cb : this.listeners) {
+            cb.onConnect(lsession);
+        }
 
     }
 
     @Override
     public void onNotificationReceived(SdnrNotification notification) {
         this.remoteCallback.onNotificationReceived(notification);
+        for (SdnrWebsocketCallback cb : this.listeners) {
+            cb.onNotificationReceived(notification);
+        }
 
     }
 
@@ -162,6 +181,14 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
         }
 
         abstract void trigger(int delay);
+    }
+
+    public void registerWebsocketEventListener(SdnrWebsocketCallback cb) {
+        this.listeners.add(cb);
+    }
+
+    public void unregisterWebsocketEventListener(SdnrWebsocketCallback cb) {
+        this.listeners.remove(cb);
     }
 
 }

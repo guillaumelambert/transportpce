@@ -93,8 +93,12 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
         public void onNotificationReceived(SdnrNotification notification) {
             LOG.debug("received notification from sdnr: {}", notification);
             if (notification.isControllerNotification()) {
+                LOG.debug("controller notification. try to handle this");
                 dataTreeChangeProvider.onControllerNotification(notification);
                 deviceConnectionChangeProvider.onControllerNotification(notification);
+            }
+            else {
+                LOG.debug("up to now not handled");
             }
 
         }
@@ -190,7 +194,7 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
 
     @Override
     public MountPoint getMountPoint(String deviceId) {
-        return new RemoteMountPoint(this.restClient, deviceId);
+        return new RemoteMountPoint(this.restClient, this.wsClient, deviceId);
     }
 
     @Override

@@ -13,15 +13,15 @@ import org.junit.Test;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.OrgOpenroadmDevice;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.Info;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDevice;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class TestIifToUri {
 
-    private static final String ROADMAA_INFO = "/rests/data/network-topology:network-topology/topology=topology-netconf"
-            + "/node=roadmaa/yang-ext:mount/org-openroadm-device:org-openroadm-device/info";
+        private static final String ROADMAA_INFO = "/rests/data/network-topology:network-topology/topology=topology-netconf"
+                + "/node=roadmaa/yang-ext:mount/org-openroadm-device:org-openroadm-device/info";
     private static final String ROADMAA_NODEID = "roadmaa";
 
     @Test
@@ -29,7 +29,7 @@ public class TestIifToUri {
 
         TestRestconfHttpClient restconfClient = new TestRestconfHttpClient("http://localhost:8181/", false, AuthMethod.BASIC,"","");
         String uri;
-        uri = restconfClient.getRfc8040UriFromIif(LogicalDatastoreType.OPERATIONAL,
+        uri = restconfClient.getRfc8040UriFromIif(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(OrgOpenroadmDevice.class).child(Info.class), ROADMAA_NODEID);
         assertEquals(ROADMAA_INFO, uri);
     }

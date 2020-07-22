@@ -7,6 +7,7 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -20,13 +21,17 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlJsonSerializer;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapperXml;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlXmlSerializer;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlOutput;
@@ -39,6 +44,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.Usern
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.User.Group;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.UserBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.connection.status.available.capabilities.AvailableCapability;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -596,6 +602,7 @@ public class TestMapper {
     public void testNodeInfo() throws JsonParseException, JsonMappingException, IOException {
         OdlObjectMapper jsonMapper = new OdlObjectMapper();
         OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml();
+
        // LOG.info("outputjson={}", jsonMapper.readValue(NODEINFO, NetconfNode.class, "network-topology:node"));
         LOG.info("outputxml={}", xmlMapper.readValue(NODEINFO_XML, NetconfNode.class));
 
@@ -642,6 +649,23 @@ public class TestMapper {
         LOG.info(inputPayload);
     }
 
+    @Test
+    public void testTopologyNodeDeser() throws IOException {
+
+        String xml = this.getTrimmedFileContent("/xml/roadma-netconfnode.xml");
+        OdlRpcObjectMapperXml mapper = new OdlRpcObjectMapperXml();
+        NetconfNode nNode = mapper.readValue(xml,NetconfNode.class);
+        LOG.debug("{}",nNode);
+        assertNotNull(nNode.getAvailableCapabilities());
+        @Nullable List<AvailableCapability> caps = nNode.getAvailableCapabilities().getAvailableCapability();
+        assertTrue(caps.size()>0);
+        assertTrue(caps.stream().filter(new Predicate<AvailableCapability>() {
+            @Override
+            public boolean test(AvailableCapability arg0) {
+                return arg0.getCapability().contains("org-openroadm-device");
+            };
+        }).count()>0);
+    }
     private String getTrimmedFileContent(String filename) throws IOException {
         ImmutableList<String> lines =
                 Files.asCharSource(new File(TestMapper.class.getResource(filename).getFile()), StandardCharsets.UTF_8)

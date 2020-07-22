@@ -9,6 +9,7 @@
 package org.opendaylight.transportpce.common.mapping;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_1_2_1;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_2_2_1;
+import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_3;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -50,7 +51,8 @@ public class PortMappingImpl implements PortMapping {
     public boolean createMappingData(String nodeId, String nodeVersion) {
         if (nodeVersion.equals(OPENROADM_DEVICE_VERSION_1_2_1)) {
             return portMappingVersion121.createMappingData(nodeId);
-        } else if (nodeVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)) {
+        } else if (nodeVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)
+                || nodeVersion.equals(OPENROADM_DEVICE_VERSION_3)) {
             return portMappingVersion22.createMappingData(nodeId);
         } else {
             LOG.error("Unable to create mapping data for unmanaged openroadm device version");

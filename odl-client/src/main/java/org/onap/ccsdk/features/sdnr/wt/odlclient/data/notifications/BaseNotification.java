@@ -63,4 +63,5 @@ public abstract class BaseNotification implements SdnrNotification {
         final Matcher matcher = pattern.matcher(this.nodeName);
         return matcher.find();
     }
+
 }

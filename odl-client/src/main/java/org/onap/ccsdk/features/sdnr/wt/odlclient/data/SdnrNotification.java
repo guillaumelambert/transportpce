@@ -15,4 +15,5 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 public interface SdnrNotification {
 
     boolean isControllerNotification();
+
 }

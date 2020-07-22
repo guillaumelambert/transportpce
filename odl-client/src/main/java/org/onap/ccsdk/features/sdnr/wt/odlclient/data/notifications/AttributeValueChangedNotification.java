@@ -27,4 +27,5 @@ public class AttributeValueChangedNotification extends BaseNotification {
     public String getNewValue() {
         return this.newValue;
     }
+
 }

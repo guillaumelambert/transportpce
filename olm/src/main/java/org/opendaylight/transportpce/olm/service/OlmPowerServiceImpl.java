@@ -427,7 +427,8 @@ public class OlmPowerServiceImpl implements OlmPowerService {
                     return false;
                 }
             } else if (mappingUtils.getOpenRoadmVersion(realNodeId)
-                .equals(StringConstants.OPENROADM_DEVICE_VERSION_2_2_1)) {
+                .equals(StringConstants.OPENROADM_DEVICE_VERSION_2_2_1) || mappingUtils.getOpenRoadmVersion(realNodeId)
+                .equals(StringConstants.OPENROADM_DEVICE_VERSION_3)) {
 
                 org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.RatioDB spanLossRx;
                 org.opendaylight.yang.gen.v1.http.org.openroadm.common.types

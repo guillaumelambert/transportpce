@@ -26,4 +26,5 @@ public class ProblemNotification extends BaseNotification {
     public String getSeverity() {
         return this.severity;
     }
+
 }

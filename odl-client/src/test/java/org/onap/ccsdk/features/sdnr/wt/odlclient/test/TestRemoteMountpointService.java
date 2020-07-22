@@ -21,9 +21,7 @@ import org.opendaylight.mdsal.binding.api.RpcConsumerRegistry;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlOutput;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.OrgOpenroadmDeviceService;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.equipment.entity.ShelfBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.equipment.entity.CircuitPackBuilder;
-import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +40,7 @@ public class TestRemoteMountpointService {
 
         RestconfHttpClient restClient = new RestconfHttpClient(BASEURL, false, AuthMethod.BASIC,
                 ODL_USERNAME, ODL_PASSWD);
-        MountPoint mountPoint = new RemoteMountPoint(restClient, DEVICEID);
+        MountPoint mountPoint = new RemoteMountPoint(restClient,null, DEVICEID);
         final Optional<RpcConsumerRegistry> service = mountPoint.getService(RpcConsumerRegistry.class);
         if (!service.isPresent()) {
             LOG.error("Failed to get RpcService for node {}", DEVICEID);

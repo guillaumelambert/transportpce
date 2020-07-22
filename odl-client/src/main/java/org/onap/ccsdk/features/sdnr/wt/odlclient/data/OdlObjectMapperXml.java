@@ -28,6 +28,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -185,10 +186,17 @@ public class OdlObjectMapperXml extends XmlMapper {
         }
         List<AvailableCapability> caps = new ArrayList<>();
         for (int i = 0; i < nodes.getLength(); i++) {
-            caps.add(new AvailableCapabilityBuilder().setCapability(getElemValue(nodes.item(i), "//capability", ""))
-                    .setCapabilityOrigin(
-                            CapabilityOrigin.forName(getElemValue(nodes.item(i), "//capability-origin", "")).get())
-                    .build());
+            Node node = nodes.item(i);
+            AvailableCapabilityBuilder builder;
+
+            String origin = getElemValue(node, "./capability-origin", null);
+            builder = new AvailableCapabilityBuilder().
+                setCapability(getElemValue(node, "./capability", ""));
+            if(origin!=null)
+                builder.setCapabilityOrigin(CapabilityOrigin.forName(origin).get());
+
+            caps.add(builder.build());
+
         }
         return caps;
     }
