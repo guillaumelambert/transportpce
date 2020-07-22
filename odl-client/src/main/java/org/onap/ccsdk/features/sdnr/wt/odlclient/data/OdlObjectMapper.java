@@ -43,14 +43,19 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.InfoBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeIdType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.EquipmentEntity;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.credentials.Credentials;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,9 +64,13 @@ public class OdlObjectMapper extends ObjectMapper {
     private static final Logger LOG = LoggerFactory.getLogger(OdlObjectMapper.class);
     private static final long serialVersionUID = 1L;
     private static final String TYPEOBJECT_INSTANCE_METHOD = "getDefaultInstance";
+    private static BundleContext gContext;
 
     public OdlObjectMapper() {
         super();
+        Bundle bundle = FrameworkUtil.getBundle(OdlObjectMapper.class);
+        gContext = bundle != null ? bundle.getBundleContext() : null;
+
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
         setSerializationInclusion(Include.NON_NULL);
@@ -69,9 +78,8 @@ public class OdlObjectMapper extends ObjectMapper {
 
         SimpleModule customSerializerModule = new SimpleModule();
         customSerializerModule.addSerializer(DateAndTime.class, new CustomDateAndTimeSerializer());
-//        customSerializerModule.addSerializer(EquipmentEntity.class, new CustomChoiceSerializer());
+        //        customSerializerModule.addSerializer(EquipmentEntity.class, new CustomChoiceSerializer());
         customSerializerModule.setDeserializerModifier(new CustomOdlDeserializer());
-
         customSerializerModule.addKeyDeserializer(DataObject.class, new KeyDeserializer() {
 
             @Override
@@ -97,11 +105,11 @@ public class OdlObjectMapper extends ObjectMapper {
     /**
      * Get Builder object for yang tools interface.
      *
-     * @param <T>   yang-tools base datatype
+     * @param <T> yang-tools base datatype
      * @param clazz class with interface.
      * @return builder for interface or null if not existing
      */
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings({"unchecked", "deprecation"})
     public @Nullable <T extends DataObject> Builder<T> getBuilder(Class<T> clazz) {
         String builder = clazz.getName() + "Builder";
         try {
@@ -122,6 +130,7 @@ public class OdlObjectMapper extends ObjectMapper {
         return 0;
     }
 
+
     /**
      * Adapted Builder callbacks.
      */
@@ -137,6 +146,8 @@ public class OdlObjectMapper extends ObjectMapper {
                             + "netconf.node.credentials.credentials.LoginPasswordBuilder";
                 } else if (ac.getRawType().equals(DateAndTime.class)) {
                     builder = DateAndTimeBuilder.class.getName();
+                } else if (ac.getRawType().equals(Info.class)) {
+                    builder = InfoBuilder.class.getName();
                 } else {
                     if (ac.getRawType().isInterface()) {
                         builder = ac.getName() + "Builder";
@@ -162,10 +173,35 @@ public class OdlObjectMapper extends ObjectMapper {
     }
 
     private static Class<?> findClass(String name) throws ClassNotFoundException {
+        return findClass(name, gContext);
+    }
+
+    public static Class<?> findClass(String name, Class<?> clazz) throws ClassNotFoundException {
+        Bundle bundle = FrameworkUtil.getBundle(clazz);
+        BundleContext ctx = bundle != null ? bundle.getBundleContext() : null;
+        return findClass(name, ctx);
+    }
+
+    public static Class<?> findClass(String name, BundleContext context) throws ClassNotFoundException {
         // Try to find in other bundles
-        return Class.forName(name);
+        if (context != null) {
+            //OSGi environment
+            for (Bundle b : context.getBundles()) {
+                try {
+                    LOG.trace("try to find class {} in bundle {}", name, b.getSymbolicName());
+                    return b.loadClass(name);
+                } catch (ClassNotFoundException e) {
+                    // No problem, this bundle doesn't have the class
+                }
+            }
+            throw new ClassNotFoundException("Can not find Class in OSGi context.");
+        } else {
+            return Class.forName(name);
+        }
         // not found in any bundle
     }
+
+
 
     public static class DateAndTimeBuilder {
 
@@ -193,45 +229,46 @@ public class OdlObjectMapper extends ObjectMapper {
 
     public static class CustomOdlDeserializer extends BeanDeserializerModifier {
         @Override
-        public JsonDeserializer<Enum<?>> modifyEnumDeserializer(DeserializationConfig config,
-                final JavaType type, BeanDescription beanDesc, final JsonDeserializer<?> deserializer) {
+        public JsonDeserializer<Enum<?>> modifyEnumDeserializer(DeserializationConfig config, final JavaType type,
+                BeanDescription beanDesc, final JsonDeserializer<?> deserializer) {
             return new JsonDeserializer<Enum<?>>() {
 
                 @SuppressWarnings("unchecked")
                 @Override
-                public Enum<?> deserialize(JsonParser jp, DeserializationContext ctxt)
-                        throws IOException {
+                public Enum<?> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
                     Class<?> clazz = type.getRawClass();
 
                     try {
 
                         Method method = clazz.getDeclaredMethod("forName", String.class);
-                        Enum<?> res = ((Optional<Enum<?>>) method.invoke(null, jp.getValueAsString()))
-                                .get();
+                        Enum<?> res = ((Optional<Enum<?>>) method.invoke(null, jp.getValueAsString())).get();
                         return res;
-                    } catch (IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException | NoSuchMethodException | NoSuchElementException
-                            | SecurityException e) {
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                            | NoSuchMethodException | NoSuchElementException | SecurityException e) {
                         LOG.warn("problem deserializing enum for {} with value {}: {}", clazz.getName(),
                                 jp.getValueAsString(), e);
                     }
-                    throw new IOException("unable to parse enum (" + type.getRawClass() + ")for value "
-                            + jp.getValueAsString());
+                    throw new IOException(
+                            "unable to parse enum (" + type.getRawClass() + ")for value " + jp.getValueAsString());
                 }
             };
 
         }
 
         @Override
-        public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,
-                BeanDescription beanDesc, JsonDeserializer<?> deserializer) {
+        public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config, BeanDescription beanDesc,
+                JsonDeserializer<?> deserializer) {
             final JavaType type = beanDesc.getType();
             final JsonDeserializer<?> deser = super.modifyDeserializer(config, beanDesc, deserializer);
             if (!implementsInterface(type.getRawClass(), TypeObject.class)) {
-                if(!implementsInterface(type.getRawClass(), ChoiceIn.class))
+                //if (!implementsInterface(type.getRawClass(), ChoiceIn.class)) {
+                    return deser;
+                //}
 
-                return deser;
+
             }
+
+
             return new JsonDeserializer<TypeObject>() {
 
                 @Override
@@ -243,8 +280,7 @@ public class OdlObjectMapper extends ObjectMapper {
                     try {
 
                         if (hasClassDeclaredMethod(clazz, TYPEOBJECT_INSTANCE_METHOD)) {
-                            Method method = clazz.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD,
-                                    String.class);
+                            Method method = clazz.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
                             TypeObject res = (TypeObject) method.invoke(null, arg);
                             return res;
                         } else {
@@ -254,8 +290,7 @@ public class OdlObjectMapper extends ObjectMapper {
                                 if (ctype.equals(String.class)) {
                                     return (TypeObject) clazz.getConstructor(ctype).newInstance(arg);
                                 } else if (hasClassDeclaredMethod(ctype, TYPEOBJECT_INSTANCE_METHOD)) {
-                                    Method method = ctype.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD,
-                                            String.class);
+                                    Method method = ctype.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
                                     return (TypeObject) clazz.getConstructor(ctype)
                                             .newInstance(method.invoke(null, arg));
                                 } else {
@@ -265,9 +300,9 @@ public class OdlObjectMapper extends ObjectMapper {
                             }
 
                         }
-                    } catch (IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException | NoSuchMethodException | NoSuchElementException
-                            | SecurityException | InstantiationException e) {
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                            | NoSuchMethodException | NoSuchElementException | SecurityException
+                            | InstantiationException e) {
                         LOG.warn("problem deserializing {} with value {}: {}", clazz.getName(), arg, e);
                     }
                     return (TypeObject) deser.deserialize(parser, ctxt);
@@ -278,33 +313,33 @@ public class OdlObjectMapper extends ObjectMapper {
 
     }
 
-//    public static class CustomChoiceSerializer extends StdSerializer<ChoiceIn>{
-//
-//        /**
-//         *
-//         */
-//        private static final long serialVersionUID = 1L;
-//
-//        protected CustomChoiceSerializer(Class<ChoiceIn> t) {
-//            super(t);
-//            // TODO Auto-generated constructor stub
-//        }
-//
-//        public CustomChoiceSerializer() {
-//           this(null);
-//        }
-//
-//        @Override
-//        public void serialize(ChoiceIn value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-////            gen.writeStartObject();
-////            gen.writeNumberField("id", 4);
-////            gen.writeStringField("itemName", "name");
-////            gen.writeNumberField("owner", 55);
-////            gen.writeEndObject();
-//            gen.writeString("innerchoice");
-//        }
-//
-//    }
+    //    public static class CustomChoiceSerializer extends StdSerializer<ChoiceIn>{
+    //
+    //        /**
+    //         *
+    //         */
+    //        private static final long serialVersionUID = 1L;
+    //
+    //        protected CustomChoiceSerializer(Class<ChoiceIn> t) {
+    //            super(t);
+    //            // TODO Auto-generated constructor stub
+    //        }
+    //
+    //        public CustomChoiceSerializer() {
+    //           this(null);
+    //        }
+    //
+    //        @Override
+    //        public void serialize(ChoiceIn value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    ////            gen.writeStartObject();
+    ////            gen.writeNumberField("id", 4);
+    ////            gen.writeStringField("itemName", "name");
+    ////            gen.writeNumberField("owner", 55);
+    ////            gen.writeEndObject();
+    //            gen.writeString("innerchoice");
+    //        }
+    //
+    //    }
     public static class CustomDateAndTimeSerializer extends StdSerializer<DateAndTime> {
 
         private static final long serialVersionUID = 1L;
@@ -318,8 +353,7 @@ public class OdlObjectMapper extends ObjectMapper {
         }
 
         @Override
-        public void serialize(DateAndTime value, JsonGenerator gen, SerializerProvider serializers)
-                throws IOException {
+        public void serialize(DateAndTime value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeString(value.getValue());
         }
 

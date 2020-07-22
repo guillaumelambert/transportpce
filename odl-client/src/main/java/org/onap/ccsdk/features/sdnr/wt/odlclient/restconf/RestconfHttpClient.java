@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotImplementedException;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.http.BaseHTTPClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.http.BaseHTTPResponse;
@@ -45,39 +46,39 @@ public class RestconfHttpClient extends BaseHTTPClient {
     private final OdlRpcObjectMapperXml mapper;
 
     public RestconfHttpClient(String base, boolean trustAllCerts, AuthMethod authMethod, String username,
-            String password) throws NotImplementedException  {
+            String password) throws NotImplementedException {
         super(base, trustAllCerts);
         if (authMethod == AuthMethod.TOKEN) {
             throw new NotImplementedException();
         }
         this.headers = new HashMap<>();
         this.headers.put("Content-Type", "application/xml");
-        this.headers.put("Authorization",
-                BaseHTTPClient.getAuthorizationHeaderValue(username, password));
+        this.headers.put("Authorization", BaseHTTPClient.getAuthorizationHeaderValue(username, password));
         this.headers.put("Accept", "application/xml");
         this.mapper = new OdlRpcObjectMapperXml();
 
     }
 
     public <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(LogicalDatastoreType storage,
-            InstanceIdentifier<T> instanceIdentifier, String nodeId)
-            throws IOException, ClassNotFoundException, NoSuchFieldException, SecurityException,
-            IllegalArgumentException, IllegalAccessException {
-        final String uri = this.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId);
+            InstanceIdentifier<T> instanceIdentifier, String nodeId) throws IOException, ClassNotFoundException,
+            NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        final String uri = this.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId, false);
         return FutureRestRequest.createFutureRequest(this, uri, "GET", (String) null, this.headers,
                 instanceIdentifier.getTargetType());
     }
 
     public <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(LogicalDatastoreType store,
-            InstanceIdentifier<T> instanceIdentifier)
-            throws ClassNotFoundException, NoSuchFieldException, SecurityException,
-            IllegalArgumentException, IllegalAccessException, IOException {
+            InstanceIdentifier<T> instanceIdentifier) throws ClassNotFoundException, NoSuchFieldException,
+            SecurityException, IllegalArgumentException, IllegalAccessException, IOException {
         return this.read(store, instanceIdentifier, null);
     }
 
     protected <T extends DataObject> String getRfc8040UriFromIif(LogicalDatastoreType storage,
-            InstanceIdentifier<T> instanceIdentifier, String nodeId) throws ClassNotFoundException,
+            InstanceIdentifier<T> instanceIdentifier, String nodeId, boolean isRpc) throws ClassNotFoundException,
             NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+
+        LOG.debug("try to create rfc8040 uri for datastore {}, iid: {} and nodeId {}", storage, instanceIdentifier,
+                nodeId);
         String uri = "";
         Iterable<PathArgument> iterable = instanceIdentifier.getPathArguments();
         Iterator<PathArgument> it = iterable.iterator();
@@ -85,7 +86,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
         String moduleName = null;
         while (it.hasNext()) {
             PathArgument pa = it.next();
-            Class<?> cls = Class.forName(pa.getType().getName());
+            Class<?> cls = OdlObjectMapper.findClass(pa.getType().getName(), RestconfHttpClient.class);
             String key = getKeyOrNull(pa);
             Field qname = cls.getField("QNAME");
             QName value = (QName) qname.get(cls);
@@ -96,22 +97,23 @@ public class RestconfHttpClient extends BaseHTTPClient {
                 moduleName = value.getLocalName();
             }
             if (key == null) {
-                uri += String.format("/%s%s", isNewModule ? (moduleName + ":") : "",
-                        value.getLocalName());
+                uri += String.format("/%s%s", isNewModule ? (moduleName + ":") : "", value.getLocalName());
             } else {
                 uri += String.format("/%s=%s", value.getLocalName(), key);
             }
             isNewModule = false;
         }
-        return this.getRfc8040UriFromIif(storage, uri, nodeId);
+        final String retValue = this.getRfc8040UriFromIif(storage, uri, nodeId, isRpc);
+        LOG.debug("uri={}", retValue);
+        return retValue;
     }
 
-    protected <T extends DataObject> String getRfc8040UriFromIif(LogicalDatastoreType storage,
-            String postUri, String nodeId) {
+    protected <T extends DataObject> String getRfc8040UriFromIif(LogicalDatastoreType storage, String postUri,
+            String nodeId, boolean isRpc) {
         if (!postUri.startsWith("/")) {
             postUri = "/" + postUri;
         }
-        final String sstore = storage == LogicalDatastoreType.CONFIGURATION ? "data" : "operations";
+        final String sstore = isRpc ? "data" : "operations";
         return nodeId != null ? String.format(
                 "/rests/%s/network-topology:network-topology/topology=topology-netconf/node=%s/yang-ext:mount%s",
                 sstore, nodeId, postUri) : String.format("/rests/%s%s", sstore, postUri);
@@ -146,8 +148,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
                     }
                 }
             }
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
-                | IllegalAccessException e) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             LOG.debug("key is not a field of class {}", pa.getClass());
         }
         return null;
@@ -164,17 +165,16 @@ public class RestconfHttpClient extends BaseHTTPClient {
         return buf.toString();
     }
 
-    public <O extends DataObject, I extends DataObject> ListenableFuture<RpcResult<O>> executeRpc(
-            String nodeId, String rpc, I input, Class<O> clazz) {
+    public <O extends DataObject, I extends DataObject> ListenableFuture<RpcResult<O>> executeRpc(String nodeId,
+            String rpc, I input, Class<O> clazz) {
         RpcResultBuilder<O> result;
         try {
 
-            BaseHTTPResponse response = this.sendRequest(
-                    this.getRfc8040UriFromIif(LogicalDatastoreType.OPERATIONAL, rpc, nodeId), "POST",
-                    input == null ? "" : this.mapper.writeValueAsString(input), this.headers,
-                    DEFAULT_TIMEOUT);
+            BaseHTTPResponse response =
+                    this.sendRequest(this.getRfc8040UriFromIif(LogicalDatastoreType.OPERATIONAL, rpc, nodeId, true), "POST",
+                            input == null ? "" : this.mapper.writeValueAsString(input), this.headers, DEFAULT_TIMEOUT);
             if (response.isSuccess()) {
-                O output = this.mapper.readValue(response.body,clazz);
+                O output = this.mapper.readValue(response.body, clazz);
                 result = RpcResultBuilder.success(output);
             } else {
                 result = RpcResultBuilder.failed();
@@ -189,7 +189,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
     }
 
     public void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path, String nodeId) {
-       LOG.warn("delete is not yet implemented");
+        LOG.warn("delete is not yet implemented");
     }
 
 }

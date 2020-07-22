@@ -142,7 +142,7 @@ public class OdlObjectMapperXml extends XmlMapper {
     @Override
     public <T> T readValue(String content, Class<T> valueType)
             throws IOException, JsonParseException, JsonMappingException {
-
+        LOG.debug("read value for class {}", valueType.getName());
         if (NetconfNode.class.isAssignableFrom(valueType)) {
             try {
                 return (T) this.mapNetconfNodeXml(content);
@@ -190,9 +190,8 @@ public class OdlObjectMapperXml extends XmlMapper {
             AvailableCapabilityBuilder builder;
 
             String origin = getElemValue(node, "./capability-origin", null);
-            builder = new AvailableCapabilityBuilder().
-                setCapability(getElemValue(node, "./capability", ""));
-            if(origin!=null)
+            builder = new AvailableCapabilityBuilder().setCapability(getElemValue(node, "./capability", ""));
+            if (origin != null)
                 builder.setCapabilityOrigin(CapabilityOrigin.forName(origin).get());
 
             caps.add(builder.build());

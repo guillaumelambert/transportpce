@@ -30,7 +30,7 @@ public class TestIifToUri {
         TestRestconfHttpClient restconfClient = new TestRestconfHttpClient("http://localhost:8181/", false, AuthMethod.BASIC,"","");
         String uri;
         uri = restconfClient.getRfc8040UriFromIif(LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.create(OrgOpenroadmDevice.class).child(Info.class), ROADMAA_NODEID);
+                InstanceIdentifier.create(OrgOpenroadmDevice.class).child(Info.class), ROADMAA_NODEID, false);
         assertEquals(ROADMAA_INFO, uri);
     }
 
@@ -44,10 +44,10 @@ public class TestIifToUri {
 
         @Override
         public <T extends DataObject> String getRfc8040UriFromIif(LogicalDatastoreType storage,
-                InstanceIdentifier<T> instanceIdentifier, String nodeId) throws ClassNotFoundException,
+                InstanceIdentifier<T> instanceIdentifier, String nodeId, boolean isRpc) throws ClassNotFoundException,
                 NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
             // TODO Auto-generated method stub
-            return super.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId);
+            return super.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId, isRpc);
         }
 
     }

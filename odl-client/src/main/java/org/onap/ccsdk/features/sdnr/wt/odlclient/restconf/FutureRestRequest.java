@@ -95,7 +95,7 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
 
             }
         } catch (IOException e) {
-            LOG.warn("problem requesting data: {}", e);
+            LOG.warn("problem requesting data: ", e);
         }
         this.isDone = true;
         return Optional.empty();
