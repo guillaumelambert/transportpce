@@ -113,7 +113,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
         if (!postUri.startsWith("/")) {
             postUri = "/" + postUri;
         }
-        final String sstore = isRpc ? "data" : "operations";
+        final String sstore = isRpc ? "operations" : "data" ;
         return nodeId != null ? String.format(
                 "/rests/%s/network-topology:network-topology/topology=topology-netconf/node=%s/yang-ext:mount%s",
                 sstore, nodeId, postUri) : String.format("/rests/%s%s", sstore, postUri);

@@ -1,0 +1,3 @@
+[submodule "tests/WirelessTransportEmulator"]
+	path = tests/WirelessTransportEmulator
+	url = https://github.com/Melacon/WirelessTransportEmulator.git
