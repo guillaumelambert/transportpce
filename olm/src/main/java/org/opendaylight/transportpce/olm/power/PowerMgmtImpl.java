@@ -8,6 +8,7 @@
 
 package org.opendaylight.transportpce.olm.power;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressFBWarnings("DM_CONVERT_CASE")
 public class PowerMgmtImpl implements PowerMgmt {
     private static final Logger LOG = LoggerFactory.getLogger(PowerMgmtImpl.class);
     private final DataBroker db;
@@ -68,13 +70,14 @@ public class PowerMgmtImpl implements PowerMgmt {
             // If node type is transponder
             if (inputNodeOptional.isPresent()
                     && (inputNodeOptional.get().getNodeInfo().getNodeType() != null)
-                    && inputNodeOptional.get().getNodeInfo().getNodeType().equals(NodeTypes.Xpdr)) {
+                    && inputNodeOptional.get().getNodeInfo().getNodeType().equals(NodeTypes.Xpdr)
+                    && destTpId != null) {
 
                 Nodes inputNode = inputNodeOptional.get();
                 OpenroadmVersion openroadmVersion = inputNode.getNodeInfo().getOpenroadmVersion();
                 LOG.info("Getting data from input node {}", inputNode.getNodeInfo().getNodeType());
                 LOG.info("Getting mapping data for node is {}", inputNode.getMapping().stream().filter(o -> o.key()
-                        .equals(new MappingKey(destTpId))).findFirst().toString());
+                         .equals(new MappingKey(destTpId))).findFirst().toString());
                 // If its A-End transponder
                 if (destTpId.toLowerCase().contains("network")) {
                     java.util.Optional<Mapping> mappingObject = inputNode.getMapping().stream().filter(o -> o.key()
@@ -253,22 +256,19 @@ public class PowerMgmtImpl implements PowerMgmt {
                             }
                         }
 
-                        BigDecimal powerValue =  null;
-                        if (spanLossTx != null &&  spanLossTx.intValue() <= 28 && spanLossTx.intValue() > 0) {
-                            powerValue = BigDecimal.valueOf(Math.min(spanLossTx.doubleValue() - 9, 2));
-                            LOG.info("Power Value is {}", powerValue);
-                        } else if (spanLossTx.intValue() > 28) {
+                        if (spanLossTx == null || spanLossTx.intValue() <= 0 || spanLossTx.intValue() > 28) {
                             LOG.error(
-                                "Power Value is null - spanLossTx > 28dB not compliant with openROADM specifications");
-                            return false;
-                        } else if (spanLossTx.intValue() <= 0) {
-                            LOG.error(
-                                "Power Value is null - spanLossTx <= 0 dB not compliant with openROADM specifications");
-                            return false;
-                        } else {
-                            LOG.error("Power Value is null - spanLossTx is null");
+                                "Power Value is null: spanLossTx null or out of openROADM range ]0,28] {}", spanLossTx);
                             return false;
                         }
+                        BigDecimal powerValue = spanLossTx.subtract(BigDecimal.valueOf(9));
+                        powerValue = powerValue.min(BigDecimal.valueOf(2));
+                        // If slot-width is other than 50GHz then calculate PSD power value
+                        if (input.getSlotWidth() != null && input.getSlotWidth().getValue().doubleValue() != 50) {
+                            Double psdPower = 10 * Math.log(input.getSlotWidth().getValue().doubleValue() / 50);
+                            powerValue = powerValue.add(new BigDecimal(psdPower));
+                        }
+                        LOG.info("Power Value is {}", powerValue);
                         try {
                             Boolean setXconnPowerSuccessVal = crossConnect.setPowerLevel(nodeId,
                                 OpticalControlMode.Power.getName(), powerValue, connectionNumber);

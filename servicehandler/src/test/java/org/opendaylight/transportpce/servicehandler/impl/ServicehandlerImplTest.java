@@ -8,6 +8,7 @@
 package org.opendaylight.transportpce.servicehandler.impl;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.opendaylight.transportpce.servicehandler.impl.ServicehandlerImpl.LogMessages;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -142,7 +143,7 @@ public class ServicehandlerImplTest extends AbstractTest  {
             new ServicehandlerImpl(getNewDataBroker(), pathComputationService, rendererServiceOperations,
                 notificationPublishService, pceListenerImpl, rendererListenerImpl, null);
         ListenableFuture<RpcResult<ServiceDeleteOutput>> result =
-             servicehandlerImpl.serviceDelete(new ServiceDeleteInputBuilder()
+            servicehandlerImpl.serviceDelete(new ServiceDeleteInputBuilder()
                 .setServiceDeleteReqInfo(new ServiceDeleteReqInfoBuilder().setServiceName("").build()).build());
         result.addListener(new Runnable() {
             @Override
@@ -184,7 +185,7 @@ public class ServicehandlerImplTest extends AbstractTest  {
     @Test
     public void deleteServiceShouldBeSuccessForExistingService() throws ExecutionException, InterruptedException {
         DataBroker dataBroker = getNewDataBroker();
-        Mockito.when(rendererServiceOperations.serviceDelete(any())).thenReturn(Futures.immediateFuture(any()));
+        Mockito.when(rendererServiceOperations.serviceDelete(any(), any())).thenReturn(Futures.immediateFuture(any()));
         ServicehandlerImpl servicehandlerImpl =
             new ServicehandlerImpl(dataBroker, pathComputationService, rendererServiceOperations,
                 notificationPublishService, pceListenerImpl, rendererListenerImpl, null);
@@ -311,7 +312,7 @@ public class ServicehandlerImplTest extends AbstractTest  {
 
         //mocking
         // serviceReconfigure is calling service delete method in renderer
-        Mockito.when(rendererServiceOperations.serviceDelete(any())).thenReturn(Futures.immediateFuture(any()));
+        Mockito.when(rendererServiceOperations.serviceDelete(any(), any())).thenReturn(Futures.immediateFuture(any()));
         //create service to reconfigure
         ServicehandlerImpl servicehandlerImpl =
                 new ServicehandlerImpl(dataBroker, pathComputationService, rendererServiceOperations,
@@ -394,7 +395,7 @@ public class ServicehandlerImplTest extends AbstractTest  {
 
         //mocking
         // serviceRestoration is calling service delete method in renderer
-        Mockito.when(rendererServiceOperations.serviceDelete(any())).thenReturn(Futures.immediateFuture(any()));
+        Mockito.when(rendererServiceOperations.serviceDelete(any(), any())).thenReturn(Futures.immediateFuture(any()));
         //create service to restore
         ServicehandlerImpl servicehandlerImpl =
                 new ServicehandlerImpl(dataBroker, pathComputationService, rendererServiceOperations,
@@ -476,7 +477,7 @@ public class ServicehandlerImplTest extends AbstractTest  {
 
         //mocking
         // serviceReroute is calling service delete method in renderer
-        Mockito.when(rendererServiceOperations.serviceDelete(any())).thenReturn(Futures.immediateFuture(any()));
+        Mockito.when(rendererServiceOperations.serviceDelete(any(), any())).thenReturn(Futures.immediateFuture(any()));
         //create service to be rerouted later
         ServicehandlerImpl servicehandlerImpl =
                 new ServicehandlerImpl(dataBroker, pathComputationService, rendererServiceOperations,
@@ -526,7 +527,8 @@ public class ServicehandlerImplTest extends AbstractTest  {
         Assert.assertEquals(
             ResponseCodes.RESPONSE_FAILED, rpcResult.getResult().getConfigurationResponseCommon().getResponseCode());
         Assert.assertEquals(
-            "Service not compliant !", rpcResult.getResult().getConfigurationResponseCommon().getResponseMessage());
+            LogMessages.SERVICE_NON_COMPLIANT,
+            rpcResult.getResult().getConfigurationResponseCommon().getResponseMessage());
     }
 
     @Test
@@ -554,7 +556,7 @@ public class ServicehandlerImplTest extends AbstractTest  {
     @Test
     public void tempServiceDeleteShouldBeSuccessForExistingService() throws ExecutionException, InterruptedException {
         DataBroker dataBroker = getNewDataBroker();
-        Mockito.when(rendererServiceOperations.serviceDelete(any())).thenReturn(Futures.immediateFuture(any()));
+        Mockito.when(rendererServiceOperations.serviceDelete(any(), any())).thenReturn(Futures.immediateFuture(any()));
 
         //create temp service to delete in the temp delete action
         ServicehandlerImpl servicehandlerImpl =

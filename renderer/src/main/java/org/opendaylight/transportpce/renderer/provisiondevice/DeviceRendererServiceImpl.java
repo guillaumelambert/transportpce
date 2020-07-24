@@ -62,10 +62,10 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.Service
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.Services;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.ServicesBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.ServicesKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterface;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterfaceBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterfaceKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterface;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterfaceBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterfaceKey;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.renderer.input.Nodes;
 import org.opendaylight.yang.gen.v1.http.transportpce.topology.rev200129.OtnLinkType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -109,8 +109,11 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         ServiceListTopology topology = new ServiceListTopology();
         AtomicBoolean success = new AtomicBoolean(true);
         ForkJoinPool forkJoinPool = new ForkJoinPool();
+
         ForkJoinTask forkJoinTask = forkJoinPool.submit(() -> nodes.parallelStream().forEach(node -> {
             String nodeId = node.getNodeId();
+            // take the index of the node
+            int nodeIndex = nodes.indexOf(node);
             LOG.info("Starting provisioning for node : {}", nodeId);
             List<String> createdEthInterfaces = new ArrayList<>();
             List<String> createdOtuInterfaces = new ArrayList<>();
@@ -129,8 +132,18 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                         String supportingOchInterface = this.openRoadmInterfaceFactory.createOpenRoadmOchInterface(
                                 nodeId, destTp, waveNumber, ModulationFormat.DpQpsk);
                         createdOchInterfaces.add(supportingOchInterface);
+                        // Here we pass logical connection-point of z-end to set SAPI and DAPI
+                        Nodes tgtNode = null;
+                        if (nodeIndex + 1 == nodes.size()) {
+                            // For the end node, tgtNode becomes the first node in the list
+                            tgtNode = nodes.get(0);
+                        } else {
+                            tgtNode = nodes.get(nodeIndex + 1);
+                        }
+                        // tgtNode srcTp is null in this if cond
                         String supportingOtuInterface = this.openRoadmInterfaceFactory
-                                .createOpenRoadmOtu4Interface(nodeId, destTp, supportingOchInterface);
+                                .createOpenRoadmOtu4Interface(nodeId, destTp, supportingOchInterface,
+                                    tgtNode.getNodeId(), tgtNode.getDestTp());
                         createdOtuInterfaces.add(supportingOtuInterface);
                         if (srcTp == null) {
                             otnNodesProvisioned.add(node);

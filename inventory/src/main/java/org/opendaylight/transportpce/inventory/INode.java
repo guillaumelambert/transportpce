@@ -17,6 +17,9 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
+    value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING",
+    justification = "TODO review the SQL statement generation process")
 public class INode {
     private static final Logger LOG = LoggerFactory.getLogger(INode.class);
 
@@ -46,7 +49,7 @@ public class INode {
         int nodeExists = 0;
         LOG.info("Checking if {} exists in DB", nodeId);
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStmt = connection.prepareStatement(selectTableSQL)) {
+                PreparedStatement preparedStmt = connection.prepareStatement(selectTableSQL)) {
             preparedStmt.setString(1, nodeId);
             try (ResultSet rs = preparedStmt.executeQuery()) {
                 while (rs.next()) {
@@ -55,7 +58,7 @@ public class INode {
                 }
             }
         } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Something wrong when fetching node in DB", e);
         }
         return nodeExists == 0 ? false : true;
     }
@@ -74,7 +77,7 @@ public class INode {
                 }
             }
         } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Something wrong when fetching data in DB", e);
         }
         return dataExists == 0 ? false : true;
     }

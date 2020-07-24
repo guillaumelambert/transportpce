@@ -11,7 +11,6 @@ package org.opendaylight.transportpce.pce.networkanalyzer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -111,8 +110,6 @@ public class PceCalculation {
     }
 
     private boolean parseInput() {
-        anodeId = input.getServiceAEnd().getNodeId();
-        znodeId = input.getServiceZEnd().getNodeId();
         if (input.getServiceAEnd().getServiceFormat() == null || input.getServiceZEnd().getServiceFormat() == null
             || input.getServiceAEnd().getServiceRate() == null) {
             LOG.error("Service Format and Service Rate are required for a path calculation");
@@ -158,6 +155,13 @@ public class PceCalculation {
         } else {
             LOG.debug("parseInput: unsupported service type: Format {} Rate {}",
                 serviceFormatA, serviceRate);
+        }
+        if ("ODU4".equals(serviceType) || "10GE".equals(serviceType)  || "1GE".equals(serviceType)) {
+            anodeId = input.getServiceAEnd().getTxDirection().getPort().getPortDeviceName();
+            znodeId = input.getServiceZEnd().getTxDirection().getPort().getPortDeviceName();
+        } else {
+            anodeId = input.getServiceAEnd().getNodeId();
+            znodeId = input.getServiceZEnd().getNodeId();
         }
 
         returnStructure.setRate(input.getServiceAEnd().getServiceRate().toJava());
@@ -627,12 +631,10 @@ public class PceCalculation {
         return returnStructure;
     }
 
-    private static void printNodesInfo(Map<NodeId, PceNode> allpcenodes) {
-        Iterator<Map.Entry<NodeId, PceNode>> nodes = allpcenodes.entrySet().iterator();
-        while (nodes.hasNext()) {
-            PceNode pcenode = nodes.next().getValue();
-            List<PceLink> links = pcenode.getOutgoingLinks();
-            LOG.info("In printNodes in node {} : outgoing links {} ", pcenode.getNodeId().getValue(), links);
-        }
+    private static void printNodesInfo(Map<NodeId, PceNode> allPceNodes) {
+        allPceNodes.forEach(((nodeId, pceNode) -> {
+            LOG.info("In printNodes in node {} : outgoing links {} ", pceNode.getNodeId().getValue(),
+                    pceNode.getOutgoingLinks());
+        }));
     }
 }

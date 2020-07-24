@@ -85,7 +85,7 @@ public class OpenRoadmInterfacesImpl implements OpenRoadmInterfaces {
         }
         else if (openRoadmVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)
                 || OPENROADM_DEVICE_VERSION_3.equals(openRoadmVersion)) {
-            openRoadmInterfacesImpl221.deleteInterface(nodeId,interfaceName);
+            openRoadmInterfacesImpl221.deleteInterface(nodeId, interfaceName);
         }
     }
 

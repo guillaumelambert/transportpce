@@ -7,6 +7,7 @@
  */
 package org.opendaylight.transportpce.pce;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,9 +15,10 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.transportpce.common.DataStoreContext;
 import org.opendaylight.transportpce.common.network.NetworkTransactionImpl;
 import org.opendaylight.transportpce.common.network.RequestProcessor;
+import org.opendaylight.transportpce.pce.gnpy.ConnectToGnpyServer;
+import org.opendaylight.transportpce.pce.gnpy.JerseyServer;
 import org.opendaylight.transportpce.pce.utils.PceTestData;
 import org.opendaylight.transportpce.pce.utils.PceTestUtils;
-import org.opendaylight.transportpce.pce.utils.TransactionUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
 
 
@@ -27,15 +29,13 @@ public class PceSendingPceRPCsTest extends AbstractTest {
     private NetworkTransactionImpl networkTransaction;
     private DataStoreContext dataStoreContext = this.getDataStoreContextUtil();
     private DataBroker dataBroker = this.getDataBroker();
+    private JerseyServer jerseyServer = new JerseyServer();
 
 
     @Before
-    public void setUp() throws Exception {
-//        PceTestUtils.writeTopologyIntoDataStore(
-//                dataBroker, dataStoreContext, "./topologyData/NW-simple-topology.xml");
-        PceTestUtils.writeNetworkIntoDataStore(dataBroker, dataStoreContext, TransactionUtils.getNetworkForSpanLoss());
-        networkTransaction = new NetworkTransactionImpl(new RequestProcessor(dataBroker));
-        pceSendingPceRPCs = new PceSendingPceRPCs();
+    public void setUp() {
+        networkTransaction = new NetworkTransactionImpl(new RequestProcessor(this.getDataBroker()));
+        PceTestUtils.writeNetworkInDataStore(this.getDataBroker());
         pceSendingPceRPCs =
                 new PceSendingPceRPCs(PceTestData.getPCE_test1_request_54(), networkTransaction);
     }
@@ -43,12 +43,20 @@ public class PceSendingPceRPCsTest extends AbstractTest {
     @Test
     public void cancelResourceReserve() {
         pceSendingPceRPCs.cancelResourceReserve();
-        Assert.assertEquals(true, pceSendingPceRPCs.getSuccess());
+        Assert.assertTrue("Success should equal to true", pceSendingPceRPCs.getSuccess());
     }
 
     @Test
     public void pathComputationTest() throws Exception {
+        jerseyServer.setUp();
+        pceSendingPceRPCs =
+                new PceSendingPceRPCs(PceTestData.getGnpyPCERequest("XPONDER-1", "XPONDER-2"),
+                        networkTransaction);
+
         pceSendingPceRPCs.pathComputation();
+        ConnectToGnpyServer connectToGnpy = new ConnectToGnpyServer();
+        Assert.assertTrue(connectToGnpy.isGnpyURLExist());
+        jerseyServer.tearDown();
 
     }
 
@@ -71,5 +79,6 @@ public class PceSendingPceRPCsTest extends AbstractTest {
     public void getGnpyZtoA() {
         Assert.assertNull(pceSendingPceRPCs.getGnpyZtoA());
     }
+
 
 }

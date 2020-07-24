@@ -37,6 +37,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
 
     // TODO cache device data brokers
@@ -56,8 +57,7 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
     // TODO set reasonable value in blueprint for maxDurationToSubmitTransaction
     private final long maxDurationToSubmitTransaction;
 
-    public DeviceTransactionManagerImpl(MountPointService mountPointService,
-            long maxDurationToSubmitTransaction) {
+    public DeviceTransactionManagerImpl(MountPointService mountPointService, long maxDurationToSubmitTransaction) {
         this(mountPointService, maxDurationToSubmitTransaction, null);
     }
 
@@ -67,20 +67,18 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
         this.maxDurationToSubmitTransaction = maxDurationToSubmitTransaction;
         this.deviceLocks = new ConcurrentHashMap<>();
         this.checkingExecutor = Executors.newScheduledThreadPool(NUMBER_OF_THREADS);
-        this.listeningExecutor = MoreExecutors
-                .listeningDecorator(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
+        this.listeningExecutor = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
         this.remoteOdlClient = odlClient;
     }
 
     @Override
     public Future<Optional<DeviceTransaction>> getDeviceTransaction(String deviceId) {
-        return getDeviceTransaction(deviceId, maxDurationToSubmitTransaction,
-                MAX_DURATION_TO_SUBMIT_TIMEUNIT);
+        return getDeviceTransaction(deviceId, maxDurationToSubmitTransaction, MAX_DURATION_TO_SUBMIT_TIMEUNIT);
     }
 
     @Override
-    public Future<Optional<DeviceTransaction>> getDeviceTransaction(String deviceId,
-            long timeoutToSubmit, TimeUnit timeUnit) {
+    public Future<Optional<DeviceTransaction>> getDeviceTransaction(String deviceId, long timeoutToSubmit,
+            TimeUnit timeUnit) {
         CountDownLatch newLock = new CountDownLatch(1);
         ListenableFuture<Optional<DeviceTransaction>> future = listeningExecutor.submit(() -> {
             LOG.debug("Starting creation of transaction for device {}.", deviceId);
@@ -100,27 +98,23 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
                 return Optional.empty();
             }
             LOG.debug("Created transaction for device {}.", deviceId);
-            return Optional
-                    .of(new DeviceTransaction(deviceDataBroker.newReadWriteTransaction(), newLock));
+            return Optional.of(new DeviceTransaction(deviceDataBroker.newReadWriteTransaction(), newLock));
         });
 
         Futures.addCallback(future, new FutureCallback<Optional<DeviceTransaction>>() {
             @Override
             public void onSuccess(Optional<DeviceTransaction> deviceTransactionOptional) {
                 // creates timeout for transaction to submit right after transaction is created
-                // if time will run out and transaction was not closed then it will be cancelled
-                // (and unlocked)
+                // if time will run out and transaction was not closed then it will be cancelled (and unlocked)
                 checkingExecutor.schedule(() -> {
                     if (deviceTransactionOptional.isPresent()) {
                         DeviceTransaction deviceTx = deviceTransactionOptional.get();
-                        LOG.debug(
-                                "Timeout to submit transaction run out! Transaction was {} submitted or canceled.",
+                        LOG.debug("Timeout to submit transaction run out! Transaction was {} submitted or canceled.",
                                 deviceTx.wasSubmittedOrCancelled().get() ? "" : "not");
                         if (!deviceTx.wasSubmittedOrCancelled().get()) {
                             LOG.error(
-                                    "Transaction for node {} not submitted/canceled after {} ms."
-                                    + " Cancelling transaction.",
-                                    deviceId, timeoutToSubmit);
+                                "Transaction for node {} not submitted/canceled after {} ms. Cancelling transaction.",
+                                deviceId, timeoutToSubmit);
                             deviceTx.cancel();
                         }
                     }
@@ -129,8 +123,7 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
 
             @Override
             public void onFailure(Throwable throwable) {
-                LOG.error(
-                        "Exception thrown while getting device transaction for device {}! Unlocking device.",
+                LOG.error("Exception thrown while getting device transaction for device {}! Unlocking device.",
                         deviceId, throwable);
                 newLock.countDown();
             }
@@ -163,15 +156,14 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
             LOG.debug("using remote odl to get mountpoint for {}", deviceId);
             return Optional.ofNullable(this.remoteOdlClient.getMountPoint(deviceId));
         }
-        InstanceIdentifier<Node> netconfNodeIID = InstanceIdentifiers.NETCONF_TOPOLOGY_II
-                .child(Node.class, new NodeKey(new NodeId(deviceId)));
+        InstanceIdentifier<Node> netconfNodeIID = InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class,
+                new NodeKey(new NodeId(deviceId)));
         return mountPointService.getMountPoint(netconfNodeIID);
     }
 
     @Override
     public <T extends DataObject> Optional<T> getDataFromDevice(String deviceId,
-            LogicalDatastoreType logicalDatastoreType, InstanceIdentifier<T> path, long timeout,
-            TimeUnit timeUnit) {
+            LogicalDatastoreType logicalDatastoreType, InstanceIdentifier<T> path, long timeout, TimeUnit timeUnit) {
         Optional<DeviceTransaction> deviceTxOpt;
         try {
             deviceTxOpt = getDeviceTransaction(deviceId, timeout, timeUnit).get();
@@ -184,8 +176,7 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
             try {
                 return deviceTx.read(logicalDatastoreType, path).get(timeout, timeUnit);
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                LOG.error("Exception thrown while reading data from device {}! IID: {}", deviceId, path,
-                        e);
+                LOG.error("Exception thrown while reading data from device {}! IID: {}", deviceId, path, e);
             } finally {
                 deviceTx.commit(GET_DATA_SUBMIT_TIMEOUT, GET_DATA_SUBMIT_TIME_UNIT);
             }

@@ -26,10 +26,10 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev1
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.format.rev190531.ServiceFormat;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.ServiceCreateInput;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.ServiceCreateInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.AToZDirection;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.AToZDirectionBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.ZToADirection;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.ZToADirectionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.AToZDirection;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.AToZDirectionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ZToADirection;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ZToADirectionBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.RoutingConstraintsSp.PceMetric;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.CoRoutingBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.GeneralBuilder;
@@ -40,6 +40,7 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.general.include_.OrderedHopsBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.diversity.existing.service.contraints.sp.ExistingServiceApplicability;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.diversity.existing.service.contraints.sp.ExistingServiceApplicabilityBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.ordered.constraints.sp.HopTypeBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.routing.constraints.sp.HardConstraints;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.routing.constraints.sp.HardConstraintsBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.routing.constraints.sp.SoftConstraints;
@@ -52,7 +53,6 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.endpoint.sp.TxDirectionBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.handler.header.ServiceHandlerHeader;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.handler.header.ServiceHandlerHeaderBuilder;
-
 
 
 public final class PceTestData {
@@ -87,6 +87,99 @@ public final class PceTestData {
         PathComputationRequestInput input = new PathComputationRequestInputBuilder()
                 .setServiceName("serviceName")
                 .setServiceHandlerHeader(serviceHandlerHeader)
+                .build();
+        return input;
+    }
+
+    public static PathComputationRequestInput getPathComputationRequestInputWithCoRoutingOrGeneral2() {
+        ServiceHandlerHeader serviceHandlerHeader = new ServiceHandlerHeaderBuilder()
+                .setRequestId("request1")
+                .build();
+        ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
+                .setServiceFormat(ServiceFormat.ODU)
+                .setServiceRate(100L)
+                .setClli("clli11")
+                .setNodeId("XPONDER-2-2")
+                .setTxDirection(new TxDirectionBuilder().setPort(
+                        new PortBuilder()
+                                .setPortDeviceName("Some port-device-name")
+                                .setPortType("Some port-type")
+                                .setPortName("Some port-name")
+                                .setPortRack("Some port-rack")
+                                .setPortShelf("Some port-shelf")
+                                .setPortSlot("Some port-slot")
+                                .setPortSubSlot("Some port-sub-slot")
+                                .build()
+                ).build())
+                .setRxDirection(new RxDirectionBuilder().setPort(
+                        new PortBuilder()
+                                .setPortDeviceName("Some port-device-name")
+                                .setPortType("Some port-type")
+                                .setPortName("Some port-name")
+                                .setPortRack("Some port-rack")
+                                .setPortShelf("Some port-shelf")
+                                .setPortSlot("Some port-slot")
+                                .setPortSubSlot("Some port-sub-slot")
+                                .build()
+                ).build())
+                .build();
+        ServiceZEnd serviceZEnd = new ServiceZEndBuilder()
+                .setServiceFormat(ServiceFormat.ODU)
+                .setServiceRate(0L)
+                .setClli("Some clli11")
+                .setNodeId("XPONDER-1-2")
+                .setTxDirection(new TxDirectionBuilder().setPort(
+                        new PortBuilder()
+                                .setPortDeviceName("Some port-device-name")
+                                .setPortType("Some port-type")
+                                .setPortName("Some port-name")
+                                .setPortRack("Some port-rack")
+                                .setPortShelf("Some port-shelf")
+                                .setPortSlot("Some port-slot")
+                                .setPortSubSlot("Some port-sub-slot")
+                                .build()
+                ).build())
+                .setRxDirection(new RxDirectionBuilder().setPort(
+                        new PortBuilder()
+                                .setPortDeviceName("Some port-device-name")
+                                .setPortType("Some port-type")
+                                .setPortName("Some port-name")
+                                .setPortRack("Some port-rack")
+                                .setPortShelf("Some port-shelf")
+                                .setPortSlot("Some port-slot")
+                                .setPortSubSlot("Some port-sub-slot")
+                                .build()
+                ).build())
+                .build();
+        PathComputationRequestInput input = new PathComputationRequestInputBuilder()
+                .setServiceName("service1")
+                .setResourceReserve(true)
+                .setPceMetric(PceMetric.HopCount)
+                .setLocallyProtectedLinks(true)
+                .setServiceHandlerHeader(serviceHandlerHeader)
+                .setServiceAEnd(serviceAEnd)
+                .setServiceZEnd(serviceZEnd)
+                .setHardConstraints(new HardConstraintsBuilder()
+                        .setCustomerCode(Arrays.asList("Some customer-code"))
+                        .setCoRoutingOrGeneral(new CoRoutingBuilder()
+                                .setCoRouting(new org.opendaylight.yang.gen.v1.http.org
+                                        .transportpce.b.c._interface.routing.constraints.rev171017
+                                        .constraints.sp.co.routing.or.general.co.routing.CoRoutingBuilder()
+                                        .setExistingService(Arrays.asList("Some existing-service"))
+
+                                        .build())
+                                .build())
+                        .build())
+                .setSoftConstraints(new SoftConstraintsBuilder()
+                        .setCustomerCode(Arrays.asList("Some customer-code"))
+                        .setCoRoutingOrGeneral(new CoRoutingBuilder()
+                                .setCoRouting(new org.opendaylight.yang.gen.v1.http.org
+                                        .transportpce.b.c._interface.routing.constraints.rev171017
+                                        .constraints.sp.co.routing.or.general.co.routing.CoRoutingBuilder()
+                                        .setExistingService(Arrays.asList("Some existing-service"))
+                                        .build())
+                                .build())
+                        .build())
                 .build();
         return input;
     }
@@ -412,15 +505,13 @@ public final class PceTestData {
                                 .setExclude(new ExcludeBuilder()
                                         .setNodeId(Arrays.asList("OpenROADM-2-2"))
                                         .build())
-                                .setLatency(new LatencyBuilder()
-                                        .setMaxLatency(3223L).build())
+                                .setLatency(new LatencyBuilder().setMaxLatency(3223L).build())
                                 .setInclude(new IncludeBuilder()
-                                        .setOrderedHops(
-                                                Arrays.asList(new OrderedHopsBuilder()
-                                                        .setHopNumber(22)
-                                                        // .setHopType(new HopTypeBuilder()
-                                                        // .setHopType(new ClliBuilder().getClli())
-                                                        .build()))
+                                        .setOrderedHops(Arrays.asList(new OrderedHopsBuilder()
+                                                .setHopNumber(22)
+                                                .setHopType(new HopTypeBuilder()
+                                                        .setHopType(new HopTypeBuilder().getHopType()).build())
+                                                .build()))
                                         .build())
                                 .build())
                         .build())
@@ -656,6 +747,8 @@ public final class PceTestData {
                 .setServiceZEnd(serviceZEnd)
                 .setHardConstraints(new HardConstraintsBuilder()
                         .setCoRoutingOrGeneral(new GeneralBuilder()
+                                .setLatency(new LatencyBuilder()
+                                        .setMaxLatency(3223L).build())
                                 .setDiversity(new DiversityBuilder()
                                         .setExistingService(Arrays.asList(base.getServiceName()))
                                         .setExistingServiceApplicability(nodeTrue)
@@ -712,5 +805,97 @@ public final class PceTestData {
                         .build());
 
         return builtInput.build();
+    }
+
+    public static PathComputationRequestInput getGnpyPCERequest(String nodeA, String nodeZ) {
+        ServiceHandlerHeader serviceHandlerHeader = new ServiceHandlerHeaderBuilder()
+                .setRequestId("request1")
+                .build();
+        ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
+                .setServiceFormat(ServiceFormat.Ethernet)
+                .setServiceRate(100L)
+                .setClli("clli11")
+                .setNodeId(nodeA)
+                .setTxDirection(new TxDirectionBuilder().setPort(
+                        new PortBuilder()
+                                .setPortDeviceName("Some port-device-name")
+                                .setPortType("Some port-type")
+                                .setPortName("Some port-name")
+                                .setPortRack("Some port-rack")
+                                .setPortShelf("Some port-shelf")
+                                .setPortSlot("Some port-slot")
+                                .setPortSubSlot("Some port-sub-slot")
+                                .build()
+                ).build())
+                .setRxDirection(new RxDirectionBuilder().setPort(
+                        new PortBuilder()
+                                .setPortDeviceName("Some port-device-name")
+                                .setPortType("Some port-type")
+                                .setPortName("Some port-name")
+                                .setPortRack("Some port-rack")
+                                .setPortShelf("Some port-shelf")
+                                .setPortSlot("Some port-slot")
+                                .setPortSubSlot("Some port-sub-slot")
+                                .build()
+                ).build())
+                .build();
+        ServiceZEnd serviceZEnd = new ServiceZEndBuilder()
+                .setServiceFormat(ServiceFormat.Ethernet)
+                .setServiceRate(0L)
+                .setClli("Some clli11")
+                .setNodeId(nodeZ)
+                .setTxDirection(new TxDirectionBuilder().setPort(
+                        new PortBuilder()
+                                .setPortDeviceName("Some port-device-name")
+                                .setPortType("Some port-type")
+                                .setPortName("Some port-name")
+                                .setPortRack("Some port-rack")
+                                .setPortShelf("Some port-shelf")
+                                .setPortSlot("Some port-slot")
+                                .setPortSubSlot("Some port-sub-slot")
+                                .build()
+                ).build())
+                .setRxDirection(new RxDirectionBuilder().setPort(
+                        new PortBuilder()
+                                .setPortDeviceName("Some port-device-name")
+                                .setPortType("Some port-type")
+                                .setPortName("Some port-name")
+                                .setPortRack("Some port-rack")
+                                .setPortShelf("Some port-shelf")
+                                .setPortSlot("Some port-slot")
+                                .setPortSubSlot("Some port-sub-slot")
+                                .build()
+                ).build())
+                .build();
+        PathComputationRequestInput input = new PathComputationRequestInputBuilder()
+                .setServiceName("service1")
+                .setResourceReserve(true)
+                .setPceMetric(PceMetric.HopCount)
+                .setLocallyProtectedLinks(true)
+                .setServiceHandlerHeader(serviceHandlerHeader)
+                .setServiceAEnd(serviceAEnd)
+                .setServiceZEnd(serviceZEnd)
+                .setHardConstraints(new HardConstraintsBuilder()
+                        .setCustomerCode(Arrays.asList("Some customer-code"))
+                        .setCoRoutingOrGeneral(new CoRoutingBuilder()
+                                .setCoRouting(new org.opendaylight.yang.gen.v1.http.org
+                                        .transportpce.b.c._interface.routing.constraints.rev171017
+                                        .constraints.sp.co.routing.or.general.co.routing.CoRoutingBuilder()
+                                        .setExistingService(Arrays.asList("Some existing-service"))
+                                        .build())
+                                .build())
+                        .build())
+                .setSoftConstraints(new SoftConstraintsBuilder()
+                        .setCustomerCode(Arrays.asList("Some customer-code"))
+                        .setCoRoutingOrGeneral(new CoRoutingBuilder()
+                                .setCoRouting(new org.opendaylight.yang.gen.v1.http.org
+                                        .transportpce.b.c._interface.routing.constraints.rev171017
+                                        .constraints.sp.co.routing.or.general.co.routing.CoRoutingBuilder()
+                                        .setExistingService(Arrays.asList("Some existing-service"))
+                                        .build())
+                                .build())
+                        .build())
+                .build();
+        return input;
     }
 }

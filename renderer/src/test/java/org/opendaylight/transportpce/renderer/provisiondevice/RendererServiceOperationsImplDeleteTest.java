@@ -57,8 +57,14 @@ import org.opendaylight.transportpce.renderer.utils.TransactionUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerTurndownOutputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.TransportpceOlmService;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceDeleteInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceDeleteOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteInputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteOutput;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.ConnectionType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.ServiceAEnd;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.ServiceAEndBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.format.rev190531.ServiceFormat;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.Services;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.ServicesBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.handler.header.ServiceHandlerHeaderBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.ServicePathList;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.service.path.list.ServicePaths;
@@ -66,6 +72,7 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.service.path.list.ServicePathsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
 
@@ -85,6 +92,7 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
     private PortMappingVersion121 portMappingVersion121;
     private CrossConnectImpl121 crossConnectImpl121;
     private CrossConnectImpl221 crossConnectImpl221;
+    private OtnDeviceRendererService otnDeviceRendererService;
 
     private void setMountPoint(MountPoint mountPoint) {
         MountPointService mountPointService = new MountPointServiceStub(mountPoint);
@@ -117,6 +125,10 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         this.deviceRenderer = new DeviceRendererServiceImpl(this.getDataBroker(),
             this.deviceTransactionManager, openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect,
             this.portMapping, null);
+
+        this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, crossConnect,
+            openRoadmInterfaces, this.deviceTransactionManager, null);
+
     }
 
     @Before
@@ -128,8 +140,9 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
             MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
         this.networkModelWavelengthService = new NetworkModelWavelengthServiceImpl(getDataBroker());
         NotificationPublishService notificationPublishService = new NotificationPublishServiceMock();
-        this.rendererServiceOperations =  new RendererServiceOperationsImpl(this.deviceRenderer, olmService,
-                getDataBroker(), this.networkModelWavelengthService, notificationPublishService);
+        this.rendererServiceOperations =  new RendererServiceOperationsImpl(this.deviceRenderer,
+            this.otnDeviceRendererService, olmService, getDataBroker(), this.networkModelWavelengthService,
+            notificationPublishService);
 
     }
 
@@ -143,8 +156,16 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
             .setRequestId("request1").build());
         Mockito.doReturn(Collections.emptyList()).when(this.crossConnect).deleteCrossConnect(Mockito.anyString(),
             Mockito.anyString(), Mockito.eq(false));
+        ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
+            .setServiceFormat(ServiceFormat.Ethernet)
+            .setServiceRate(Uint32.valueOf("100"))
+            .build();
+        Services service = new ServicesBuilder()
+            .setConnectionType(ConnectionType.Service)
+            .setServiceAEnd(serviceAEnd)
+            .build();
         ServiceDeleteOutput serviceDeleteOutput
-                = this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build()).get();
+                = this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build(), service).get();
         Assert.assertEquals(ResponseCodes.RESPONSE_OK,
             serviceDeleteOutput.getConfigurationResponseCommon().getResponseCode());
         Mockito.verify(this.crossConnect, Mockito.times(2))
@@ -156,7 +177,7 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         ServiceDeleteInputBuilder serviceDeleteInputBuilder = new ServiceDeleteInputBuilder();
         serviceDeleteInputBuilder.setServiceName("service 1");
         ServiceDeleteOutput serviceDeleteOutput
-                = this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build()).get();
+                = this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build(), null).get();
         Assert.assertEquals(ResponseCodes.RESPONSE_FAILED,
             serviceDeleteOutput.getConfigurationResponseCommon().getResponseCode());
         Mockito.verify(this.crossConnect, Mockito.times(0))
@@ -175,8 +196,16 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         serviceDeleteInputBuilder.setServiceName("service 1");
         serviceDeleteInputBuilder.setServiceHandlerHeader((new ServiceHandlerHeaderBuilder())
                 .setRequestId("request1").build());
+        ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
+            .setServiceFormat(ServiceFormat.Ethernet)
+            .setServiceRate(Uint32.valueOf("100"))
+            .build();
+        Services service = new ServicesBuilder()
+            .setConnectionType(ConnectionType.Service)
+            .setServiceAEnd(serviceAEnd)
+            .build();
         ListenableFuture<ServiceDeleteOutput> serviceDeleteOutput
-                = this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build());
+                = this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build(), service);
         ServiceDeleteOutput output = serviceDeleteOutput.get();
         Assert.assertEquals(ResponseCodes.RESPONSE_FAILED,
                 output.getConfigurationResponseCommon().getResponseCode());
@@ -201,8 +230,16 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         serviceDeleteInputBuilder.setServiceName("service 1");
         serviceDeleteInputBuilder.setServiceHandlerHeader((new ServiceHandlerHeaderBuilder())
             .setRequestId("request1").build());
+        ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
+            .setServiceFormat(ServiceFormat.Ethernet)
+            .setServiceRate(Uint32.valueOf("100"))
+            .build();
+        Services service = new ServicesBuilder()
+            .setConnectionType(ConnectionType.Service)
+            .setServiceAEnd(serviceAEnd)
+            .build();
         ServiceDeleteOutput serviceDeleteOutput =
-                this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build()).get();
+                this.rendererServiceOperations.serviceDelete(serviceDeleteInputBuilder.build(), service).get();
         Assert.assertEquals(ResponseCodes.RESPONSE_FAILED,
             serviceDeleteOutput.getConfigurationResponseCommon().getResponseCode());
         Mockito.verify(this.olmService, Mockito.times(2)).servicePowerTurndown(Mockito.any());

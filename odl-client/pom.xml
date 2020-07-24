@@ -18,7 +18,7 @@
 
 	<properties>
 		<transportpce.groupId>org.opendaylight.transportpce</transportpce.groupId>
-		<transportpce.version>1.1.0-SNAPSHOT</transportpce.version>
+		<transportpce.version>1.2.0-SNAPSHOT</transportpce.version>
 		<checkstyle.skip>true</checkstyle.skip>
 		<skip.checkstyle>true</skip.checkstyle>
 		<odlparent.spotbugs.enforce>false</odlparent.spotbugs.enforce>

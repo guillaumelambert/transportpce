@@ -19,7 +19,7 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.mapping.MappingUtils;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.OpticalControlMode;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.otn.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.otn.renderer.input.Nodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,8 +93,7 @@ public class CrossConnectImpl implements CrossConnect {
         String openRoadmVersion = mappingUtils.getOpenRoadmVersion(nodeId);
         if (OPENROADM_DEVICE_VERSION_1_2_1.equals(openRoadmVersion)) {
             return crossConnectImpl121.getConnectionPortTrail(nodeId, waveNumber, srcTp, destTp);
-        }
-        else if (OPENROADM_DEVICE_VERSION_2_2_1.equals(openRoadmVersion)
+        } else if (OPENROADM_DEVICE_VERSION_2_2_1.equals(openRoadmVersion)
                 || OPENROADM_DEVICE_VERSION_3.equals(openRoadmVersion)) {
             return crossConnectImpl221.getConnectionPortTrail(nodeId, waveNumber, srcTp, destTp);
         }

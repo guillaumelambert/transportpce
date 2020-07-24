@@ -28,10 +28,10 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathOutput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathOutputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterface;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterfaceBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.node.interfaces.NodeInterfaceKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.otn.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterface;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterfaceBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterfaceKey;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.otn.renderer.input.Nodes;
 import org.opendaylight.yang.gen.v1.http.transportpce.topology.rev200129.OtnLinkType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
 
     @Override
     public OtnServicePathOutput setupOtnServicePath(OtnServicePathInput input) {
-        LOG.info("Calling setup service path");
+        LOG.info("Calling setup otn-service path");
         boolean success = true;
         List<NodeInterface> nodeInterfaces = new ArrayList<>();
         List<String> results = new ArrayList<>();
@@ -105,7 +105,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
                         success = false;
                     }
                 } else {
-                    LOG.warn("Unsupported serivce-rate for service-type Ethernet");
+                    LOG.warn("Unsupported service-rate for service-type Ethernet");
                 }
                 break;
             case "ODU":
@@ -118,11 +118,11 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
                         success = false;
                     }
                 } else {
-                    LOG.warn("Unsupported serivce-rate for service-type ODU");
+                    LOG.warn("Unsupported service-rate for service-type ODU");
                 }
                 break;
             default:
-                LOG.error("service-type {} not managet yet", input.getServiceType());
+                LOG.error("service-type {} not managed yet", input.getServiceType());
                 break;
         }
         if (success) {
@@ -139,6 +139,11 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
     }
 
     public OtnServicePathOutput deleteOtnServicePath(OtnServicePathInput input) {
+        if (input == null) {
+            LOG.error("Unable to delete otn service path. input = null");
+            return new OtnServicePathOutputBuilder().setResult("Unable to delete otn service path. input = null")
+                .setSuccess(false).build();
+        }
         List<Nodes> nodes = input.getNodes();
         AtomicBoolean success = new AtomicBoolean(true);
         ConcurrentLinkedQueue<String> results = new ConcurrentLinkedQueue<>();
@@ -363,11 +368,21 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
 
     private void createODU4TtpInterface(OtnServicePathInput input, List<NodeInterface> nodeInterfaces,
         CopyOnWriteArrayList<Nodes> otnNodesProvisioned) throws OpenRoadmInterfaceException {
-        for (Nodes node : input.getNodes()) {
+
+        for (int i = 0; i < input.getNodes().size(); i++) {
+            Nodes node = input.getNodes().get(i);
             String supportingOtuInterface = node.getNetworkTp() + "-OTU";
             List<String> createdOdu4Interfaces = new ArrayList<>();
+            // Adding SAPI/DAPI information to the
+            Nodes tgtNode = null;
+            if (i + 1 == input.getNodes().size()) {
+                // For the end node, tgtNode becomes the first node in the list
+                tgtNode = input.getNodes().get(0);
+            } else {
+                tgtNode = input.getNodes().get(i + 1);
+            }
             createdOdu4Interfaces.add(openRoadmInterfaceFactory.createOpenRoadmOtnOdu4Interface(node.getNodeId(),
-                node.getNetworkTp(), supportingOtuInterface));
+                node.getNetworkTp(), supportingOtuInterface, tgtNode.getNodeId(), tgtNode.getNetworkTp()));
             NodeInterfaceBuilder nodeInterfaceBuilder = new NodeInterfaceBuilder()
                 .withKey(new NodeInterfaceKey(node.getNodeId()))
                 .setNodeId(node.getNodeId())

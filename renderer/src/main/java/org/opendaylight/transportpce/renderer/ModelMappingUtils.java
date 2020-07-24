@@ -16,25 +16,28 @@ import java.util.TreeMap;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupInputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceDeleteOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceDeleteOutputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceImplementationRequestInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceImplementationRequestOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev171017.ServiceImplementationRequestOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteOutputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceImplementationRequestInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceImplementationRequestOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceImplementationRequestOutputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.configuration.response.common.ConfigurationResponseCommon;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.configuration.response.common.ConfigurationResponseCommonBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.ServiceDeleteInput;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.PathDescription;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.atoz.direction.AToZ;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.path.description.ztoa.direction.ZToA;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev171017.pce.resource.resource.resource.TerminationPoint;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.renderer.input.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.renderer.input.NodesBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.renderer.input.NodesKey;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.PathDescription;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZ;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ztoa.direction.ZToA;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.resource.resource.TerminationPoint;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.renderer.input.NodesBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.renderer.input.NodesKey;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,31 +64,31 @@ public final class ModelMappingUtils {
     }
 
     public static ServiceImplementationRequestOutput createServiceImplResponse(String responseCode, String message) {
-        ServiceImplementationRequestOutputBuilder outputBldr = new ServiceImplementationRequestOutputBuilder()
-            .setConfigurationResponseCommon(createCommonResponse(responseCode, message));
-        return outputBldr.build();
+        return new ServiceImplementationRequestOutputBuilder()
+                .setConfigurationResponseCommon(createCommonResponse(responseCode, message))
+                .build();
     }
 
     public static ServiceDeleteOutput createServiceDeleteResponse(String responseCode, String message) {
-        ServiceDeleteOutputBuilder outputBldr = new ServiceDeleteOutputBuilder()
-            .setConfigurationResponseCommon(createCommonResponse(responseCode, message));
-        return outputBldr.build();
+        return new ServiceDeleteOutputBuilder()
+                .setConfigurationResponseCommon(createCommonResponse(responseCode, message))
+                .build();
     }
 
     public static ConfigurationResponseCommon createCommonResponse(String responseCode, String message) {
-        ConfigurationResponseCommonBuilder cmBldr = new ConfigurationResponseCommonBuilder()
-            .setResponseMessage(message)
-            .setResponseCode(responseCode);
-        return cmBldr.build();
+        return new ConfigurationResponseCommonBuilder()
+                .setResponseMessage(message)
+                .setResponseCode(responseCode)
+                .build();
     }
 
     public static ListenableFuture<RpcResult<ServiceImplementationRequestOutput>>
-        createServiceImplementationRpcResponse(ServiceImplementationRequestOutput payload) {
+            createServiceImplementationRpcResponse(ServiceImplementationRequestOutput payload) {
         return RpcResultBuilder.success(payload).buildFuture();
     }
 
     public static ListenableFuture<RpcResult<ServiceDeleteOutput>>
-        createServiceDeleteRpcResponse(ServiceDeleteOutput payload) {
+            createServiceDeleteRpcResponse(ServiceDeleteOutput payload) {
         return RpcResultBuilder.success(payload).buildFuture();
     }
 
@@ -95,8 +98,11 @@ public final class ModelMappingUtils {
         ServicePathInputBuilder servicePathInputBuilder = new ServicePathInputBuilder()
             .setServiceName(serviceName)
             .setOperation(ServicePathInput.Operation.Create)
-            .setWaveNumber(Long.valueOf(pathDescription.getAToZDirection().getAToZWavelengthNumber().toJava()))
             .setNodes(nodeLists.getList());
+        if (pathDescription.getAToZDirection().getAToZWavelengthNumber() != null) {
+            servicePathInputBuilder
+                .setWaveNumber(Uint32.valueOf(pathDescription.getAToZDirection().getAToZWavelengthNumber().toJava()));
+        }
         return new ServicePathInputData(servicePathInputBuilder.build(), nodeLists);
     }
 
@@ -106,20 +112,56 @@ public final class ModelMappingUtils {
         ServicePathInputBuilder servicePathInputBuilder = new ServicePathInputBuilder()
             .setOperation(ServicePathInput.Operation.Create)
             .setServiceName(serviceName)
-            .setWaveNumber(Long.valueOf(pathDescription.getZToADirection().getZToAWavelengthNumber().toJava()))
             .setNodes(nodeLists.getList());
+        if (pathDescription.getAToZDirection().getAToZWavelengthNumber() != null) {
+            servicePathInputBuilder
+                .setWaveNumber(Uint32.valueOf(pathDescription.getAToZDirection().getAToZWavelengthNumber().toJava()));
+        }
         return new ServicePathInputData(servicePathInputBuilder.build(), nodeLists);
+    }
+
+    // Adding createOtnServiceInputpath for A-Z and Z-A directions as one method
+    public static OtnServicePathInput rendererCreateOtnServiceInput(String serviceName, String serviceType,
+        String serviceRate, PathDescription pathDescription, boolean asideToZside) {
+        // If atoZ is set true use A-to-Z direction otherwise use Z-to-A
+        List<org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.otn.renderer.input.Nodes> nodes =
+            new ArrayList<>();
+        NodeLists nodeLists = getNodesListAToZ(pathDescription.getAToZDirection().getAToZ().iterator());
+        if (!asideToZside) {
+            nodeLists = getNodesListZtoA(pathDescription.getZToADirection().getZToA().iterator());
+        }
+        LOG.info("These are node-lists {}, {}", nodeLists.getList(), nodeLists.getOlmList());
+        for (Nodes node: nodeLists.getList()) {
+            nodes.add(
+                    new org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.otn.renderer.input
+                        .NodesBuilder()
+                            .setNodeId(node.getNodeId())
+                            .setClientTp(node.getSrcTp())
+                            .setNetworkTp(node.getDestTp())
+                            .build());
+        }
+        OtnServicePathInputBuilder otnServicePathInputBuilder = new OtnServicePathInputBuilder()
+            .setServiceName(serviceName)
+            .setServiceType(serviceType)
+            .setServiceRate(serviceRate)
+            .setNodes(nodes);
+
+        // set the trib-slots and trib-ports for the lower oder odu
+        if (serviceRate.equals("1G") || (serviceRate.equals("10G"))) {
+            otnServicePathInputBuilder
+                .setTribPortNumber(pathDescription.getAToZDirection().getTribPortNumber().shortValue())
+                .setTribSlot(pathDescription.getAToZDirection().getTribSlotNumber().shortValue());
+        }
+        return otnServicePathInputBuilder.build();
     }
 
     public static ServicePathInput rendererDeleteServiceInput(String serviceName,
             ServiceDeleteInput serviceDeleteInput) {
-        ServicePathInputBuilder servicePathInput = new ServicePathInputBuilder()
-            .setServiceName(serviceName);
         //TODO: finish model-model mapping
-        return servicePathInput.build();
+        return new ServicePathInputBuilder().setServiceName(serviceName).build();
     }
 
-    public static NodeLists getNodesListZtoA(Iterator<ZToA> iterator) {
+    private static NodeLists getNodesListZtoA(Iterator<ZToA> iterator) {
         Map<Integer, NodeIdPair> treeMap = new TreeMap<>();
         List<Nodes> olmList = new ArrayList<>();
         List<Nodes> list = new ArrayList<>();
@@ -139,39 +181,38 @@ public final class ModelMappingUtils {
                     LOG.info(" TP is {} {}", tp.getTpId(),
                             tp.getTpNodeId());
                     tpID = tp.getTpId();
-                    nodeID = tp.getTpNodeId();
                     sortId = pathDesObj.getId();
 
                     //TODO: do not rely on ID to be in certain format
                     if (tpID.contains("CTP") || tpID.contains("CP")) {
                         continue;
                     }
-                    if (!tpID.contains("TTP") && !tpID.contains("PP") && !tpID.contains("NETWORK")
-                            && !tpID.contains("CLIENT")) {
+                    if (tpID.contains(StringConstants.TTP_TOKEN)) {
+                        nodeID = tp.getTpNodeId().split("-DEG")[0];
+                    } else if (tpID.contains(StringConstants.PP_TOKEN)) {
+                        nodeID = tp.getTpNodeId().split("-SRG")[0];
+                    } else if (tpID.contains(StringConstants.NETWORK_TOKEN)
+                        || tpID.contains(StringConstants.CLIENT_TOKEN) || tpID.isEmpty()) {
+                        nodeID = tp.getTpNodeId().split("-XPDR")[0];
+                    } else {
                         continue;
                     }
-
-                    int[] pos = findTheLongestSubstring(nodeID, tpID);
-                    if (pos != null) {
-                        //TODO: do not rely on nodeId to be integer
-                        int id = Integer.parseInt(sortId);
-                        treeMap.put(id, new NodeIdPair(nodeID.substring(0, pos[0] - 1), tpID));
-                    }
+                    int id = Integer.parseInt(sortId);
+                    treeMap.put(id, new NodeIdPair(nodeID, tpID));
                 } else if ("Link".equals(resourceType)) {
                     LOG.info("The type is link");
                 } else {
-                    LOG.info("The type is not indentified: {}", resourceType);
+                    LOG.info("The type is not identified: {}", resourceType);
                 }
             } catch (IllegalArgumentException | SecurityException e) {
                 LOG.error("Dont find the getResource method", e);
             }
         }
-
-        populateNodeLists(treeMap, list, olmList);
+        populateNodeLists(treeMap, list, olmList, false);
         return new NodeLists(olmList, list);
     }
 
-    public static NodeLists getNodesListAToZ(Iterator<AToZ> iterator) {
+    private static NodeLists getNodesListAToZ(Iterator<AToZ> iterator) {
         Map<Integer, NodeIdPair> treeMap = new TreeMap<>();
         List<Nodes> list = new ArrayList<>();
         List<Nodes> olmList = new ArrayList<>();
@@ -188,68 +229,86 @@ public final class ModelMappingUtils {
             try {
                 if (TERMINATION_POINT.equals(resourceType)) {
                     tp = (TerminationPoint) pathDesObj.getResource().getResource();
-                    LOG.info(" TP is {} {}", tp.getTpId(),
+                    LOG.info("TP is {} {}", tp.getTpId(),
                             tp.getTpNodeId());
                     tpID = tp.getTpId();
-                    nodeID = tp.getTpNodeId();
                     sortId = pathDesObj.getId();
 
                     //TODO: do not rely on ID to be in certain format
                     if (tpID.contains("CTP") || tpID.contains("CP")) {
                         continue;
                     }
-                    if (!tpID.contains(StringConstants.TTP_TOKEN)
-                        && !tpID.contains(StringConstants.PP_TOKEN)
-                        && !tpID.contains(StringConstants.NETWORK_TOKEN)
-                        && !tpID.contains(StringConstants.CLIENT_TOKEN)) {
+                    if (tpID.contains(StringConstants.TTP_TOKEN)) {
+                        nodeID = tp.getTpNodeId().split("-DEG")[0];
+                    } else if (tpID.contains(StringConstants.PP_TOKEN)) {
+                        nodeID = tp.getTpNodeId().split("-SRG")[0];
+                    } else if (tpID.contains(StringConstants.NETWORK_TOKEN)
+                        || tpID.contains(StringConstants.CLIENT_TOKEN) || tpID.isEmpty()) {
+                        nodeID = tp.getTpNodeId().split("-XPDR")[0];
+                    } else {
                         continue;
                     }
-
-                    int[] pos = findTheLongestSubstring(nodeID, tpID);
-                    if (pos != null) {
-                        //TODO: do not rely on nodeId to be integer
-                        int id = Integer.parseInt(sortId);
-                        treeMap.put(id, new NodeIdPair(nodeID.substring(0, pos[0] - 1), tpID));
-                    }
+                    int id = Integer.parseInt(sortId);
+                    treeMap.put(id, new NodeIdPair(nodeID, tpID));
                 } else if ("Link".equals(resourceType)) {
                     LOG.info("The type is link");
                 } else {
-                    LOG.info("The type is not indentified: {}", resourceType);
+                    LOG.info("The type is not identified: {}", resourceType);
                 }
             } catch (IllegalArgumentException | SecurityException e) {
                 //TODO: Auto-generated catch block
-                LOG.error("Dont find the getResource method", e);
+                LOG.error("Did not find the getResource method", e);
             }
         }
-
-        populateNodeLists(treeMap, list, olmList);
+        populateNodeLists(treeMap, list, olmList, true);
         return new NodeLists(olmList, list);
     }
 
     @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
-            value = {"NP_LOAD_OF_KNOWN_NULL_VALUE","RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"},
-            justification = "loop when value is not always null - "
-                    + "TODO: check if something exists in Java lib")
-    private static void populateNodeLists(Map<Integer, NodeIdPair> treeMap,
-            List<Nodes> list, List<Nodes> olmList) {
+        value = {"NP_LOAD_OF_KNOWN_NULL_VALUE","RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"},
+        justification = "loop when value is not always null - "
+                + "TODO: check if something exists in Java lib")
+    private static void populateNodeLists(Map<Integer, NodeIdPair> treeMap, List<Nodes> list, List<Nodes> olmList,
+        boolean isAToz) {
         String desID = null;
         String srcID = null;
+        LOG.info("treeMap values = {}", treeMap.values());
         for (NodeIdPair values : treeMap.values()) {
             if (srcID == null) {
                 srcID = values.getTpID();
             } else if (desID == null) {
                 desID = values.getTpID();
-                NodesBuilder nb = new NodesBuilder()
-                    .withKey(new NodesKey(values.getNodeID()))
-                    .setDestTp(desID)
-                    .setSrcTp(srcID);
-                list.add(nb.build());
-
                 NodesBuilder olmNb = new NodesBuilder()
                     .setNodeId(values.getNodeID())
                     .setDestTp(desID)
                     .setSrcTp(srcID);
                 olmList.add(olmNb.build());
+                if (srcID.isEmpty()) {
+                    srcID = null;
+                }
+                if (desID.isEmpty()) {
+                    desID = new StringBuilder(srcID).toString();
+                    srcID = null;
+                }
+                if (isAToz) {
+                    NodesBuilder nb = new NodesBuilder()
+                        .withKey(new NodesKey(values.getNodeID()))
+                        .setDestTp(desID)
+                        .setSrcTp(srcID);
+                    if (srcID != null && desID != null && srcID.contains(StringConstants.NETWORK_TOKEN)) {
+                        nb.setDestTp(srcID).setSrcTp(desID);
+                    }
+                    list.add(nb.build());
+                } else {
+                    if (srcID != null && desID != null && !srcID.contains(StringConstants.NETWORK_TOKEN)
+                        && !desID.contains(StringConstants.NETWORK_TOKEN)) {
+                        NodesBuilder nb = new NodesBuilder()
+                            .withKey(new NodesKey(values.getNodeID()))
+                            .setDestTp(desID)
+                            .setSrcTp(srcID);
+                        list.add(nb.build());
+                    }
+                }
                 srcID = null;
                 desID = null;
             } else {
@@ -257,6 +316,7 @@ public final class ModelMappingUtils {
             }
         }
     }
+
 
     @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
             value = "PZLA_PREFER_ZERO_LENGTH_ARRAYS",

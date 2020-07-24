@@ -15,13 +15,13 @@ Author: Martial Coulibaly <martial.coulibaly@gfi.com> on behalf of Orange
   <parent>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>binding-parent</artifactId>
-    <version>5.0.10</version>
+    <version>5.0.13</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.transportpce</groupId>
   <artifactId>transportpce-tapi</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <dependencyManagement>
@@ -29,7 +29,7 @@ Author: Martial Coulibaly <martial.coulibaly@gfi.com> on behalf of Orange
       <dependency>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>mdsal-artifacts</artifactId>
-        <version>5.0.10</version>
+        <version>5.0.13</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -108,11 +108,5 @@ Author: Martial Coulibaly <martial.coulibaly@gfi.com> on behalf of Orange
     </dependency>
 
   </dependencies>
-
-<!-- checkstyle and spotbugds enforced by odlparent since Magnesium -->
-  <properties>
-    <!-- odlparent.checkstyle.enforce>false</odlparent.checkstyle.enforce -->
-    <odlparent.spotbugs.enforce>false</odlparent.spotbugs.enforce>
-  </properties>
 
 </project>

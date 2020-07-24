@@ -74,8 +74,8 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfa
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.ots.container.OtsBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.pm.types.rev161014.PmGranularity;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.types.rev161014.ResourceTypeEnum;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.PmNamesEnum;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.get.pm.input.ResourceIdentifierBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.PmNamesEnum;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.get.pm.input.ResourceIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NetworkId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.Networks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
@@ -427,8 +427,7 @@ public class OlmPowerServiceImpl implements OlmPowerService {
                     return false;
                 }
             } else if (mappingUtils.getOpenRoadmVersion(realNodeId)
-                .equals(StringConstants.OPENROADM_DEVICE_VERSION_2_2_1) || mappingUtils.getOpenRoadmVersion(realNodeId)
-                .equals(StringConstants.OPENROADM_DEVICE_VERSION_3)) {
+                .equals(StringConstants.OPENROADM_DEVICE_VERSION_2_2_1)) {
 
                 org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.RatioDB spanLossRx;
                 org.opendaylight.yang.gen.v1.http.org.openroadm.common.types
@@ -516,7 +515,7 @@ public class OlmPowerServiceImpl implements OlmPowerService {
     private Map<LinkId, BigDecimal> getLinkSpanloss(List<RoadmLinks> roadmLinks) {
         Map<LinkId, BigDecimal> map = new HashMap<LinkId, BigDecimal>();
         LOG.info("Executing GetLinkSpanLoss");
-        BigDecimal spanLoss = new BigDecimal(0);
+        BigDecimal spanLoss;
         for (RoadmLinks link : roadmLinks) {
             String sourceNodeId = link.getSrcNodeId();
             String sourceTpId = link.getSrcTpId();
@@ -529,7 +528,7 @@ public class OlmPowerServiceImpl implements OlmPowerService {
                 continue;
             }
             spanLoss = new BigDecimal(srcOtsPmHoler.getOtsParameterVal() - destOtsPmHoler.getOtsParameterVal())
-                .setScale(0, RoundingMode.HALF_UP);
+                .setScale(1, RoundingMode.HALF_UP);
             LOG.info("Spanloss Calculated as :{}={}-{}",
                 spanLoss, srcOtsPmHoler.getOtsParameterVal(), destOtsPmHoler.getOtsParameterVal());
             if (spanLoss.doubleValue() > 28) {

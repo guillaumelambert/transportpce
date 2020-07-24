@@ -46,10 +46,10 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.pm.rev181019.current.pm.l
 import org.opendaylight.yang.gen.v1.http.org.openroadm.pm.rev181019.current.pm.list.CurrentPmEntryKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.pm.rev181019.current.pm.val.group.Measurement;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.types.rev161014.ResourceTypeEnum;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.Direction;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.Location;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.PmNamesEnum;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200128.olm.get.pm.input.ResourceIdentifier;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.Direction;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.Location;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.PmNamesEnum;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.get.pm.input.ResourceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,11 +114,11 @@ final class OlmUtils22 {
                             .equals(input.getPmExtension()));
                     }
                     if (input.getLocation() != null) {
-                        currentPMStream = currentPMStream.filter(pm -> pm.getLocation()
+                        currentPMStream = currentPMStream.filter(pm -> Location.forValue(pm.getLocation().getIntValue())
                             .equals(Location.forValue(input.getLocation().getIntValue())));
                     }
                     if (input.getDirection() != null) {
-                        currentPMStream = currentPMStream.filter(pm -> pm.getDirection()
+                        currentPMStream = currentPMStream.filter(pm -> Direction.forValue(pm.getDirection().getIntValue())
                             .equals(Direction.forValue((input.getDirection().getIntValue()))));
                     }
                     List<CurrentPm> filteredPMs = currentPMStream.collect(Collectors.toList());

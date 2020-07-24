@@ -7,11 +7,11 @@
  */
 package org.opendaylight.transportpce.inventory;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.transportpce.inventory.utils.StringUtils.getCurrentTimestamp;
 import static org.opendaylight.transportpce.inventory.utils.StringUtils.prepareDashString;
 import static org.opendaylight.transportpce.inventory.utils.StringUtils.prepareEmptyString;
 
-import com.google.common.base.Preconditions;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +24,6 @@ import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.inventory.query.Queries;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.circuit.pack.CpSlots;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.circuit.pack.Ports;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.circuit.packs.CircuitPacks;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.external.links.ExternalLink;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.Interface;
@@ -52,13 +51,13 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev161
 import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev161014.opu.opu.msi.RxMsi;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev161014.opu.opu.msi.TxMsi;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev161014.otu.container.OtuBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.rstp.rev161014.rstp.bridge.port.attr.RstpBridgePortTable;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.rstp.rev161014.rstp.container.rstp.RstpBridgeInstance;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
+    value = "SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING",
+    justification = "TODO review the SQL statement generation process")
 public class INode221 {
     private static final Logger LOG = LoggerFactory.getLogger(INode221.class);
 
@@ -87,7 +86,7 @@ public class INode221 {
         String query = Queries.getQuery().deviceInfoInsert().get();
         LOG.info("Running {} query ", query);
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             Object[] prepareParameters = prepareDeviceInfoParameters(deviceInfo);
             for (int i = 0; i < prepareParameters.length; i++) {
                 LOG.debug("Parameter {} has value {}", i + 1, prepareParameters[i]);
@@ -148,12 +147,8 @@ public class INode221 {
             persistDevConnectionMap(deviceId, connection);
             LOG.debug("iNode persist Connection Map call complete");
 
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (InterruptedException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (ExecutionException e) {
-            LOG.error(e.getMessage(), e);
+        } catch (SQLException | InterruptedException | ExecutionException e) {
+            LOG.error("Something wrong when storing node into DB", e);
         }
         return sqlResult;
     }
@@ -172,7 +167,7 @@ public class INode221 {
                 }
             }
         } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Something wrong when fetching node in DB", e);
         }
         return nodeExists == 0 ? false : true;
     }
@@ -184,8 +179,7 @@ public class INode221 {
                 Timeouts.DEVICE_READ_TIMEOUT_UNIT);
 
         LOG.info("Shelves size {}", deviceObject.get().getShelves().size());
-        try (Connection connection = dataSource.getConnection()) {
-            Preconditions.checkNotNull(connection);
+        try (Connection connection = requireNonNull(dataSource.getConnection())) {
             for (int i = 0; i < deviceObject.get().getShelves().size(); i++) {
                 Shelves shelve = deviceObject.get().getShelves().get(i);
                 String shelfName = shelve.getShelfName();
@@ -202,7 +196,7 @@ public class INode221 {
                 persistShelves(nodeId, connection, shelve);
             }
         } catch (SQLException e1) {
-            LOG.error(e1.getMessage(), e1);
+            LOG.error("Something wrong when fetching ROADM shelves in DB", e1);
         }
     }
 
@@ -217,8 +211,7 @@ public class INode221 {
         }
         LOG.info("Circuit pack size {}", deviceObject.get().getCircuitPacks().size());
 
-        try (Connection connection = dataSource.getConnection()) {
-            Preconditions.checkNotNull(connection);
+        try (Connection connection = requireNonNull(dataSource.getConnection())) {
             for (int i = 0; i < deviceObject.get().getCircuitPacks().size(); i++) {
                 CircuitPacks cp = deviceObject.get().getCircuitPacks().get(i);
 
@@ -233,7 +226,7 @@ public class INode221 {
                 persistCircuitPacks(nodeId, connection, cp);
             }
         } catch (SQLException e1) {
-            LOG.error(e1.getMessage(), e1);
+            LOG.error("Something wrong when fetching Circuit Packs in DB", e1);
         }
     }
 
@@ -248,7 +241,7 @@ public class INode221 {
             stmt.execute();
             stmt.clearParameters();
         } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Something wrong when storing Circuit Packs in DB", e);
         }
     }
 
@@ -263,7 +256,7 @@ public class INode221 {
             preparedStmt.execute();
             preparedStmt.clearParameters();
         } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Something wrong when storing shelves in DB", e);
         }
     }
 
@@ -289,7 +282,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing shelves slots in DB", e);
             }
         }
     }
@@ -317,7 +310,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing Cirtcuits Packs slots in DB", e);
             }
         }
     }
@@ -457,95 +450,6 @@ public class INode221 {
             startTimestamp};
     }
 
-
-    private static Object[] prepareCPPortsParameters(String nodeId, CircuitPacks circuitPacks, Ports cpPort) {
-
-        String circuitPackName = circuitPacks.getCircuitPackName();
-        String portName = cpPort.getPortName();
-        String portType = cpPort.getPortType();
-        String portQualEnu = String.valueOf(cpPort.getPortQual().getIntValue());
-        String portWavelengthTypeEnu = String.valueOf(cpPort.getPortWavelengthType().getIntValue());
-        String portDirectionEnu = String.valueOf(cpPort.getPortDirection().getIntValue());
-        String label = cpPort.getLabel();
-        String circuitId = cpPort.getCircuitId();
-        String administrativeStateEnu =
-            (cpPort.getAdministrativeState() == null ? "" :
-                String.valueOf(cpPort.getAdministrativeState().getIntValue()));
-        String operationalStateEnu =
-            (cpPort.getOperationalState() == null ? "" : String.valueOf(cpPort.getOperationalState().getIntValue()));
-        String logicalConnectionPoint = cpPort.getLogicalConnectionPoint();
-        String partnerPortCircuitPackName = cpPort.getPartnerPort().getCircuitPackName();
-        String partnerPortPortName = cpPort.getPartnerPort().getPortName().toString();
-        String parentPortCircuitPackName = cpPort.getParentPort().getCircuitPackName();
-        String parentPortPortName = cpPort.getParentPort().getPortName().toString();
-        String roadmPortPortPowerCapabilityMinRx = cpPort.getRoadmPort().getPortPowerCapabilityMinRx().toString();
-        String roadmPortPortPowerCapabilityMinTx = cpPort.getRoadmPort().getPortPowerCapabilityMinTx().toString();
-        String roadmPortPortPowerCapabilityMaxRx = cpPort.getRoadmPort().getPortPowerCapabilityMaxRx().toString();
-        String roadmPortPortPowerCapabilityMaxTx = cpPort.getRoadmPort().getPortPowerCapabilityMaxTx().toString();
-        //String roadmPortCapableWavelengths = "";
-        //String roadmPortAvailableWavelengths = "";
-        //String roadmPortUsedWavelengths = "";
-        String transponderPortPortPowerCapabilityMinRx =
-            cpPort.getTransponderPort().getPortPowerCapabilityMinRx().toString();
-        String transponderPortPortPowerCapabilityMinTx =
-            cpPort.getTransponderPort().getPortPowerCapabilityMinTx().toString();
-        String transponderPortPortPowerCapabilityMaxRx =
-            cpPort.getTransponderPort().getPortPowerCapabilityMaxRx().toString();
-        String transponderPortPortPowerCapabilityMaxTx =
-            cpPort.getTransponderPort().getPortPowerCapabilityMaxTx().toString();
-        //String transponderPortCapableWavelengths = "";
-        String otdrPortLaunchCableLength = cpPort.getOtdrPort().getLaunchCableLength().toString();
-        String otdrPortPortDirection = String.valueOf(cpPort.getOtdrPort().getPortDirection().getIntValue());
-        //String ilaPortPortPowerCapabilityMixRx = "";
-        //String ilaPortPortPowerCapabilityMixTx = "";
-        //String ilaPortPortPowerCapabilityMaxRx = "";
-        //String ilaPortPortPowerCapabilityMaxTx = "";
-
-        String startTimestamp = getCurrentTimestamp();
-
-        return new Object[]{nodeId,
-            circuitPackName,
-            portName,
-            portType,
-            portQualEnu,
-            portWavelengthTypeEnu,
-            portDirectionEnu,
-            label,
-            circuitId,
-            administrativeStateEnu,
-            operationalStateEnu,
-            logicalConnectionPoint,
-            partnerPortCircuitPackName,
-            partnerPortPortName,
-            parentPortCircuitPackName,
-            parentPortPortName,
-            roadmPortPortPowerCapabilityMinRx,
-            roadmPortPortPowerCapabilityMinTx,
-            roadmPortPortPowerCapabilityMaxRx,
-            roadmPortPortPowerCapabilityMaxTx,
-            //roadmPortCapableWavelengths,
-            //roadmPortAvailableWavelengths,
-            //roadmPortUsedWavelengths,
-            "", "", "",
-            transponderPortPortPowerCapabilityMinRx,
-            transponderPortPortPowerCapabilityMinTx,
-            transponderPortPortPowerCapabilityMaxRx,
-            transponderPortPortPowerCapabilityMaxTx,
-            //transponderPortCapableWavelengths,
-            "",
-            otdrPortLaunchCableLength,
-            otdrPortPortDirection,
-            //ilaPortPortPowerCapabilityMixRx,
-            //ilaPortPortPowerCapabilityMixTx,
-            //ilaPortPortPowerCapabilityMaxRx,
-            //ilaPortPortPowerCapabilityMaxTx,
-            "", "", "", "",
-            startTimestamp,
-            startTimestamp
-        };
-    }
-
-
     private static Object[] prepareCircuitPacksParameters(String nodeId, CircuitPacks cpack) {
         String startTimestamp = getCurrentTimestamp();
         return new Object[]{nodeId,
@@ -581,25 +485,6 @@ public class INode221 {
             startTimestamp,
             startTimestamp};
     }
-
-
-    private void persistCPPorts(String nodeId, Connection connection, CircuitPacks circuitPacks) {
-        for (int i = 0; i < circuitPacks.getPorts().size(); i++) {
-            Object[] cpPortsParameters = prepareCPPortsParameters(nodeId, circuitPacks, circuitPacks.getPorts().get(i));
-            String query = Queries.getQuery().deviceCPPortInsert().get();
-            LOG.info("Running {} query ", query);
-            try (PreparedStatement preparedStmt = connection.prepareStatement(query)) {
-                for (int j = 0; j < cpPortsParameters.length; j++) {
-                    preparedStmt.setObject(j + 1, cpPortsParameters[j]);
-                }
-                preparedStmt.execute();
-                preparedStmt.clearParameters();
-            } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
-            }
-        }
-    }
-
 
     private Object[] prepareDevInterfaceParameters(String nodeId, Interface deviceInterface, Connection connection) {
 
@@ -718,7 +603,7 @@ public class INode221 {
                     org.opendaylight.yang.gen.v1
                         .http.org.openroadm.optical.transport.interfaces.rev161014.Interface1.class)
                     .getOts());
-                int otsFiberTypeEnu = otsIfBuilder.getFiberType().getIntValue();
+                //otsFiberTypeEnu = otsIfBuilder.getFiberType().getIntValue();
                 otsSpanLossReceive = otsIfBuilder.getSpanLossReceive().toString();
                 otsSpanLossTransmit = otsIfBuilder.getSpanLossTransmit().toString();
                 break;
@@ -736,9 +621,9 @@ public class INode221 {
                 persistDevInterfaceOtnOduRxMsi(nodeId, name, oduIfBuilder, connection);
                 persistDevInterfaceOtnOduExpMsi(nodeId, name, oduIfBuilder, connection);
 
-                opuPayloadType = oduIfBuilder.getOpu().getPayloadType().toString();
-                opuRxPayloadType = oduIfBuilder.getOpu().getRxPayloadType().toString();
-                opuExpPayloadType = oduIfBuilder.getOpu().getExpPayloadType().toString();
+                opuPayloadType = oduIfBuilder.getOpu().getPayloadType();
+                opuRxPayloadType = oduIfBuilder.getOpu().getRxPayloadType();
+                opuExpPayloadType = oduIfBuilder.getOpu().getExpPayloadType();
                 opuPayloadInterface = oduIfBuilder.getOpu().getPayloadInterface();
                         /*persistDevInterfaceOtnOduTxMsi(nodeId,name,oduIfBuilder,connection);
                         persistDevInterfaceOtnOduRxMsi(nodeId,name,oduIfBuilder,connection);
@@ -1017,7 +902,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices interfaces in DB", e);
             }
         }
     }
@@ -1063,7 +948,7 @@ public class INode221 {
             stmt.execute();
             stmt.clearParameters();
         } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
+            LOG.error("Something wrong when storing devices protocols in DB", e);
         }
 
     }
@@ -1104,7 +989,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices protocols LLDP Port config in DB", e);
             }
 
         }
@@ -1159,181 +1044,11 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices protocols LLDP list number in DB", e);
             }
 
         }
     }
-
-    private void persistDevProtocolRstp(String nodeId, Connection connection) {
-
-        InstanceIdentifier<Protocols> protocolsIID =
-                InstanceIdentifier.create(OrgOpenroadmDevice.class).child(Protocols.class);
-        Optional<Protocols> protocolObject =
-                deviceTransactionManager.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION, protocolsIID,
-                        Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-        if (!protocolObject.isPresent() || protocolObject.get().augmentation(Protocols1.class) == null) {
-            LOG.error("LLDP subtree is missing");
-
-        }
-        String startTimestamp = getCurrentTimestamp();
-        for (int i = 0; i < protocolObject.get()
-            .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.rstp.rev161014.Protocols1.class)
-            .getRstp().getRstpBridgeInstance().size(); i++) {
-
-            RstpBridgeInstance rstpBridgeInstance = protocolObject.get()
-                .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.rstp.rev161014.Protocols1.class)
-                .getRstp().getRstpBridgeInstance().get(i);
-            String bridgeName = rstpBridgeInstance.getBridgeName();
-            String bridgePriority = rstpBridgeInstance.getRstpConfig().getBridgePriority().toString();
-            String shutdown = rstpBridgeInstance.getRstpConfig().getShutdown().toString();
-            String holdTime = rstpBridgeInstance.getRstpConfig().getHoldTime().toString();
-            String helloTime = rstpBridgeInstance.getRstpConfig().getHelloTime().toString();
-            String maxAge = rstpBridgeInstance.getRstpConfig().getMaxAge().toString();
-            String forwardDelay = rstpBridgeInstance.getRstpConfig().getForwardDelay().toString();
-            String transmitHoldCount = rstpBridgeInstance.getRstpConfig().getTransmitHoldCount().toString();
-            String rootBridgePort =
-                rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getRootBridgePort().toString();
-            String rootPathCost = rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getRootPathCost().toString();
-            String rootBridgePriority =
-                rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getRootBridgePriority().toString();
-            String rootBridgeId = rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getRootBridgeId().toString();
-            String rootHoldTime = rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getRootHoldTime().toString();
-            String rootHelloTime = rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getRootHelloTime().toString();
-            String rootMaxAge = rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getRootMaxAge().toString();
-            String rootForwardDelay =
-                rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getRootForwardDelay().toString();
-            String bridgeId = rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getBridgeId().toString();
-            String topoChangeCount =
-                rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getTopoChangeCount().toString();
-            String timeSinceTopoChange =
-                rstpBridgeInstance.getRstpState().getRstpBridgeAttr().getTimeSinceTopoChange().toString();
-
-            persistDevProtocolRstpBridgePort(nodeId, bridgeName, rstpBridgeInstance, connection);
-            persistDevProtocolRstpBridgePortAttr(nodeId, bridgeName, rstpBridgeInstance, connection);
-
-            Object[] parameters = {nodeId,
-                bridgeName,
-                bridgePriority,
-                shutdown,
-                holdTime,
-                helloTime,
-                maxAge,
-                forwardDelay,
-                transmitHoldCount,
-                rootBridgePort,
-                rootPathCost,
-                rootBridgePriority,
-                rootBridgeId,
-                rootHoldTime,
-                rootHelloTime,
-                rootMaxAge,
-                rootForwardDelay,
-                bridgeId,
-                topoChangeCount,
-                timeSinceTopoChange,
-                startTimestamp,
-                startTimestamp
-            };
-
-            String query = Queries.getQuery().deviceProtocolRstpInsert().get();
-            LOG.info("Running {} query ", query);
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                for (int j = 0; j < parameters.length; j++) {
-                    stmt.setObject(j + 1, parameters[j]);
-                }
-                stmt.execute();
-                stmt.clearParameters();
-            } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
-            }
-
-        }
-    }
-
-    private void persistDevProtocolRstpBridgePort(String nodeId, String bridgeName,
-        RstpBridgeInstance rstpBridgeInstance, Connection connection) {
-
-        String startTimestamp = getCurrentTimestamp();
-        for (int i = 0; i < rstpBridgeInstance.getRstpConfig().getRstpBridgePortTable().size(); i++) {
-            RstpBridgePortTable rstpBridgePortTable =
-                rstpBridgeInstance.getRstpConfig().getRstpBridgePortTable().get(i);
-
-            String ifName = rstpBridgePortTable.getIfname();
-            String cost = rstpBridgePortTable.getCost().toString();
-            String priority = rstpBridgePortTable.getPriority().toString();
-
-            Object[] parameters = {nodeId,
-                bridgeName,
-                ifName,
-                cost,
-                priority,
-                startTimestamp,
-                startTimestamp
-            };
-
-            String query = Queries.getQuery().deviceProtocolRstpBridgePortInsert().get();
-            LOG.info("Running {} query ", query);
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                for (int j = 0; j < parameters.length; j++) {
-                    stmt.setObject(j + 1, parameters[j]);
-                }
-                stmt.execute();
-                stmt.clearParameters();
-            } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
-            }
-
-        }
-    }
-
-    private void persistDevProtocolRstpBridgePortAttr(String nodeId, String bridgeName,
-        RstpBridgeInstance rstpBridgeInstance, Connection connection) {
-
-        String startTimestamp = getCurrentTimestamp();
-        for (int i = 0; i < rstpBridgeInstance.getRstpState().getRstpBridgePortAttr().getRstpBridgePortTable().size();
-            i++) {
-
-            org.opendaylight.yang.gen.v1.http.org.openroadm.rstp.rev161014.rstp.bridge.port.state.attr
-                .RstpBridgePortTable rstpBridgePortTableAttr =
-                    rstpBridgeInstance.getRstpState().getRstpBridgePortAttr().getRstpBridgePortTable().get(i);
-
-            String ifName = rstpBridgePortTableAttr.getIfname();
-            String bridgePortState = rstpBridgePortTableAttr.getBridgePortState().getName();
-            String bridgePortRole = rstpBridgePortTableAttr.getBridgePortRole().getName();
-            String bridgePortId = rstpBridgePortTableAttr.getBridgePortId().toString();
-            String openEdgeBridgePort = rstpBridgePortTableAttr.getOperEdgeBridgePort().toString();
-            String designatedBridgePort = rstpBridgePortTableAttr.getDesignatedBridgePort().toString();
-            String designatedBridgeId = rstpBridgePortTableAttr.getDesignatedBridgeid().toString();
-
-            Object[] parameters = {nodeId,
-                bridgeName,
-                ifName,
-                bridgePortState,
-                bridgePortRole,
-                bridgePortId,
-                openEdgeBridgePort,
-                designatedBridgePort,
-                designatedBridgeId,
-                startTimestamp,
-                startTimestamp
-            };
-
-            String query = Queries.getQuery().deviceProtocolRstpBridgePortAttrInsert().get();
-            LOG.info("Running {} query ", query);
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                for (int j = 0; j < parameters.length; j++) {
-                    stmt.setObject(j + 1, parameters[j]);
-                }
-                stmt.execute();
-                stmt.clearParameters();
-            } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
-            }
-
-        }
-    }
-
 
     private void persistDevInternalLinks(String nodeId, Connection connection) {
 
@@ -1370,7 +1085,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices internal links", e);
             }
 
         }
@@ -1388,12 +1103,12 @@ public class INode221 {
         for (int i = 0; i < deviceObject.get().getExternalLink().size(); i++) {
             ExternalLink externalLink = deviceObject.get().getExternalLink().get(i);
             String externalLinkName = externalLink.getExternalLinkName();
-            String sourceNodeId = externalLink.getSource().getNodeId().toString();
+            String sourceNodeId = externalLink.getSource().getNodeId();
             String sourceCircuitPackName = externalLink.getSource().getCircuitPackName();
-            String sourcePortName = externalLink.getSource().getPortName().toString();
-            String destinationNodeId = externalLink.getDestination().getNodeId().toString();
+            String sourcePortName = externalLink.getSource().getPortName();
+            String destinationNodeId = externalLink.getDestination().getNodeId();
             String destinationCircuitPackName = externalLink.getDestination().getCircuitPackName();
-            String destinationPortName = externalLink.getDestination().getPortName().toString();
+            String destinationPortName = externalLink.getDestination().getPortName();
 
             Object[] parameters = {nodeId,
                 externalLinkName,
@@ -1416,7 +1131,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices external links", e);
             }
 
         }
@@ -1457,7 +1172,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices physical links", e);
             }
 
         }
@@ -1507,7 +1222,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices degrees", e);
             }
 
         }
@@ -1539,7 +1254,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices degrees circuit packs", e);
             }
 
         }
@@ -1573,7 +1288,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices degrees connection ports", e);
             }
 
         }
@@ -1592,7 +1307,7 @@ public class INode221 {
             SharedRiskGroup sharedRiskGroup = deviceObject.get().getSharedRiskGroup().get(i);
             String maxAddDropPorts = sharedRiskGroup.getMaxAddDropPorts().toString();
             String srgNumber = sharedRiskGroup.getSrgNumber().toString();
-            int wavelengthDuplicationEnu = sharedRiskGroup.getWavelengthDuplication().getIntValue();
+            //int wavelengthDuplicationEnu = sharedRiskGroup.getWavelengthDuplication().getIntValue();
             persistDevSrgCircuitPacks(nodeId, sharedRiskGroup, srgNumber, connection);
             //String currentProvisionedAddDropPorts = "";
             //String mcCapSlotWidthGranularity = "";
@@ -1623,7 +1338,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices SRG", e);
             }
 
         }
@@ -1655,7 +1370,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices SRG circuit packs", e);
             }
 
         }
@@ -1692,6 +1407,7 @@ public class INode221 {
                 startTimestamp
             };
 
+
             String query = Queries.getQuery().deviceRoadmConnectionsInsert().get();
             LOG.info("Running {} query ", query);
             try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -1701,7 +1417,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices ROADM connection ", e);
             }
 
         }
@@ -1740,7 +1456,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices connection map", e);
             }
 
         }
@@ -1782,7 +1498,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices wavelength map", e);
             }
 
         }
@@ -1809,7 +1525,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices interface tcm", e);
             }
         }
     }
@@ -1833,7 +1549,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices interface OTN ODU Tx MSI", e);
             }
         }
     }
@@ -1858,7 +1574,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices interface OTN ODU Rx MSI", e);
             }
         }
     }
@@ -1883,7 +1599,7 @@ public class INode221 {
                 stmt.execute();
                 stmt.clearParameters();
             } catch (SQLException e) {
-                LOG.error(e.getMessage(), e);
+                LOG.error("Something wrong when storing devices interface OTN ODU Exp MSI", e);
             }
         }
     }
