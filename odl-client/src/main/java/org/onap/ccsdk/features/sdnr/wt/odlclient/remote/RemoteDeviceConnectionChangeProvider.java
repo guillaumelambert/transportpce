@@ -81,7 +81,7 @@ public class RemoteDeviceConnectionChangeProvider {
         InstanceIdentifier<NetconfNode> nodeIif = NETCONF_TOPO_IID.child(Node.class,new NodeKey(new NodeId(nodeId)))
                 .augmentation(NetconfNode.class);
         try {
-            LOG.debug("read remote netconfnode");
+            LOG.debug("read remote netconfnode for node {}",nodeId);
             Optional<NetconfNode> netconfNode = this.client.read(LogicalDatastoreType.CONFIGURATION, nodeIif)
                     .get();
             this.handleChange(nodeId, netconfNode.isPresent() ? netconfNode.get() : null);

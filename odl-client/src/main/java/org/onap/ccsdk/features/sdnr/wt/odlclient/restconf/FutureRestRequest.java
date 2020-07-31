@@ -68,7 +68,8 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
                     Integer.MAX_VALUE);
             if (response.isSuccess()) {
                 LOG.debug("request to {}", uri);
-                LOG.debug("response({}):{}", response.code, response.body);
+                LOG.debug("response({})" ,response.code);
+                LOG.trace(":{}", response.body);
                 OdlObjectMapperXml mapper = new OdlObjectMapperXml();
                 return Optional.ofNullable(mapper.readValue(response.body, this.clazz));
 

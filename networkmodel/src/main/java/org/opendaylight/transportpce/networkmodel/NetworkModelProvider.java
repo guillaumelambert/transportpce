@@ -38,8 +38,8 @@ public class NetworkModelProvider {
 
 
     public NetworkModelProvider(NetworkTransactionService networkTransactionService, final DataBroker dataBroker,
-        final RpcProviderService rpcProviderService, final TransportpceNetworkutilsService networkutilsService,
-        final NetConfTopologyListener topologyListener,RemoteOpendaylightClient odlClient) {
+            final RpcProviderService rpcProviderService, final TransportpceNetworkutilsService networkutilsService,
+            final NetConfTopologyListener topologyListener, RemoteOpendaylightClient odlClient) {
         this.dataBroker = dataBroker;
         this.rpcProviderService = rpcProviderService;
         this.networkutilsService = networkutilsService;
@@ -57,25 +57,28 @@ public class NetworkModelProvider {
         tpceNetwork.createLayer(NetworkUtils.UNDERLAY_NETWORK_ID);
         tpceNetwork.createLayer(NetworkUtils.OVERLAY_NETWORK_ID);
         tpceNetwork.createLayer(NetworkUtils.OTN_NETWORK_ID);
-        dataTreeChangeListenerRegistration = !this.odlClient.isEnabled()
-                ? dataBroker.registerDataTreeChangeListener(
-                        DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                                InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
-                        topologyListener)
-                : this.odlClient.registerDataTreeChangeListener(
-                        DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                                InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
-                        topologyListener);
-        if(this.odlClient.isEnabled()) {
+        dataTreeChangeListenerRegistration =
+                !this.odlClient.isEnabled()
+                        ? dataBroker.registerDataTreeChangeListener(
+                                DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
+                                        InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
+                                topologyListener)
+                        : this.odlClient
+                                .registerDataTreeChangeListener(
+                                        DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
+                                                InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
+                                        topologyListener);
+        LOG.info("running transportPCE netconf functions remotely: {}", this.odlClient.isEnabled());
+        if (this.odlClient.isEnabled()) {
             this.odlClient.registerDeviceConnectionChangeListener(topologyListener);
         }
         networkutilsServiceRpcRegistration = rpcProviderService
                 .registerRpcImplementation(TransportpceNetworkutilsService.class, networkutilsService);
     }
 
-        /**
-         * Method called when the blueprint container is destroyed.
-         */
+    /**
+     * Method called when the blueprint container is destroyed.
+     */
     public void close() {
         LOG.info("NetworkModelProvider Closed");
         if (dataTreeChangeListenerRegistration != null) {
