@@ -34,6 +34,8 @@ class Integration:
         with open(envFilename) as f:
             lines = f.readlines()
             for line in lines:
+                if line.startswith("#"):
+                    continue
                 (key, _, value) = line.partition("=")
                 self.envs[key] = value.strip()
 
@@ -60,12 +62,21 @@ class Integration:
             simContainerName = self.getContainerName(sim)
             simInfo = self.dockerExec.inspect(simContainerName)
             simMountPointName = self.getMountPointName(sim)
-            self.odlSdnrClient.mount(
-                simMountPointName, simInfo.getIpAddress(), self.getEnv("SIMPORT"), "asd", "asd")
+            if self.getEnv("REMOTE_ODL_ENABLED") == "true":
+                self.odlSdnrClient.mount(simMountPointName, simInfo.getIpAddress(), self.getEnv("SIMPORT"), self.getEnv("SIM_NETCONF_USERNAME"), self.getEnv("SIM_NETCONF_PASSWORD"))
+            else:
+                self.odlTrpceClient.mount(simMountPointName, simInfo.getIpAddress(), self.getEnv("SIMPORT"), self.getEnv("SIM_NETCONF_USERNAME"), self.getEnv("SIM_NETCONF_PASSWORD"))
+            #    self.odlTrpceClient.mount("testroadm", "10.20.5.2", 50000, "netconf", "netconf")
+                 
+            break
 
     def unmount(self):
         for sim in SIMS:
-            self.odlSdnrClient.unmount(self.getMountPointName(sim))
+            if self.getEnv("REMOTE_ODL_ENABLED") == "true":
+                self.odlSdnrClient.unmount(self.getMountPointName(sim))
+            else:
+                self.odlTrpceClient.unmount(self.getMountPointName(sim))
+            #self.odlTrpceClient.unmount("testroadm")
 
     def printInfo(self, name, info):
 
@@ -117,10 +128,16 @@ class Integration:
     def setLogs(self):
         tc = self.getTransportPCEContainer()
         tc.exec("/opt/opendaylight/bin/client 'log:set DEBUG org.opendaylight.transportpce'")
-        tc.exec("/opt/opendaylight/bin/client 'log:set DEBUG org.onap.ccsdk.features.sdnr.wt'")
+        tc.exec("/opt/opendaylight/bin/client 'log:set TRACE org.onap.ccsdk.features.sdnr.wt'")
+        #tc.exec("/opt/opendaylight/bin/client 'log:set TRACE org.opendaylight.netconf'")
+        
         sc = self.getSdnrContainer()
         sc.exec("/opt/opendaylight/bin/client 'log:set DEBUG org.onap.ccsdk.features.sdnr.wt'")
         
+    def showTrpceLogs(self):
+        tc = self.getTransportPCEContainer()
+        grepFilter = "-ei org\.opendaylight\.transportpce -ei SdnrWebsocket -ei"
+        tc.exec("/tail -f /opt/opendaylight/data/log/karaf.log | grep "+ grepFilter)
 
     def executeTest(self, test):
         if test == "1":
