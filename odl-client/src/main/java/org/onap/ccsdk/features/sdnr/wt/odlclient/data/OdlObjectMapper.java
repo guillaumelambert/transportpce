@@ -43,14 +43,14 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.GlobalConfigBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.InfoBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeIdType;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.EquipmentEntity;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.GlobalConfig;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.credentials.Credentials;
 import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
 import org.osgi.framework.Bundle;
@@ -148,6 +148,8 @@ public class OdlObjectMapper extends ObjectMapper {
                     builder = DateAndTimeBuilder.class.getName();
                 } else if (ac.getRawType().equals(Info.class)) {
                     builder = InfoBuilder.class.getName();
+                } else if (ac.getRawType().equals(GlobalConfig.class)) {
+                    builder = GlobalConfigBuilder.class.getName();
                 } else {
                     if (ac.getRawType().isInterface()) {
                         builder = ac.getName() + "Builder";

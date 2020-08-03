@@ -34,7 +34,6 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlXmlSerializer;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlOutput;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.equipment.entity.ShelfBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDeviceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
@@ -45,7 +44,6 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.UserBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.connection.status.available.capabilities.AvailableCapability;
-import org.opendaylight.yangtools.concepts.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -666,6 +664,8 @@ public class TestMapper {
             };
         }).count()>0);
     }
+
+
     private String getTrimmedFileContent(String filename) throws IOException {
         ImmutableList<String> lines =
                 Files.asCharSource(new File(TestMapper.class.getResource(filename).getFile()), StandardCharsets.UTF_8)
