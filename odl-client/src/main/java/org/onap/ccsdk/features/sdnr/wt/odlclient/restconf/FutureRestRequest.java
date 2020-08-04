@@ -29,8 +29,9 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
     private static final Logger LOG = LoggerFactory.getLogger(FutureRestRequest.class);
 
     public static <T> FluentFuture<Optional<T>> createFutureRequest(BaseHTTPClient client, String uri,
-            String method, String data, Map<String, String> headers, Class<T> clazz) {
-        return FluentFuture.from(new FutureRestRequest<T>(client, uri, method, data, headers, clazz));
+            String method, String data, Map<String, String> headers, Class<T> clazz, boolean clearWrappingParent) {
+        return FluentFuture.from(new FutureRestRequest<T>(client, uri, method, data, headers, clazz
+                , clearWrappingParent));
     }
 
     private final BaseHTTPClient client;
@@ -41,9 +42,10 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
     private final Class<T> clazz;
     private boolean isDone;
     private boolean isCancelled;
+    private boolean clearWrappingParent;
 
     public FutureRestRequest(BaseHTTPClient client, String uri, String method, String data,
-            Map<String, String> headers, Class<T> clazz) {
+            Map<String, String> headers, Class<T> clazz, boolean clearWrappingParent) {
         this.client = client;
         this.uri = uri;
         this.method = method;
@@ -52,6 +54,7 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
         this.clazz = clazz;
         this.isDone = false;
         this.isCancelled = false;
+        this.clearWrappingParent = clearWrappingParent;
     }
 
     @Override

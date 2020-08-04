@@ -689,32 +689,42 @@ public class PortMappingVersion221 {
     private Map<String, String> getEthInterfaceList(String nodeId) {
         LOG.info("It is calling get ethernet interface");
         Map<String, String> cpToInterfaceMap = new HashMap<>();
-        InstanceIdentifier<Protocols> protocoliid = InstanceIdentifier.create(OrgOpenroadmDevice.class)
-            .child(Protocols.class);
-        Optional<Protocols> protocolObject = this.deviceTransactionManager.getDataFromDevice(nodeId,
-            LogicalDatastoreType.OPERATIONAL, protocoliid, Timeouts.DEVICE_READ_TIMEOUT,
-            Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-        if (protocolObject.isPresent() && protocolObject.get().augmentation(Protocols1.class).getLldp() != null) {
-            Lldp lldp = protocolObject.get().augmentation(Protocols1.class).getLldp();
-            for (PortConfig portConfig : lldp.getPortConfig()) {
-                if (portConfig.getAdminStatus().equals(PortConfig.AdminStatus.Txandrx)) {
-                    InstanceIdentifier<Interface> interfaceIID = InstanceIdentifier.create(OrgOpenroadmDevice.class)
-                        .child(Interface.class, new InterfaceKey(portConfig.getIfName()));
-                    Optional<Interface> interfaceObject = this.deviceTransactionManager.getDataFromDevice(nodeId,
-                        LogicalDatastoreType.OPERATIONAL, interfaceIID, Timeouts.DEVICE_READ_TIMEOUT,
-                        Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-                    if (interfaceObject.isPresent() && (interfaceObject.get().getSupportingCircuitPackName() != null)) {
-                        String supportingCircuitPackName = interfaceObject.get().getSupportingCircuitPackName();
-                        cpToInterfaceMap.put(supportingCircuitPackName, portConfig.getIfName());
-                        InstanceIdentifier<CircuitPacks> circuitPacksIID = InstanceIdentifier
-                            .create(OrgOpenroadmDevice.class)
-                            .child(CircuitPacks.class, new CircuitPacksKey(supportingCircuitPackName));
-                        Optional<CircuitPacks> circuitPackObject = this.deviceTransactionManager.getDataFromDevice(
-                            nodeId, LogicalDatastoreType.OPERATIONAL, circuitPacksIID, Timeouts.DEVICE_READ_TIMEOUT,
-                            Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-                        if (circuitPackObject.isPresent() && (circuitPackObject.get().getParentCircuitPack() != null)) {
-                            cpToInterfaceMap.put(circuitPackObject.get().getParentCircuitPack().getCircuitPackName(),
-                                portConfig.getIfName());
+        InstanceIdentifier<Protocols> protocoliid =
+                InstanceIdentifier.create(OrgOpenroadmDevice.class).child(Protocols.class);
+        Optional<Protocols> protocolObject =
+                this.deviceTransactionManager.getDataFromDevice(nodeId, LogicalDatastoreType.OPERATIONAL, protocoliid,
+                        Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
+        // if (protocolObject.isPresent() && protocolObject.get().augmentation(Protocols1.class).getLldp() != null) {
+        // Lldp lldp = protocolObject.get().augmentation(Protocols1.class).getLldp();
+        if (protocolObject.isPresent()) {
+            Optional<Protocols1> protocols = this.deviceTransactionManager.getDataFromDevice(nodeId,
+                    LogicalDatastoreType.OPERATIONAL, protocoliid.augmentation(Protocols1.class),
+                    Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
+            if (protocols.isPresent() && protocols.get().getLldp() != null) {
+                Lldp lldp = protocols.get().getLldp();
+                for (PortConfig portConfig : lldp.getPortConfig()) {
+                    if (portConfig.getAdminStatus().equals(PortConfig.AdminStatus.Txandrx)) {
+                        InstanceIdentifier<Interface> interfaceIID = InstanceIdentifier.create(OrgOpenroadmDevice.class)
+                                .child(Interface.class, new InterfaceKey(portConfig.getIfName()));
+                        Optional<Interface> interfaceObject = this.deviceTransactionManager.getDataFromDevice(nodeId,
+                                LogicalDatastoreType.OPERATIONAL, interfaceIID, Timeouts.DEVICE_READ_TIMEOUT,
+                                Timeouts.DEVICE_READ_TIMEOUT_UNIT);
+                        if (interfaceObject.isPresent()
+                                && (interfaceObject.get().getSupportingCircuitPackName() != null)) {
+                            String supportingCircuitPackName = interfaceObject.get().getSupportingCircuitPackName();
+                            cpToInterfaceMap.put(supportingCircuitPackName, portConfig.getIfName());
+                            InstanceIdentifier<CircuitPacks> circuitPacksIID =
+                                    InstanceIdentifier.create(OrgOpenroadmDevice.class).child(CircuitPacks.class,
+                                            new CircuitPacksKey(supportingCircuitPackName));
+                            Optional<CircuitPacks> circuitPackObject = this.deviceTransactionManager.getDataFromDevice(
+                                    nodeId, LogicalDatastoreType.OPERATIONAL, circuitPacksIID,
+                                    Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
+                            if (circuitPackObject.isPresent()
+                                    && (circuitPackObject.get().getParentCircuitPack() != null)) {
+                                cpToInterfaceMap.put(
+                                        circuitPackObject.get().getParentCircuitPack().getCircuitPackName(),
+                                        portConfig.getIfName());
+                            }
                         }
                     }
                 }
@@ -803,7 +813,7 @@ public class PortMappingVersion221 {
                         LOG.info("interface get from device is {} and of type {}", openRoadmInterface.get().getName(),
                             openRoadmInterface.get().getType());
                         Class<? extends InterfaceType> interfaceType
-                            = (Class<? extends InterfaceType>) openRoadmInterface.get().getType();
+                            = openRoadmInterface.get().getType();
                         // Check if interface type is OMS or OTS
                         if (interfaceType.equals(OpenROADMOpticalMultiplex.class)) {
                             mpBldr.setSupportingOms(interfaces.getInterfaceName());
@@ -1033,7 +1043,7 @@ public class PortMappingVersion221 {
 
         for (byte b : data) {
             hash = hash.multiply(FNV_PRIME).mod(FNV_MOD);
-            hash = hash.xor(BigInteger.valueOf((int) b & 0xff));
+            hash = hash.xor(BigInteger.valueOf(b & 0xff));
         }
 
         return Base64.getEncoder().encodeToString(hash.toByteArray());

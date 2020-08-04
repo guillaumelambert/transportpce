@@ -38,7 +38,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomDateAndTimeSerializer;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomOdlDeserializer;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.YangToolsBuilderAnnotationIntrospector;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
@@ -54,6 +53,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev15
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -68,14 +70,17 @@ public class OdlObjectMapperXml extends XmlMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OdlObjectMapperXml.class);
     private static final long serialVersionUID = 1L;
-
+    private final YangToolsBuilderAnnotationIntrospector introspector;
     public OdlObjectMapperXml() {
         super();
+        Bundle bundle = FrameworkUtil.getBundle(OdlObjectMapperXml.class);
+        BundleContext context = bundle != null ? bundle.getBundleContext() : null;
+        this.introspector = new YangToolsBuilderAnnotationIntrospector(context);
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         enable(MapperFeature.USE_GETTERS_AS_SETTERS);
         setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
         setSerializationInclusion(Include.NON_NULL);
-        setAnnotationIntrospector(new YangToolsBuilderAnnotationIntrospector());
+        setAnnotationIntrospector(this.introspector);
         SimpleModule customSerializerModule = new SimpleModule();
         customSerializerModule.addSerializer(DateAndTime.class, new CustomDateAndTimeSerializer());
         //        customSerializerModule.addSerializer(ChoiceIn.class, new CustomChoiceSerializer());
@@ -154,7 +159,9 @@ public class OdlObjectMapperXml extends XmlMapper {
         return super.readValue(content, valueType);
 
     }
-
+    public Class<?> findClass(String name, Class<?> clazz) throws ClassNotFoundException {
+        return this.introspector.findClass(name, clazz);
+    }
     private NetconfNode mapNetconfNodeXml(String xmlContent)
             throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

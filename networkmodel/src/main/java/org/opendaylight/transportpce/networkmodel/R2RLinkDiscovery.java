@@ -96,23 +96,22 @@ public class R2RLinkDiscovery {
             return true;
         }
         else if (nodeVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1) || OPENROADM_DEVICE_VERSION_3.equals(nodeVersion)) {
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device
-                .container.org.openroadm.device.Protocols> protocolsIID = InstanceIdentifier.create(org.opendaylight
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1> protocolsIID
+                = InstanceIdentifier.create(org.opendaylight
                 .yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container
                 .OrgOpenroadmDevice.class).child(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019
-                .org.openroadm.device.container.org.openroadm.device.Protocols.class);
-            Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device
-                .container.org.openroadm.device.Protocols> protocolObject = this.deviceTransactionManager
+                .org.openroadm.device.container.org.openroadm.device.Protocols.class)
+                .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1.class);
+            Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1> protocolObject
+                = this.deviceTransactionManager
                 .getDataFromDevice(nodeId.getValue(), LogicalDatastoreType.OPERATIONAL, protocolsIID,
                 Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-            if (!protocolObject.isPresent() || (protocolObject.get().augmentation(org.opendaylight.yang.gen.v1.http.org
-                .openroadm.lldp.rev181019.Protocols1.class) == null)) {
+            if (!protocolObject.isPresent() || (protocolObject.get() == null)) {
                 LOG.warn("LLDP subtree is missing : isolated openroadm device");
                 return false;
             }
             org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.@Nullable NbrList nbrList
-                = protocolObject.get().augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019
-                .Protocols1.class).getLldp().getNbrList();
+                = protocolObject.get().getLldp().getNbrList();
             LOG.info("LLDP subtree is present. Device has {} neighbours", nbrList.getIfName().size());
             for (org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.nbr.list.IfName
                 ifName : nbrList.getIfName()) {

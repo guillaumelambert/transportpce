@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
@@ -62,9 +63,24 @@ public class RestconfHttpClient extends BaseHTTPClient {
     public <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(LogicalDatastoreType storage,
             InstanceIdentifier<T> instanceIdentifier, String nodeId) throws IOException, ClassNotFoundException,
             NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        final String uri = this.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId, false);
+        final boolean isLeafList = isCompleteLeafListRequest(instanceIdentifier);
+        final String uri = this.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId, false ,isLeafList);
         return FutureRestRequest.createFutureRequest(this, uri, "GET", (String) null, this.headers,
-                instanceIdentifier.getTargetType());
+                    instanceIdentifier.getTargetType(),isLeafList);
+    }
+
+    private <T extends DataObject> boolean isCompleteLeafListRequest(InstanceIdentifier<T> instanceIdentifier) {
+        Iterable<PathArgument> iterable = instanceIdentifier.getPathArguments();
+        Iterator<PathArgument> it = iterable.iterator();
+        boolean isLeafList = false;
+        PathArgument pa = null;
+        while (it.hasNext()) {
+            pa = it.next();
+        }
+        if (pa != null) {
+            isLeafList = pa.getType().isAssignableFrom(List.class);
+        }
+        return isLeafList;
     }
 
     public <T extends DataObject> @NonNull FluentFuture<Optional<T>> read(LogicalDatastoreType store,
@@ -74,8 +90,15 @@ public class RestconfHttpClient extends BaseHTTPClient {
     }
 
     protected <T extends DataObject> String getRfc8040UriFromIif(LogicalDatastoreType storage,
-            InstanceIdentifier<T> instanceIdentifier, String nodeId, boolean isRpc) throws ClassNotFoundException,
-            NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+            InstanceIdentifier<T> instanceIdentifier, String nodeId, boolean isRpc)
+                    throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException,
+                    IllegalAccessException {
+        return this.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId, isRpc, false);
+    }
+    protected <T extends DataObject> String getRfc8040UriFromIif(LogicalDatastoreType storage,
+            InstanceIdentifier<T> instanceIdentifier, String nodeId, boolean isRpc, boolean getParentOnlyWithFields)
+                    throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException,
+                    IllegalAccessException {
 
         LOG.debug("try to create rfc8040 uri for datastore {}, iid: {} and nodeId {}", storage, instanceIdentifier,
                 nodeId);
@@ -86,7 +109,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
         String moduleName = null;
         while (it.hasNext()) {
             PathArgument pa = it.next();
-            Class<?> cls = OdlObjectMapper.findClass(pa.getType().getName(), RestconfHttpClient.class);
+            Class<?> cls = this.mapper.findClass(pa.getType().getName(), RestconfHttpClient.class);
             String key = getKeyOrNull(pa);
             Field qname = cls.getField("QNAME");
             QName value = (QName) qname.get(cls);
@@ -141,11 +164,16 @@ public class RestconfHttpClient extends BaseHTTPClient {
                 // ((Identifier)keydef).
                 Field[] fields = keydef.getClass().getDeclaredFields();
                 for (Field f : fields) {
+                    if(f.getName().endsWith("serialVersionUID")) {
+                        continue;
+                    }
                     f.setAccessible(true);
                     Object key = f.get(keydef);
                     if (key instanceof Uri) {
                         return ((Uri) key).getValue();
                     }
+                    else if (key!=null){
+                        return key.toString();                    }
                 }
             }
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {

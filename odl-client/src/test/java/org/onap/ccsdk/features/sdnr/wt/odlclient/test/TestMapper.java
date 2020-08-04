@@ -38,6 +38,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.cont
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDeviceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.UsersBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.PasswordType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.UsernameType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.User.Group;
@@ -664,7 +665,13 @@ public class TestMapper {
             };
         }).count()>0);
     }
-
+    @Test
+    public void testProtocolAugment() throws IOException {
+        String xml = this.getTrimmedFileContent("/xml/roadm-device-protocols.xml");
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml();
+        Protocols1 data = mapper.readValue(xml,Protocols1.class);
+        LOG.info("protocol={}",data);
+    }
 
     private String getTrimmedFileContent(String filename) throws IOException {
         ImmutableList<String> lines =
