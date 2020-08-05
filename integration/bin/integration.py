@@ -11,7 +11,11 @@ from tests.mountingtest import MountingTest
 from lib.siminfo import SimulatorInfo
 
 SIMS = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
-
+NODEID_LUT = dict(roadma="ROADM-A1",
+    roadmb="ROADM-B1",
+    roadmc="ROADM-C1",
+    xpdra="XPDR-A1",
+    xpdrc="XPDR-C1")
 
 class Integration:
 
@@ -55,7 +59,8 @@ class Integration:
         return self.prefix+name+suffix
 
     def getMountPointName(self, name, suffix="_1"):
-        return self.getContainerName(name, suffix).replace("_", "").replace(" ", "").replace("-", "")
+        #return self.getContainerName(name, suffix).replace("_", "").replace(" ", "").replace("-", "")
+        return NODEID_LUT[name]
 
     def mount(self):
         for sim in SIMS:
@@ -68,7 +73,7 @@ class Integration:
                 self.odlTrpceClient.mount(simMountPointName, simInfo.getIpAddress(), self.getEnv("SIMPORT"), self.getEnv("SIM_NETCONF_USERNAME"), self.getEnv("SIM_NETCONF_PASSWORD"))
             #    self.odlTrpceClient.mount("testroadm", "10.20.5.2", 50000, "netconf", "netconf")
                  
-            break
+            #break
 
     def unmount(self):
         for sim in SIMS:
@@ -120,10 +125,20 @@ class Integration:
     def getSdnrContainer(self):
         return DockerContainer(self.getContainerName("sdnr"))
 
+    def openBrowser(self, url):
+        subprocess.Popen("/usr/bin/xdg-open "+url+" >/dev/null 2>&1 &", shell=True)
+
     def openSdncWebBrowser(self):
         infos = self.dockerExec.inspect(self.getContainerName("sdncweb"))
-        subprocess.Popen('/usr/bin/xdg-open http://' +
-                         infos.getIpAddress()+":8080 >/dev/null 2>&1 &", shell=True)
+        self.openBrowser("http://"+infos.getIpAddress()+":8080")
+
+    def openApidocsBrowser(self, container):
+        if container == "sdnc":
+            infos = self.dockerExec.inspect(self.getContainerName("sdnr"))
+            self.openBrowser("http://"+infos.getIpAddress()+":8181/apidoc/explorer/index.html")
+        elif container == "trpce":
+            infos = self.dockerExec.inspect(self.getContainerName("transportpce"))
+            self.openBrowser("http://"+infos.getIpAddress()+":8181/apidoc/explorer/index.html")
 
     def setLogs(self):
         tc = self.getTransportPCEContainer()
@@ -189,5 +204,11 @@ if __name__ == "__main__":
             exit(1)
     elif cmd == "web":
         integration.openSdncWebBrowser()
+    elif cmd == "apidocs":
+        if len(sys.argv) > 2:
+            integration.openApidocsBrowser(sys.argv[2])
+        else:
+            exit(1)
+        
     else:
         exit(1)
