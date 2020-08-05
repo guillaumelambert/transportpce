@@ -136,7 +136,7 @@ class Integration:
         
     def showTrpceLogs(self):
         tc = self.getTransportPCEContainer()
-        grepFilter = "-ei org\.opendaylight\.transportpce -ei SdnrWebsocket -ei"
+        grepFilter = "-ei org.opendaylight.transportpce -ei SdnrWebsocket -ei"
         tc.exec("/tail -f /opt/opendaylight/data/log/karaf.log | grep "+ grepFilter)
 
     def executeTest(self, test):
