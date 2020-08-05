@@ -156,7 +156,7 @@ public class OdlObjectMapper extends ObjectMapper {
                     Class<?> clazz = type.getRawClass();
 
                     try {
-
+                        LOG.debug("try to deserialize '{}' with class {}",jp.getValueAsString(),clazz.getName());
                         Method method = clazz.getDeclaredMethod("forName", String.class);
                         Enum<?> res = ((Optional<Enum<?>>) method.invoke(null, jp.getValueAsString())).get();
                         return res;

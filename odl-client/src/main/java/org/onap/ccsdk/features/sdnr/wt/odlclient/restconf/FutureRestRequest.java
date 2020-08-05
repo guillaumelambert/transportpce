@@ -73,12 +73,12 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
                 LOG.debug("request to {}", uri);
                 LOG.debug("response({})" ,response.code);
                 LOG.trace(":{}", response.body);
-                OdlObjectMapperXml mapper = new OdlObjectMapperXml();
+                OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
                 return Optional.ofNullable(mapper.readValue(response.body, this.clazz));
 
             }
         } catch (IOException e) {
-            LOG.warn("problem requesting data: {}", e);
+            LOG.warn("problem requesting data: ", e);
         }
         return Optional.empty();
     }
@@ -94,7 +94,7 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
             if (response.isSuccess()) {
                 LOG.debug("request to {}", uri);
                 LOG.debug("response({}):{}", response.code, response.body);
-                OdlObjectMapperXml mapper = new OdlObjectMapperXml();
+                OdlObjectMapperXml mapper = new OdlObjectMapperXml( true);
                 return Optional.ofNullable(mapper.readValue(response.body, this.clazz));
 
             }

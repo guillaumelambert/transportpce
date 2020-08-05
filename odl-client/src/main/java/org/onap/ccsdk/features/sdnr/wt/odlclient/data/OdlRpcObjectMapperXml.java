@@ -7,17 +7,13 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class OdlRpcObjectMapperXml extends OdlObjectMapperXml {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OdlRpcObjectMapperXml.class);
     private static final long serialVersionUID = 1L;
     private final OdlXmlSerializer serializer;
 
     public OdlRpcObjectMapperXml() {
-        super();
+        super(true);
         this.serializer = new OdlXmlSerializer();
     }
 

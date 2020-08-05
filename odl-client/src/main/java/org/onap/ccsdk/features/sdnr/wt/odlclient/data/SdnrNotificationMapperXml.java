@@ -30,7 +30,7 @@ public class SdnrNotificationMapperXml extends OdlObjectMapperXml {
     private final Map<String, Class<? extends SdnrNotification>> candidates;
 
     public SdnrNotificationMapperXml() {
-        super();
+        super(false);
         this.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
         this.candidates = new HashMap<>();
         this.candidates.put("AttributeValueChangedNotification",

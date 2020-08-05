@@ -34,11 +34,14 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlXmlSerializer;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlInputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.ports.OtdrPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.equipment.entity.ShelfBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDeviceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.UsersBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.PortConfig;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.PasswordType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.UsernameType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.User.Group;
@@ -592,15 +595,15 @@ public class TestMapper {
     public void testMapRoadmInfo()
             throws ClassNotFoundException, JsonParseException, JsonMappingException, IOException {
         OdlObjectMapper jsonMapper = new OdlObjectMapper();
-        OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml();
+        OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml(true);
         LOG.info("outputjson={}", jsonMapper.readValue(INFOSTRING, Info.class, "org-openroadm-device:info"));
         LOG.info("outputxml={}", xmlMapper.readValue(INFOSTRING_XML, Info.class));
     }
 
-    @Test
+//    @Test
     public void testNodeInfo() throws JsonParseException, JsonMappingException, IOException {
         OdlObjectMapper jsonMapper = new OdlObjectMapper();
-        OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml();
+        OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml(true);
 
        // LOG.info("outputjson={}", jsonMapper.readValue(NODEINFO, NetconfNode.class, "network-topology:node"));
         LOG.info("outputxml={}", xmlMapper.readValue(this.getTrimmedFileContent("/xml/roadm-device3.xml"), Info.class));
@@ -647,12 +650,11 @@ public class TestMapper {
         inputPayload = mapper2.writeValueAsString(builder.build(), "org-openroadm-device");
         LOG.info(inputPayload);
     }
-
-//    @Test
+    @Test
     public void testTopologyNodeDeser() throws IOException {
 
         String xml = this.getTrimmedFileContent("/xml/roadma-netconfnode.xml");
-        OdlRpcObjectMapperXml mapper = new OdlRpcObjectMapperXml();
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
         NetconfNode nNode = mapper.readValue(xml,NetconfNode.class);
         LOG.debug("{}",nNode);
         assertNotNull(nNode.getAvailableCapabilities());
@@ -665,14 +667,45 @@ public class TestMapper {
             };
         }).count()>0);
     }
-    @Test
+    //@Test
     public void testProtocolAugment() throws IOException {
         String xml = this.getTrimmedFileContent("/xml/roadm-device-protocols.xml");
-        OdlObjectMapperXml mapper = new OdlObjectMapperXml();
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
         Protocols1 data = mapper.readValue(xml,Protocols1.class);
         LOG.info("protocol={}",data);
+        LOG.info("protocol lldp={}",data.getLldp());
+        @Nullable
+        List<PortConfig> cfgs = data.getLldp().getPortConfig();
+        LOG.info("protocol lldp portconfig={}",cfgs);
+        for (PortConfig portConfig : cfgs) {
+            LOG.info("portconfig={} if={}",portConfig.getAdminStatus(),portConfig.getIfName());
+        }
+    }
+    @Test
+    public void testProtocolPortConfigDeser() throws JsonParseException, JsonMappingException, IOException {
+        String xml = " <port-config>\n" +
+                "          <ifName>1GE-interface-1</ifName>\n" +
+                "          <adminStatus>txandrx</adminStatus>\n" +
+                "        </port-config>";
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
+        PortConfig portConfig = mapper.readValue(xml, PortConfig.class);
+        LOG.info("portconfig={} if={}",portConfig.getAdminStatus(),portConfig.getIfName());
     }
 
+    @Test
+    public void testInterfaceDeser() throws IOException {
+        String xml = this.getTrimmedFileContent("/xml/roadm-interfaces.xml");
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
+        Interface intf = mapper.readValue(xml, Interface.class);
+        LOG.info("interface={}",intf);
+    }
+    @Test
+    public void testPortsDeser() throws IOException {
+        String xml = this.getTrimmedFileContent("/xml/roadm-ports.xml");
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
+        OtdrPort port = mapper.readValue(xml, OtdrPort.class);
+        LOG.info("port={}",port);
+    }
     private String getTrimmedFileContent(String filename) throws IOException {
         ImmutableList<String> lines =
                 Files.asCharSource(new File(TestMapper.class.getResource(filename).getFile()), StandardCharsets.UTF_8)
@@ -691,7 +724,7 @@ public class TestMapper {
 
 //    @Test
     public void testNetconfNodeDeserializer() throws JsonParseException, JsonMappingException, IOException {
-        OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml();
+        OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml(true);
         NetconfNode nNode = xmlMapper.readValue(NETCONFNODE_CONNECTING_XML, NetconfNode.class);
         LOG.info("res={}",nNode);
     }
