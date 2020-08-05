@@ -57,6 +57,9 @@
   </shelves>
   <circuit-packs>
     <circuit-pack-name>1/0</circuit-pack-name>
+    <circuit-pack-category>
+      <type>circuitPack</type>
+    </circuit-pack-category>
     <circuit-pack-type>Base_transponder_circuit_pack</circuit-pack-type>
     <circuit-pack-product-code>baseXPDR</circuit-pack-product-code>
     <administrative-state>inService</administrative-state>
@@ -96,6 +99,9 @@
   </circuit-packs>
   <circuit-packs>
     <circuit-pack-name>1/0/1-PLUG-NET</circuit-pack-name>
+    <circuit-pack-category>
+      <type>circuitPack</type>
+    </circuit-pack-category>
     <circuit-pack-type>line_pluggable</circuit-pack-type>
     <circuit-pack-product-code>Line_NW_P</circuit-pack-product-code>
     <vendor>VendorA</vendor>
@@ -135,6 +141,9 @@
   </circuit-packs>
   <circuit-packs>
     <circuit-pack-name>1/0/1-PLUG-CLIENT</circuit-pack-name>
+    <circuit-pack-category>
+      <type>circuitPack</type>
+    </circuit-pack-category>
     <circuit-pack-type>client_pluggable</circuit-pack-type>
     <circuit-pack-product-code>Client_P</circuit-pack-product-code>
     <vendor>VendorA</vendor>
@@ -174,6 +183,9 @@
   </circuit-packs>
   <circuit-packs>
     <circuit-pack-name>1/0/2-PLUG-NET</circuit-pack-name>
+    <circuit-pack-category>
+      <type>circuitPack</type>
+    </circuit-pack-category>
     <circuit-pack-type>line_pluggable</circuit-pack-type>
     <circuit-pack-product-code>Line_NW_P</circuit-pack-product-code>
     <vendor>VendorA</vendor>
@@ -212,6 +224,9 @@
   </circuit-packs>
   <circuit-packs>
     <circuit-pack-name>1/0/2-PLUG-CLIENT</circuit-pack-name>
+    <circuit-pack-category>
+      <type>circuitPack</type>
+    </circuit-pack-category>
     <circuit-pack-type>client_pluggable</circuit-pack-type>
     <circuit-pack-product-code>Client_P</circuit-pack-product-code>
     <vendor>VendorA</vendor>
