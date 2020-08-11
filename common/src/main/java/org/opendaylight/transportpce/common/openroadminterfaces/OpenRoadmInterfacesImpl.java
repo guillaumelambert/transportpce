@@ -10,7 +10,7 @@ package org.opendaylight.transportpce.common.openroadminterfaces;
 
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_1_2_1;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_2_2_1;
-import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_3;
+import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_6_1;
 
 import java.util.Optional;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
@@ -46,7 +46,7 @@ public class OpenRoadmInterfacesImpl implements OpenRoadmInterfaces {
             openRoadmInterfacesImpl121.postInterface(nodeId,ifBuilder121);
         }
         else if (openRoadmVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)
-                || OPENROADM_DEVICE_VERSION_3.equals(openRoadmVersion)) {
+                || OPENROADM_DEVICE_VERSION_6_1.equals(openRoadmVersion)) {
             LOG.info("postInterface for 2.2.1 device {}", nodeId);
             org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceBuilder
                 ifBuilder22 = convertInstanceOfInterface(ifBuilder, org.opendaylight.yang.gen.v1.http.org.openroadm
@@ -66,7 +66,7 @@ public class OpenRoadmInterfacesImpl implements OpenRoadmInterfaces {
             return (Optional<T>) openRoadmInterfacesImpl121.getInterface(nodeId,interfaceName);
         }
         else if (openRoadmVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)
-                || OPENROADM_DEVICE_VERSION_3.equals(openRoadmVersion)) {
+                || OPENROADM_DEVICE_VERSION_6_1.equals(openRoadmVersion)) {
             LOG.info("getInterface for 2.2.1 device {}", nodeId);
             return (Optional<T>) openRoadmInterfacesImpl221.getInterface(nodeId,interfaceName);
         }
@@ -84,7 +84,7 @@ public class OpenRoadmInterfacesImpl implements OpenRoadmInterfaces {
             openRoadmInterfacesImpl121.deleteInterface(nodeId,interfaceName);
         }
         else if (openRoadmVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)
-                || OPENROADM_DEVICE_VERSION_3.equals(openRoadmVersion)) {
+                || OPENROADM_DEVICE_VERSION_6_1.equals(openRoadmVersion)) {
             openRoadmInterfacesImpl221.deleteInterface(nodeId, interfaceName);
         }
     }
@@ -100,7 +100,7 @@ public class OpenRoadmInterfacesImpl implements OpenRoadmInterfaces {
             openRoadmInterfacesImpl121.postEquipmentState(nodeId, circuitPackName, activate);
         }
         else if (openRoadmVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)
-                || OPENROADM_DEVICE_VERSION_3.equals(openRoadmVersion)) {
+                || OPENROADM_DEVICE_VERSION_6_1.equals(openRoadmVersion)) {
             openRoadmInterfacesImpl221.postEquipmentState(nodeId, circuitPackName, activate);
         }
 
