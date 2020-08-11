@@ -7,12 +7,18 @@ class OdlResponse:
     def __init__(self, r):
         self.code = r.status
         self.content = r.data.decode('utf-8')
+        try:
+            self.data = json.loads(self.content)
+        except:
+            self.data={}
 
     def isSucceeded(self):
         return self.code>=200 and self.code<300
     
     def sourceNotFound(self):
         return self.code==404
+
+URI_CONFIG_NETCONF_TOPO = "/restconf/config/network-topology:network-topology/topology/topology-netconf/"
 
 class OdlClient:
 
@@ -32,6 +38,8 @@ class OdlClient:
         if data == None:
             r = http.request(method, self.baseUrl+uri, headers=headers)
         else:
+            if type(data) is dict:
+                data = json.dumps(data)
             encoded_data = data.encode('utf-8')
             r = http.request(method, self.baseUrl+uri,
                              body=encoded_data, headers=headers)
@@ -57,7 +65,7 @@ class OdlClient:
         response = self.requestRest('/rests/data/network-topology:network-topology/topology=topology-netconf',
                                     'POST', self.defaultJsonHeaders, payload)
         print(name + " mounted "+str(response.code))
-        return response.isSucceeded()
+        return response
 
     def unmount(self, name):
         response = self.requestRest('/rests/data/network-topology:network-topology/topology=topology-netconf/node='+name,
@@ -79,3 +87,8 @@ class OdlClient:
             return "unmounted"
         else:
             return "unknown"
+
+    def getNodeData(self, node: str, suffix: str):
+
+        return self.requestRest(URI_CONFIG_NETCONF_TOPO + "node/" + node + "/yang-ext:mount" + suffix,
+        'GET',self.defaultJsonHeaders)

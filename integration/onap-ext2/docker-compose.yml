@@ -15,7 +15,8 @@ services:
     depends_on: 
       - sdnr
   sdncweb:
-    image: nexus3.onap.org:10001/onap/sdnc-web-image:latest
+   #    image: nexus3.onap.org:10001/onap/sdnc-web-image:latest
+    image: 10.20.6.10:30000/hightec/sdnc-web-image:2.0.0-SNAPSHOT-20200731T064656Z
     environment: 
       - SDNRHOST=sdnr
     depends_on: 

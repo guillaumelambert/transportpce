@@ -5,9 +5,12 @@ import os
 import os.path
 import shlex
 import subprocess
+from lib.config import IntegrationConfig
 from lib.docker import Docker, DockerContainer
 from lib.odlclient import OdlClient
+from lib.trpceodlclient import TrpceOdlClient
 from tests.mountingtest import MountingTest
+from tests.end2endtest import End2EndTest
 from lib.siminfo import SimulatorInfo
 
 SIMS = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
@@ -21,40 +24,17 @@ class Integration:
 
     def __init__(self, prefix, envFile=None):
         self.prefix = prefix
-        self.envs = {}
-        if envFile != None:
-            self.source(envFile)
+        self.config = IntegrationConfig(envFile)
         self.dockerExec = Docker()
         sdnrInfos = self.dockerExec.inspect(self.getContainerName("sdnr"))
         self.odlSdnrClient = OdlClient("http://"+sdnrInfos.getIpAddress()+":8181",
-                                       self.getEnv("SDNR_USERNAME"), self.getEnv("SDNR_PASSWORD"))
+                                       self.config.getEnv("SDNR_USERNAME"), self.config.getEnv("SDNR_PASSWORD"))
         trpceInfos = self.dockerExec.inspect(
             self.getContainerName("transportpce"))
-        self.odlTrpceClient = OdlClient("http://"+trpceInfos.getIpAddress()+":8181",
+        self.odlTrpceClient = TrpceOdlClient("http://"+trpceInfos.getIpAddress()+":8181",
                                         "admin", "admin")
 
-    def source(self, envFilename):
-        print("sourcing "+envFilename)
-        with open(envFilename) as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("#"):
-                    continue
-                (key, _, value) = line.partition("=")
-                self.envs[key] = value.strip()
-
-    def getEnv(self, env):
-        e = ""
-        if env in self.envs:
-            return self.envs[env]
-        try:
-            e = os.environ[env]
-        except KeyError:
-            print("unable to find env for "+env)
-            #print("these are available")
-            # print(os.environ)
-        return e
-
+    
     def getContainerName(self, name, suffix="_1"):
         return self.prefix+name+suffix
 
@@ -67,17 +47,17 @@ class Integration:
             simContainerName = self.getContainerName(sim)
             simInfo = self.dockerExec.inspect(simContainerName)
             simMountPointName = self.getMountPointName(sim)
-            if self.getEnv("REMOTE_ODL_ENABLED") == "true":
-                self.odlSdnrClient.mount(simMountPointName, simInfo.getIpAddress(), self.getEnv("SIMPORT"), self.getEnv("SIM_NETCONF_USERNAME"), self.getEnv("SIM_NETCONF_PASSWORD"))
+            if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+                self.odlSdnrClient.mount(simMountPointName, simInfo.getIpAddress(), self.config.getEnv("SIMPORT"), self.config.getEnv("SIM_NETCONF_USERNAME"), self.config.getEnv("SIM_NETCONF_PASSWORD"))
             else:
-                self.odlTrpceClient.mount(simMountPointName, simInfo.getIpAddress(), self.getEnv("SIMPORT"), self.getEnv("SIM_NETCONF_USERNAME"), self.getEnv("SIM_NETCONF_PASSWORD"))
+                self.odlTrpceClient.mount(simMountPointName, simInfo.getIpAddress(), self.config.getEnv("SIMPORT"), self.config.getEnv("SIM_NETCONF_USERNAME"), self.config.getEnv("SIM_NETCONF_PASSWORD"))
             #    self.odlTrpceClient.mount("testroadm", "10.20.5.2", 50000, "netconf", "netconf")
                  
             #break
 
     def unmount(self):
         for sim in SIMS:
-            if self.getEnv("REMOTE_ODL_ENABLED") == "true":
+            if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
                 self.odlSdnrClient.unmount(self.getMountPointName(sim))
             else:
                 self.odlTrpceClient.unmount(self.getMountPointName(sim))
@@ -116,8 +96,10 @@ class Integration:
             simContainerName = self.getContainerName(sim)
             simInfo = self.dockerExec.inspect(simContainerName)
             simMountPointName = self.getMountPointName(sim)
-            sims.append(SimulatorInfo(simMountPointName, simInfo.getIpAddress(
-            ), self.getEnv("SIMPORT"), "asd", "asd"))
+            sims.append(SimulatorInfo(simMountPointName, simInfo.getIpAddress(), 
+            self.config.getEnv("SIMPORT"),
+            self.config.getEnv("SIM_NETCONF_USERNAME"), 
+            self.config.getEnv("SIM_NETCONF_PASSWORD")))
         return sims
 
     def getTransportPCEContainer(self):
@@ -163,10 +145,27 @@ class Integration:
             test = MountingTest(self.odlSdnrClient, self.odlTrpceClient,
                                 self.getTransportPCEContainer(), self.collectSimInfos())
             test.test2()
+        elif test == "3":
+            test = End2EndTest(self.odlSdnrClient, self.odlTrpceClient,
+                self.getTransportPCEContainer(),self.collectSimInfos(),self.config)
+            test.test()
 
 
 def print_help():
-    print("help")
+    print("TransportPCE into ONAP integration script")
+    print("=========================================")
+    print("usage:")
+    print("  integration.py COMMAND [ARGS]")
+    print("COMMANDS:")
+    print("  info                  show docker container information")
+    print("  status                show simulator states")
+    print("  mount                 mount simulators")
+    print("  unmount               unmount simulators")
+    print("  setlogs               set more logs for sdnr and trpce")
+    print("  test [test-number]    start integration test")
+    print("  web                   open ODLUX Gui in browser")
+    print("  apidocs [trpce|sdnr]  open apidocs in Browser ")
+   
 
 
 if __name__ == "__main__":
