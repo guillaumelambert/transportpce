@@ -113,6 +113,25 @@
 							</resources>
 						</configuration>
 					</execution>
+					<execution>
+						<id>copy-properties</id>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals><!-- here the phase you need -->
+						<phase>validate</phase>
+						<configuration>
+							<outputDirectory>${basedir}/target/docker-stage/opt/opendaylight/etc</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+									<includes>
+										<include>*.properties</include>
+									</includes>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
