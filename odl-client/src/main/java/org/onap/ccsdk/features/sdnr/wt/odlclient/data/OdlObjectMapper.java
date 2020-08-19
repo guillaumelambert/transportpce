@@ -201,6 +201,19 @@ public class OdlObjectMapper extends ObjectMapper {
                             TypeObject res = (TypeObject) method.invoke(null, arg);
                             return res;
                         } else {
+                            //try to find builder with getDefaultInstance method
+                            try {
+                                Class<?> builderClazz = findBuilderClass(ctxt,clazz);
+                                if (hasClassDeclaredMethod(builderClazz, TYPEOBJECT_INSTANCE_METHOD)) {
+                                    Method method = builderClazz.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
+                                    TypeObject res = (TypeObject) method.invoke(null, arg);
+                                    return res;
+                                }
+                            } catch (ClassNotFoundException e) {
+
+                            }
+
+
                             // find constructor argument types
                             List<Class<?>> ctypes = getConstructorParameterTypes(clazz, String.class);
                             for (Class<?> ctype : ctypes) {
@@ -223,6 +236,10 @@ public class OdlObjectMapper extends ObjectMapper {
                         LOG.warn("problem deserializing {} with value {}: {}", clazz.getName(), arg, e);
                     }
                     return (TypeObject) deser.deserialize(parser, ctxt);
+                }
+
+                private Class<?> findBuilderClass(DeserializationContext ctxt,Class<?> clazz) throws ClassNotFoundException{
+                    return ctxt.findClass(clazz.getName() + "Builder");
                 }
 
             };

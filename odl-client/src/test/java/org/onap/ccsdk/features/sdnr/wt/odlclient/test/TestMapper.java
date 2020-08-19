@@ -36,6 +36,7 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlXmlSerializer;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.ports.OtdrPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.led.control.input.equipment.entity.ShelfBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDeviceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.UsersBuilder;
@@ -705,6 +706,13 @@ public class TestMapper {
         OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
         OtdrPort port = mapper.readValue(xml, OtdrPort.class);
         LOG.info("port={}",port);
+    }
+    @Test
+    public void testCompleteDeser() throws IOException{
+        String xml = this.getTrimmedFileContent("/xml/roadm-device-complete.xml");
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
+        OrgOpenroadmDevice data = mapper.readValue(xml, OrgOpenroadmDevice.class);
+        LOG.info("complete={}",data);
     }
     private String getTrimmedFileContent(String filename) throws IOException {
         ImmutableList<String> lines =

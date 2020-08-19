@@ -11,35 +11,46 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder.Value;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.Map;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.DateAndTimeBuilder;
-
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.IpAddressBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.NetconfNodeBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.circuit.pack.PortsBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.circuit.pack.ports.OtdrPortBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.degree.ConnectionPortsBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.interfaces.grp.InterfaceBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.mc.capabilities.g.McCapabilitiesBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.ConnectionMapBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.DegreeBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.InfoBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.LineAmplifierBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.OduSwitchingPoolsBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.SharedRiskGroupBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.XponderBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.CircuitPackBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.NonBlockingListBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.srg.CircuitPacksBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.xponder.XpdrPortBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.lldp.rev181019.lldp.container.lldp.GlobalConfigBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.Ports;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.ports.OtdrPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.ConnectionPorts;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.mc.capabilities.g.McCapabilities;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.ConnectionMap;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Degree;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.LineAmplifier;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.OduSwitchingPools;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.SharedRiskGroup;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Xponder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.CircuitPack;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.NonBlockingList;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.srg.CircuitPacks;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.EthernetCsmacd;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.InterfaceType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.xponder.XpdrPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.GlobalConfig;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 import org.osgi.framework.Bundle;
@@ -74,6 +85,13 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         this.customDeserializer.put(Interface.class,InterfaceBuilder.class.getName());
         this.customDeserializer.put(OtdrPort.class,OtdrPortBuilder.class.getName());
         this.customDeserializer.put(Ports.class,PortsBuilder.class.getName());
+        this.customDeserializer.put(OduSwitchingPools.class,OduSwitchingPoolsBuilder.class.getName());
+        this.customDeserializer.put(NonBlockingList.class,NonBlockingListBuilder.class.getName());
+        this.customDeserializer.put(ConnectionMap.class,ConnectionMapBuilder.class.getName());
+        this.customDeserializer.put(LineAmplifier.class,LineAmplifierBuilder.class.getName());
+        this.customDeserializer.put(CircuitPack.class,CircuitPackBuilder.class.getName());
+        this.customDeserializer.put(Xponder.class,XponderBuilder.class.getName());
+        this.customDeserializer.put(XpdrPort.class,XpdrPortBuilder.class.getName());
 
     }
     @Override
@@ -82,11 +100,8 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
             String builder = null;
             if (this.customDeserializer.containsKey(ac.getRawType())) {
                 builder = this.customDeserializer.get(ac.getRawType());
-            } else if(ac.getRawType() == Class.class){
-                //for(TypeVariable<?> i : ac.getRawType().)
-                LOG.info("comp type={}",ac.getRawType().isAssignableFrom(EthernetCsmacd.class));
             }
-            else{
+            else {
                 if (ac.getRawType().isInterface()) {
                     builder = ac.getName() + "Builder";
                 }
