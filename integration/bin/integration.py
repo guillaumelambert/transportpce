@@ -5,6 +5,7 @@ import os
 import os.path
 import shlex
 import subprocess
+import datetime
 from lib.config import IntegrationConfig
 from lib.docker import Docker, DockerContainer
 from lib.odlclient import OdlClient
@@ -136,6 +137,34 @@ class Integration:
         grepFilter = "-ei org.opendaylight.transportpce -ei SdnrWebsocket -ei"
         tc.exec("/tail -f /opt/opendaylight/data/log/karaf.log | grep "+ grepFilter)
 
+    def showCapabilities(self, device):
+        if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+            response = self.odlTrpceClient.neInfos(self.getMountPointName(device))
+        else:
+            response = self.odlSdnrClient.neInfos(self.getMountPointName(device))
+        
+        if response.isSucceeded():
+            caps=response.data["network-topology:node"][0]["netconf-node-topology:available-capabilities"]["available-capability"]
+            print(str(caps))
+            for cap in caps:
+                print(str(cap["capability"]))
+        else:
+            print("code: "+str(response.code))
+            print(response.content)
+
+    def stopSdncBundle(self, bundleId):
+        tc = self.getSdnrContainer()
+        tc.exec("/opt/opendaylight/bin/client 'bundle:stop "+bundleId+"'")
+
+    def getLogs(self, container=None):
+        c = Docker()
+        src = "/opt/opendaylight/data/log/karaf.log"
+        prefix = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        if container == "sdnc" or container is None:
+            c.copy(self.getContainerName("sdnr"),src,"logs/"+prefix+"_sdnr.log")
+        if container == "trpce" or container is None:
+            c.copy(self.getContainerName("transportpce"),src,"logs/"+prefix+"_trpce.log")
+        
     def executeTest(self, test):
         if test == "1":
             test = MountingTest(self.odlSdnrClient, self.odlTrpceClient,
@@ -163,6 +192,8 @@ def print_help():
     print("  unmount               unmount simulators")
     print("  setlogs               set more logs for sdnr and trpce")
     print("  test [test-number]    start integration test")
+    print("  caps [device]         show capabilities of device")
+    print("  bstop [bundleId]      stop bundle in SDN-R container")
     print("  web                   open ODLUX Gui in browser")
     print("  apidocs [trpce|sdnr]  open apidocs in Browser ")
    
@@ -201,6 +232,15 @@ if __name__ == "__main__":
             integration.executeTest(sys.argv[2])
         else:
             exit(1)
+    elif cmd == "caps":
+        integration.showCapabilities(sys.argv[2])
+    elif cmd == "bstop":
+        integration.stopSdncBundle(sys.argv[2])
+    elif cmd == "getlogs":
+        if len(sys.argv) >2:
+            integration.getLogs(sys.argv[2])
+        else:
+            integration.getLogs()
     elif cmd == "web":
         integration.openSdncWebBrowser()
     elif cmd == "apidocs":

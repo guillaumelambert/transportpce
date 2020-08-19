@@ -46,7 +46,7 @@ class End2EndTest:
             print("problem creating service 1")
             return False
         time.sleep(self.WAITING)
-        success = self.getService()
+        success = self.getService(20,15)
         if success:
             print("reading service information succeeded")
         else:
@@ -296,18 +296,24 @@ class End2EndTest:
         
             success = self.assertEqual(
                 response.data['services'][0]['administrative-state'], 'inService')
+            if not success and retries >0:
+                print("service still not with administrative-state inServerice (state="+response.data['services'][0]['administrative-state']+"). waiting...")
             success &= self.assertEqual(
                 response.data['services'][0]['service-name'], 'service1')
             success &= self.assertEqual(
                 response.data['services'][0]['connection-type'], 'service')
             success &= self.assertEqual(
                 response.data['services'][0]['lifecycle-state'], 'planned')
-            
+            if not success and retries >0:
+                print("service still not with lifecycle-state inServerice (state="+response.data['services'][0]['lifecycle-state']+"). waiting...")
+
             if success:
                 break
 
             retries-=1
             time.sleep(delayForRetries)
+            if retries>0:
+                print("service still not with state inServerice. waiting...")
 
         if not success:
             self.logError(str(response.code)+" | "+ response.content)

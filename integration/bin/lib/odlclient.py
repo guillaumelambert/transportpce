@@ -72,13 +72,15 @@ class OdlClient:
                                     'DELETE', self.defaultJsonHeaders)
         print(name + " unmounted "+str(response.code))
 
-    def neStatus(self, name):
-        response = self.requestRest('/rests/data/network-topology:network-topology/topology=topology-netconf/node='+name,
+    def neInfos(self, name):
+        return self.requestRest('/rests/data/network-topology:network-topology/topology=topology-netconf/node='+name,
                                     'GET', self.defaultJsonHeaders)
+    def neStatus(self, name):
+        response = self.neInfos(name)
         if response.isSucceeded():
             connectionStatus="unknown"
             try:
-                o=json.loads(response.content)
+                o=response.data
                 connectionStatus=o["network-topology:node"][0]["netconf-node-topology:connection-status"]
             except:
                 print()

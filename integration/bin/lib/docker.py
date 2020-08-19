@@ -41,6 +41,8 @@ class Docker:
     def status(self, name):
         pass
 
+    def copy(self, name, srcFilename, dstFilename):
+        return self.exec("cp "+name+":"+srcFilename+" "+dstFilename)
 
 class DockerContainer:
 
