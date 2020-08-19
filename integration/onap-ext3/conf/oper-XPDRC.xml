@@ -91,11 +91,11 @@
       <label>1</label>
       <provisioned-circuit-pack>1/0/2-PLUG-NET</provisioned-circuit-pack>
     </cp-slots>
-    <cp-slots>
+    <!-- <cp-slots>
       <slot-name>4</slot-name>
       <label>2</label>
       <provisioned-circuit-pack>1/0/3-PLUG-CLIENT</provisioned-circuit-pack>
-    </cp-slots>
+    </cp-slots> -->
   </circuit-packs>
   <circuit-packs>
     <circuit-pack-name>1/0/1-PLUG-NET</circuit-pack-name>
