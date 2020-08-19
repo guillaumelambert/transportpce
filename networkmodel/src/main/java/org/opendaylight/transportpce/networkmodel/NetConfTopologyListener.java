@@ -238,34 +238,35 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
                         NetconfNodeConnectionStatus.ConnectionStatus connectionStatus =
                                 netconfNode.getConnectionStatus();
                         try {
-                            List<AvailableCapability> deviceCapabilities =
-                                    netconfNode.getAvailableCapabilities().getAvailableCapability().stream()
-                                            .filter(cp -> cp.getCapability()
-                                                    .contains(StringConstants.OPENROADM_DEVICE_MODEL_NAME))
-                                            .collect(Collectors.toList());
-                            if (!deviceCapabilities.isEmpty()) {
-                                Collections.sort(deviceCapabilities,
-                                        (cp0, cp1) -> cp1.getCapability().compareTo(cp0.getCapability()));
-                                LOG.info("OpenROADM node detected: {} {}", nodeId, connectionStatus.name());
-                                switch (connectionStatus) {
-                                    case Connected:
+                            switch (connectionStatus) {
+                                case Connected:
+                                    List<AvailableCapability> deviceCapabilities =
+                                            netconfNode.getAvailableCapabilities().getAvailableCapability().stream()
+                                                    .filter(cp -> cp.getCapability()
+                                                            .contains(StringConstants.OPENROADM_DEVICE_MODEL_NAME))
+                                                    .collect(Collectors.toList());
+                                    if (!deviceCapabilities.isEmpty()) {
+                                        Collections.sort(deviceCapabilities,
+                                                (cp0, cp1) -> cp1.getCapability().compareTo(cp0.getCapability()));
+                                        LOG.info("OpenROADM node detected: {} {}", nodeId, connectionStatus.name());
                                         this.networkModelService.createOpenRoadmNode(nodeId,
                                                 deviceCapabilities.get(0).getCapability());
                                         onDeviceConnected(nodeId, deviceCapabilities.get(0).getCapability());
-                                        break;
-                                    case Connecting:
-                                    case UnableToConnect:
-                                        this.networkModelService.setOpenRoadmNodeStatus(nodeId, connectionStatus);
-                                        onDeviceDisConnected(nodeId);
-                                        break;
-                                    default:
-                                        LOG.warn("Unsupported device state {}", connectionStatus.getName());
-                                        break;
-                                }
+                                    }
+                                    break;
+                                case Connecting:
+                                case UnableToConnect:
+                                    this.networkModelService.setOpenRoadmNodeStatus(nodeId, connectionStatus);
+                                    onDeviceDisConnected(nodeId);
+                                    break;
+                                default:
+                                    LOG.warn("Unsupported device state {}", connectionStatus.getName());
+                                    break;
                             }
 
+
                         } catch (NullPointerException e) {
-                            LOG.error("Cannot get available Capabilities");
+                            LOG.error("Cannot get available Capabilities", e);
                         }
                         break;
                     default:
