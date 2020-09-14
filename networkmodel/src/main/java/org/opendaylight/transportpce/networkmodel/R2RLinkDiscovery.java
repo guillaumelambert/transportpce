@@ -9,7 +9,6 @@ package org.opendaylight.transportpce.networkmodel;
 
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_1_2_1;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_2_2_1;
-import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_6_1;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -98,7 +97,7 @@ public class R2RLinkDiscovery {
             }
             return true;
         }
-        else if (nodeVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1) || OPENROADM_DEVICE_VERSION_6_1.equals(nodeVersion)) {
+        else if (nodeVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)) {
             InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1> protocolsIID
                 = InstanceIdentifier.create(org.opendaylight
                 .yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container
