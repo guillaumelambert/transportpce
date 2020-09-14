@@ -8,7 +8,9 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.test;
 
 import static org.junit.Assert.assertEquals;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
+import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
@@ -27,6 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.TpId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPoint;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPointKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.optional.rev190614.netconf.node.fields.optional.Topology;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -72,6 +75,15 @@ public class TestIifToUri {
 //                .child(TerminationPoint.class, new TerminationPointKey(new TpId(srcTp)))
 //                .build();
 //    }
+
+    private void testTopology() throws Exception {
+        InstanceIdentifier<Topology> iif = null;
+        TestRestconfHttpClient restconfClient = new TestRestconfHttpClient("http://localhost:8181/", false, AuthMethod.BASIC,"","");
+        @NonNull
+
+        Optional<Topology> output = restconfClient.read(LogicalDatastoreType.CONFIGURATION,iif).get();
+        Topology topo = output.get();
+    }
     private class TestRestconfHttpClient extends RestconfHttpClient {
 
         TestRestconfHttpClient(String base, boolean trustAllCerts, AuthMethod authMethod,

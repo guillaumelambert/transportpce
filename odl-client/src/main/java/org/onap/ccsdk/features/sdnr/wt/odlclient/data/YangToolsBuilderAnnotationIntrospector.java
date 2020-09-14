@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import java.util.HashMap;
 import java.util.Map;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.DateAndTimeBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.IpAddressBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.NetconfNodeBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.circuit.pack.PortsBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.circuit.pack.ports.OtdrPortBuilder;

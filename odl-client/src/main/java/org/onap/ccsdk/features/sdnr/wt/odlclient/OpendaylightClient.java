@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.websocket.api.Session;
@@ -46,6 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,7 +171,10 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
         try {
             @NonNull
             Optional<NetconfNode> node = this.restClient.read(LogicalDatastoreType.OPERATIONAL, iif).get();
-            return node.isPresent() ? node.get().getConnectionStatus() == ConnectionStatus.Connected : false;
+            boolean present = node.isPresent() ? node.get().getConnectionStatus() == ConnectionStatus.Connected : false;
+            LOG.debug("remote device {} is present={} connection-status={}", nodeId, present,
+                    node.get().getConnectionStatus());
+            return present;
         } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
                 | IllegalAccessException | IOException | InterruptedException | ExecutionException e) {
             LOG.warn("unable to read netconfnode {}:", nodeId, e);
@@ -216,6 +222,13 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
     @Override
     public void unregisterDeviceConnectionChangeListener(DeviceConnectionChangedHandler listener) {
         this.deviceConnectionChangeProvider.unregister(listener);
+    }
+
+    @Override
+    public <T extends DataObject> Optional<T> getDataFromDevice(String nodeId, LogicalDatastoreType datastore,
+            InstanceIdentifier<T> xciid, long deviceReadTimeout, TimeUnit deviceReadTimeoutUnit) throws InterruptedException, TimeoutException, ExecutionException {
+        DataBroker db = this.getRemoteDeviceDataBroker(nodeId);
+        return db.newReadOnlyTransaction().read(datastore, xciid).get(deviceReadTimeout, deviceReadTimeoutUnit);
     }
 
 }

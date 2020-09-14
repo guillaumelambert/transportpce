@@ -229,8 +229,35 @@ public class RestconfHttpClient extends BaseHTTPClient {
         return result.buildFuture();
     }
 
-    public void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path, String nodeId) {
-        LOG.warn("delete is not yet implemented");
+    public FluentFuture<?> delete(@NonNull LogicalDatastoreType store,
+            @NonNull InstanceIdentifier<?> instanceIdentifier, String nodeId) throws ClassNotFoundException,
+            NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        final String uri = this.getRfc8040UriFromIif(store, instanceIdentifier, nodeId, false, false);
+        return FutureRestRequest.createFutureRequest(this, uri, "DELETE", (String) null, this.headers,
+                instanceIdentifier.getTargetType(), false);
     }
 
+    public <O extends DataObject> FluentFuture<Optional<O>> put(@NonNull LogicalDatastoreType store,
+            @NonNull InstanceIdentifier<O> instanceIdentifier, @NonNull O data, String nodeId)
+            throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException,
+            IllegalAccessException {
+        final String uri = this.getRfc8040UriFromIif(store, instanceIdentifier, nodeId, false, false);
+        LOG.debug("serialize {}",data);
+        final String strData = this.mapper.writeValueAsString(data,data.getClass());
+        LOG.debug("putting data: {}", strData);
+        return FutureRestRequest.createFutureRequest(this, uri, "PUT", strData, this.headers,
+                instanceIdentifier.getTargetType(), false);
+    }
+
+    public <O extends DataObject> FluentFuture<Optional<O>> merge(@NonNull LogicalDatastoreType store,
+            @NonNull InstanceIdentifier<O> instanceIdentifier, @NonNull O data, String nodeId)
+            throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException,
+            IllegalAccessException {
+        final String uri = this.getRfc8040UriFromIif(store, instanceIdentifier, nodeId, false, false);
+        LOG.debug("serialize {}",data);
+        final String strData = this.mapper.writeValueAsString(data,data.getClass());
+        LOG.debug("merging data: {}", strData);
+        return FutureRestRequest.createFutureRequest(this, uri, "POST", strData, this.headers,
+                instanceIdentifier.getTargetType(), false);
+    }
 }

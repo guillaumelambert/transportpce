@@ -23,8 +23,11 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.re
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.EthernetCsmacd;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.InterfaceType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpenROADMOpticalMultiplex;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalChannel;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalTransport;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OtnOdu;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1Builder;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.AbstractAugmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -89,10 +92,12 @@ public class InterfaceBuilder implements Builder<Interface> {
     Map<Class<? extends Augmentation<Interface>>, Augmentation<Interface>> augmentation = Collections.emptyMap();
 
     public InterfaceBuilder() {
+        this.addAugmentation(Interface1.class, new Interface1Builder().build());
     }
     public InterfaceBuilder(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.SupportingPortName arg) {
         this._supportingCircuitPackName = arg.getSupportingCircuitPackName();
         this._supportingPort = arg.getSupportingPort();
+        this.addAugmentation(Interface1.class, new Interface1Builder().build());
     }
 
     public InterfaceBuilder(Interface base) {
@@ -113,6 +118,8 @@ public class InterfaceBuilder implements Builder<Interface> {
         this._supportingInterface = base.getSupportingInterface();
         this._supportingPort = base.getSupportingPort();
         this._type = base.getType();
+        this.addAugmentation(Interface1.class, new Interface1Builder().build());
+
     }
 
     /**
@@ -246,6 +253,8 @@ public class InterfaceBuilder implements Builder<Interface> {
             this._type = OpenROADMOpticalMultiplex.class;
         } else if (value.endsWith("otnOdu")) {
             this._type = OtnOdu.class;
+        }else if (value.endsWith("opticalChannel")) {
+            this._type = OpticalChannel.class;
         }
         return this;
     }

@@ -16,3 +16,9 @@
 		<curr-duplex>FULL</curr-duplex>
 	</ethernet>
 </interface>
+Interface1{
+_ots=Ots{
+	_fiberType=Smf, 
+	_ingressSpanLossAgingMargin=RatioDB{_value=0.0, _UNITS=dB}, 
+	_spanLossReceive=RatioDB{_value=15.0, _UNITS=dB}, 
+	_spanLossTransmit=RatioDB{_value=6.0, _UNITS=dB}, augmentation=[]}}

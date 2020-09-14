@@ -85,19 +85,19 @@ public class BaseHTTPClient {
         }
     }
 
-    public BaseHTTPResponse sendRequest(String uri, String method, String body,
-            Map<String, String> headers) throws IOException {
+    public BaseHTTPResponse sendRequest(String uri, final String method, final String body,
+            final Map<String, String> headers) throws IOException {
         return this.sendRequest(uri, method, body, headers, DEFAULT_HTTP_TIMEOUT_MS);
     }
 
-    public BaseHTTPResponse sendRequest(String uri, String method, String body,
-            Map<String, String> headers, int timeout) throws IOException {
+    public BaseHTTPResponse sendRequest(String uri, final String method, final String body,
+            final Map<String, String> headers, final int timeout) throws IOException {
         return this.sendRequest(uri, method, body != null ? body.getBytes(CHARSET) : null, headers,
                 timeout);
     }
 
-    public BaseHTTPResponse sendRequest(String uri, String method, byte[] body,
-            Map<String, String> headers, int timeout) throws IOException {
+    public BaseHTTPResponse sendRequest(String uri, final String method, final byte[] body,
+            final Map<String, String> headers, final int timeout) throws IOException {
         if (uri == null) {
             uri = "";
         }

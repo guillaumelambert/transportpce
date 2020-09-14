@@ -11,9 +11,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.TypeObject;
+import org.opendaylight.yangtools.yang.common.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,6 +99,11 @@ public abstract class OdlDataSerializer<T> {
                                 else if (ChoiceIn.class.isAssignableFrom(type)) {
                                     this.writeRecurseProperties(sb, value, level);
                                 }
+                                else if (type==Class.class && BaseIdentity.class.isAssignableFrom((Class<?>) value)) {
+                                    this.startElem(sb, name,value);
+                                    this.writeElemValue(sb, this.getIdentity((Class<?>) value));
+                                    this.stopElem(sb, name);
+                                }
                                 //if list of elems
                                 else if (value != null && List.class.isAssignableFrom(type)) {
                                     for (Object listObject : (List<Object>) value) {
@@ -136,13 +143,25 @@ public abstract class OdlDataSerializer<T> {
         this.postValueWrite(sb, elem);
     }
 
+    private String getIdentity(Class<?> value) throws IllegalArgumentException, IllegalAccessException {
+        QName qname = null;
+        Field[] fields = value.getDeclaredFields();
+        for(Field f:fields) {
+            if(f.getName()=="QNAME") {
+                qname = (QName) f.get(value);
+            }
+        }
+        return qname==null?null:qname.getLocalName();
+    }
     private Object getTypeObjectStringValue(Object value, Class<?> type) {
-        try {
-            Method method = type.getMethod("getValue");
-            return method.invoke(value);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
-            LOG.warn("problem calling getValue fn: ", e);
+        if (value != null) {
+            try {
+                Method method = type.getMethod("getValue");
+                return method.invoke(value);
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException e) {
+                LOG.warn("problem calling getValue fn: ", e);
+            }
         }
         return null;
     }

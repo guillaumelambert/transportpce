@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
@@ -40,7 +41,9 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.open
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDeviceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.UsersBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.AdminStates;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.PortConfig;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.PasswordType;
@@ -49,6 +52,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.UserBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.connection.status.available.capabilities.AvailableCapability;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -652,6 +656,33 @@ public class TestMapper {
         LOG.info(inputPayload);
     }
     @Test
+    public void testInterfaceConfigSerialization() throws JsonProcessingException {
+        //<interface xmlns="http://org/openroadm/device">
+        //  <administrative-state >inService</administrative-state>
+        //  <circuit-id >   TBD    </circuit-id>
+        //  <description >  TBD   </description>
+        //  <name >XPDR1-NETWORK1-1</name>
+        //  <operational-state >null</operational-state>
+        //  <supporting-circuit-pack-name >1/0/1-PLUG-NET</supporting-circuit-pack-name>
+        //  <supporting-interface >null</supporting-interface>
+        //  <supporting-port >1</supporting-port>
+        //  <type >interface org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalChannel</type>
+        //</interface>
+
+        InterfaceBuilder builder = new InterfaceBuilder();
+        builder.setAdministrativeState(AdminStates.InService);
+        builder.setCircuitId("TBD");
+        builder.setDescription("TBD");
+        builder.setName("XPDR1-NETWORK1-1");
+        builder.setOperationalState(null);
+        builder.setSupportingCircuitPackName("1/0/1-PLUG-NET");
+        builder.setSupportingInterface(null);
+        builder.setSupportingPort(1);
+        builder.setType(org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalChannel.class);
+        OdlRpcObjectMapperXml mapper = new OdlRpcObjectMapperXml();
+        LOG.info("ifoutput = {}",mapper.writeValueAsString(builder.build()));
+    }
+    @Test
     public void testTopologyNodeDeser() throws IOException {
 
         String xml = this.getTrimmedFileContent("/xml/roadma-netconfnode.xml");
@@ -699,6 +730,14 @@ public class TestMapper {
         OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
         Interface intf = mapper.readValue(xml, Interface.class);
         LOG.info("interface={}",intf);
+    }
+    @Test
+    public void testInterface2Deser() throws IOException {
+        String xml = this.getTrimmedFileContent("/xml/roadm-interfaces2.xml");
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
+        Interface intf = mapper.readValue(xml, Interface.class);
+        LOG.info("interface2={}",intf);
+        LOG.info("interface2aug={}",intf.augmentation(Interface1.class));
     }
     @Test
     public void testPortsDeser() throws IOException {
