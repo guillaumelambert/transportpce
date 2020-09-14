@@ -8,81 +8,75 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+import unittest
 import json
 import os
-import psutil
-import requests
-import signal
-import shutil
-import subprocess
+import sys
 import time
-import unittest
-import test_utils
+import requests
+from common import test_utils
 
 
 class TransportPCEtesting(unittest.TestCase):
 
-    odl_process = None
     simple_topo_bi_dir_data = None
     simple_topo_uni_dir_data = None
     complex_topo_uni_dir_data = None
-    restconf_baseurl = "http://localhost:8181/restconf"
+    processes = None
 
     @classmethod
-    def _get_file(cls):
-        topo_bi_dir_file = "sample_configs/honeynode-topo.xml"
-        if os.path.isfile(topo_bi_dir_file):
-            with open(topo_bi_dir_file, 'r') as topo_bi_dir:
+    def setUpClass(cls):
+        try:
+            sample_files_parsed = False
+            TOPO_BI_DIR_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                            "..", "..", "sample_configs", "honeynode-topo.xml")
+            with open(TOPO_BI_DIR_FILE, 'r') as topo_bi_dir:
                 cls.simple_topo_bi_dir_data = topo_bi_dir.read()
-        topo_uni_dir_file = "sample_configs/NW-simple-topology.xml"
-        if os.path.isfile(topo_uni_dir_file):
-            with open(topo_uni_dir_file, 'r') as topo_uni_dir:
-                cls.simple_topo_uni_dir_data = topo_uni_dir.read()
-        topo_uni_dir_complex_file = "sample_configs/NW-for-test-5-4.xml"
-        if os.path.isfile(topo_uni_dir_complex_file):
-            with open(topo_uni_dir_complex_file, 'r') as topo_uni_dir_complex:
-                cls.complex_topo_uni_dir_data = topo_uni_dir_complex.read()
 
-    @classmethod
-    def setUpClass(cls):  # a class method called before tests in an individual class run.
-        cls._get_file()
-        print("starting opendaylight...")
-        cls.odl_process = test_utils.start_tpce()
-        time.sleep(90)
-        print("opendaylight started")
+            TOPO_UNI_DIR_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                             "..", "..", "sample_configs", "NW-simple-topology.xml")
+
+            with open(TOPO_UNI_DIR_FILE, 'r') as topo_uni_dir:
+                cls.simple_topo_uni_dir_data = topo_uni_dir.read()
+
+            TOPO_UNI_DIR_COMPLEX_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                     "..", "..", "sample_configs", "NW-for-test-5-4.xml")
+            with open(TOPO_UNI_DIR_COMPLEX_FILE, 'r') as topo_uni_dir_complex:
+                cls.complex_topo_uni_dir_data = topo_uni_dir_complex.read()
+            sample_files_parsed = True
+        except PermissionError as err:
+            print("Permission Error when trying to read sample files\n", err)
+            sys.exit(2)
+        except FileNotFoundError as err:
+            print("File Not found Error when trying to read sample files\n", err)
+            sys.exit(2)
+        except:
+            print("Unexpected error when trying to read sample files\n", sys.exc_info()[0])
+            sys.exit(2)
+        finally:
+            if sample_files_parsed:
+                print("sample files content loaded")
+
+        cls.processes = test_utils.start_tpce()
 
     @classmethod
     def tearDownClass(cls):
-        for child in psutil.Process(cls.odl_process.pid).children():
-            child.send_signal(signal.SIGINT)
-            child.wait()
-        cls.odl_process.send_signal(signal.SIGINT)
-        cls.odl_process.wait()
+        for process in cls.processes:
+            test_utils.shutdown_process(process)
+        print("all processes killed")
 
     def setUp(self):  # instruction executed before each test method
         time.sleep(1)
 
      # Load simple bidirectional topology
     def test_01_load_simple_topology_bi(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        body = self.simple_topo_bi_dir_data
-        headers = {'content-type': 'application/xml',
-                   "Accept": "application/xml"}
-        response = requests.request(
-            "PUT", url, data=body, headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.put_xmlrequest(test_utils.URL_CONFIG_ORDM_TOPO, self.simple_topo_bi_dir_data)
         self.assertEqual(response.status_code, requests.codes.ok)
         time.sleep(2)
 
     # Get existing nodeId
     def test_02_get_nodeId(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology/node/ROADMA01-SRG1"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("node/ROADMA01-SRG1")
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -91,12 +85,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Get existing linkId
     def test_03_get_linkId(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology/link/XPDRA01-XPDR1-XPDR1-NETWORK1toROADMA01-SRG1-SRG1-PP1-TXRX"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("link/XPDRA01-XPDR1-XPDR1-NETWORK1toROADMA01-SRG1-SRG1-PP1-TXRX")
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -106,9 +95,8 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path Computation success
     def test_04_path_computation_xpdr_bi(self):
-        url = ("{}/operations/transportpce-pce:path-computation-request"
-               .format(self.restconf_baseurl))
-        body = {"input": {
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
                 "service-name": "service-1",
                 "resource-reserve": "true",
                 "pce-metric": "hop-count",
@@ -129,11 +117,7 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
                 }
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "POST", url, data=json.dumps(body), headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.post_request(url, data)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -142,9 +126,8 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path Computation success
     def test_05_path_computation_rdm_bi(self):
-        url = ("{}/operations/transportpce-pce:path-computation-request"
-               .format(self.restconf_baseurl))
-        body = {"input": {
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
                 "service-name": "service-1",
                 "resource-reserve": "true",
                 "pce-metric": "hop-count",
@@ -165,11 +148,7 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
                 }
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "POST", url, data=json.dumps(body), headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.post_request(url, data)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -178,47 +157,25 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Delete topology
     def test_06_delete_simple_topology_bi(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/xml',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "DELETE", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.delete_request(test_utils.URL_CONFIG_ORDM_TOPO)
         self.assertEqual(response.status_code, requests.codes.ok)
         time.sleep(2)
 
     # Test deleted topology
     def test_07_test_topology_simple_bi_deleted(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology/node/ROADMA01-SRG1"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("node/ROADMA01-SRG1")
         self.assertEqual(response.status_code, 404)
         time.sleep(1)
 
     # Load simple bidirectional topology
     def test_08_load_simple_topology_uni(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        body = self.simple_topo_uni_dir_data
-        headers = {'content-type': 'application/xml',
-                   "Accept": "application/xml"}
-        response = requests.request(
-            "PUT", url, data=body, headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.put_xmlrequest(test_utils.URL_CONFIG_ORDM_TOPO, self.simple_topo_uni_dir_data)
         self.assertEqual(response.status_code, 201)
         time.sleep(2)
 
     # Get existing nodeId
     def test_09_get_nodeId(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology/node/XPONDER-1-2"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("node/XPONDER-1-2")
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -228,12 +185,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Get existing linkId
     def test_10_get_linkId(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology/link/XPONDER-1-2XPDR-NW1-TX-toOpenROADM-1-2-SRG1-SRG1-PP1-RX"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("link/XPONDER-1-2XPDR-NW1-TX-toOpenROADM-1-2-SRG1-SRG1-PP1-RX")
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -243,9 +195,8 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path Computation success
     def test_11_path_computation_xpdr_uni(self):
-        url = ("{}/operations/transportpce-pce:path-computation-request"
-               .format(self.restconf_baseurl))
-        body = {"input": {
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
                 "service-name": "service-1",
                 "resource-reserve": "true",
                 "pce-metric": "hop-count",
@@ -266,11 +217,7 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
                 }
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "POST", url, data=json.dumps(body), headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.post_request(url, data)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -279,9 +226,8 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path Computation success
     def test_12_path_computation_rdm_uni(self):
-        url = ("{}/operations/transportpce-pce:path-computation-request"
-               .format(self.restconf_baseurl))
-        body = {"input": {
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
                 "service-name": "service1",
                 "resource-reserve": "true",
                 "service-handler-header": {
@@ -302,11 +248,7 @@ class TransportPCEtesting(unittest.TestCase):
                 "pce-metric": "hop-count"
                 }
                 }
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "POST", url, data=json.dumps(body), headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.post_request(url, data)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -327,47 +269,25 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Delete topology
     def test_13_delete_simple_topology(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/xml',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "DELETE", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.delete_request(test_utils.URL_CONFIG_ORDM_TOPO)
         self.assertEqual(response.status_code, requests.codes.ok)
         time.sleep(2)
 
     # Test deleted topology
     def test_14_test_topology_simple_deleted(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology/node/XPONDER-1-2"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("node/XPONDER-1-2")
         self.assertEqual(response.status_code, 404)
         time.sleep(1)
 
-    # Load simple topology
+    # Load complex topology
     def test_15_load_complex_topology(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        body = self.complex_topo_uni_dir_data
-        headers = {'content-type': 'application/xml',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "PUT", url, data=body, headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.put_xmlrequest(test_utils.URL_CONFIG_ORDM_TOPO, self.complex_topo_uni_dir_data)
         self.assertEqual(response.status_code, 201)
         time.sleep(2)
 
     # Get existing nodeId
     def test_16_get_nodeId(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology/node/XPONDER-3-2"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("node/XPONDER-3-2")
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -377,19 +297,14 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Test failed path computation
     def test_17_fail_path_computation(self):
-        url = ("{}/operations/transportpce-pce:path-computation-request"
-               .format(self.restconf_baseurl))
-        body = {"input": {
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
                 "service-handler-header": {
                     "request-id": "request-1"
                 }
                 }
                 }
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "POST", url, data=json.dumps(body), headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.post_request(url, data)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Service Name is not set',
@@ -398,9 +313,8 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Test1 success path computation
     def test_18_success1_path_computation(self):
-        url = ("{}/operations/transportpce-pce:path-computation-request"
-               .format(self.restconf_baseurl))
-        body = {"input": {
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
                 "service-name": "service1",
                 "resource-reserve": "true",
                 "service-handler-header": {
@@ -486,11 +400,7 @@ class TransportPCEtesting(unittest.TestCase):
                 "locally-protected-links": "true"
                 }
                 }
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "POST", url, data=json.dumps(body), headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.post_request(url, data)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -499,9 +409,8 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Test2 success path computation with path description
     def test_19_success2_path_computation(self):
-        url = ("{}/operations/transportpce-pce:path-computation-request"
-               .format(self.restconf_baseurl))
-        body = {"input": {
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
                 "service-name": "service 1",
                 "resource-reserve": "true",
                 "service-handler-header": {
@@ -522,11 +431,7 @@ class TransportPCEtesting(unittest.TestCase):
                 "pce-metric": "hop-count"
                 }
                 }
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "POST", url, data=json.dumps(body), headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.post_request(url, data)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -539,9 +444,8 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Test3 success path computation with hard-constraints exclude
     def test_20_success3_path_computation(self):
-        url = ("{}/operations/transportpce-pce:path-computation-request"
-               .format(self.restconf_baseurl))
-        body = {"input": {
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
                 "service-name": "service 1",
                 "resource-reserve": "true",
                 "service-handler-header": {
@@ -567,11 +471,7 @@ class TransportPCEtesting(unittest.TestCase):
                 "pce-metric": "hop-count"
                 }
                 }
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "POST", url, data=json.dumps(body), headers=headers,
-            auth=('admin', 'admin'))
+        response = test_utils.post_request(url, data)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -582,25 +482,103 @@ class TransportPCEtesting(unittest.TestCase):
                          ['zToA-direction']['zToA-wavelength-number'])
         time.sleep(5)
 
+    # Path computation before deleting oms-attribute of the link :openroadm1-3 to openroadm1-2
+    def test_21_path_computation_before_oms_attribute_deletion(self):
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
+                "service-name": "service 1",
+                "resource-reserve": "true",
+                "service-handler-header": {
+                    "request-id": "request 1"
+                },
+                "service-a-end": {
+                    "service-rate": "100",
+                    "service-format": "Ethernet",
+                    "node-id": "XPONDER-2-2",
+                    "clli": "ORANGE2"
+                },
+                "service-z-end": {
+                    "service-rate": "100",
+                    "service-format": "Ethernet",
+                    "node-id": "XPONDER-1-2",
+                    "clli": "ORANGE1"
+                },
+                "pce-metric": "hop-count"
+                }
+                }
+        response = test_utils.post_request(url, data)
+        self.assertEqual(response.status_code, requests.codes.ok)
+        res = response.json()
+        self.assertIn('Path is calculated',
+                      res['output']['configuration-response-common']['response-message'])
+        nbElmPath = len(res['output']['response-parameters']['path-description']
+                        ['aToZ-direction']['aToZ'])
+        self.assertEqual(31, nbElmPath)
+        link = {"link-id": "OpenROADM-1-3-DEG2-to-OpenROADM-1-2-DEG2"}
+        find = False
+        for i in range(0, nbElmPath):
+            resource_i = res['output']['response-parameters']['path-description']['aToZ-direction']['aToZ'][i]['resource']
+            if(resource_i == link):
+                find = True
+        self.assertEqual(find, True)
+        time.sleep(5)
+
+    # Delete oms-attribute in the link :openroadm1-3 to openroadm1-2
+    def test_22_delete_oms_attribute_in_openroadm13toopenroadm12_link(self):
+        response = test_utils.del_oms_attr_request("OpenROADM-1-3-DEG2-to-OpenROADM-1-2-DEG2")
+        self.assertEqual(response.status_code, requests.codes.ok)
+        time.sleep(2)
+
+    # Path computation after deleting oms-attribute of the link :openroadm1-3 to openroadm1-2
+    def test_23_path_computation_after_oms_attribute_deletion(self):
+        url = "{}/operations/transportpce-pce:path-computation-request"
+        data = {"input": {
+                "service-name": "service 1",
+                "resource-reserve": "true",
+                "service-handler-header": {
+                    "request-id": "request 1"
+                },
+                "service-a-end": {
+                    "service-rate": "100",
+                    "service-format": "Ethernet",
+                    "node-id": "XPONDER-2-2",
+                    "clli": "ORANGE2"
+                },
+                "service-z-end": {
+                    "service-rate": "100",
+                    "service-format": "Ethernet",
+                    "node-id": "XPONDER-1-2",
+                    "clli": "ORANGE1"
+                },
+                "pce-metric": "hop-count"
+                }
+                }
+        response = test_utils.post_request(url, data)
+        self.assertEqual(response.status_code, requests.codes.ok)
+        res = response.json()
+        self.assertIn('Path is calculated',
+                      res['output']['configuration-response-common']['response-message'])
+        nbElmPath = len(res['output']['response-parameters']['path-description']
+                        ['aToZ-direction']['aToZ'])
+        self.assertEqual(47, nbElmPath)
+        link = {"link-id": "OpenROADM-1-3-DEG2-to-OpenROADM-1-2-DEG2"}
+        find = False
+        for i in range(0, nbElmPath):
+            resource_i = res['output']['response-parameters']['path-description']['aToZ-direction']['aToZ'][i]['resource']
+            if (resource_i == link):
+                find = True
+        self.assertNotEqual(find, True)
+        time.sleep(5)
+
     # Delete complex topology
-    def test_21_delete_complex_topology(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/xml',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "DELETE", url, headers=headers, auth=('admin', 'admin'))
+    def test_24_delete_complex_topology(self):
+        response = test_utils.delete_request(test_utils.URL_CONFIG_ORDM_TOPO)
         self.assertEqual(response.status_code, requests.codes.ok)
         time.sleep(2)
 
     # Test deleted complex topology
-    def test_22_test_topology_complex_deleted(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology/node/XPONDER-3-2"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json',
-                   "Accept": "application/json"}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+    def test_25_test_topology_complex_deleted(self):
+        response = test_utils.get_ordm_topo_request("node/XPONDER-3-2")
         self.assertEqual(response.status_code, 404)
         time.sleep(1)
 

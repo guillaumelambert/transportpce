@@ -9,75 +9,37 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-import json
-import os
-import psutil
-import requests
-import signal
-import shutil
-import subprocess
-import time
 import unittest
+import time
 import logging
-import test_utils
+import requests
+from common import test_utils
 
 
 class TransportPCEtesting(unittest.TestCase):
 
-    honeynode_process1 = None
-    odl_process = None
-    restconf_baseurl = "http://localhost:8181/restconf"
+    processes = None
 
     @classmethod
     def setUpClass(cls):
-        print("starting honeynode1...")
-        cls.honeynode_process1 = test_utils.start_spdra_honeynode()
-        time.sleep(20)
-
-        print("starting opendaylight...")
-        cls.odl_process = test_utils.start_tpce()
-        time.sleep(60)
-        print("opendaylight started")
+        cls.processes = test_utils.start_tpce()
+        cls.processes = test_utils.start_sims(['spdra'])
 
     @classmethod
     def tearDownClass(cls):
-        for child in psutil.Process(cls.odl_process.pid).children():
-            child.send_signal(signal.SIGINT)
-            child.wait()
-        cls.odl_process.send_signal(signal.SIGINT)
-        cls.odl_process.wait()
-        for child in psutil.Process(cls.honeynode_process1.pid).children():
-            child.send_signal(signal.SIGINT)
-            child.wait()
-        cls.honeynode_process1.send_signal(signal.SIGINT)
-        cls.honeynode_process1.wait()
+        for process in cls.processes:
+            test_utils.shutdown_process(process)
+        print("all processes killed")
 
     def setUp(self):
         time.sleep(5)
 
     def test_01_connect_SPDR_SA1(self):
-        url = ("{}/config/network-topology:"
-               "network-topology/topology/topology-netconf/node/SPDR-SA1"
-               .format(self.restconf_baseurl))
-        data = {"node": [{
-            "node-id": "SPDR-SA1",
-            "netconf-node-topology:username": "admin",
-            "netconf-node-topology:password": "admin",
-            "netconf-node-topology:host": "127.0.0.1",
-            "netconf-node-topology:port": "17845",
-            "netconf-node-topology:tcp-only": "false",
-            "netconf-node-topology:pass-through": {}}]}
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "PUT", url, data=json.dumps(data), headers=headers,
-            auth=('admin', 'admin'))
-        self.assertEqual(response.status_code, requests.codes.created)
+        response = test_utils.mount_device("SPDR-SA1", 'spdra')
+        self.assertEqual(response.status_code, requests.codes.created, test_utils.CODE_SHOULD_BE_201)
         time.sleep(10)
-        url = ("{}/operational/network-topology:"
-               "network-topology/topology/topology-netconf/node/SPDR-SA1"
-               .format(self.restconf_baseurl))
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+
+        response = test_utils.get_netconf_oper_request("SPDR-SA1")
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -85,11 +47,7 @@ class TransportPCEtesting(unittest.TestCase):
             'connected')
 
     def test_02_getClliNetwork(self):
-        url = ("{}/config/ietf-network:networks/network/clli-network"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_clli_net_request()
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         logging.info(res)
@@ -97,11 +55,7 @@ class TransportPCEtesting(unittest.TestCase):
         self.assertEqual(res['network'][0]['node'][0]['org-openroadm-clli-network:clli'], 'NodeSA')
 
     def test_03_getOpenRoadmNetwork(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-network"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_net_request()
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(res['network'][0]['node'][0]['node-id'], 'SPDR-SA1')
@@ -113,22 +67,14 @@ class TransportPCEtesting(unittest.TestCase):
         self.assertEqual(res['network'][0]['node'][0]['org-openroadm-network:ip'], '1.2.3.4')
 
     def test_04_getLinks_OpenroadmTopology(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("")
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         # Tests related to links
         self.assertNotIn('ietf-network-topology:link', res['network'][0])
 
     def test_05_getNodes_OpenRoadmTopology(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("")
         res = response.json()
         # Tests related to nodes
         self.assertEqual(response.status_code, requests.codes.ok)
@@ -183,21 +129,13 @@ class TransportPCEtesting(unittest.TestCase):
             self.assertEqual(len(listNode), 0)
 
     def test_06_getLinks_OtnTopology(self):
-        url = ("{}/config/ietf-network:networks/network/otn-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_otn_topo_request()
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertNotIn('ietf-network-topology:link', res['network'][0])
 
     def test_07_getNodes_OtnTopology(self):
-        url = ("{}/config/ietf-network:networks/network/otn-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_otn_topo_request()
         res = response.json()
         self.assertEqual(response.status_code, requests.codes.ok)
         nbNode = len(res['network'][0]['node'])
@@ -309,22 +247,11 @@ class TransportPCEtesting(unittest.TestCase):
         self.assertEqual(len(listNode), 0)
 
     def test_08_disconnect_SPDR_SA1(self):
-        url = ("{}/config/network-topology:"
-               "network-topology/topology/topology-netconf/node/SPDR-SA1"
-               .format(self.restconf_baseurl))
-        data = {}
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "DELETE", url, data=json.dumps(data), headers=headers,
-            auth=('admin', 'admin'))
-        self.assertEqual(response.status_code, requests.codes.ok)
+        response = test_utils.unmount_device("SPDR-SA1")
+        self.assertEqual(response.status_code, requests.codes.ok, test_utils.CODE_SHOULD_BE_200)
 
     def test_09_getClliNetwork(self):
-        url = ("{}/config/ietf-network:networks/network/clli-network"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_clli_net_request()
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         nbNode = len(res['network'][0]['node'])
@@ -332,30 +259,18 @@ class TransportPCEtesting(unittest.TestCase):
         self.assertEqual(res['network'][0]['node'][0]['org-openroadm-clli-network:clli'], 'NodeSA')
 
     def test_10_getOpenRoadmNetwork(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-network"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_net_request()
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertNotIn('node', res['network'][0])
 
     def test_11_getNodes_OpenRoadmTopology(self):
-        url = ("{}/config/ietf-network:networks/network/openroadm-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_ordm_topo_request("")
         res = response.json()
         self.assertNotIn('node', res['network'][0])
 
     def test_12_getNodes_OtnTopology(self):
-        url = ("{}/config/ietf-network:networks/network/otn-topology"
-               .format(self.restconf_baseurl))
-        headers = {'content-type': 'application/json'}
-        response = requests.request(
-            "GET", url, headers=headers, auth=('admin', 'admin'))
+        response = test_utils.get_otn_topo_request()
         res = response.json()
         self.assertNotIn('node', res['network'][0])
 
