@@ -77,6 +77,7 @@ public class CrossConnectImpl221 {
                 .setSource(new SourceBuilder().setSrcIf(srcTp + "-nmc-" + waveNumber).build())
                 .setDestination(new DestinationBuilder().setDstIf(destTp + "-nmc-" + waveNumber)
                 .build());
+        LOG.debug("try to post crossconnect {} in node {}",rdmConnBldr.build(),deviceId);
 
         InstanceIdentifier<RoadmConnections> rdmConnectionIID =
                 InstanceIdentifier.create(OrgOpenroadmDevice.class)
@@ -289,7 +290,6 @@ public class CrossConnectImpl221 {
                         .container.org.openroadm.device.OduConnection.class,
                     new OduConnectionKey(oduConnectionBuilder.getConnectionName())
                 );
-
         Future<Optional<DeviceTransaction>> deviceTxFuture = deviceTransactionManager.getDeviceTransaction(deviceId);
         DeviceTransaction deviceTx;
         try {

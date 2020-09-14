@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.Nullable;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
@@ -49,12 +50,14 @@ public class R2RLinkDiscovery {
     private final DataBroker dataBroker;
     private final NetworkTransactionService networkTransactionService;
     private final DeviceTransactionManager deviceTransactionManager;
+    private final RemoteOpendaylightClient odlClient;
 
     public R2RLinkDiscovery(final DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
-        NetworkTransactionService networkTransactionService) {
+        NetworkTransactionService networkTransactionService, RemoteOpendaylightClient odlClient) {
         this.dataBroker = dataBroker;
         this.deviceTransactionManager = deviceTransactionManager;
         this.networkTransactionService = networkTransactionService;
+        this.odlClient = odlClient;
     }
 
     public boolean readLLDP(NodeId nodeId, String nodeVersion) {
@@ -176,7 +179,7 @@ public class R2RLinkDiscovery {
         // Find which degree is associated with ethernet interface
         Integer srcDegId = getDegFromInterface(nodeId, interfaceName);
         if (srcDegId == null) {
-            LOG.error("Couldnt find degree connected to Ethernet interface for nodeId: {}", nodeId);
+            LOG.error("Couldnt find src degree connected to Ethernet interface for nodeId: {}", nodeId);
             return false;
         }
         // Check whether degree is Unidirectional or Bidirectional by counting
@@ -197,7 +200,7 @@ public class R2RLinkDiscovery {
         NodeId destNodeId = new NodeId(remoteSystemName);
         Integer destDegId = getDegFromInterface(destNodeId, remoteInterfaceName);
         if (destDegId == null) {
-            LOG.error("Couldnt find degree connected to Ethernet interface for nodeId: {}", nodeId);
+            LOG.error("Couldnt find dst degree connected to Ethernet interface for nodeId: {}", nodeId);
             return false;
         }
         // Check whether degree is Unidirectional or Bidirectional by counting
@@ -322,8 +325,9 @@ public class R2RLinkDiscovery {
                         nodeId.getValue(),interfaceName);
                 }
             } else {
-                LOG.warn("Could not find mapping for Interface {} for nodeId {}", interfaceName,
-                    nodeId.getValue());
+                LOG.warn("Could not find mapping for Interface {} for nodeId {} ({} | {})", interfaceName,
+                        nodeId.getValue(), nodesObject.isPresent(),
+                        nodesObject.isPresent() ? nodesObject.get().getCpToDegree() : null);
             }
         } catch (InterruptedException | ExecutionException ex) {
             LOG.error("Unable to read mapping for Interface : {} for nodeId {}", interfaceName, nodeId, ex);

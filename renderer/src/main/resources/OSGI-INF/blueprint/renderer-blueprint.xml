@@ -24,6 +24,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <reference id="mappingUtils" interface="org.opendaylight.transportpce.common.mapping.MappingUtils"/>
   <reference id="FixedFlexImpl" interface="org.opendaylight.transportpce.common.fixedflex.FixedFlexInterface"/>
   <reference id="networkModelService" interface="org.opendaylight.transportpce.networkmodel.service.NetworkModelService"/>
+  <reference id="odlClient" interface="org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient" />
 
   <odl:rpc-service id="olmService"
       interface="org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.TransportpceOlmService"/>
@@ -63,6 +64,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <argument ref="crossConnect" />
     <argument ref="portMapping" />
     <argument ref="networkModelService" />
+    <argument ref="odlClient" />
   </bean>
 
   <bean id="otnDeviceRenderer" class="org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRendererServiceImpl" >
@@ -71,6 +73,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <argument ref="openRoadmInterfaces" />
     <argument ref="deviceTransactionManager" />
     <argument ref="networkModelService" />
+    <argument ref="odlClient" />
   </bean>
 
     <bean id="deviceRendererRPCImpl" class="org.opendaylight.transportpce.renderer.rpcs.DeviceRendererRPCImpl" >

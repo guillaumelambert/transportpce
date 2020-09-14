@@ -44,6 +44,7 @@
         <argument ref="dataBroker" />
         <argument ref="deviceTransactionManager" />
         <argument ref="networkTransactionImpl" />
+        <argument ref="odlClient" />
    </bean>
 
     <service ref="networkModelService" interface="org.opendaylight.transportpce.networkmodel.service.NetworkModelService" />

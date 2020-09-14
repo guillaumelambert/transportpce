@@ -114,7 +114,9 @@ final class Rdm2XpdrLink {
     private static NetworkBuilder createNetworkBuilder(String srcNode, String srcTp, String destNode, String destTp,
         boolean isXponderInput, TerminationPoint xpdrTp) {
         //update tp of nodes
+        LOG.info("create tp from {}",xpdrTp);
         TerminationPointBuilder xpdrTpBldr = new TerminationPointBuilder(xpdrTp);
+        LOG.info("builder of tp is {}",xpdrTpBldr);
         if (xpdrTpBldr.augmentation(TerminationPoint1.class) != null) {
             LOG.warn("Rewritting tail-equipment-id {} on tp {} of node {}", xpdrTpBldr
                 .augmentation(TerminationPoint1.class).getXpdrNetworkAttributes().getTailEquipmentId(), srcTp, srcNode);

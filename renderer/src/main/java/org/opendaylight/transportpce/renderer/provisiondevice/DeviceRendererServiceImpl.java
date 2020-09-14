@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jdt.annotation.NonNull;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -82,10 +83,12 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
     private final CrossConnect crossConnect;
     private final PortMapping portMapping;
     private final NetworkModelService networkModelService;
+    private final RemoteOpendaylightClient odlClient;
 
     public DeviceRendererServiceImpl(DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
             OpenRoadmInterfaceFactory openRoadmInterfaceFactory, OpenRoadmInterfaces openRoadmInterfaces,
-            CrossConnect crossConnect, PortMapping portMapping, NetworkModelService networkModelService) {
+            CrossConnect crossConnect, PortMapping portMapping, NetworkModelService networkModelService,
+            RemoteOpendaylightClient odlClient) {
         this.dataBroker = dataBroker;
         this.deviceTransactionManager = deviceTransactionManager;
         this.openRoadmInterfaceFactory = openRoadmInterfaceFactory;
@@ -93,6 +96,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         this.crossConnect = crossConnect;
         this.portMapping = portMapping;
         this.networkModelService = networkModelService;
+        this.odlClient = odlClient;
     }
 
     @Override
@@ -123,7 +127,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             int crossConnectFlag = 0;
             try {
                 // if the node is currently mounted then proceed
-                if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
+                if (this.isDeviceMounted(nodeId)) {
                     String srcTp = node.getSrcTp();
                     String destTp = node.getDestTp();
                     Long waveNumber = input.getWaveNumber().toJava();
@@ -257,6 +261,13 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         return setServBldr.build();
     }
 
+    private boolean isDeviceMounted(String nodeId) {
+        if (this.odlClient.isEnabled()) {
+            return this.odlClient.isDevicePresent(nodeId);
+        }
+        return this.deviceTransactionManager.isDeviceMounted(nodeId);
+    }
+
     private ConcurrentLinkedQueue<String> processErrorMessage(String message, ForkJoinPool forkJoinPool,
             ConcurrentLinkedQueue<String> messages) {
         LOG.warn("Received error message {}", message);
@@ -295,7 +306,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                 otnNodesProvisioned.add(node);
             }
             // if the node is currently mounted then proceed.
-            if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
+            if (this.isDeviceMounted(nodeId)) {
                 interfacesToDelete.addAll(getInterfaces2delete(nodeId, srcTp, destTp, waveNumber));
             } else {
                 String result = nodeId + " is not mounted on the controller";
@@ -378,7 +389,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             if (intToDelete != null) {
                 for (String interf : intToDelete) {
                     if (!this.openRoadmInterfaceFactory.isUsedByXc(nodeId, interf, connectionNumber,
-                        this.deviceTransactionManager)) {
+                        this.deviceTransactionManager, this.odlClient)) {
                         interfacesToDelete.add(interf);
                     }
                 }
@@ -526,7 +537,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         String result = "";
         Boolean success = false;
         // if the node is currently mounted then proceed.
-        if (this.deviceTransactionManager.isDeviceMounted(input.getNodeId())) {
+        if (this.isDeviceMounted(input.getNodeId())) {
             Mapping oldMapping = null;
             Mapping newMapping = null;
             oldMapping = this.portMapping.getMapping(input.getNodeId(), input.getLogicalConnectionPoint());

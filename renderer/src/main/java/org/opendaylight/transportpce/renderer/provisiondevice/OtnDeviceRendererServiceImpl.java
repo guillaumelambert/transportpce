@@ -18,6 +18,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
@@ -46,16 +47,18 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
     private final OpenRoadmInterfaces openRoadmInterfaces;
     private final DeviceTransactionManager deviceTransactionManager;
     private final NetworkModelService networkModelService;
+    private final RemoteOpendaylightClient odlClient;
 
     public OtnDeviceRendererServiceImpl(OpenRoadmInterfaceFactory openRoadmInterfaceFactory, CrossConnect crossConnect,
                                         OpenRoadmInterfaces openRoadmInterfaces,
                                         DeviceTransactionManager deviceTransactionManager,
-                                        NetworkModelService networkModelService) {
+                                        NetworkModelService networkModelService, RemoteOpendaylightClient odlClient) {
         this.openRoadmInterfaceFactory = openRoadmInterfaceFactory;
         this.crossConnect = crossConnect;
         this.openRoadmInterfaces = openRoadmInterfaces;
         this.deviceTransactionManager = deviceTransactionManager;
         this.networkModelService = networkModelService;
+        this.odlClient = odlClient;
     }
 
     @Override
@@ -138,6 +141,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
         return otnServicePathOutputBuilder.build();
     }
 
+    @Override
     public OtnServicePathOutput deleteOtnServicePath(OtnServicePathInput input) {
         if (input == null) {
             LOG.error("Unable to delete otn service path. input = null");
@@ -161,7 +165,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
                 return;
             }
             // if the node is currently mounted then proceed.
-            if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
+            if (this.isDeviceMounted(nodeId)) {
                 String connectionNumber = "";
                 switch (input.getServiceRate()) {
                     case ("100G"):
@@ -190,7 +194,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
                 if (intToDelete != null) {
                     for (String interf : intToDelete) {
                         if (!this.openRoadmInterfaceFactory.isUsedByOtnXc(nodeId, interf, connectionNumber,
-                            this.deviceTransactionManager)) {
+                            this.deviceTransactionManager, this.odlClient)) {
                             interfacesToDelete.add(interf);
                             if (!getSupportedInterface(nodeId, interf).contains("ODU4")) {
                                 interfacesToDelete.add(getSupportedInterface(nodeId, interf));
@@ -248,6 +252,13 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
         } else {
             return delServBldr.setResult(String.join("\n", results)).build();
         }
+    }
+
+    private boolean isDeviceMounted(String nodeId) {
+        if (this.odlClient.isEnabled()) {
+            return this.odlClient.isDevicePresent(nodeId);
+        }
+        return this.deviceTransactionManager.isDeviceMounted(nodeId);
     }
 
     private String getConnectionNumber(String serviceName, Nodes node, String networkTp, String oduType) {
