@@ -2,12 +2,7 @@
 
 ## Prerequisites
 
- * build honeynode docker image
-
-```
-  cd tests/Xtesting/DockerSims/
-  ./build_sims.sh
-```   
+  * NTSimulator for OpenROADM with 2.2.1 Model
 
 ## Configure
 

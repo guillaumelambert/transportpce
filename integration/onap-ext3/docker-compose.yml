@@ -24,8 +24,8 @@ services:
     depends_on: 
       - sdnr
   sdnr:
-#    image: nexus3.onap.org:10001/onap/sdnc-image:1.8.4-STAGING-latest
-    image: hightec/sdnr-image-sodium:1.0.0-SNAPSHOT-20200720T171600Z
+    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.1-STAGING-20200914T034621Z
+#    image: hightec/sdnr-image-sodium:1.0.0-SNAPSHOT-20200720T171600Z
     environment: 
       - SDNRONLY=true
       - SDNRINIT=true
@@ -33,11 +33,11 @@ services:
       - SDNRWT=true
       - SDNRDBURL=http://sdnrdb:9200
       - SDNRWT_BOOTFEATURES=odl-netconf-callhome-ssh,sdnr-wt-feature-aggregator
-#    entrypoint: /opt/onap/sdnc/bin/startODL.oom.sh
+    entrypoint: /opt/onap/sdnc/bin/startODL.oom.sh
     depends_on: 
       - sdnrdb
   sdnrdb:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.4
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
     environment: 
       - discovery.type=single-node
   roadma:
