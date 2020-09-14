@@ -2,11 +2,15 @@
 
 ## Prerequisites
 
-  * NTSimulator for OpenROADM with 2.2.1 Model
+  * NTSimulator for OpenROADM with 2.2.1 Model (hightec/ntsim_openroadm_2.2.1_standalone:0.6.5)
 
 ## Configure
 
 just config the params in the ```.env``` file.
+
+```
+REMOTE_ODL_ENABLED=true
+```
 
 ## How to start
 
