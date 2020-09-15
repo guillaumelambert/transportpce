@@ -1,56 +1,43 @@
-# TransportPCE distributions
+# TransportPCE with ONAP
 
-build and run docker images with transportPCE
+## Prerequisites
 
-## standalone image
+  * OpenJDK 11
+  * Maven 3.6
+  * docker
+  * docker-compose (for integration test)
 
-standalone distribution
+## build
 
-prerequisites:
-  * build artifacts including installer
-
-### build
+ * build artifacts
 ```
-mvn clean install
+mvn clean install -DskipTests
 ```
+  * build docker image
+```
+mvn clean install -f distribution/odltrpce-alpine-standalone
+```
+
 This creates a docker image 'odl/transportpce' with the latest tag.
 
-### run
+## run standalone
+
 ```
 docker run -d odl/transportpce
 ```
 
-## ONAP
 
-run transportPCE as a microservice for ONAP SDNC
+## run integration test
 
-prerequisites: 
-  * build the standalone dist
-
-### containers
-
-  * SDNC in configuration to run SDN-R functionality
-  * SDNC-web to show ODLUX UI
-  * SDNRDB as database
-  * transportPCE
-
-
-### run
-
+```
+cd integration/onap-ext3
+```
+edit ```.env``` file
 ```
 docker-compose up -d
+../bin/integration.py test 3
 ```
 
-
-### extended startup
-
-like ONAP but with additional Simulators implementing OpenROADM
-
-prerequisites:
-  * docker image of NetconfServerSimulator(https://github.com/Melacon/WirelessTransportEmulator)  
-
-```
-docker-compose -f docker-compose-ext.yml up -d
-```
+more details [here](integration/README.md)
 
 
