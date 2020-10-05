@@ -157,6 +157,8 @@ class Integration:
         tc.exec("/opt/opendaylight/bin/client 'bundle:stop "+bundleId+"'")
 
     def getLogs(self, container=None):
+        if not os.path.exists('logs'):
+            os.makedirs('logs')
         c = Docker()
         src = "/opt/opendaylight/data/log/karaf.log"
         prefix = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -211,7 +213,12 @@ if __name__ == "__main__":
     tmp = execDirAbs.split("/")
     prefix = tmp[len(tmp)-1]
     prefix = prefix.replace("-", "").replace(" ", "_")+"_"
+    # newest docker version doesnt replace '-' in folders to prefix
+    d = Docker()
+    if not d.exists(prefix+"sdnr_1"):
+        prefix = prefix.replace(" ", "_")+"_"
 
+    
     envFilename = execDirAbs+"/.env"
     if not os.path.isfile(envFilename):
         envFilename = None

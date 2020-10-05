@@ -43,6 +43,10 @@ class Docker:
 
     def copy(self, name, srcFilename, dstFilename):
         return self.exec("cp "+name+":"+srcFilename+" "+dstFilename)
+    
+    def exists(self, name):
+        output = self.exec("ps | grep "+name)
+        return len(output)>0
 
 class DockerContainer:
 
