@@ -216,6 +216,7 @@ if __name__ == "__main__":
     # newest docker version doesnt replace '-' in folders to prefix
     d = Docker()
     if not d.exists(prefix+"sdnr_1"):
+        prefix = tmp[len(tmp)-1]
         prefix = prefix.replace(" ", "_")+"_"
 
     
