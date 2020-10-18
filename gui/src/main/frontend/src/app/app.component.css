@@ -1,0 +1,10 @@
+.modal {
+    top: 50%;
+    overflow: inherit;  
+}
+div#exampleModal.show {
+    display: block;
+}
+.modal a {
+    color: #69c7b9;
+}

@@ -1,0 +1,24 @@
+<div id="sidebar" [class.active]="active">
+  <div class="filter p-3">
+    <input #fileInput type="file" multiple="true" [hidden]="true"
+      (change)="readCollectionFiles($event.target.files); fileInput.value = ''" accept=".json" />
+    <div class="row">
+      <div class="col-md-10 filter-input">
+        <input type="search" class="px-4 py-1" placeholder="filter" (input)="filterChanged($event.target.value)" >
+      </div>
+      <div class="col-md-2">
+        <button type="button" (click)="fileInput.click()" class="import-button" aria-label="Left Align">
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <div class="scrollable">
+    <app-collections-tree [collectionsTree]="treeData" [searchText]="searchText"></app-collections-tree>
+    <!-- <ul id="compositions-list" class="pure-tree main-tree p-3 w-100">
+      <li *ngFor="let collection of filteredPostmanCollections;let i = index">
+        <app-collection [postmanCollection]="collection" [index]="i"></app-collection>
+      </li>
+    </ul> -->
+  </div>
+</div>

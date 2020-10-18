@@ -1,0 +1,33 @@
+<div
+  class="rectangle"
+  [ngStyle]="style"
+  mwlResizable
+  [validateResize]="validate"
+  [enableGhostResize]="true"
+  [resizeEdges]="{ left: true }"
+  (resizeEnd)="onResizeEnd($event)">
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+    <mat-tab label="Node Info">
+      <app-yang-tree [nodeId]="nodeId"></app-yang-tree>
+    </mat-tab>
+    <mat-tab label="Services">
+      <!-- <div class="p-3">
+      <div class="form-check my-3 p-0">
+          <input type="checkbox" class="form-check-input magic-checkbox" id="checkbox1">
+          <label class="form-check-label" for="checkbox1">Service 1</label>
+        </div>
+
+        <div class="form-check my-3 p-0">
+          <input type="checkbox" class="form-check-input magic-checkbox" id="checkbox2">
+
+          <label class="form-check-label" for="checkbox2">Service 2</label>
+        </div>
+      </div> -->
+      <app-services-list></app-services-list>
+    </mat-tab>
+    <mat-tab label="Service Info">
+      <app-service-info></app-service-info>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+

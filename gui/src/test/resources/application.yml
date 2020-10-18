@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  profiles:
+    active: test
+
+---
+spring:
+  profiles: test
+onap:
+  api:
+      username: admin
+      password: admin
+      network-url-path: http://172.29.236.6:8181/restconf/config/ietf-network:networks
+      service-path-list: http://172.29.236.6:8181/restconf/operational/transportpce-servicepath:service-path-list
+      service-url-path: http://172.29.236.6:8181/restconf/operational/org-openroadm-service:service-list

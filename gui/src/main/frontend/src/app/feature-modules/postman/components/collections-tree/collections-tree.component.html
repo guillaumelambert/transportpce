@@ -1,0 +1,26 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <!-- This is the tree node template for leaf nodes -->
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding matTreeNodePaddingIndent="15" class="postman-tree">
+    <!-- <button mat-icon-button disabled></button> -->
+    <app-request [request]="node.data" [style.marginLeft.px]="10"></app-request>
+  </mat-tree-node>
+
+  <!-- This is the tree node template for expandable nodes -->
+  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding matTreeNodePaddingIndent="15" class="postman-tree">
+
+    <mat-icon [hidden]="node.type != 'collection'" class="material-icons" [attr.aria-label]="node.type + 'icon'">
+      {{ node.type ==='collection' ? 'folder' : 'folder_open' }}
+    </mat-icon>
+    <mat-icon [hidden]="node.type != 'folder'" class="material-icons-outlined" [attr.aria-label]="node.type + 'icon'">
+        {{ node.type ==='collection' ? 'folder' : 'folder_open' }}
+      </mat-icon>
+    <span class="text">{{node.name}}</span>
+    <button mat-icon-button matTreeNodeToggle
+            [attr.aria-label]="'toggle ' + node.name">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+  </mat-tree-node>
+</mat-tree>

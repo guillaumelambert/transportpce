@@ -1,0 +1,92 @@
+{"services":[
+  {
+    "service-name": "service1",
+    "service-z-end": {
+      "tx-direction": {
+        "port": {
+          "port-type": "fixed",
+          "port-rack": "000000.00",
+          "port-name": "1",
+          "port-device-name": "1/0/C1",
+          "port-shelf": "Chassis#1"
+        },
+        "lgx": {
+          "lgx-port-name": "Some lgx-port-name",
+          "lgx-device-name": "Some lgx-device-name",
+          "lgx-port-shelf": "00",
+          "lgx-port-rack": "000000.00"
+        }
+      },
+      "optic-type": "gray",
+      "clli": "SNJSCAMCJT4",
+      "service-format": "OTU",
+      "rx-direction": {
+        "port": {
+          "port-type": "fixed",
+          "port-rack": "000000.00",
+          "port-name": "1",
+          "port-device-name": "1/0/C1",
+          "port-shelf": "Chassis#1"
+        },
+        "lgx": {
+          "lgx-port-name": "Some lgx-port-name",
+          "lgx-device-name": "Some lgx-device-name",
+          "lgx-port-shelf": "00",
+          "lgx-port-rack": "000000.00"
+        }
+      },
+      "node-id": "XPDR-C1",
+      "service-rate": 100
+    },
+    "administrative-state": "inService",
+    "connection-type": "service",
+    "service-a-end": {
+      "tx-direction": {
+        "port": {
+          "port-type": "fixed",
+          "port-rack": "000000.00",
+          "port-name": "1",
+          "port-device-name": "1/0/C1",
+          "port-shelf": "Chassis#1"
+        },
+        "lgx": {
+          "lgx-port-name": "Some lgx-port-name",
+          "lgx-device-name": "Some lgx-device-name",
+          "lgx-port-shelf": "00",
+          "lgx-port-rack": "000000.00"
+        }
+      },
+      "optic-type": "gray",
+      "clli": "SNJSCAMCJP8",
+      "service-format": "OTU",
+      "rx-direction": {
+        "port": {
+          "port-type": "fixed",
+          "port-rack": "000000.00",
+          "port-name": "1",
+          "port-device-name": "1/0/C1",
+          "port-shelf": "Chassis#1"
+        },
+        "lgx": {
+          "lgx-port-name": "Some lgx-port-name",
+          "lgx-device-name": "Some lgx-device-name",
+          "lgx-port-shelf": "00",
+          "lgx-port-rack": "000000.00"
+        }
+      },
+      "node-id": "XPDR-A1",
+      "service-rate": 100
+    },
+    "sdnc-request-header": {
+      "request-id": "request-1",
+      "rpc-action": "service-create",
+      "request-system-id": "appname"
+    },
+    "is-bandwidth-locked": false,
+    "service-layer": "wdm",
+    "lifecycle-state": "planned",
+    "common-id": "commonId",
+    "operational-state": "inService"
+  }
+]
+}

@@ -1,0 +1,13 @@
+.mat-tree-node, .mat-tree-node app-request {
+  width: 100%;
+}
+.mat-tree {
+  padding-left: 20px;
+}
+.mat-icon-button {
+  position: absolute;
+  right: 0;
+}
+.mat-tree-node .text {
+  margin-left: 10px;
+}

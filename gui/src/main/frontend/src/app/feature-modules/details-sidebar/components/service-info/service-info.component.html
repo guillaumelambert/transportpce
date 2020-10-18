@@ -1,0 +1,47 @@
+<!--<div>
+
+
+  serviceName : {{serviceModel.serviceName}} <br>
+  serviceFormat: {{serviceModel.serviceFormat}}<br>
+  serviceRate: {{serviceModel.ServiceRate}}
+
+</div>-->
+
+<mat-card class="p-0">
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree-node  *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="15"
+                    [class.example-tree-node-odd]="isOdd(node)">
+      <button mat-icon-button disabled>
+        <mat-icon class="leaf">
+          {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        </mat-icon>
+      </button>
+     <label style="font-weight: 700;">
+        {{node.item.split(':')[0]}}
+      </label>
+      <div style="padding-left: 40px;color: #878080;">
+        {{node.item.split(':')[1]}}
+      </div>
+      <hr>
+    </mat-tree-node>
+    <mat-tree-node *matTreeNodeDef="let node;when: hasChildren" matTreeNodePadding matTreeNodePaddingIndent="15"
+                   [class.example-tree-node-odd]="isOdd(node)">
+      <button mat-icon-button matTreeNodeToggle
+              [matTreeNodeToggleRecursive]="recursive"
+              [attr.aria-label]="'toggle ' + node.filename">
+        <mat-icon>
+          {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        </mat-icon>
+      </button>
+
+      <label style="font-weight: 700;">
+        {{node.item.split('[')[0]}}
+      </label>
+
+      <div style="padding-left: 40px;color: #878080;">
+        {{   node.item.split('[')[1] ?  node.item.split('[')[1].split(']')[0] : node.item.split('[')[1] }}
+      </div>
+      <hr>
+    </mat-tree-node>
+  </mat-tree>
+</mat-card>

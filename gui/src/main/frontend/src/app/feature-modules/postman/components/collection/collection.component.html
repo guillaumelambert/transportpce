@@ -1,0 +1,11 @@
+<input type="checkbox" [id]="'trigger-views' + index" [(checked)]="checked">
+<label [for]="'trigger-views' + index">
+  <i class="far fa-folder"></i>
+  {{postmanCollection.getName()}}
+</label>
+
+<ul class="pure-tree">
+  <!-- <li *ngFor="let request of postmanCollection.getRequests()" class="pure-tree_link">
+    <app-request [request]="request"></app-request>
+  </li> -->
+</ul>

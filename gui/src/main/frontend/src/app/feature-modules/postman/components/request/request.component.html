@@ -1,0 +1,23 @@
+<div title="index.jade" class="link" target="_blank"><span
+    [class]="'tree-label ' + getMethodCssClass(request.method) + ' mr-2'">{{ request.method }}</span>{{ request.name }}
+
+    <div ngbDropdown class="d-inline-block context-menu" placement="bottom-right">
+        <span class="dots" id="dropdownBasic1" ngbDropdownToggle ><i class="fas fa-ellipsis-v"></i></span>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1" >
+          <button ngbDropdownItem  (click)="executeAndShowRequest(content)">Execute</button>
+          <button ngbDropdownItem>Edit</button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #content let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Response</h4>
+          <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <ngx-json-viewer [json]="requestResponse"></ngx-json-viewer>
+        </div>
+      </ng-template>

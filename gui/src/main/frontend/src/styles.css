@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+ @import "assets/css/orangeHelvetica.css";
+ /*
+@import "assets/css/style.css";
+@import "assets/css/webvowl.app.css";
+@import "assets/css/webvowl.css";
+@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");*/
+@import "../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';

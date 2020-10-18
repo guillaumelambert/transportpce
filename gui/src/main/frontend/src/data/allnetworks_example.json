@@ -1,0 +1,3347 @@
+[
+	{
+		"network-id": "openroadm-topology",
+		"node": [
+			{
+				"node-id": "ROADM-A1-SRG3",
+				"termination-point": [
+					{
+						"tp-id": "SRG3-CP-TXRX",
+						"tp-type":  "SRG-TXRX-CP"
+					},
+					{
+						"tp-id": "SRG3-PP2-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					},
+					{
+						"tp-id": "SRG3-PP4-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					},
+					{
+						"tp-id": "SRG3-PP1-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					},
+					{
+						"tp-id": "SRG3-PP3-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					}
+				],
+				"srg-attributes": {
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type":  "SRG",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-A1"
+				}
+			},
+			{
+				"node-id": "ROADM-C1-DEG2",
+				"termination-point": [
+					{
+						"tp-id": "DEG2-CTP-TXRX",
+						"tp-type": "DEGREE-TXRX-CTP"
+					},
+					{
+						"tp-id": "DEG2-TTP-TXRX",
+						"tp-type": "DEGREE-TXRX-TTP"
+					}
+				],
+				"degree-attributes": {
+					"degree-number": "2",
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type": "DEGREE",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-C1"
+				}
+			},
+			{
+				"node-id": "ROADM-B1-DEG1",
+				"termination-point": [
+					{
+						"tp-id": "DEG1-TTP-TXRX",
+						"tp-type": "DEGREE-TXRX-TTP"
+					},
+					{
+						"tp-id": "DEG1-CTP-TXRX",
+						"tp-type": "DEGREE-TXRX-CTP"
+					}
+				],
+				"degree-attributes": {
+					"degree-number": "1",
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type": "DEGREE",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-B1"
+				}
+			},
+			{
+				"node-id": "ROADM-B1-DEG2",
+				"termination-point": [
+					{
+						"tp-id": "DEG2-CTP-TXRX",
+						"tp-type": "DEGREE-TXRX-CTP"
+
+					},
+					{
+						"tp-id": "DEG2-TTP-TXRX",
+						"tp-type": "DEGREE-TXRX-TTP"
+
+					}
+				],
+				"degree-attributes": {
+					"degree-number": "2",
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type": "DEGREE",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-B1"
+				}
+			},
+			{
+				"node-id": "ROADM-C1-SRG1",
+				"termination-point": [
+					{
+						"tp-id": "SRG1-PP4-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+
+					},
+					{
+						"tp-id": "SRG1-CP-TXRX",
+						"tp-type": "SRG-TXRX-CP"
+					},
+					{
+						"tp-id": "SRG1-PP2-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					},
+					{
+						"tp-id": "SRG1-PP1-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					},
+					{
+						"tp-id": "SRG1-PP3-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					}
+				],
+				"srg-attributes": {
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type": "SRG",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-C1"
+				}
+			},
+			{
+				"node-id": "ROADM-A1-SRG1",
+				"termination-point": [
+					{
+						"tp-id": "SRG1-PP4-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					},
+					{
+						"tp-id": "SRG1-CP-TXRX",
+						"tp-type": "SRG-TXRX-CP"
+					},
+					{
+						"tp-id": "SRG1-PP2-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					},
+					{
+						"tp-id": "SRG1-PP1-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					},
+					{
+						"tp-id": "SRG1-PP3-TXRX",
+						"tp-type": "SRG-TXRX-PP"
+					}
+				],
+				"srg-attributes": {
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type": "SRG",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-A1"
+				}
+			},
+			{
+				"node-id": "ROADM-A1-DEG2",
+				"termination-point": [
+					{
+						"tp-id": "DEG2-CTP-TXRX",
+						"tp-type": "DEGREE-TXRX-CTP"
+					},
+					{
+						"tp-id": "DEG2-TTP-TXRX",
+						"tp-type": "DEGREE-TXRX-TTP"
+					}
+				],
+				"degree-attributes": {
+					"degree-number": "2",
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type": "DEGREE",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-A1"
+				}
+			},
+			{
+				"node-id": "XPDR-A1-XPDR1",
+				"termination-point": [
+					{
+						"tp-id": "XPDR1-CLIENT2",
+						"associated-connection-map-port":  "XPDR1-NETWORK2",
+						"xpdr-client-attributes": {
+							"tail-equipment-id": "XPDR1-NETWORK2"
+						},
+						"tp-type": "XPONDER-CLIENT"
+					},
+					{
+						"tp-id": "XPDR1-NETWORK2",
+						"associated-connection-map-port": "XPDR1-CLIENT2",
+						"tp-type": "XPONDER-NETWORK",
+						"xpdr-network-attributes": {
+							"tail-equipment-id": "XPDR1-CLIENT2"
+						}
+
+					},
+					{
+						"tp-id": "XPDR1-CLIENT1",
+						"associated-connection-map-port": "XPDR1-NETWORK1",
+						"xpdr-client-attributes": {
+							"tail-equipment-id": "XPDR1-NETWORK1"
+						},
+						"tp-type": "XPONDER-CLIENT"
+					},
+					{
+						"tp-id": "XPDR1-NETWORK1",
+						"associated-connection-map-port": "XPDR1-CLIENT1",
+						"tp-type": "XPONDER-NETWORK",
+						"xpdr-network-attributes": {
+							"tail-equipment-id": "XPDR1-CLIENT1"
+						}
+					}
+				],
+				"node-type":  "XPONDER",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "XPDR-A1"
+				}
+			},
+			{
+				"node-id": "ROADM-A1-DEG1",
+				"termination-point": [
+					{
+						"tp-id": "DEG1-TTP-TXRX",
+						"tp-type": "DEGREE-TXRX-TTP"
+					},
+					{
+						"tp-id": "DEG1-CTP-TXRX",
+						"tp-type": "DEGREE-TXRX-CTP"
+					}
+				],
+				"degree-attributes": {
+					"degree-number": "1",
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type": "DEGREE",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-A1"
+				}
+			},
+			{
+				"node-id": "XPDR-C1-XPDR1",
+				"termination-point": [
+					{
+						"tp-id": "XPDR1-CLIENT2",
+						"associated-connection-map-port": "XPDR1-NETWORK2",
+						"xpdr-client-attributes": {
+							"tail-equipment-id": "XPDR1-NETWORK2"
+						},
+						"tp-type": "XPONDER-CLIENT"
+					},
+					{
+						"tp-id": "XPDR1-NETWORK2",
+						"associated-connection-map-port": "XPDR1-CLIENT2",
+						"tp-type": "XPONDER-NETWORK",
+						"xpdr-network-attributes": {
+							"tail-equipment-id": "XPDR1-CLIENT2"
+						}
+					},
+					{
+						"tp-id": "XPDR1-CLIENT1",
+						"associated-connection-map-port": "XPDR1-NETWORK1",
+						"xpdr-client-attributes": {
+							"tail-equipment-id": "XPDR1-NETWORK1"
+						},
+						"tp-type": "XPONDER-CLIENT"
+					},
+					{
+						"tp-id": "XPDR1-NETWORK1",
+						"associated-connection-map-port": "XPDR1-CLIENT1",
+						"tp-type": "XPONDER-NETWORK",
+						"xpdr-network-attributes": {
+							"tail-equipment-id": "XPDR1-CLIENT1"
+						}
+					}
+				],
+				"node-type": "XPONDER",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "XPDR-C1"
+				}
+			},
+			{
+				"node-id": "ROADM-C1-DEG1",
+				"termination-point": [
+					{
+						"tp-id": "DEG1-TTP-TXRX",
+						"tp-type": "DEGREE-TXRX-TTP"
+					},
+					{
+						"tp-id": "DEG1-CTP-TXRX",
+						"tp-type": "DEGREE-TXRX-CTP"
+					}
+				],
+				"degree-attributes": {
+					"degree-number": "1",
+					"available-wavelengths": [
+						{
+							"index": "94"
+						},
+						{
+							"index": "93"
+						},
+						{
+							"index": "96"
+						},
+						{
+							"index": "95"
+						},
+						{
+							"index": "42"
+						},
+						{
+							"index": "41"
+						},
+						{
+							"index": "44"
+						},
+						{
+							"index": "43"
+						},
+						{
+							"index": "38"
+						},
+						{
+							"index": "37"
+						},
+						{
+							"index": "40"
+						},
+						{
+							"index": "39"
+						},
+						{
+							"index": "34"
+						},
+						{
+							"index": "33"
+						},
+						{
+							"index": "36"
+						},
+						{
+							"index": "35"
+						},
+						{
+							"index": "30"
+						},
+						{
+							"index": "29"
+						},
+						{
+							"index": "32"
+						},
+						{
+							"index": "31"
+						},
+						{
+							"index": "58"
+						},
+						{
+							"index": "57"
+						},
+						{
+							"index": "60"
+						},
+						{
+							"index": "59"
+						},
+						{
+							"index": "54"
+						},
+						{
+							"index": "53"
+						},
+						{
+							"index": "56"
+						},
+						{
+							"index": "55"
+						},
+						{
+							"index": "50"
+						},
+						{
+							"index": "49"
+						},
+						{
+							"index": "52"
+						},
+						{
+							"index": "51"
+						},
+						{
+							"index": "46"
+						},
+						{
+							"index": "45"
+						},
+						{
+							"index": "48"
+						},
+						{
+							"index": "47"
+						},
+						{
+							"index": "74"
+						},
+						{
+							"index": "73"
+						},
+						{
+							"index": "76"
+						},
+						{
+							"index": "75"
+						},
+						{
+							"index": "70"
+						},
+						{
+							"index": "69"
+						},
+						{
+							"index": "72"
+						},
+						{
+							"index": "71"
+						},
+						{
+							"index": "66"
+						},
+						{
+							"index": "65"
+						},
+						{
+							"index": "68"
+						},
+						{
+							"index": "67"
+						},
+						{
+							"index": "62"
+						},
+						{
+							"index": "61"
+						},
+						{
+							"index": "64"
+						},
+						{
+							"index": "63"
+						},
+						{
+							"index": "90"
+						},
+						{
+							"index": "89"
+						},
+						{
+							"index": "92"
+						},
+						{
+							"index": "91"
+						},
+						{
+							"index": "86"
+						},
+						{
+							"index": "85"
+						},
+						{
+							"index": "88"
+						},
+						{
+							"index": "87"
+						},
+						{
+							"index": "82"
+						},
+						{
+							"index": "81"
+						},
+						{
+							"index": "84"
+						},
+						{
+							"index": "83"
+						},
+						{
+							"index": "78"
+						},
+						{
+							"index": "77"
+						},
+						{
+							"index": "80"
+						},
+						{
+							"index": "79"
+						},
+						{
+							"index": "10"
+						},
+						{
+							"index": "9"
+						},
+						{
+							"index": "12"
+						},
+						{
+							"index": "11"
+						},
+						{
+							"index": "6"
+						},
+						{
+							"index": "5"
+						},
+						{
+							"index": "8"
+						},
+						{
+							"index": "7"
+						},
+						{
+							"index": "2"
+						},
+						{
+							"index": "1"
+						},
+						{
+							"index": "4"
+						},
+						{
+							"index": "3"
+						},
+						{
+							"index": "26"
+						},
+						{
+							"index": "25"
+						},
+						{
+							"index": "28"
+						},
+						{
+							"index": "27"
+						},
+						{
+							"index": "22"
+						},
+						{
+							"index": "21"
+						},
+						{
+							"index": "24"
+						},
+						{
+							"index": "23"
+						},
+						{
+							"index": "18"
+						},
+						{
+							"index": "17"
+						},
+						{
+							"index": "20"
+						},
+						{
+							"index": "19"
+						},
+						{
+							"index": "14"
+						},
+						{
+							"index": "13"
+						},
+						{
+							"index": "16"
+						},
+						{
+							"index": "15"
+						}
+					]
+				},
+				"node-type": "DEGREE",
+				"supporting-node": {
+					"network-ref": "openroadm-network",
+					"node-ref": "ROADM-C1"
+				}
+			}
+		],
+		"network-types": {
+			"openroadm-common-network": { }
+		},
+		"link": [
+			{
+				"link-id": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-SRG3-SRG3-CP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-DEG1",
+					"source-tp": "DEG1-CTP-TXRX"
+				},
+				"link-type": "DROP-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-SRG3",
+					"dest-tp": "SRG3-CP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-SRG3-SRG3-CP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-SRG3-SRG3-CP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-SRG3",
+					"source-tp": "SRG3-CP-TXRX"
+				},
+				"link-type": "ADD-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-DEG2",
+					"dest-tp": "DEG2-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-SRG3-SRG3-CP-TXRX"
+			},
+			{
+				"link-id": "ROADM-C1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG2-DEG2-TTP-TXRX",
+				"source": {
+					"source-node": "ROADM-C1-DEG1",
+					"source-tp": "DEG1-TTP-TXRX"
+				},
+				"OMS-attributes": {
+					"opposite-link": "ROADM-A1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG1-DEG1-TTP-TXRX"
+				},
+				"link-type": "ROADM-TO-ROADM",
+				"destination": {
+					"dest-node": "ROADM-A1-DEG2",
+					"dest-tp": "DEG2-TTP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG1-DEG1-TTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-C1-DEG2-DEG2-CTP-TXRXtoROADM-C1-SRG1-SRG1-CP-TXRX",
+				"source": {
+					"source-node": "ROADM-C1-DEG2",
+					"source-tp": "DEG2-CTP-TXRX"
+				},
+				"link-type": "DROP-LINK",
+				"destination": {
+					"dest-node": "ROADM-C1-SRG1",
+					"dest-tp": "SRG1-CP-TXRX"
+				},
+				"opposite-link": "ROADM-C1-SRG1-SRG1-CP-TXRXtoROADM-C1-DEG2-DEG2-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-DEG1-DEG1-TTP-TXRXtoROADM-B1-DEG1-DEG1-TTP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-DEG1",
+					"source-tp": "DEG1-TTP-TXRX"
+				},
+				"OMS-attributes": {
+					"opposite-link": "ROADM-B1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG1-DEG1-TTP-TXRX"
+				},
+				"link-type": "ROADM-TO-ROADM",
+				"destination": {
+					"dest-node": "ROADM-B1-DEG1",
+					"dest-tp": "DEG1-TTP-TXRX"
+				},
+				"opposite-link": "ROADM-B1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG1-DEG1-TTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG1-DEG1-TTP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-DEG2",
+					"source-tp": "DEG2-TTP-TXRX"
+				},
+				"OMS-attributes": {
+					"opposite-link": "ROADM-C1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG2-DEG2-TTP-TXRX"
+				},
+				"link-type": "ROADM-TO-ROADM",
+				"destination": {
+					"dest-node": "ROADM-C1-DEG1",
+					"dest-tp": "DEG1-TTP-TXRX"
+				},
+				"opposite-link": "ROADM-C1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG2-DEG2-TTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-C1-DEG2-DEG2-CTP-TXRXtoROADM-C1-DEG1-DEG1-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-C1-DEG2",
+					"source-tp": "DEG2-CTP-TXRX"
+				},
+				"link-type": "EXPRESS-LINK",
+				"destination": {
+					"dest-node": "ROADM-C1-DEG1",
+					"dest-tp": "DEG1-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-C1-DEG1-DEG1-CTP-TXRXtoROADM-C1-DEG2-DEG2-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-C1-DEG2-DEG2-TTP-TXRXtoROADM-B1-DEG2-DEG2-TTP-TXRX",
+				"source": {
+					"source-node": "ROADM-C1-DEG2",
+					"source-tp": "DEG2-TTP-TXRX"
+				},
+				"OMS-attributes": {
+					"opposite-link": "ROADM-B1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG2-DEG2-TTP-TXRX"
+				},
+				"link-type": "ROADM-TO-ROADM",
+				"destination": {
+					"dest-node": "ROADM-B1-DEG2",
+					"dest-tp": "DEG2-TTP-TXRX"
+				},
+				"opposite-link": "ROADM-B1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG2-DEG2-TTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-C1-DEG1-DEG1-CTP-TXRXtoROADM-C1-DEG2-DEG2-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-C1-DEG1",
+					"source-tp": "DEG1-CTP-TXRX"
+				},
+				"link-type": "EXPRESS-LINK",
+				"destination": {
+					"dest-node": "ROADM-C1-DEG2",
+					"dest-tp": "DEG2-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-C1-DEG2-DEG2-CTP-TXRXtoROADM-C1-DEG1-DEG1-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-SRG1-SRG1-CP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-DEG2",
+					"source-tp": "DEG2-CTP-TXRX"
+				},
+				"link-type": "DROP-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-SRG1",
+					"dest-tp": "SRG1-CP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-SRG1-SRG1-CP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-SRG3-SRG3-CP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-DEG2",
+					"source-tp": "DEG2-CTP-TXRX"
+				},
+				"link-type": "DROP-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-SRG3",
+					"dest-tp": "SRG3-CP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-SRG3-SRG3-CP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-B1-DEG2-DEG2-CTP-TXRXtoROADM-B1-DEG1-DEG1-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-B1-DEG2",
+					"source-tp": "DEG2-CTP-TXRX"
+				},
+				"link-type": "EXPRESS-LINK",
+				"destination": {
+					"dest-node": "ROADM-B1-DEG1",
+					"dest-tp": "DEG1-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-B1-DEG1-DEG1-CTP-TXRXtoROADM-B1-DEG2-DEG2-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-C1-DEG1-DEG1-CTP-TXRXtoROADM-C1-SRG1-SRG1-CP-TXRX",
+				"source": {
+					"source-node": "ROADM-C1-DEG1",
+					"source-tp": "DEG1-CTP-TXRX"
+				},
+				"link-type": "DROP-LINK",
+				"destination": {
+					"dest-node": "ROADM-C1-SRG1",
+					"dest-tp": "SRG1-CP-TXRX"
+				},
+				"opposite-link": "ROADM-C1-SRG1-SRG1-CP-TXRXtoROADM-C1-DEG1-DEG1-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-DEG2",
+					"source-tp": "DEG2-CTP-TXRX"
+				},
+				"link-type": "EXPRESS-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-DEG1",
+					"dest-tp": "DEG1-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-SRG1-SRG1-CP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-SRG1",
+					"source-tp": "SRG1-CP-TXRX"
+				},
+				"link-type": "ADD-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-DEG1",
+					"dest-tp": "DEG1-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-SRG1-SRG1-CP-TXRX"
+			},
+			{
+				"link-id": "ROADM-C1-SRG1-SRG1-CP-TXRXtoROADM-C1-DEG2-DEG2-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-C1-SRG1",
+					"source-tp": "SRG1-CP-TXRX"
+				},
+				"link-type": "ADD-LINK",
+				"destination": {
+					"dest-node": "ROADM-C1-DEG2",
+					"dest-tp": "DEG2-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-C1-DEG2-DEG2-CTP-TXRXtoROADM-C1-SRG1-SRG1-CP-TXRX"
+			},
+			{
+				"link-id": "ROADM-B1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG1-DEG1-TTP-TXRX",
+				"source": {
+					"source-node": "ROADM-B1-DEG1",
+					"source-tp": "DEG1-TTP-TXRX"
+				},
+				"OMS-attributes": {
+					"opposite-link": "ROADM-A1-DEG1-DEG1-TTP-TXRXtoROADM-B1-DEG1-DEG1-TTP-TXRX"
+				},
+				"link-type": "ROADM-TO-ROADM",
+				"destination": {
+					"dest-node": "ROADM-A1-DEG1",
+					"dest-tp": "DEG1-TTP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-DEG1-DEG1-TTP-TXRXtoROADM-B1-DEG1-DEG1-TTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-SRG1-SRG1-CP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-SRG1",
+					"source-tp": "SRG1-CP-TXRX"
+				},
+				"link-type": "ADD-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-DEG2",
+					"dest-tp": "DEG2-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-SRG1-SRG1-CP-TXRX"
+			},
+			{
+				"link-id": "ROADM-B1-DEG1-DEG1-CTP-TXRXtoROADM-B1-DEG2-DEG2-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-B1-DEG1",
+					"source-tp": "DEG1-CTP-TXRX"
+				},
+				"link-type": "EXPRESS-LINK",
+				"destination": {
+					"dest-node": "ROADM-B1-DEG2",
+					"dest-tp": "DEG2-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-B1-DEG2-DEG2-CTP-TXRXtoROADM-B1-DEG1-DEG1-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-B1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG2-DEG2-TTP-TXRX",
+				"source": {
+					"source-node": "ROADM-B1-DEG2",
+					"source-tp": "DEG2-TTP-TXRX"
+				},
+				"OMS-attributes": {
+					"opposite-link": "ROADM-C1-DEG2-DEG2-TTP-TXRXtoROADM-B1-DEG2-DEG2-TTP-TXRX"
+				},
+				"link-type": "ROADM-TO-ROADM",
+				"destination": {
+					"dest-node": "ROADM-C1-DEG2",
+					"dest-tp": "DEG2-TTP-TXRX"
+				},
+				"opposite-link": "ROADM-C1-DEG2-DEG2-TTP-TXRXtoROADM-B1-DEG2-DEG2-TTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-DEG1",
+					"source-tp": "DEG1-CTP-TXRX"
+				},
+				"link-type": "EXPRESS-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-DEG2",
+					"dest-tp": "DEG2-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-SRG3-SRG3-CP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-SRG3",
+					"source-tp": "SRG3-CP-TXRX"
+				},
+				"link-type": "ADD-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-DEG1",
+					"dest-tp": "DEG1-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-SRG3-SRG3-CP-TXRX"
+			},
+			{
+				"link-id": "ROADM-C1-SRG1-SRG1-CP-TXRXtoROADM-C1-DEG1-DEG1-CTP-TXRX",
+				"source": {
+					"source-node": "ROADM-C1-SRG1",
+					"source-tp": "SRG1-CP-TXRX"
+				},
+				"link-type": "ADD-LINK",
+				"destination": {
+					"dest-node": "ROADM-C1-DEG1",
+					"dest-tp": "DEG1-CTP-TXRX"
+				},
+				"opposite-link": "ROADM-C1-DEG1-DEG1-CTP-TXRXtoROADM-C1-SRG1-SRG1-CP-TXRX"
+			},
+			{
+				"link-id": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-SRG1-SRG1-CP-TXRX",
+				"source": {
+					"source-node": "ROADM-A1-DEG1",
+					"source-tp": "DEG1-CTP-TXRX"
+				},
+				"link-type": "DROP-LINK",
+				"destination": {
+					"dest-node": "ROADM-A1-SRG1",
+					"dest-tp": "SRG1-CP-TXRX"
+				},
+				"opposite-link": "ROADM-A1-SRG1-SRG1-CP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX"
+			}
+		]
+	},
+	{
+		"network-id": "clli-network",
+		"network-types": {
+			"clli-network": {
+			}
+		},
+		"node": [
+			{
+				"node-id": "NodeA",
+				"clli":  "NodeA"
+			},
+			{
+				"node-id": "NodeB",
+				"clli": "NodeB"
+			},
+			{
+				"node-id": "NodeC",
+				"clli": "NodeC"
+			}
+		]
+	},
+	{
+		"network-id": "openroadm-network",
+		"network-types": {
+			"openroadm-common-network": {
+			}
+		},
+		"node": [
+			{
+				"node-id": "ROADM-C1",
+				"supporting-node": {
+					"network-ref": "clli-network",
+					"node-ref": "NodeC"
+				},
+				"node-type": "ROADM",
+				"vendor": "vendorA",
+				"ip": "127.0.0.11",
+				"model":"model2"
+			},
+			{
+				"node-id": "XPDR-A1",
+				"supporting-node": {
+					"network-ref": "clli-network",
+					"node-ref": "NodeA"
+				},
+				"node-type": "XPONDER",
+				"vendor": "vendorA",
+				"ip": "1.2.3.4",
+				"model": "model2"
+			},
+			{
+				"node-id": "ROADM-A1",
+				"supporting-node": {
+					"network-ref": "clli-network",
+					"node-ref": "NodeA"
+				},
+				"node-type": "ROADM",
+				"vendor": "vendorA",
+				"ip": "127.0.0.11",
+				"model": "model2"
+			},
+			{
+				"node-id": "XPDR-C1",
+				"supporting-node": {
+					"network-ref": "clli-network",
+					"node-ref": "NodeC"
+				},
+				"node-type": "XPONDER",
+				"vendor": "vendorA",
+				"ip": "1.2.3.4",
+				"model": "model2"
+			},
+			{
+				"node-id": "ROADM-B1",
+				"supporting-node": {
+					"network-ref": "clli-network",
+					"node-ref": "NodeB"
+				},
+				"node-type": "ROADM",
+				"vendor": "vendorA",
+				"ip": "127.0.0.11",
+				"model": "model2"
+			}
+		]
+	}
+]

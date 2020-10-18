@@ -1,0 +1,13 @@
+<!-- <button mat-button  (click)="selectOrUnsellectAll()"  mat-raised-button color="primary">    <mat-icon>mic</mat-icon> {{serviceLayerShownButtonText}}</button> -->
+<!-- <mat-button-toggle (click)="selectOrUnsellectAll()"  value="{{serviceLayerShownButtonText}}"  color="primary"> <mat-icon>mic</mat-icon> {{serviceLayerShownButtonText}}</mat-button-toggle> -->
+<div class="p-3 pb-0">
+    <mat-slide-toggle (click)="selectOrUnsellectAll()"> {{serviceLayerShownButtonText}}</mat-slide-toggle>
+
+</div>
+
+
+<mat-selection-list #servicesListRef (selectionChange)="onSelection( $event.option, $event)">
+  <mat-list-option [checkboxPosition]="before" *ngFor="let service of services" [value]='service'>
+    {{service['service-name']}}
+  </mat-list-option>
+</mat-selection-list>

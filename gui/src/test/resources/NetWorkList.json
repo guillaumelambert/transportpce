@@ -1,0 +1,3188 @@
+{
+    "networks": {
+        "network": [
+            {
+                "network-id": "openroadm-topology",
+                "node": [
+                    {
+                        "node-id": "roadma221-SRG1",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "SRG1-PP4-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                            },
+                            {
+                                "tp-id": "SRG1-CP-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-CP",
+                                "org-openroadm-network-topology:cp-attributes": {
+                                    "used-wavelengths": [
+                                        {
+                                            "index": 1,
+                                            "frequency": 196.099999999999994315658113919198513031005859375,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "SRG1-PP2-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                            },
+                            {
+                                "tp-id": "SRG1-PP1-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP",
+                                "org-openroadm-network-topology:pp-attributes": {
+                                    "used-wavelength": [
+                                        {
+                                            "index": 1,
+                                            "frequency": 196.099999999999994315658113919198513031005859375,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "SRG1-PP3-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                            }
+                        ],
+                        "org-openroadm-network-topology:srg-attributes": {
+                            "available-wavelengths": [
+                                {
+                                    "index": 94
+                                },
+                                {
+                                    "index": 93
+                                },
+                                {
+                                    "index": 96
+                                },
+                                {
+                                    "index": 95
+                                },
+                                {
+                                    "index": 42
+                                },
+                                {
+                                    "index": 41
+                                },
+                                {
+                                    "index": 44
+                                },
+                                {
+                                    "index": 43
+                                },
+                                {
+                                    "index": 38
+                                },
+                                {
+                                    "index": 37
+                                },
+                                {
+                                    "index": 40
+                                },
+                                {
+                                    "index": 39
+                                },
+                                {
+                                    "index": 34
+                                },
+                                {
+                                    "index": 33
+                                },
+                                {
+                                    "index": 36
+                                },
+                                {
+                                    "index": 35
+                                },
+                                {
+                                    "index": 30
+                                },
+                                {
+                                    "index": 29
+                                },
+                                {
+                                    "index": 32
+                                },
+                                {
+                                    "index": 31
+                                },
+                                {
+                                    "index": 58
+                                },
+                                {
+                                    "index": 57
+                                },
+                                {
+                                    "index": 60
+                                },
+                                {
+                                    "index": 59
+                                },
+                                {
+                                    "index": 54
+                                },
+                                {
+                                    "index": 53
+                                },
+                                {
+                                    "index": 56
+                                },
+                                {
+                                    "index": 55
+                                },
+                                {
+                                    "index": 50
+                                },
+                                {
+                                    "index": 49
+                                },
+                                {
+                                    "index": 52
+                                },
+                                {
+                                    "index": 51
+                                },
+                                {
+                                    "index": 46
+                                },
+                                {
+                                    "index": 45
+                                },
+                                {
+                                    "index": 48
+                                },
+                                {
+                                    "index": 47
+                                },
+                                {
+                                    "index": 74
+                                },
+                                {
+                                    "index": 73
+                                },
+                                {
+                                    "index": 76
+                                },
+                                {
+                                    "index": 75
+                                },
+                                {
+                                    "index": 70
+                                },
+                                {
+                                    "index": 69
+                                },
+                                {
+                                    "index": 72
+                                },
+                                {
+                                    "index": 71
+                                },
+                                {
+                                    "index": 66
+                                },
+                                {
+                                    "index": 65
+                                },
+                                {
+                                    "index": 68
+                                },
+                                {
+                                    "index": 67
+                                },
+                                {
+                                    "index": 62
+                                },
+                                {
+                                    "index": 61
+                                },
+                                {
+                                    "index": 64
+                                },
+                                {
+                                    "index": 63
+                                },
+                                {
+                                    "index": 90
+                                },
+                                {
+                                    "index": 89
+                                },
+                                {
+                                    "index": 92
+                                },
+                                {
+                                    "index": 91
+                                },
+                                {
+                                    "index": 86
+                                },
+                                {
+                                    "index": 85
+                                },
+                                {
+                                    "index": 88
+                                },
+                                {
+                                    "index": 87
+                                },
+                                {
+                                    "index": 82
+                                },
+                                {
+                                    "index": 81
+                                },
+                                {
+                                    "index": 84
+                                },
+                                {
+                                    "index": 83
+                                },
+                                {
+                                    "index": 78
+                                },
+                                {
+                                    "index": 77
+                                },
+                                {
+                                    "index": 80
+                                },
+                                {
+                                    "index": 79
+                                },
+                                {
+                                    "index": 10
+                                },
+                                {
+                                    "index": 9
+                                },
+                                {
+                                    "index": 12
+                                },
+                                {
+                                    "index": 11
+                                },
+                                {
+                                    "index": 6
+                                },
+                                {
+                                    "index": 5
+                                },
+                                {
+                                    "index": 8
+                                },
+                                {
+                                    "index": 7
+                                },
+                                {
+                                    "index": 2
+                                },
+                                {
+                                    "index": 4
+                                },
+                                {
+                                    "index": 3
+                                },
+                                {
+                                    "index": 26
+                                },
+                                {
+                                    "index": 25
+                                },
+                                {
+                                    "index": 28
+                                },
+                                {
+                                    "index": 27
+                                },
+                                {
+                                    "index": 22
+                                },
+                                {
+                                    "index": 21
+                                },
+                                {
+                                    "index": 24
+                                },
+                                {
+                                    "index": 23
+                                },
+                                {
+                                    "index": 18
+                                },
+                                {
+                                    "index": 17
+                                },
+                                {
+                                    "index": 20
+                                },
+                                {
+                                    "index": 19
+                                },
+                                {
+                                    "index": 14
+                                },
+                                {
+                                    "index": 13
+                                },
+                                {
+                                    "index": 16
+                                },
+                                {
+                                    "index": 15
+                                }
+                            ]
+                        },
+                        "org-openroadm-common-network:node-type": "SRG",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "roadma221"
+                            }
+                        ]
+                    },
+                    {
+                        "node-id": "roadmc221-DEG1",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "DEG1-TTP-TXRX",
+                                "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP",
+                                "org-openroadm-network-topology:tx-ttp-attributes": {
+                                    "used-wavelengths": [
+                                        {
+                                            "index": 1,
+                                            "frequency": 196.099999999999994315658113919198513031005859375,
+                                            "width": 40
+                                        },
+                                        {
+                                            "index": 2,
+                                            "frequency": 196.05000000000001136868377216160297393798828125,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "DEG1-CTP-TXRX",
+                                "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP",
+                                "org-openroadm-network-topology:ctp-attributes": {
+                                    "used-wavelengths": [
+                                        {
+                                            "index": 1,
+                                            "frequency": 196.099999999999994315658113919198513031005859375,
+                                            "width": 40
+                                        },
+                                        {
+                                            "index": 2,
+                                            "frequency": 196.05000000000001136868377216160297393798828125,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "org-openroadm-network-topology:degree-attributes": {
+                            "degree-number": 1,
+                            "available-wavelengths": [
+                                {
+                                    "index": 42
+                                },
+                                {
+                                    "index": 41
+                                },
+                                {
+                                    "index": 44
+                                },
+                                {
+                                    "index": 43
+                                },
+                                {
+                                    "index": 38
+                                },
+                                {
+                                    "index": 37
+                                },
+                                {
+                                    "index": 40
+                                },
+                                {
+                                    "index": 39
+                                },
+                                {
+                                    "index": 34
+                                },
+                                {
+                                    "index": 33
+                                },
+                                {
+                                    "index": 36
+                                },
+                                {
+                                    "index": 35
+                                },
+                                {
+                                    "index": 30
+                                },
+                                {
+                                    "index": 29
+                                },
+                                {
+                                    "index": 32
+                                },
+                                {
+                                    "index": 31
+                                },
+                                {
+                                    "index": 58
+                                },
+                                {
+                                    "index": 57
+                                },
+                                {
+                                    "index": 60
+                                },
+                                {
+                                    "index": 59
+                                },
+                                {
+                                    "index": 54
+                                },
+                                {
+                                    "index": 53
+                                },
+                                {
+                                    "index": 56
+                                },
+                                {
+                                    "index": 55
+                                },
+                                {
+                                    "index": 50
+                                },
+                                {
+                                    "index": 49
+                                },
+                                {
+                                    "index": 52
+                                },
+                                {
+                                    "index": 51
+                                },
+                                {
+                                    "index": 46
+                                },
+                                {
+                                    "index": 45
+                                },
+                                {
+                                    "index": 48
+                                },
+                                {
+                                    "index": 47
+                                },
+                                {
+                                    "index": 74
+                                },
+                                {
+                                    "index": 73
+                                },
+                                {
+                                    "index": 76
+                                },
+                                {
+                                    "index": 75
+                                },
+                                {
+                                    "index": 70
+                                },
+                                {
+                                    "index": 69
+                                },
+                                {
+                                    "index": 72
+                                },
+                                {
+                                    "index": 71
+                                },
+                                {
+                                    "index": 66
+                                },
+                                {
+                                    "index": 65
+                                },
+                                {
+                                    "index": 68
+                                },
+                                {
+                                    "index": 67
+                                },
+                                {
+                                    "index": 62
+                                },
+                                {
+                                    "index": 61
+                                },
+                                {
+                                    "index": 64
+                                },
+                                {
+                                    "index": 63
+                                },
+                                {
+                                    "index": 90
+                                },
+                                {
+                                    "index": 89
+                                },
+                                {
+                                    "index": 92
+                                },
+                                {
+                                    "index": 91
+                                },
+                                {
+                                    "index": 86
+                                },
+                                {
+                                    "index": 85
+                                },
+                                {
+                                    "index": 88
+                                },
+                                {
+                                    "index": 87
+                                },
+                                {
+                                    "index": 82
+                                },
+                                {
+                                    "index": 81
+                                },
+                                {
+                                    "index": 84
+                                },
+                                {
+                                    "index": 83
+                                },
+                                {
+                                    "index": 78
+                                },
+                                {
+                                    "index": 77
+                                },
+                                {
+                                    "index": 80
+                                },
+                                {
+                                    "index": 79
+                                },
+                                {
+                                    "index": 94
+                                },
+                                {
+                                    "index": 93
+                                },
+                                {
+                                    "index": 96
+                                },
+                                {
+                                    "index": 95
+                                },
+                                {
+                                    "index": 10
+                                },
+                                {
+                                    "index": 9
+                                },
+                                {
+                                    "index": 12
+                                },
+                                {
+                                    "index": 11
+                                },
+                                {
+                                    "index": 6
+                                },
+                                {
+                                    "index": 5
+                                },
+                                {
+                                    "index": 8
+                                },
+                                {
+                                    "index": 7
+                                },
+                                {
+                                    "index": 4
+                                },
+                                {
+                                    "index": 3
+                                },
+                                {
+                                    "index": 26
+                                },
+                                {
+                                    "index": 25
+                                },
+                                {
+                                    "index": 28
+                                },
+                                {
+                                    "index": 27
+                                },
+                                {
+                                    "index": 22
+                                },
+                                {
+                                    "index": 21
+                                },
+                                {
+                                    "index": 24
+                                },
+                                {
+                                    "index": 23
+                                },
+                                {
+                                    "index": 18
+                                },
+                                {
+                                    "index": 17
+                                },
+                                {
+                                    "index": 20
+                                },
+                                {
+                                    "index": 19
+                                },
+                                {
+                                    "index": 14
+                                },
+                                {
+                                    "index": 13
+                                },
+                                {
+                                    "index": 16
+                                },
+                                {
+                                    "index": 15
+                                }
+                            ]
+                        },
+                        "org-openroadm-common-network:node-type": "DEGREE",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "roadmc221"
+                            }
+                        ]
+                    },
+                    {
+                        "node-id": "roadmc221-DEG2",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "DEG2-CTP-TXRX",
+                                "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP"
+                            },
+                            {
+                                "tp-id": "DEG2-TTP-TXRX",
+                                "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP"
+                            }
+                        ],
+                        "org-openroadm-network-topology:degree-attributes": {
+                            "degree-number": 2,
+                            "available-wavelengths": [
+                                {
+                                    "index": 94
+                                },
+                                {
+                                    "index": 93
+                                },
+                                {
+                                    "index": 96
+                                },
+                                {
+                                    "index": 95
+                                },
+                                {
+                                    "index": 42
+                                },
+                                {
+                                    "index": 41
+                                },
+                                {
+                                    "index": 44
+                                },
+                                {
+                                    "index": 43
+                                },
+                                {
+                                    "index": 38
+                                },
+                                {
+                                    "index": 37
+                                },
+                                {
+                                    "index": 40
+                                },
+                                {
+                                    "index": 39
+                                },
+                                {
+                                    "index": 34
+                                },
+                                {
+                                    "index": 33
+                                },
+                                {
+                                    "index": 36
+                                },
+                                {
+                                    "index": 35
+                                },
+                                {
+                                    "index": 30
+                                },
+                                {
+                                    "index": 29
+                                },
+                                {
+                                    "index": 32
+                                },
+                                {
+                                    "index": 31
+                                },
+                                {
+                                    "index": 58
+                                },
+                                {
+                                    "index": 57
+                                },
+                                {
+                                    "index": 60
+                                },
+                                {
+                                    "index": 59
+                                },
+                                {
+                                    "index": 54
+                                },
+                                {
+                                    "index": 53
+                                },
+                                {
+                                    "index": 56
+                                },
+                                {
+                                    "index": 55
+                                },
+                                {
+                                    "index": 50
+                                },
+                                {
+                                    "index": 49
+                                },
+                                {
+                                    "index": 52
+                                },
+                                {
+                                    "index": 51
+                                },
+                                {
+                                    "index": 46
+                                },
+                                {
+                                    "index": 45
+                                },
+                                {
+                                    "index": 48
+                                },
+                                {
+                                    "index": 47
+                                },
+                                {
+                                    "index": 74
+                                },
+                                {
+                                    "index": 73
+                                },
+                                {
+                                    "index": 76
+                                },
+                                {
+                                    "index": 75
+                                },
+                                {
+                                    "index": 70
+                                },
+                                {
+                                    "index": 69
+                                },
+                                {
+                                    "index": 72
+                                },
+                                {
+                                    "index": 71
+                                },
+                                {
+                                    "index": 66
+                                },
+                                {
+                                    "index": 65
+                                },
+                                {
+                                    "index": 68
+                                },
+                                {
+                                    "index": 67
+                                },
+                                {
+                                    "index": 62
+                                },
+                                {
+                                    "index": 61
+                                },
+                                {
+                                    "index": 64
+                                },
+                                {
+                                    "index": 63
+                                },
+                                {
+                                    "index": 90
+                                },
+                                {
+                                    "index": 89
+                                },
+                                {
+                                    "index": 92
+                                },
+                                {
+                                    "index": 91
+                                },
+                                {
+                                    "index": 86
+                                },
+                                {
+                                    "index": 85
+                                },
+                                {
+                                    "index": 88
+                                },
+                                {
+                                    "index": 87
+                                },
+                                {
+                                    "index": 82
+                                },
+                                {
+                                    "index": 81
+                                },
+                                {
+                                    "index": 84
+                                },
+                                {
+                                    "index": 83
+                                },
+                                {
+                                    "index": 78
+                                },
+                                {
+                                    "index": 77
+                                },
+                                {
+                                    "index": 80
+                                },
+                                {
+                                    "index": 79
+                                },
+                                {
+                                    "index": 10
+                                },
+                                {
+                                    "index": 9
+                                },
+                                {
+                                    "index": 12
+                                },
+                                {
+                                    "index": 11
+                                },
+                                {
+                                    "index": 6
+                                },
+                                {
+                                    "index": 5
+                                },
+                                {
+                                    "index": 8
+                                },
+                                {
+                                    "index": 7
+                                },
+                                {
+                                    "index": 2
+                                },
+                                {
+                                    "index": 1
+                                },
+                                {
+                                    "index": 4
+                                },
+                                {
+                                    "index": 3
+                                },
+                                {
+                                    "index": 26
+                                },
+                                {
+                                    "index": 25
+                                },
+                                {
+                                    "index": 28
+                                },
+                                {
+                                    "index": 27
+                                },
+                                {
+                                    "index": 22
+                                },
+                                {
+                                    "index": 21
+                                },
+                                {
+                                    "index": 24
+                                },
+                                {
+                                    "index": 23
+                                },
+                                {
+                                    "index": 18
+                                },
+                                {
+                                    "index": 17
+                                },
+                                {
+                                    "index": 20
+                                },
+                                {
+                                    "index": 19
+                                },
+                                {
+                                    "index": 14
+                                },
+                                {
+                                    "index": 13
+                                },
+                                {
+                                    "index": 16
+                                },
+                                {
+                                    "index": 15
+                                }
+                            ]
+                        },
+                        "org-openroadm-common-network:node-type": "DEGREE",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "roadmc221"
+                            }
+                        ]
+                    },
+                    {
+                        "node-id": "xpdra221-XPDR1",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "XPDR1-CLIENT2",
+                                "org-openroadm-network-topology:xpdr-client-attributes": {
+                                    "tail-equipment-id": "XPDR1-NETWORK2"
+                                },
+                                "transportpce-topology:associated-connection-map-port": "XPDR1-NETWORK2",
+                                "org-openroadm-common-network:tp-type": "XPONDER-CLIENT"
+                            },
+                            {
+                                "tp-id": "XPDR1-NETWORK2",
+                                "org-openroadm-network-topology:xpdr-network-attributes": {
+                                    "wavelength": {
+                                        "frequency": 196.05000000000001136868377216160297393798828125,
+                                        "width": 40
+                                    },
+                                    "tail-equipment-id": "XPDR1-CLIENT2"
+                                },
+                                "transportpce-topology:associated-connection-map-port": "XPDR1-CLIENT2",
+                                "org-openroadm-common-network:tp-type": "XPONDER-NETWORK"
+                            },
+                            {
+                                "tp-id": "XPDR1-CLIENT1",
+                                "org-openroadm-network-topology:xpdr-client-attributes": {
+                                    "tail-equipment-id": "XPDR1-NETWORK1"
+                                },
+                                "transportpce-topology:associated-connection-map-port": "XPDR1-NETWORK1",
+                                "org-openroadm-common-network:tp-type": "XPONDER-CLIENT"
+                            },
+                            {
+                                "tp-id": "XPDR1-NETWORK1",
+                                "org-openroadm-network-topology:xpdr-network-attributes": {
+                                    "wavelength": {
+                                        "frequency": 196.099999999999994315658113919198513031005859375,
+                                        "width": 40
+                                    },
+                                    "tail-equipment-id": "XPDR1-CLIENT1"
+                                },
+                                "transportpce-topology:associated-connection-map-port": "XPDR1-CLIENT1",
+                                "org-openroadm-common-network:tp-type": "XPONDER-NETWORK"
+                            }
+                        ],
+                        "org-openroadm-common-network:node-type": "XPONDER",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "xpdra221"
+                            }
+                        ]
+                    },
+                    {
+                        "node-id": "roadma221-DEG2",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "DEG2-CTP-TXRX",
+                                "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP",
+                                "org-openroadm-network-topology:ctp-attributes": {
+                                    "used-wavelengths": [
+                                        {
+                                            "index": 1,
+                                            "frequency": 196.099999999999994315658113919198513031005859375,
+                                            "width": 40
+                                        },
+                                        {
+                                            "index": 2,
+                                            "frequency": 196.05000000000001136868377216160297393798828125,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "DEG2-TTP-TXRX",
+                                "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP",
+                                "org-openroadm-network-topology:tx-ttp-attributes": {
+                                    "used-wavelengths": [
+                                        {
+                                            "index": 1,
+                                            "frequency": 196.099999999999994315658113919198513031005859375,
+                                            "width": 40
+                                        },
+                                        {
+                                            "index": 2,
+                                            "frequency": 196.05000000000001136868377216160297393798828125,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "org-openroadm-network-topology:degree-attributes": {
+                            "degree-number": 2,
+                            "available-wavelengths": [
+                                {
+                                    "index": 42
+                                },
+                                {
+                                    "index": 41
+                                },
+                                {
+                                    "index": 44
+                                },
+                                {
+                                    "index": 43
+                                },
+                                {
+                                    "index": 38
+                                },
+                                {
+                                    "index": 37
+                                },
+                                {
+                                    "index": 40
+                                },
+                                {
+                                    "index": 39
+                                },
+                                {
+                                    "index": 34
+                                },
+                                {
+                                    "index": 33
+                                },
+                                {
+                                    "index": 36
+                                },
+                                {
+                                    "index": 35
+                                },
+                                {
+                                    "index": 30
+                                },
+                                {
+                                    "index": 29
+                                },
+                                {
+                                    "index": 32
+                                },
+                                {
+                                    "index": 31
+                                },
+                                {
+                                    "index": 58
+                                },
+                                {
+                                    "index": 57
+                                },
+                                {
+                                    "index": 60
+                                },
+                                {
+                                    "index": 59
+                                },
+                                {
+                                    "index": 54
+                                },
+                                {
+                                    "index": 53
+                                },
+                                {
+                                    "index": 56
+                                },
+                                {
+                                    "index": 55
+                                },
+                                {
+                                    "index": 50
+                                },
+                                {
+                                    "index": 49
+                                },
+                                {
+                                    "index": 52
+                                },
+                                {
+                                    "index": 51
+                                },
+                                {
+                                    "index": 46
+                                },
+                                {
+                                    "index": 45
+                                },
+                                {
+                                    "index": 48
+                                },
+                                {
+                                    "index": 47
+                                },
+                                {
+                                    "index": 74
+                                },
+                                {
+                                    "index": 73
+                                },
+                                {
+                                    "index": 76
+                                },
+                                {
+                                    "index": 75
+                                },
+                                {
+                                    "index": 70
+                                },
+                                {
+                                    "index": 69
+                                },
+                                {
+                                    "index": 72
+                                },
+                                {
+                                    "index": 71
+                                },
+                                {
+                                    "index": 66
+                                },
+                                {
+                                    "index": 65
+                                },
+                                {
+                                    "index": 68
+                                },
+                                {
+                                    "index": 67
+                                },
+                                {
+                                    "index": 62
+                                },
+                                {
+                                    "index": 61
+                                },
+                                {
+                                    "index": 64
+                                },
+                                {
+                                    "index": 63
+                                },
+                                {
+                                    "index": 90
+                                },
+                                {
+                                    "index": 89
+                                },
+                                {
+                                    "index": 92
+                                },
+                                {
+                                    "index": 91
+                                },
+                                {
+                                    "index": 86
+                                },
+                                {
+                                    "index": 85
+                                },
+                                {
+                                    "index": 88
+                                },
+                                {
+                                    "index": 87
+                                },
+                                {
+                                    "index": 82
+                                },
+                                {
+                                    "index": 81
+                                },
+                                {
+                                    "index": 84
+                                },
+                                {
+                                    "index": 83
+                                },
+                                {
+                                    "index": 78
+                                },
+                                {
+                                    "index": 77
+                                },
+                                {
+                                    "index": 80
+                                },
+                                {
+                                    "index": 79
+                                },
+                                {
+                                    "index": 94
+                                },
+                                {
+                                    "index": 93
+                                },
+                                {
+                                    "index": 96
+                                },
+                                {
+                                    "index": 95
+                                },
+                                {
+                                    "index": 10
+                                },
+                                {
+                                    "index": 9
+                                },
+                                {
+                                    "index": 12
+                                },
+                                {
+                                    "index": 11
+                                },
+                                {
+                                    "index": 6
+                                },
+                                {
+                                    "index": 5
+                                },
+                                {
+                                    "index": 8
+                                },
+                                {
+                                    "index": 7
+                                },
+                                {
+                                    "index": 4
+                                },
+                                {
+                                    "index": 3
+                                },
+                                {
+                                    "index": 26
+                                },
+                                {
+                                    "index": 25
+                                },
+                                {
+                                    "index": 28
+                                },
+                                {
+                                    "index": 27
+                                },
+                                {
+                                    "index": 22
+                                },
+                                {
+                                    "index": 21
+                                },
+                                {
+                                    "index": 24
+                                },
+                                {
+                                    "index": 23
+                                },
+                                {
+                                    "index": 18
+                                },
+                                {
+                                    "index": 17
+                                },
+                                {
+                                    "index": 20
+                                },
+                                {
+                                    "index": 19
+                                },
+                                {
+                                    "index": 14
+                                },
+                                {
+                                    "index": 13
+                                },
+                                {
+                                    "index": 16
+                                },
+                                {
+                                    "index": 15
+                                }
+                            ]
+                        },
+                        "org-openroadm-common-network:node-type": "DEGREE",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "roadma221"
+                            }
+                        ]
+                    },
+                    {
+                        "node-id": "roadma221-DEG1",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "DEG1-TTP-TXRX",
+                                "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP"
+                            },
+                            {
+                                "tp-id": "DEG1-CTP-TXRX",
+                                "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP"
+                            }
+                        ],
+                        "org-openroadm-network-topology:degree-attributes": {
+                            "degree-number": 1,
+                            "available-wavelengths": [
+                                {
+                                    "index": 94
+                                },
+                                {
+                                    "index": 93
+                                },
+                                {
+                                    "index": 96
+                                },
+                                {
+                                    "index": 95
+                                },
+                                {
+                                    "index": 42
+                                },
+                                {
+                                    "index": 41
+                                },
+                                {
+                                    "index": 44
+                                },
+                                {
+                                    "index": 43
+                                },
+                                {
+                                    "index": 38
+                                },
+                                {
+                                    "index": 37
+                                },
+                                {
+                                    "index": 40
+                                },
+                                {
+                                    "index": 39
+                                },
+                                {
+                                    "index": 34
+                                },
+                                {
+                                    "index": 33
+                                },
+                                {
+                                    "index": 36
+                                },
+                                {
+                                    "index": 35
+                                },
+                                {
+                                    "index": 30
+                                },
+                                {
+                                    "index": 29
+                                },
+                                {
+                                    "index": 32
+                                },
+                                {
+                                    "index": 31
+                                },
+                                {
+                                    "index": 58
+                                },
+                                {
+                                    "index": 57
+                                },
+                                {
+                                    "index": 60
+                                },
+                                {
+                                    "index": 59
+                                },
+                                {
+                                    "index": 54
+                                },
+                                {
+                                    "index": 53
+                                },
+                                {
+                                    "index": 56
+                                },
+                                {
+                                    "index": 55
+                                },
+                                {
+                                    "index": 50
+                                },
+                                {
+                                    "index": 49
+                                },
+                                {
+                                    "index": 52
+                                },
+                                {
+                                    "index": 51
+                                },
+                                {
+                                    "index": 46
+                                },
+                                {
+                                    "index": 45
+                                },
+                                {
+                                    "index": 48
+                                },
+                                {
+                                    "index": 47
+                                },
+                                {
+                                    "index": 74
+                                },
+                                {
+                                    "index": 73
+                                },
+                                {
+                                    "index": 76
+                                },
+                                {
+                                    "index": 75
+                                },
+                                {
+                                    "index": 70
+                                },
+                                {
+                                    "index": 69
+                                },
+                                {
+                                    "index": 72
+                                },
+                                {
+                                    "index": 71
+                                },
+                                {
+                                    "index": 66
+                                },
+                                {
+                                    "index": 65
+                                },
+                                {
+                                    "index": 68
+                                },
+                                {
+                                    "index": 67
+                                },
+                                {
+                                    "index": 62
+                                },
+                                {
+                                    "index": 61
+                                },
+                                {
+                                    "index": 64
+                                },
+                                {
+                                    "index": 63
+                                },
+                                {
+                                    "index": 90
+                                },
+                                {
+                                    "index": 89
+                                },
+                                {
+                                    "index": 92
+                                },
+                                {
+                                    "index": 91
+                                },
+                                {
+                                    "index": 86
+                                },
+                                {
+                                    "index": 85
+                                },
+                                {
+                                    "index": 88
+                                },
+                                {
+                                    "index": 87
+                                },
+                                {
+                                    "index": 82
+                                },
+                                {
+                                    "index": 81
+                                },
+                                {
+                                    "index": 84
+                                },
+                                {
+                                    "index": 83
+                                },
+                                {
+                                    "index": 78
+                                },
+                                {
+                                    "index": 77
+                                },
+                                {
+                                    "index": 80
+                                },
+                                {
+                                    "index": 79
+                                },
+                                {
+                                    "index": 10
+                                },
+                                {
+                                    "index": 9
+                                },
+                                {
+                                    "index": 12
+                                },
+                                {
+                                    "index": 11
+                                },
+                                {
+                                    "index": 6
+                                },
+                                {
+                                    "index": 5
+                                },
+                                {
+                                    "index": 8
+                                },
+                                {
+                                    "index": 7
+                                },
+                                {
+                                    "index": 2
+                                },
+                                {
+                                    "index": 1
+                                },
+                                {
+                                    "index": 4
+                                },
+                                {
+                                    "index": 3
+                                },
+                                {
+                                    "index": 26
+                                },
+                                {
+                                    "index": 25
+                                },
+                                {
+                                    "index": 28
+                                },
+                                {
+                                    "index": 27
+                                },
+                                {
+                                    "index": 22
+                                },
+                                {
+                                    "index": 21
+                                },
+                                {
+                                    "index": 24
+                                },
+                                {
+                                    "index": 23
+                                },
+                                {
+                                    "index": 18
+                                },
+                                {
+                                    "index": 17
+                                },
+                                {
+                                    "index": 20
+                                },
+                                {
+                                    "index": 19
+                                },
+                                {
+                                    "index": 14
+                                },
+                                {
+                                    "index": 13
+                                },
+                                {
+                                    "index": 16
+                                },
+                                {
+                                    "index": 15
+                                }
+                            ]
+                        },
+                        "org-openroadm-common-network:node-type": "DEGREE",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "roadma221"
+                            }
+                        ]
+                    },
+                    {
+                        "node-id": "roadmc221-SRG1",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "SRG1-PP4-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                            },
+                            {
+                                "tp-id": "SRG1-CP-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-CP",
+                                "org-openroadm-network-topology:cp-attributes": {
+                                    "used-wavelengths": [
+                                        {
+                                            "index": 1,
+                                            "frequency": 196.099999999999994315658113919198513031005859375,
+                                            "width": 40
+                                        },
+                                        {
+                                            "index": 2,
+                                            "frequency": 196.05000000000001136868377216160297393798828125,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "SRG1-PP2-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP",
+                                "org-openroadm-network-topology:pp-attributes": {
+                                    "used-wavelength": [
+                                        {
+                                            "index": 2,
+                                            "frequency": 196.05000000000001136868377216160297393798828125,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "SRG1-PP1-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP",
+                                "org-openroadm-network-topology:pp-attributes": {
+                                    "used-wavelength": [
+                                        {
+                                            "index": 1,
+                                            "frequency": 196.099999999999994315658113919198513031005859375,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "SRG1-PP3-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                            }
+                        ],
+                        "org-openroadm-network-topology:srg-attributes": {
+                            "available-wavelengths": [
+                                {
+                                    "index": 42
+                                },
+                                {
+                                    "index": 41
+                                },
+                                {
+                                    "index": 44
+                                },
+                                {
+                                    "index": 43
+                                },
+                                {
+                                    "index": 38
+                                },
+                                {
+                                    "index": 37
+                                },
+                                {
+                                    "index": 40
+                                },
+                                {
+                                    "index": 39
+                                },
+                                {
+                                    "index": 34
+                                },
+                                {
+                                    "index": 33
+                                },
+                                {
+                                    "index": 36
+                                },
+                                {
+                                    "index": 35
+                                },
+                                {
+                                    "index": 30
+                                },
+                                {
+                                    "index": 29
+                                },
+                                {
+                                    "index": 32
+                                },
+                                {
+                                    "index": 31
+                                },
+                                {
+                                    "index": 58
+                                },
+                                {
+                                    "index": 57
+                                },
+                                {
+                                    "index": 60
+                                },
+                                {
+                                    "index": 59
+                                },
+                                {
+                                    "index": 54
+                                },
+                                {
+                                    "index": 53
+                                },
+                                {
+                                    "index": 56
+                                },
+                                {
+                                    "index": 55
+                                },
+                                {
+                                    "index": 50
+                                },
+                                {
+                                    "index": 49
+                                },
+                                {
+                                    "index": 52
+                                },
+                                {
+                                    "index": 51
+                                },
+                                {
+                                    "index": 46
+                                },
+                                {
+                                    "index": 45
+                                },
+                                {
+                                    "index": 48
+                                },
+                                {
+                                    "index": 47
+                                },
+                                {
+                                    "index": 74
+                                },
+                                {
+                                    "index": 73
+                                },
+                                {
+                                    "index": 76
+                                },
+                                {
+                                    "index": 75
+                                },
+                                {
+                                    "index": 70
+                                },
+                                {
+                                    "index": 69
+                                },
+                                {
+                                    "index": 72
+                                },
+                                {
+                                    "index": 71
+                                },
+                                {
+                                    "index": 66
+                                },
+                                {
+                                    "index": 65
+                                },
+                                {
+                                    "index": 68
+                                },
+                                {
+                                    "index": 67
+                                },
+                                {
+                                    "index": 62
+                                },
+                                {
+                                    "index": 61
+                                },
+                                {
+                                    "index": 64
+                                },
+                                {
+                                    "index": 63
+                                },
+                                {
+                                    "index": 90
+                                },
+                                {
+                                    "index": 89
+                                },
+                                {
+                                    "index": 92
+                                },
+                                {
+                                    "index": 91
+                                },
+                                {
+                                    "index": 86
+                                },
+                                {
+                                    "index": 85
+                                },
+                                {
+                                    "index": 88
+                                },
+                                {
+                                    "index": 87
+                                },
+                                {
+                                    "index": 82
+                                },
+                                {
+                                    "index": 81
+                                },
+                                {
+                                    "index": 84
+                                },
+                                {
+                                    "index": 83
+                                },
+                                {
+                                    "index": 78
+                                },
+                                {
+                                    "index": 77
+                                },
+                                {
+                                    "index": 80
+                                },
+                                {
+                                    "index": 79
+                                },
+                                {
+                                    "index": 94
+                                },
+                                {
+                                    "index": 93
+                                },
+                                {
+                                    "index": 96
+                                },
+                                {
+                                    "index": 95
+                                },
+                                {
+                                    "index": 10
+                                },
+                                {
+                                    "index": 9
+                                },
+                                {
+                                    "index": 12
+                                },
+                                {
+                                    "index": 11
+                                },
+                                {
+                                    "index": 6
+                                },
+                                {
+                                    "index": 5
+                                },
+                                {
+                                    "index": 8
+                                },
+                                {
+                                    "index": 7
+                                },
+                                {
+                                    "index": 4
+                                },
+                                {
+                                    "index": 3
+                                },
+                                {
+                                    "index": 26
+                                },
+                                {
+                                    "index": 25
+                                },
+                                {
+                                    "index": 28
+                                },
+                                {
+                                    "index": 27
+                                },
+                                {
+                                    "index": 22
+                                },
+                                {
+                                    "index": 21
+                                },
+                                {
+                                    "index": 24
+                                },
+                                {
+                                    "index": 23
+                                },
+                                {
+                                    "index": 18
+                                },
+                                {
+                                    "index": 17
+                                },
+                                {
+                                    "index": 20
+                                },
+                                {
+                                    "index": 19
+                                },
+                                {
+                                    "index": 14
+                                },
+                                {
+                                    "index": 13
+                                },
+                                {
+                                    "index": 16
+                                },
+                                {
+                                    "index": 15
+                                }
+                            ]
+                        },
+                        "org-openroadm-common-network:node-type": "SRG",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "roadmc221"
+                            }
+                        ]
+                    },
+                    {
+                        "node-id": "xpdrc221-XPDR1",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "XPDR1-CLIENT2",
+                                "org-openroadm-network-topology:xpdr-client-attributes": {
+                                    "tail-equipment-id": "XPDR1-NETWORK2"
+                                },
+                                "transportpce-topology:associated-connection-map-port": "XPDR1-NETWORK2",
+                                "org-openroadm-common-network:tp-type": "XPONDER-CLIENT"
+                            },
+                            {
+                                "tp-id": "XPDR1-NETWORK2",
+                                "org-openroadm-network-topology:xpdr-network-attributes": {
+                                    "wavelength": {
+                                        "frequency": 196.05000000000001136868377216160297393798828125,
+                                        "width": 40
+                                    },
+                                    "tail-equipment-id": "XPDR1-CLIENT2"
+                                },
+                                "transportpce-topology:associated-connection-map-port": "XPDR1-CLIENT2",
+                                "org-openroadm-common-network:tp-type": "XPONDER-NETWORK"
+                            },
+                            {
+                                "tp-id": "XPDR1-CLIENT1",
+                                "org-openroadm-network-topology:xpdr-client-attributes": {
+                                    "tail-equipment-id": "XPDR1-NETWORK1"
+                                },
+                                "transportpce-topology:associated-connection-map-port": "XPDR1-NETWORK1",
+                                "org-openroadm-common-network:tp-type": "XPONDER-CLIENT"
+                            },
+                            {
+                                "tp-id": "XPDR1-NETWORK1",
+                                "org-openroadm-network-topology:xpdr-network-attributes": {
+                                    "wavelength": {
+                                        "frequency": 196.099999999999994315658113919198513031005859375,
+                                        "width": 40
+                                    },
+                                    "tail-equipment-id": "XPDR1-CLIENT1"
+                                },
+                                "transportpce-topology:associated-connection-map-port": "XPDR1-CLIENT1",
+                                "org-openroadm-common-network:tp-type": "XPONDER-NETWORK"
+                            }
+                        ],
+                        "org-openroadm-common-network:node-type": "XPONDER",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "xpdrc221"
+                            }
+                        ]
+                    },
+                    {
+                        "node-id": "roadma221-SRG3",
+                        "ietf-network-topology:termination-point": [
+                            {
+                                "tp-id": "SRG3-CP-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-CP",
+                                "org-openroadm-network-topology:cp-attributes": {
+                                    "used-wavelengths": [
+                                        {
+                                            "index": 2,
+                                            "frequency": 196.05000000000001136868377216160297393798828125,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "SRG3-PP2-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                            },
+                            {
+                                "tp-id": "SRG3-PP4-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                            },
+                            {
+                                "tp-id": "SRG3-PP1-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP",
+                                "org-openroadm-network-topology:pp-attributes": {
+                                    "used-wavelength": [
+                                        {
+                                            "index": 2,
+                                            "frequency": 196.05000000000001136868377216160297393798828125,
+                                            "width": 40
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "tp-id": "SRG3-PP3-TXRX",
+                                "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                            }
+                        ],
+                        "org-openroadm-network-topology:srg-attributes": {
+                            "available-wavelengths": [
+                                {
+                                    "index": 94
+                                },
+                                {
+                                    "index": 93
+                                },
+                                {
+                                    "index": 96
+                                },
+                                {
+                                    "index": 95
+                                },
+                                {
+                                    "index": 42
+                                },
+                                {
+                                    "index": 41
+                                },
+                                {
+                                    "index": 44
+                                },
+                                {
+                                    "index": 43
+                                },
+                                {
+                                    "index": 38
+                                },
+                                {
+                                    "index": 37
+                                },
+                                {
+                                    "index": 40
+                                },
+                                {
+                                    "index": 39
+                                },
+                                {
+                                    "index": 34
+                                },
+                                {
+                                    "index": 33
+                                },
+                                {
+                                    "index": 36
+                                },
+                                {
+                                    "index": 35
+                                },
+                                {
+                                    "index": 30
+                                },
+                                {
+                                    "index": 29
+                                },
+                                {
+                                    "index": 32
+                                },
+                                {
+                                    "index": 31
+                                },
+                                {
+                                    "index": 58
+                                },
+                                {
+                                    "index": 57
+                                },
+                                {
+                                    "index": 60
+                                },
+                                {
+                                    "index": 59
+                                },
+                                {
+                                    "index": 54
+                                },
+                                {
+                                    "index": 53
+                                },
+                                {
+                                    "index": 56
+                                },
+                                {
+                                    "index": 55
+                                },
+                                {
+                                    "index": 50
+                                },
+                                {
+                                    "index": 49
+                                },
+                                {
+                                    "index": 52
+                                },
+                                {
+                                    "index": 51
+                                },
+                                {
+                                    "index": 46
+                                },
+                                {
+                                    "index": 45
+                                },
+                                {
+                                    "index": 48
+                                },
+                                {
+                                    "index": 47
+                                },
+                                {
+                                    "index": 74
+                                },
+                                {
+                                    "index": 73
+                                },
+                                {
+                                    "index": 76
+                                },
+                                {
+                                    "index": 75
+                                },
+                                {
+                                    "index": 70
+                                },
+                                {
+                                    "index": 69
+                                },
+                                {
+                                    "index": 72
+                                },
+                                {
+                                    "index": 71
+                                },
+                                {
+                                    "index": 66
+                                },
+                                {
+                                    "index": 65
+                                },
+                                {
+                                    "index": 68
+                                },
+                                {
+                                    "index": 67
+                                },
+                                {
+                                    "index": 62
+                                },
+                                {
+                                    "index": 61
+                                },
+                                {
+                                    "index": 64
+                                },
+                                {
+                                    "index": 63
+                                },
+                                {
+                                    "index": 90
+                                },
+                                {
+                                    "index": 89
+                                },
+                                {
+                                    "index": 92
+                                },
+                                {
+                                    "index": 91
+                                },
+                                {
+                                    "index": 86
+                                },
+                                {
+                                    "index": 85
+                                },
+                                {
+                                    "index": 88
+                                },
+                                {
+                                    "index": 87
+                                },
+                                {
+                                    "index": 82
+                                },
+                                {
+                                    "index": 81
+                                },
+                                {
+                                    "index": 84
+                                },
+                                {
+                                    "index": 83
+                                },
+                                {
+                                    "index": 78
+                                },
+                                {
+                                    "index": 77
+                                },
+                                {
+                                    "index": 80
+                                },
+                                {
+                                    "index": 79
+                                },
+                                {
+                                    "index": 10
+                                },
+                                {
+                                    "index": 9
+                                },
+                                {
+                                    "index": 12
+                                },
+                                {
+                                    "index": 11
+                                },
+                                {
+                                    "index": 6
+                                },
+                                {
+                                    "index": 5
+                                },
+                                {
+                                    "index": 8
+                                },
+                                {
+                                    "index": 7
+                                },
+                                {
+                                    "index": 1
+                                },
+                                {
+                                    "index": 4
+                                },
+                                {
+                                    "index": 3
+                                },
+                                {
+                                    "index": 26
+                                },
+                                {
+                                    "index": 25
+                                },
+                                {
+                                    "index": 28
+                                },
+                                {
+                                    "index": 27
+                                },
+                                {
+                                    "index": 22
+                                },
+                                {
+                                    "index": 21
+                                },
+                                {
+                                    "index": 24
+                                },
+                                {
+                                    "index": 23
+                                },
+                                {
+                                    "index": 18
+                                },
+                                {
+                                    "index": 17
+                                },
+                                {
+                                    "index": 20
+                                },
+                                {
+                                    "index": 19
+                                },
+                                {
+                                    "index": 14
+                                },
+                                {
+                                    "index": 13
+                                },
+                                {
+                                    "index": 16
+                                },
+                                {
+                                    "index": 15
+                                }
+                            ]
+                        },
+                        "org-openroadm-common-network:node-type": "SRG",
+                        "supporting-node": [
+                            {
+                                "network-ref": "openroadm-network",
+                                "node-ref": "roadma221"
+                            }
+                        ]
+                    }
+                ],
+                "network-types": {
+                    "org-openroadm-common-network:openroadm-common-network": {}
+                },
+                "ietf-network-topology:link": [
+                    {
+                        "link-id": "roadma21-DEG2-DEG2-TTP-TXRXtoroadmb21-DEG1-DEG1-TTP-TXRX",
+                        "source": {
+                            "source-node": "roadma21-DEG2",
+                            "source-tp": "DEG2-TTP-TXRX"
+                        },
+                        "org-openroadm-network-topology:OMS-attributes": {
+                            "opposite-link": "roadmb21-DEG1-DEG1-TTP-TXRXtoroadma21-DEG2-DEG2-TTP-TXRX",
+                            "span": {
+                                "spanloss-current": 12,
+                                "clfi": "fiber1",
+                                "auto-spanloss": true,
+                                "spanloss-base": 11.4,
+                                "link-concatenation": [
+                                    {
+                                        "SRLG-Id": 0,
+                                        "SRLG-length": 100000,
+                                        "pmd": 0.5,
+                                        "fiber-type": "smf"
+                                    }
+                                ],
+                                "engineered-spanloss": 12.2
+                            }
+                        },
+                        "destination": {
+                            "dest-node": "roadmb21-DEG1",
+                            "dest-tp": "DEG1-TTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ROADM-TO-ROADM",
+                        "org-openroadm-common-network:opposite-link": "roadmb21-DEG1-DEG1-TTP-TXRXtoroadma21-DEG2-DEG2-TTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-SRG1-SRG1-CP-TXRXtoroadma221-DEG2-DEG2-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-SRG1",
+                            "source-tp": "SRG1-CP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-DEG2",
+                            "dest-tp": "DEG2-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ADD-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-DEG2-DEG2-CTP-TXRXtoroadma221-SRG1-SRG1-CP-TXRX"
+                    },
+                    {
+                        "link-id": "xpdra221-XPDR1-XPDR1-NETWORK2toroadma221-SRG3-SRG3-PP1-TXRX",
+                        "source": {
+                            "source-node": "xpdra221-XPDR1",
+                            "source-tp": "XPDR1-NETWORK2"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-SRG3",
+                            "dest-tp": "SRG3-PP1-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-OUTPUT",
+                        "org-openroadm-common-network:opposite-link": "roadma221-SRG3-SRG3-PP1-TXRXtoxpdra221-XPDR1-XPDR1-NETWORK2"
+                    },
+                    {
+                        "link-id": "roadma221-DEG2-DEG2-CTP-TXRXtoroadma221-DEG1-DEG1-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-DEG2",
+                            "source-tp": "DEG2-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-DEG1",
+                            "dest-tp": "DEG1-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "EXPRESS-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-DEG1-DEG1-CTP-TXRXtoroadma221-DEG2-DEG2-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-DEG1-DEG1-CTP-TXRXtoroadmc221-DEG2-DEG2-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadmc221-DEG1",
+                            "source-tp": "DEG1-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-DEG2",
+                            "dest-tp": "DEG2-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "EXPRESS-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-DEG2-DEG2-CTP-TXRXtoroadmc221-DEG1-DEG1-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-SRG1-SRG1-PP1-TXRXtoxpdrc221-XPDR1-XPDR1-NETWORK1",
+                        "source": {
+                            "source-node": "roadmc221-SRG1",
+                            "source-tp": "SRG1-PP1-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "xpdrc221-XPDR1",
+                            "dest-tp": "XPDR1-NETWORK1"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-INPUT",
+                        "org-openroadm-common-network:opposite-link": "xpdrc221-XPDR1-XPDR1-NETWORK1toroadmc221-SRG1-SRG1-PP1-TXRX"
+                    },
+                    {
+                        "link-id": "xpdra221-XPDR1-XPDR1-NETWORK1toroadma221-SRG1-SRG1-PP1-TXRX",
+                        "source": {
+                            "source-node": "xpdra221-XPDR1",
+                            "source-tp": "XPDR1-NETWORK1"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-SRG1",
+                            "dest-tp": "SRG1-PP1-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-OUTPUT",
+                        "org-openroadm-common-network:opposite-link": "roadma221-SRG1-SRG1-PP1-TXRXtoxpdra221-XPDR1-XPDR1-NETWORK1"
+                    },
+                    {
+                        "link-id": "roadmc21-SRG1-SRG1-PP1-TXRXtoxpdrc21-XPDR1-XPDR1-NETWORK1",
+                        "source": {
+                            "source-node": "roadmc21-SRG1",
+                            "source-tp": "SRG1-PP1-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "xpdrc21-XPDR1",
+                            "dest-tp": "XPDR1-NETWORK1"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-INPUT",
+                        "org-openroadm-common-network:opposite-link": "xpdrc21-XPDR1-XPDR1-NETWORK1toroadmc21-SRG1-SRG1-PP1-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-DEG1-DEG1-CTP-TXRXtoroadma221-SRG1-SRG1-CP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-DEG1",
+                            "source-tp": "DEG1-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-SRG1",
+                            "dest-tp": "SRG1-CP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "DROP-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-SRG1-SRG1-CP-TXRXtoroadma221-DEG1-DEG1-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-DEG1-DEG1-CTP-TXRXtoroadmc221-SRG1-SRG1-CP-TXRX",
+                        "source": {
+                            "source-node": "roadmc221-DEG1",
+                            "source-tp": "DEG1-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-SRG1",
+                            "dest-tp": "SRG1-CP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "DROP-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-SRG1-SRG1-CP-TXRXtoroadmc221-DEG1-DEG1-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "xpdrc221-XPDR1-XPDR1-NETWORK2toroadmc221-SRG1-SRG1-PP2-TXRX",
+                        "source": {
+                            "source-node": "xpdrc221-XPDR1",
+                            "source-tp": "XPDR1-NETWORK2"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-SRG1",
+                            "dest-tp": "SRG1-PP2-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-OUTPUT",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-SRG1-SRG1-PP2-TXRXtoxpdrc221-XPDR1-XPDR1-NETWORK2"
+                    },
+                    {
+                        "link-id": "roadma21-SRG3-SRG3-PP1-TXRXtoxpdra21-XPDR1-XPDR1-NETWORK2",
+                        "source": {
+                            "source-node": "roadma21-SRG3",
+                            "source-tp": "SRG3-PP1-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "xpdra21-XPDR1",
+                            "dest-tp": "XPDR1-NETWORK2"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-INPUT",
+                        "org-openroadm-common-network:opposite-link": "xpdra21-XPDR1-XPDR1-NETWORK2toroadma21-SRG3-SRG3-PP1-TXRX"
+                    },
+                    {
+                        "link-id": "roadmb21-DEG2-DEG2-TTP-TXRXtoroadmc21-DEG2-DEG2-TTP-TXRX",
+                        "source": {
+                            "source-node": "roadmb21-DEG2",
+                            "source-tp": "DEG2-TTP-TXRX"
+                        },
+                        "org-openroadm-network-topology:OMS-attributes": {
+                            "opposite-link": "roadmc21-DEG2-DEG2-TTP-TXRXtoroadmb21-DEG2-DEG2-TTP-TXRX",
+                            "span": {
+                                "spanloss-current": 12,
+                                "clfi": "fiber1",
+                                "auto-spanloss": true,
+                                "spanloss-base": 11.4,
+                                "link-concatenation": [
+                                    {
+                                        "SRLG-Id": 0,
+                                        "SRLG-length": 100000,
+                                        "pmd": 0.5,
+                                        "fiber-type": "smf"
+                                    }
+                                ],
+                                "engineered-spanloss": 12.2
+                            }
+                        },
+                        "destination": {
+                            "dest-node": "roadmc21-DEG2",
+                            "dest-tp": "DEG2-TTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ROADM-TO-ROADM",
+                        "org-openroadm-common-network:opposite-link": "roadmc21-DEG2-DEG2-TTP-TXRXtoroadmb21-DEG2-DEG2-TTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-SRG1-SRG1-CP-TXRXtoroadma221-DEG1-DEG1-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-SRG1",
+                            "source-tp": "SRG1-CP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-DEG1",
+                            "dest-tp": "DEG1-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ADD-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-DEG1-DEG1-CTP-TXRXtoroadma221-SRG1-SRG1-CP-TXRX"
+                    },
+                    {
+                        "link-id": "xpdrc21-XPDR1-XPDR1-NETWORK2toroadmc21-SRG1-SRG1-PP2-TXRX",
+                        "source": {
+                            "source-node": "xpdrc21-XPDR1",
+                            "source-tp": "XPDR1-NETWORK2"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc21-SRG1",
+                            "dest-tp": "SRG1-PP2-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-OUTPUT",
+                        "org-openroadm-common-network:opposite-link": "roadmc21-SRG1-SRG1-PP2-TXRXtoxpdrc21-XPDR1-XPDR1-NETWORK2"
+                    },
+                    {
+                        "link-id": "roadmc21-DEG1-DEG1-TTP-TXRXtoroadma21-DEG1-DEG1-TTP-TXRX",
+                        "source": {
+                            "source-node": "roadmc21-DEG1",
+                            "source-tp": "DEG1-TTP-TXRX"
+                        },
+                        "org-openroadm-network-topology:OMS-attributes": {
+                            "opposite-link": "roadma21-DEG1-DEG1-TTP-TXRXtoroadmc21-DEG1-DEG1-TTP-TXRX",
+                            "span": {
+                                "spanloss-current": 12,
+                                "clfi": "fiber1",
+                                "auto-spanloss": true,
+                                "spanloss-base": 11.4,
+                                "link-concatenation": [
+                                    {
+                                        "SRLG-Id": 0,
+                                        "SRLG-length": 100000,
+                                        "pmd": 0.5,
+                                        "fiber-type": "smf"
+                                    }
+                                ],
+                                "engineered-spanloss": 12.2
+                            }
+                        },
+                        "destination": {
+                            "dest-node": "roadma21-DEG1",
+                            "dest-tp": "DEG1-TTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ROADM-TO-ROADM",
+                        "org-openroadm-common-network:opposite-link": "roadma21-DEG1-DEG1-TTP-TXRXtoroadmc21-DEG1-DEG1-TTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-DEG2-DEG2-CTP-TXRXtoroadmc221-SRG1-SRG1-CP-TXRX",
+                        "source": {
+                            "source-node": "roadmc221-DEG2",
+                            "source-tp": "DEG2-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-SRG1",
+                            "dest-tp": "SRG1-CP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "DROP-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-SRG1-SRG1-CP-TXRXtoroadmc221-DEG2-DEG2-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-DEG2-DEG2-CTP-TXRXtoroadma221-SRG1-SRG1-CP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-DEG2",
+                            "source-tp": "DEG2-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-SRG1",
+                            "dest-tp": "SRG1-CP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "DROP-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-SRG1-SRG1-CP-TXRXtoroadma221-DEG2-DEG2-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-DEG2-DEG2-CTP-TXRXtoroadmc221-DEG1-DEG1-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadmc221-DEG2",
+                            "source-tp": "DEG2-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-DEG1",
+                            "dest-tp": "DEG1-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "EXPRESS-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-DEG1-DEG1-CTP-TXRXtoroadmc221-DEG2-DEG2-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-SRG3-SRG3-PP1-TXRXtoxpdra221-XPDR1-XPDR1-NETWORK2",
+                        "source": {
+                            "source-node": "roadma221-SRG3",
+                            "source-tp": "SRG3-PP1-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "xpdra221-XPDR1",
+                            "dest-tp": "XPDR1-NETWORK2"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-INPUT",
+                        "org-openroadm-common-network:opposite-link": "xpdra221-XPDR1-XPDR1-NETWORK2toroadma221-SRG3-SRG3-PP1-TXRX"
+                    },
+                    {
+                        "link-id": "xpdrc221-XPDR1-XPDR1-NETWORK1toroadmc221-SRG1-SRG1-PP1-TXRX",
+                        "source": {
+                            "source-node": "xpdrc221-XPDR1",
+                            "source-tp": "XPDR1-NETWORK1"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-SRG1",
+                            "dest-tp": "SRG1-PP1-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-OUTPUT",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-SRG1-SRG1-PP1-TXRXtoxpdrc221-XPDR1-XPDR1-NETWORK1"
+                    },
+                    {
+                        "link-id": "roadma21-SRG1-SRG1-PP1-TXRXtoxpdra21-XPDR1-XPDR1-NETWORK1",
+                        "source": {
+                            "source-node": "roadma21-SRG1",
+                            "source-tp": "SRG1-PP1-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "xpdra21-XPDR1",
+                            "dest-tp": "XPDR1-NETWORK1"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-INPUT",
+                        "org-openroadm-common-network:opposite-link": "xpdra21-XPDR1-XPDR1-NETWORK1toroadma21-SRG1-SRG1-PP1-TXRX"
+                    },
+                    {
+                        "link-id": "roadma21-DEG1-DEG1-TTP-TXRXtoroadmc21-DEG1-DEG1-TTP-TXRX",
+                        "source": {
+                            "source-node": "roadma21-DEG1",
+                            "source-tp": "DEG1-TTP-TXRX"
+                        },
+                        "org-openroadm-network-topology:OMS-attributes": {
+                            "opposite-link": "roadmc21-DEG1-DEG1-TTP-TXRXtoroadma21-DEG1-DEG1-TTP-TXRX",
+                            "span": {
+                                "spanloss-current": 12,
+                                "clfi": "fiber1",
+                                "auto-spanloss": true,
+                                "spanloss-base": 11.4,
+                                "link-concatenation": [
+                                    {
+                                        "SRLG-Id": 0,
+                                        "SRLG-length": 100000,
+                                        "pmd": 0.5,
+                                        "fiber-type": "smf"
+                                    }
+                                ],
+                                "engineered-spanloss": 12.2
+                            }
+                        },
+                        "destination": {
+                            "dest-node": "roadmc21-DEG1",
+                            "dest-tp": "DEG1-TTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ROADM-TO-ROADM",
+                        "org-openroadm-common-network:opposite-link": "roadmc21-DEG1-DEG1-TTP-TXRXtoroadma21-DEG1-DEG1-TTP-TXRX"
+                    },
+                    {
+                        "link-id": "xpdra21-XPDR1-XPDR1-NETWORK2toroadma21-SRG3-SRG3-PP1-TXRX",
+                        "source": {
+                            "source-node": "xpdra21-XPDR1",
+                            "source-tp": "XPDR1-NETWORK2"
+                        },
+                        "destination": {
+                            "dest-node": "roadma21-SRG3",
+                            "dest-tp": "SRG3-PP1-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-OUTPUT",
+                        "org-openroadm-common-network:opposite-link": "roadma21-SRG3-SRG3-PP1-TXRXtoxpdra21-XPDR1-XPDR1-NETWORK2"
+                    },
+                    {
+                        "link-id": "roadmb21-DEG1-DEG1-TTP-TXRXtoroadma21-DEG2-DEG2-TTP-TXRX",
+                        "source": {
+                            "source-node": "roadmb21-DEG1",
+                            "source-tp": "DEG1-TTP-TXRX"
+                        },
+                        "org-openroadm-network-topology:OMS-attributes": {
+                            "opposite-link": "roadma21-DEG2-DEG2-TTP-TXRXtoroadmb21-DEG1-DEG1-TTP-TXRX",
+                            "span": {
+                                "spanloss-current": 12,
+                                "clfi": "fiber1",
+                                "auto-spanloss": true,
+                                "spanloss-base": 11.4,
+                                "link-concatenation": [
+                                    {
+                                        "SRLG-Id": 0,
+                                        "SRLG-length": 100000,
+                                        "pmd": 0.5,
+                                        "fiber-type": "smf"
+                                    }
+                                ],
+                                "engineered-spanloss": 12.2
+                            }
+                        },
+                        "destination": {
+                            "dest-node": "roadma21-DEG2",
+                            "dest-tp": "DEG2-TTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ROADM-TO-ROADM",
+                        "org-openroadm-common-network:opposite-link": "roadma21-DEG2-DEG2-TTP-TXRXtoroadmb21-DEG1-DEG1-TTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc21-DEG2-DEG2-TTP-TXRXtoroadmb21-DEG2-DEG2-TTP-TXRX",
+                        "source": {
+                            "source-node": "roadmc21-DEG2",
+                            "source-tp": "DEG2-TTP-TXRX"
+                        },
+                        "org-openroadm-network-topology:OMS-attributes": {
+                            "opposite-link": "roadmb21-DEG2-DEG2-TTP-TXRXtoroadmc21-DEG2-DEG2-TTP-TXRX",
+                            "span": {
+                                "spanloss-current": 12,
+                                "clfi": "fiber1",
+                                "auto-spanloss": true,
+                                "spanloss-base": 11.4,
+                                "link-concatenation": [
+                                    {
+                                        "SRLG-Id": 0,
+                                        "SRLG-length": 100000,
+                                        "pmd": 0.5,
+                                        "fiber-type": "smf"
+                                    }
+                                ],
+                                "engineered-spanloss": 12.2
+                            }
+                        },
+                        "destination": {
+                            "dest-node": "roadmb21-DEG2",
+                            "dest-tp": "DEG2-TTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ROADM-TO-ROADM",
+                        "org-openroadm-common-network:opposite-link": "roadmb21-DEG2-DEG2-TTP-TXRXtoroadmc21-DEG2-DEG2-TTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-DEG1-DEG1-CTP-TXRXtoroadma221-SRG3-SRG3-CP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-DEG1",
+                            "source-tp": "DEG1-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-SRG3",
+                            "dest-tp": "SRG3-CP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "DROP-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-SRG3-SRG3-CP-TXRXtoroadma221-DEG1-DEG1-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-SRG1-SRG1-PP2-TXRXtoxpdrc221-XPDR1-XPDR1-NETWORK2",
+                        "source": {
+                            "source-node": "roadmc221-SRG1",
+                            "source-tp": "SRG1-PP2-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "xpdrc221-XPDR1",
+                            "dest-tp": "XPDR1-NETWORK2"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-INPUT",
+                        "org-openroadm-common-network:opposite-link": "xpdrc221-XPDR1-XPDR1-NETWORK2toroadmc221-SRG1-SRG1-PP2-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-SRG1-SRG1-CP-TXRXtoroadmc221-DEG1-DEG1-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadmc221-SRG1",
+                            "source-tp": "SRG1-CP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-DEG1",
+                            "dest-tp": "DEG1-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ADD-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-DEG1-DEG1-CTP-TXRXtoroadmc221-SRG1-SRG1-CP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-DEG1-DEG1-CTP-TXRXtoroadma221-DEG2-DEG2-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-DEG1",
+                            "source-tp": "DEG1-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-DEG2",
+                            "dest-tp": "DEG2-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "EXPRESS-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-DEG2-DEG2-CTP-TXRXtoroadma221-DEG1-DEG1-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-SRG1-SRG1-PP1-TXRXtoxpdra221-XPDR1-XPDR1-NETWORK1",
+                        "source": {
+                            "source-node": "roadma221-SRG1",
+                            "source-tp": "SRG1-PP1-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "xpdra221-XPDR1",
+                            "dest-tp": "XPDR1-NETWORK1"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-INPUT",
+                        "org-openroadm-common-network:opposite-link": "xpdra221-XPDR1-XPDR1-NETWORK1toroadma221-SRG1-SRG1-PP1-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc21-SRG1-SRG1-PP2-TXRXtoxpdrc21-XPDR1-XPDR1-NETWORK2",
+                        "source": {
+                            "source-node": "roadmc21-SRG1",
+                            "source-tp": "SRG1-PP2-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "xpdrc21-XPDR1",
+                            "dest-tp": "XPDR1-NETWORK2"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-INPUT",
+                        "org-openroadm-common-network:opposite-link": "xpdrc21-XPDR1-XPDR1-NETWORK2toroadmc21-SRG1-SRG1-PP2-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-DEG1-DEG1-TTP-TXRXtoroadma221-DEG2-DEG2-TTP-TXRX",
+                        "source": {
+                            "source-node": "roadmc221-DEG1",
+                            "source-tp": "DEG1-TTP-TXRX"
+                        },
+                        "org-openroadm-network-topology:OMS-attributes": {
+                            "opposite-link": "roadma221-DEG2-DEG2-TTP-TXRXtoroadmc221-DEG1-DEG1-TTP-TXRX",
+                            "span": {
+                                "spanloss-current": 12,
+                                "clfi": "fiber1",
+                                "auto-spanloss": true,
+                                "spanloss-base": 11.4,
+                                "link-concatenation": [
+                                    {
+                                        "SRLG-Id": 0,
+                                        "SRLG-length": 100000,
+                                        "pmd": 0.5,
+                                        "fiber-type": "smf"
+                                    }
+                                ],
+                                "engineered-spanloss": 12.2
+                            }
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-DEG2",
+                            "dest-tp": "DEG2-TTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ROADM-TO-ROADM",
+                        "org-openroadm-common-network:opposite-link": "roadma221-DEG2-DEG2-TTP-TXRXtoroadmc221-DEG1-DEG1-TTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadmc221-SRG1-SRG1-CP-TXRXtoroadmc221-DEG2-DEG2-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadmc221-SRG1",
+                            "source-tp": "SRG1-CP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-DEG2",
+                            "dest-tp": "DEG2-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ADD-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-DEG2-DEG2-CTP-TXRXtoroadmc221-SRG1-SRG1-CP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-SRG3-SRG3-CP-TXRXtoroadma221-DEG1-DEG1-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-SRG3",
+                            "source-tp": "SRG3-CP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-DEG1",
+                            "dest-tp": "DEG1-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ADD-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-DEG1-DEG1-CTP-TXRXtoroadma221-SRG3-SRG3-CP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-DEG2-DEG2-CTP-TXRXtoroadma221-SRG3-SRG3-CP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-DEG2",
+                            "source-tp": "DEG2-CTP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-SRG3",
+                            "dest-tp": "SRG3-CP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "DROP-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-SRG3-SRG3-CP-TXRXtoroadma221-DEG2-DEG2-CTP-TXRX"
+                    },
+                    {
+                        "link-id": "roadma221-SRG3-SRG3-CP-TXRXtoroadma221-DEG2-DEG2-CTP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-SRG3",
+                            "source-tp": "SRG3-CP-TXRX"
+                        },
+                        "destination": {
+                            "dest-node": "roadma221-DEG2",
+                            "dest-tp": "DEG2-CTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ADD-LINK",
+                        "org-openroadm-common-network:opposite-link": "roadma221-DEG2-DEG2-CTP-TXRXtoroadma221-SRG3-SRG3-CP-TXRX"
+                    },
+                    {
+                        "link-id": "xpdra21-XPDR1-XPDR1-NETWORK1toroadma21-SRG1-SRG1-PP1-TXRX",
+                        "source": {
+                            "source-node": "xpdra21-XPDR1",
+                            "source-tp": "XPDR1-NETWORK1"
+                        },
+                        "destination": {
+                            "dest-node": "roadma21-SRG1",
+                            "dest-tp": "SRG1-PP1-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-OUTPUT",
+                        "org-openroadm-common-network:opposite-link": "roadma21-SRG1-SRG1-PP1-TXRXtoxpdra21-XPDR1-XPDR1-NETWORK1"
+                    },
+                    {
+                        "link-id": "xpdrc21-XPDR1-XPDR1-NETWORK1toroadmc21-SRG1-SRG1-PP1-TXRX",
+                        "source": {
+                            "source-node": "xpdrc21-XPDR1",
+                            "source-tp": "XPDR1-NETWORK1"
+                        },
+                        "destination": {
+                            "dest-node": "roadmc21-SRG1",
+                            "dest-tp": "SRG1-PP1-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "XPONDER-OUTPUT",
+                        "org-openroadm-common-network:opposite-link": "roadmc21-SRG1-SRG1-PP1-TXRXtoxpdrc21-XPDR1-XPDR1-NETWORK1"
+                    },
+                    {
+                        "link-id": "roadma221-DEG2-DEG2-TTP-TXRXtoroadmc221-DEG1-DEG1-TTP-TXRX",
+                        "source": {
+                            "source-node": "roadma221-DEG2",
+                            "source-tp": "DEG2-TTP-TXRX"
+                        },
+                        "org-openroadm-network-topology:OMS-attributes": {
+                            "opposite-link": "roadmc221-DEG1-DEG1-TTP-TXRXtoroadma221-DEG2-DEG2-TTP-TXRX",
+                            "span": {
+                                "spanloss-current": 12,
+                                "clfi": "fiber1",
+                                "auto-spanloss": true,
+                                "spanloss-base": 11.4,
+                                "link-concatenation": [
+                                    {
+                                        "SRLG-Id": 0,
+                                        "SRLG-length": 100000,
+                                        "pmd": 0.5,
+                                        "fiber-type": "smf"
+                                    }
+                                ],
+                                "engineered-spanloss": 12.2
+                            }
+                        },
+                        "destination": {
+                            "dest-node": "roadmc221-DEG1",
+                            "dest-tp": "DEG1-TTP-TXRX"
+                        },
+                        "org-openroadm-common-network:link-type": "ROADM-TO-ROADM",
+                        "org-openroadm-common-network:opposite-link": "roadmc221-DEG1-DEG1-TTP-TXRXtoroadma221-DEG2-DEG2-TTP-TXRX"
+                    }
+                ]
+            },
+            {
+                "network-id": "clli-network",
+                "network-types": {
+                    "org-openroadm-clli-network:clli-network": {}
+                },
+                "node": [
+                    {
+                        "node-id": "NodeA",
+                        "org-openroadm-clli-network:clli": "NodeA"
+                    },
+                    {
+                        "node-id": "NodeB",
+                        "org-openroadm-clli-network:clli": "NodeB"
+                    },
+                    {
+                        "node-id": "NodeC",
+                        "org-openroadm-clli-network:clli": "NodeC"
+                    }
+                ]
+            },
+            {
+                "network-id": "openroadm-network",
+                "network-types": {
+                    "org-openroadm-common-network:openroadm-common-network": {}
+                },
+                "node": [
+                    {
+                        "node-id": "xpdrc221",
+                        "org-openroadm-common-network:node-type": "XPONDER",
+                        "supporting-node": [
+                            {
+                                "network-ref": "clli-network",
+                                "node-ref": "NodeC"
+                            }
+                        ],
+                        "org-openroadm-network:vendor": "vendorA",
+                        "org-openroadm-network:model": "model2",
+                        "org-openroadm-network:ip": "1.2.3.4"
+                    },
+                    {
+                        "node-id": "roadma221",
+                        "org-openroadm-common-network:node-type": "ROADM",
+                        "supporting-node": [
+                            {
+                                "network-ref": "clli-network",
+                                "node-ref": "NodeA"
+                            }
+                        ],
+                        "org-openroadm-network:vendor": "vendorA",
+                        "org-openroadm-network:model": "model2",
+                        "org-openroadm-network:ip": "127.0.0.11"
+                    },
+                    {
+                        "node-id": "xpdra221",
+                        "org-openroadm-common-network:node-type": "XPONDER",
+                        "supporting-node": [
+                            {
+                                "network-ref": "clli-network",
+                                "node-ref": "NodeA"
+                            }
+                        ],
+                        "org-openroadm-network:vendor": "vendorA",
+                        "org-openroadm-network:model": "model2",
+                        "org-openroadm-network:ip": "1.2.3.4"
+                    },
+                    {
+                        "node-id": "roadmc221",
+                        "org-openroadm-common-network:node-type": "ROADM",
+                        "supporting-node": [
+                            {
+                                "network-ref": "clli-network",
+                                "node-ref": "NodeC"
+                            }
+                        ],
+                        "org-openroadm-network:vendor": "vendorA",
+                        "org-openroadm-network:model": "model2",
+                        "org-openroadm-network:ip": "127.0.0.11"
+                    }
+                ]
+            }
+        ]
+    }
+}

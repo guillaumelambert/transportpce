@@ -1,0 +1,25 @@
+{
+  "network": [
+      {
+          "network-id": "openroadm-topology",
+          "node": [
+              {
+                  "node-id": "ROADM-A1-SRG3",
+                  "org-openroadm-common-network:node-type": "SRG",
+                  "ietf-network-topology:termination-point": [
+                      {
+                          "tp-id": "SRG3-CP-TXRX",
+                          "org-openroadm-common-network:tp-type": "SRG-TXRX-CP"
+                      }
+                  ],
+                  "supporting-node": [
+                      {
+                          "network-ref": "openroadm-network",
+                          "node-ref": "ROADM-A1"
+                      }
+                  ]
+              }
+          ]
+        }
+      ]
+}

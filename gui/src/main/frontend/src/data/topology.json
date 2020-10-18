@@ -1,0 +1,704 @@
+{
+    "network": [
+        {
+            "network-id": "openroadm-topology",
+            "node": [
+                {
+                    "node-id": "ROADM-A1-SRG3",
+                    "org-openroadm-common-network:node-type": "SRG",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "SRG3-CP-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-CP"
+                        },
+                        {
+                            "tp-id": "SRG3-PP2-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG3-PP4-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG3-PP1-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG3-PP3-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        }
+                    ],
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-A1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-C1-DEG2",
+                    "org-openroadm-common-network:node-type": "DEGREE",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "DEG2-CTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP"
+                        },
+                        {
+                            "tp-id": "DEG2-TTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP"
+                        }
+                    ],
+                    "org-openroadm-network-topology:degree-attributes": {
+                        "degree-number": 2
+                    },
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-C1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-B1-DEG1",
+                    "org-openroadm-common-network:node-type": "DEGREE",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "DEG1-TTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP"
+                        },
+                        {
+                            "tp-id": "DEG1-CTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP"
+                        }
+                    ],
+                    "org-openroadm-network-topology:degree-attributes": {
+                        "degree-number": 1
+                    },
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-B1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-B1-DEG2",
+                    "org-openroadm-common-network:node-type": "DEGREE",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "DEG2-CTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP"
+                        },
+                        {
+                            "tp-id": "DEG2-TTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP"
+                        }
+                    ],
+                    "org-openroadm-network-topology:degree-attributes": {
+                        "degree-number": 2
+                    },
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-B1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-C1-SRG1",
+                    "org-openroadm-common-network:node-type": "SRG",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "SRG1-PP4-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG1-CP-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-CP"
+                        },
+                        {
+                            "tp-id": "SRG1-PP2-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG1-PP1-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG1-PP3-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        }
+                    ],
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-C1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-A1-SRG1",
+                    "org-openroadm-common-network:node-type": "SRG",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "SRG1-PP4-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG1-CP-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-CP"
+                        },
+                        {
+                            "tp-id": "SRG1-PP2-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG1-PP1-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        },
+                        {
+                            "tp-id": "SRG1-PP3-TXRX",
+                            "org-openroadm-common-network:tp-type": "SRG-TXRX-PP"
+                        }
+                    ],
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-A1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-A1-DEG2",
+                    "org-openroadm-common-network:node-type": "DEGREE",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "DEG2-CTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP"
+                        },
+                        {
+                            "tp-id": "DEG2-TTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP"
+                        }
+                    ],
+                    "org-openroadm-network-topology:degree-attributes": {
+                        "degree-number": 2
+                    },
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-A1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "XPDR-A1-XPDR1",
+                    "org-openroadm-common-network:node-type": "XPONDER",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "XPDR1-CLIENT2",
+                            "org-openroadm-network-topology:xpdr-client-attributes": {
+                                "tail-equipment-id": "XPDR1-NETWORK2"
+                            },
+                            "org-openroadm-common-network:tp-type": "XPONDER-CLIENT"
+                        },
+                        {
+                            "tp-id": "XPDR1-NETWORK2",
+                            "org-openroadm-network-topology:xpdr-network-attributes": {
+                                "tail-equipment-id": "XPDR1-CLIENT2"
+                            },
+                            "org-openroadm-common-network:tp-type": "XPONDER-NETWORK"
+                        },
+                        {
+                            "tp-id": "XPDR1-CLIENT1",
+                            "org-openroadm-network-topology:xpdr-client-attributes": {
+                                "tail-equipment-id": "XPDR1-NETWORK1"
+                            },
+                            "org-openroadm-common-network:tp-type": "XPONDER-CLIENT"
+                        },
+                        {
+                            "tp-id": "XPDR1-NETWORK1",
+                            "org-openroadm-network-topology:xpdr-network-attributes": {
+                                "tail-equipment-id": "XPDR1-CLIENT1"
+                            },
+                            "org-openroadm-common-network:tp-type": "XPONDER-NETWORK"
+                        }
+                    ],
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "XPDR-A1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-A1-DEG1",
+                    "org-openroadm-common-network:node-type": "DEGREE",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "DEG1-TTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP"
+                        },
+                        {
+                            "tp-id": "DEG1-CTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP"
+                        }
+                    ],
+                    "org-openroadm-network-topology:degree-attributes": {
+                        "degree-number": 1
+                    },
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-A1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "XPDR-C1-XPDR1",
+                    "org-openroadm-common-network:node-type": "XPONDER",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "XPDR1-CLIENT2",
+                            "org-openroadm-network-topology:xpdr-client-attributes": {
+                                "tail-equipment-id": "XPDR1-NETWORK2"
+                            },
+                            "org-openroadm-common-network:tp-type": "XPONDER-CLIENT"
+                        },
+                        {
+                            "tp-id": "XPDR1-NETWORK2",
+                            "org-openroadm-network-topology:xpdr-network-attributes": {
+                                "tail-equipment-id": "XPDR1-CLIENT2"
+                            },
+                            "org-openroadm-common-network:tp-type": "XPONDER-NETWORK"
+                        },
+                        {
+                            "tp-id": "XPDR1-CLIENT1",
+                            "org-openroadm-network-topology:xpdr-client-attributes": {
+                                "tail-equipment-id": "XPDR1-NETWORK1"
+                            },
+                            "org-openroadm-common-network:tp-type": "XPONDER-CLIENT"
+                        },
+                        {
+                            "tp-id": "XPDR1-NETWORK1",
+                            "org-openroadm-network-topology:xpdr-network-attributes": {
+                                "tail-equipment-id": "XPDR1-CLIENT1"
+                            },
+                            "org-openroadm-common-network:tp-type": "XPONDER-NETWORK"
+                        }
+                    ],
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "XPDR-C1"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-C1-DEG1",
+                    "org-openroadm-common-network:node-type": "DEGREE",
+                    "ietf-network-topology:termination-point": [
+                        {
+                            "tp-id": "DEG1-TTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-TTP"
+                        },
+                        {
+                            "tp-id": "DEG1-CTP-TXRX",
+                            "org-openroadm-common-network:tp-type": "DEGREE-TXRX-CTP"
+                        }
+                    ],
+                    "org-openroadm-network-topology:degree-attributes": {
+                        "degree-number": 1
+                    },
+                    "supporting-node": [
+                        {
+                            "network-ref": "openroadm-network",
+                            "node-ref": "ROADM-C1"
+                        }
+                    ]
+                }
+            ],
+            "network-types": {
+                "org-openroadm-common-network:openroadm-common-network": {}
+            },
+            "ietf-network-topology:link": [
+                {
+                    "link-id": "ROADM-A1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG1-DEG1-TTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-DEG2",
+                        "source-tp": "DEG2-TTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-C1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG2-DEG2-TTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-C1-DEG1",
+                        "dest-tp": "DEG1-TTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-C1-DEG2-DEG2-TTP-TXRXtoROADM-B1-DEG2-DEG2-TTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-C1-DEG2",
+                        "source-tp": "DEG2-TTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-B1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG2-DEG2-TTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-B1-DEG2",
+                        "dest-tp": "DEG2-TTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-B1-DEG2-DEG2-CTP-TXRXtoROADM-B1-DEG1-DEG1-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-B1-DEG2",
+                        "source-tp": "DEG2-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-B1-DEG1-DEG1-CTP-TXRXtoROADM-B1-DEG2-DEG2-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-B1-DEG1",
+                        "dest-tp": "DEG1-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-C1-DEG1-DEG1-CTP-TXRXtoROADM-C1-SRG1-SRG1-CP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-C1-DEG1",
+                        "source-tp": "DEG1-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-C1-SRG1-SRG1-CP-TXRXtoROADM-C1-DEG1-DEG1-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-C1-SRG1",
+                        "dest-tp": "SRG1-CP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-B1-DEG1-DEG1-CTP-TXRXtoROADM-B1-DEG2-DEG2-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-B1-DEG1",
+                        "source-tp": "DEG1-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-B1-DEG2-DEG2-CTP-TXRXtoROADM-B1-DEG1-DEG1-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-B1-DEG2",
+                        "dest-tp": "DEG2-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-SRG3-SRG3-CP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-SRG3",
+                        "source-tp": "SRG3-CP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-SRG3-SRG3-CP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-DEG1",
+                        "dest-tp": "DEG1-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-SRG3-SRG3-CP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-DEG1",
+                        "source-tp": "DEG1-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-SRG3-SRG3-CP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-SRG3",
+                        "dest-tp": "SRG3-CP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-SRG3-SRG3-CP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-SRG3",
+                        "source-tp": "SRG3-CP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-SRG3-SRG3-CP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-DEG2",
+                        "dest-tp": "DEG2-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-C1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG2-DEG2-TTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-C1-DEG1",
+                        "source-tp": "DEG1-TTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG1-DEG1-TTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-DEG2",
+                        "dest-tp": "DEG2-TTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-C1-DEG2-DEG2-CTP-TXRXtoROADM-C1-SRG1-SRG1-CP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-C1-DEG2",
+                        "source-tp": "DEG2-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-C1-SRG1-SRG1-CP-TXRXtoROADM-C1-DEG2-DEG2-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-C1-SRG1",
+                        "dest-tp": "SRG1-CP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-DEG1-DEG1-TTP-TXRXtoROADM-B1-DEG1-DEG1-TTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-DEG1",
+                        "source-tp": "DEG1-TTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-B1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG1-DEG1-TTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-B1-DEG1",
+                        "dest-tp": "DEG1-TTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-C1-DEG2-DEG2-CTP-TXRXtoROADM-C1-DEG1-DEG1-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-C1-DEG2",
+                        "source-tp": "DEG2-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-C1-DEG1-DEG1-CTP-TXRXtoROADM-C1-DEG2-DEG2-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-C1-DEG1",
+                        "dest-tp": "DEG1-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-C1-DEG1-DEG1-CTP-TXRXtoROADM-C1-DEG2-DEG2-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-C1-DEG1",
+                        "source-tp": "DEG1-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-C1-DEG2-DEG2-CTP-TXRXtoROADM-C1-DEG1-DEG1-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-C1-DEG2",
+                        "dest-tp": "DEG2-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-SRG1-SRG1-CP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-DEG2",
+                        "source-tp": "DEG2-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-SRG1-SRG1-CP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-SRG1",
+                        "dest-tp": "SRG1-CP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-SRG3-SRG3-CP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-DEG2",
+                        "source-tp": "DEG2-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-SRG3-SRG3-CP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-SRG3",
+                        "dest-tp": "SRG3-CP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-DEG2",
+                        "source-tp": "DEG2-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-DEG1",
+                        "dest-tp": "DEG1-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-SRG1-SRG1-CP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-SRG1",
+                        "source-tp": "SRG1-CP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-SRG1-SRG1-CP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-DEG1",
+                        "dest-tp": "DEG1-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-C1-SRG1-SRG1-CP-TXRXtoROADM-C1-DEG2-DEG2-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-C1-SRG1",
+                        "source-tp": "SRG1-CP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-C1-DEG2-DEG2-CTP-TXRXtoROADM-C1-SRG1-SRG1-CP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-C1-DEG2",
+                        "dest-tp": "DEG2-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-B1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG1-DEG1-TTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-B1-DEG1",
+                        "source-tp": "DEG1-TTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-DEG1-DEG1-TTP-TXRXtoROADM-B1-DEG1-DEG1-TTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-DEG1",
+                        "dest-tp": "DEG1-TTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-SRG1-SRG1-CP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-SRG1",
+                        "source-tp": "SRG1-CP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-SRG1-SRG1-CP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-DEG2",
+                        "dest-tp": "DEG2-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-B1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG2-DEG2-TTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-B1-DEG2",
+                        "source-tp": "DEG2-TTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-C1-DEG2-DEG2-TTP-TXRXtoROADM-B1-DEG2-DEG2-TTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-C1-DEG2",
+                        "dest-tp": "DEG2-TTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-DEG2-DEG2-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-DEG1",
+                        "source-tp": "DEG1-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-DEG2-DEG2-CTP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-DEG2",
+                        "dest-tp": "DEG2-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-C1-SRG1-SRG1-CP-TXRXtoROADM-C1-DEG1-DEG1-CTP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-C1-SRG1",
+                        "source-tp": "SRG1-CP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-C1-DEG1-DEG1-CTP-TXRXtoROADM-C1-SRG1-SRG1-CP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-C1-DEG1",
+                        "dest-tp": "DEG1-CTP-TXRX"
+                    }
+                },
+                {
+                    "link-id": "ROADM-A1-DEG1-DEG1-CTP-TXRXtoROADM-A1-SRG1-SRG1-CP-TXRX",
+                    "source": {
+                        "source-node": "ROADM-A1-DEG1",
+                        "source-tp": "DEG1-CTP-TXRX"
+                    },
+                    "org-openroadm-common-network:opposite-link": "ROADM-A1-SRG1-SRG1-CP-TXRXtoROADM-A1-DEG1-DEG1-CTP-TXRX",
+                    "destination": {
+                        "dest-node": "ROADM-A1-SRG1",
+                        "dest-tp": "SRG1-CP-TXRX"
+                    }
+                }
+            ]
+        },
+        {
+            "network-id": "clli-network",
+            "node": [
+                {
+                    "node-id": "NodeA",
+                    "org-openroadm-clli-network:clli": "NodeA"
+                },
+                {
+                    "node-id": "NodeB",
+                    "org-openroadm-clli-network:clli": "NodeB"
+                },
+                {
+                    "node-id": "NodeC",
+                    "org-openroadm-clli-network:clli": "NodeC"
+                }
+            ],
+            "network-types": {
+                "org-openroadm-clli-network:clli-network": {}
+            }
+        },
+        {
+            "network-id": "openroadm-network",
+            "node": [
+                {
+                    "node-id": "ROADM-C1",
+                    "org-openroadm-network:ip": "127.0.0.11",
+                    "org-openroadm-network:vendor": "vendorA",
+                    "org-openroadm-network:model": "model2",
+                    "supporting-node": [
+                        {
+                            "network-ref": "clli-network",
+                            "node-ref": "NodeC"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "XPDR-A1",
+                    "org-openroadm-network:ip": "1.2.3.4",
+                    "org-openroadm-network:vendor": "vendorA",
+                    "org-openroadm-network:model": "model2",
+                    "supporting-node": [
+                        {
+                            "network-ref": "clli-network",
+                            "node-ref": "NodeA"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-A1",
+                    "org-openroadm-network:ip": "127.0.0.11",
+                    "org-openroadm-network:vendor": "vendorA",
+                    "org-openroadm-network:model": "model2",
+                    "supporting-node": [
+                        {
+                            "network-ref": "clli-network",
+                            "node-ref": "NodeA"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "XPDR-C1",
+                    "org-openroadm-network:ip": "1.2.3.4",
+                    "org-openroadm-network:vendor": "vendorA",
+                    "org-openroadm-network:model": "model2",
+                    "supporting-node": [
+                        {
+                            "network-ref": "clli-network",
+                            "node-ref": "NodeC"
+                        }
+                    ]
+                },
+                {
+                    "node-id": "ROADM-B1",
+                    "org-openroadm-network:ip": "127.0.0.11",
+                    "org-openroadm-network:vendor": "vendorA",
+                    "org-openroadm-network:model": "model2",
+                    "supporting-node": [
+                        {
+                            "network-ref": "clli-network",
+                            "node-ref": "NodeB"
+                        }
+                    ]
+                }
+            ],
+            "network-types": {
+                "org-openroadm-common-network:openroadm-common-network": {}
+            }
+        }
+    ]
+}
