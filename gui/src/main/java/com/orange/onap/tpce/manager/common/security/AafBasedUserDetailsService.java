@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.HashSet;
 
 @Service
 @Profile("ignore")
@@ -32,7 +33,10 @@ public class AafBasedUserDetailsService implements AuthenticationUserDetailsServ
     @Override
     public UserDetails loadUserDetails(Authentication token) throws UsernameNotFoundException {
         logger.info("loadUserByUsername({})", token.getPrincipal());
-        if (token == null || token.getPrincipal() == null || token.getPrincipal().equals("")) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("admin"));
+        return new User("0","N/A",authorities);
+        /*if (token == null || token.getPrincipal() == null || token.getPrincipal().equals("")) {
             throw new UsernameNotFoundException("user  is missing");
         }
 
@@ -60,7 +64,7 @@ public class AafBasedUserDetailsService implements AuthenticationUserDetailsServ
 
         User user = new User(userId, "N/A", authorities);
 
-        return user;
+        return user;*/
     }
 }
 
