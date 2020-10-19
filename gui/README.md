@@ -5,6 +5,7 @@
 Transport PCE_GUI Project
 ----------------------------
 
+https://gitlab.com/Orange-OpenSource/lfn/odl/tpce_gui.git@18435246d148bbfa450b4c244ef5e02e4027a1b4
 
 **TransportPCE_GUI** is a part from **TransportPCE** that running on top of the **OpenDaylight** controller.
 
