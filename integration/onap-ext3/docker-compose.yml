@@ -16,6 +16,12 @@ services:
       - '8181:8181'
     depends_on: 
       - sdnr
+  transportpce-gui:
+    image: odl/transportpce-gui
+    ports:
+      - '4200:80'
+    depends_on: 
+      - transportpce
   sdncweb:
     image: nexus3.onap.org:10001/onap/sdnc-web-image:latest
 #    image: 10.20.6.10:30000/hightec/sdnc-web-image:2.0.0-SNAPSHOT-20200731T064656Z
