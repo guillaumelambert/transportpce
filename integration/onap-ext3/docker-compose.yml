@@ -18,6 +18,8 @@ services:
       - sdnr
   transportpce-gui:
     image: odl/transportpce-gui
+    ports:
+      - '8082:8082'
     depends_on: 
       - transportpce
   sdncweb:
