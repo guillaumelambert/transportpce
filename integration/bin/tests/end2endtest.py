@@ -109,31 +109,39 @@ class End2EndTest:
         return True
         
 
-    def createLinks(self):
-        #connect_xprdA_N1_to_roadmA_PP1
-        response = self.trpceClient.linkXpdrToRoadm("XPDR-A1", "1", "1",
-            "ROADM-A1", "1", "SRG1-PP1-TXRX")
-        if not response.isSucceeded():
-            return False
-        #connect_roadmA_PP1_to_xpdrA_N1
-        response = self.trpceClient.linkRoadmTpXpdr("XPDR-A1", "1", "1",
-            "ROADM-A1", "1", "SRG1-PP1-TXRX")
-        if not response.isSucceeded():
-            return False
+    def createLinks(self, retries=1, delayForRetries=10):
+        success = False
+        while retries>0:
+            #connect_xprdA_N1_to_roadmA_PP1
+            response = self.trpceClient.linkXpdrToRoadm("XPDR-A1", "1", "1",
+                "ROADM-A1", "1", "SRG1-PP1-TXRX")
+            if not response.isSucceeded():
+                return False
+            #connect_roadmA_PP1_to_xpdrA_N1
+            response = self.trpceClient.linkRoadmTpXpdr("XPDR-A1", "1", "1",
+                "ROADM-A1", "1", "SRG1-PP1-TXRX")
+            if not response.isSucceeded():
+                return False
+            
+            #connect_xprdC_N1_to_roadmC_PP1
+            response = self.trpceClient.linkXpdrToRoadm("XPDR-C1", "1", "1",
+                "ROADM-C1", "1", "SRG1-PP1-TXRX")
+            if not response.isSucceeded():
+                return False
         
-        #connect_xprdC_N1_to_roadmC_PP1
-        response = self.trpceClient.linkXpdrToRoadm("XPDR-C1", "1", "1",
-            "ROADM-C1", "1", "SRG1-PP1-TXRX")
-        if not response.isSucceeded():
-            return False
-       
-        #connect_roadmC_PP1_to_xpdrC_N1
-        response = self.trpceClient.linkRoadmTpXpdr("XPDR-C1", "1", "1",
-            "ROADM-C1", "1", "SRG1-PP1-TXRX")
-        if not response.isSucceeded():
-            return False
-
-        return True
+            #connect_roadmC_PP1_to_xpdrC_N1
+            response = self.trpceClient.linkRoadmTpXpdr("XPDR-C1", "1", "1",
+                "ROADM-C1", "1", "SRG1-PP1-TXRX")
+            
+            retries-=1
+            success = response.isSucceeded()
+            if success:
+                break
+            time.sleep(delayForRetries)
+            if retries>0:
+                print("service still not with state inServerice. waiting...")
+        
+        return success
 
 
     def configROADMS(self):
