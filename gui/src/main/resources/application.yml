@@ -19,10 +19,10 @@ onap:
   api:
     username: admin
     password: admin
-    network-url-path: http://172.29.236.6:8181/restconf/config/ietf-network:networks
+    network-url-path: http://transportpce:8181/restconf/config/ietf-network:networks
     #network-url-path: http://localhost:3000/restconf/config/ietf-network:networks
-    service-path-list: http://172.29.236.6:8181/restconf/operational/transportpce-servicepath:service-path-list
-    service-url-path: http://172.29.236.6:8181/restconf/operational/org-openroadm-service:service-list
+    service-path-list: http://transportpce:8181/restconf/operational/transportpce-servicepath:service-path-list
+    service-url-path: http://transportpce:8181/restconf/operational/org-openroadm-service:service-list
     #service-url-path: http://localhost:3000/restconf/config/org-openroadm-service:service-list
 ---
 spring:
