@@ -157,7 +157,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
 
     @Override
     public OperationResult deleteTempService(String commonId) {
-        LOG.debug("Deleting '{}' Service", commonId);
+        LOG.debug("Deleting '{}' temp Service", commonId);
         try {
             WriteTransaction writeTx = this.dataBroker.newWriteOnlyTransaction();
             InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list

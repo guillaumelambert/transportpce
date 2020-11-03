@@ -492,6 +492,7 @@ public class OpenRoadmInterface221 {
         Optional<RoadmConnections> crossconnection = Optional.empty();
         if (odlClient.isEnabled()) {
             try {
+                LOG.info("remote odlclient getDataFromDevice isUsedByXc");
                 crossconnection = odlClient.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION, xciid,
                         Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
             } catch (InterruptedException | TimeoutException | ExecutionException e) {
@@ -528,6 +529,7 @@ public class OpenRoadmInterface221 {
         Optional<OduConnection> oduConnectionOpt = Optional.empty();
         if (odlClient.isEnabled()) {
             try {
+                LOG.info("remote odlclient getDataFromDevice isUsedByOtnXc");
                 oduConnectionOpt = odlClient.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION, xciid,
                         Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
             } catch (InterruptedException | TimeoutException | ExecutionException e) {

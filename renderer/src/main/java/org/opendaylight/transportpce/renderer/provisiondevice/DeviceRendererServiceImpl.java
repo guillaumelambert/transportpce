@@ -263,6 +263,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
 
     private boolean isDeviceMounted(String nodeId) {
         if (this.odlClient.isEnabled()) {
+            LOG.info("remote odlclient isDeviceMounted");
             return this.odlClient.isDevicePresent(nodeId);
         }
         return this.deviceTransactionManager.isDeviceMounted(nodeId);

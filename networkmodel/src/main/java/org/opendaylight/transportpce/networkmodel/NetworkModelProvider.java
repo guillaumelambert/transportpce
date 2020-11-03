@@ -70,6 +70,7 @@ public class NetworkModelProvider {
                                         topologyListener);
         LOG.info("running transportPCE netconf functions remotely: {}", this.odlClient.isEnabled());
         if (this.odlClient.isEnabled()) {
+            LOG.info("remote odlclient networkmodelprovider registerdeviceconnectionchangelistener");
             this.odlClient.registerDeviceConnectionChangeListener(topologyListener);
         }
         networkutilsServiceRpcRegistration = rpcProviderService
