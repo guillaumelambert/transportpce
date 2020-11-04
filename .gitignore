@@ -20,6 +20,7 @@ yang-gen-sal
 classes
 .DS_STORE
 .metadata
+.vscode
 ordmodels/src/main/java
 tests/config.xml
 tests/models
