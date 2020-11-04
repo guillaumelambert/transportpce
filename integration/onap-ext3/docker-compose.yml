@@ -18,6 +18,9 @@ services:
       - sdnr
   transportpce-gui:
     image: odl/transportpce-gui
+    environment: 
+      - IETF_NETWORK_BASEURL=http://transportpce:8181
+      - TRANSPORTPCE_BASEURL=http://transportpce:8181
     ports:
       - '8082:8082'
     depends_on: 
@@ -30,7 +33,7 @@ services:
     depends_on: 
       - sdnr
   sdnr:
-    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.1-STAGING-20200914T034621Z
+    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.2
 #    image: hightec/sdnr-image-sodium:1.0.0-SNAPSHOT-20200720T171600Z
     environment: 
       - SDNRONLY=true
@@ -39,7 +42,7 @@ services:
       - SDNRWT=true
       - SDNRDBURL=http://sdnrdb:9200
       - SDNRWT_BOOTFEATURES=odl-netconf-callhome-ssh,sdnr-wt-feature-aggregator
-    entrypoint: /opt/onap/sdnc/bin/startODL.oom.sh
+#    entrypoint: /opt/onap/sdnc/bin/startODL.oom.sh
     depends_on: 
       - sdnrdb
   sdnrdb:
