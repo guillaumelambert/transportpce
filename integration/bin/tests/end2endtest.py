@@ -17,13 +17,20 @@ class End2EndTest:
     def logError(self, message):
         print("ERROR: "+message)
 
-    def test(self):
+    def test(self,args):
+        step = None
+        if len(args)>0:
+            step = args.pop(0)
         success = self.mountAll()
         if success:
             print("mounting simulators succeeded")
         else:
             print("problem mounting simulators")
             return False
+        #stop if requested
+        if step=='mount':
+            return True
+        
         time.sleep(self.WAITING)
         success = self.createLinks()
         if success:
@@ -77,31 +84,15 @@ class End2EndTest:
     def mountAll(self):
         responses = []
         if self.config.isRemoteEnabled():
-            response = self.sdncClient.mount( self.sims[0].name, self.sims[0].ip,
-                self.sims[0].port,self.sims[0].username,self.sims[0].password)
-            responses.append(response)
-            response = self.sdncClient.mount( self.sims[2].name, self.sims[2].ip,
-                self.sims[2].port,self.sims[2].username,self.sims[2].password)
-            responses.append(response)
-            response = self.sdncClient.mount( self.sims[3].name, self.sims[3].ip,
-                self.sims[3].port,self.sims[3].username,self.sims[3].password)
-            response = responses.append(response)
-            response = self.sdncClient.mount( self.sims[4].name, self.sims[4].ip,
-                self.sims[4].port,self.sims[4].username,self.sims[4].password)         
-            responses.append(response)
+            for sim in self.sims:
+                response = self.sdncClient.mount( sim.name, sim.ip,
+                    sim.port,sim.username,sim.password)
+                responses.append(response)
         else:
-            response = self.trpceClient.mount( self.sims[0].name, self.sims[0].ip,
-                self.sims[0].port,self.sims[0].username,self.sims[0].password)
-            responses.append(response)
-            response = self.trpceClient.mount( self.sims[2].name, self.sims[2].ip,
-                self.sims[2].port,self.sims[2].username,self.sims[2].password)
-            responses.append(response)
-            response = self.trpceClient.mount( self.sims[3].name, self.sims[3].ip,
-                self.sims[3].port,self.sims[3].username,self.sims[3].password)
-            responses.append(response)
-            response = self.trpceClient.mount( self.sims[4].name, self.sims[4].ip,
-                self.sims[4].port,self.sims[4].username,self.sims[4].password)
-            responses.append(response)
+            for sim in self.sims:
+                response = self.trpceClient.mount( sim.name, sim.ip,
+                    sim.port,sim.username,sim.password)
+                responses.append(response)
  
         for r in responses:
             if not r.isSucceeded():
@@ -111,36 +102,33 @@ class End2EndTest:
 
     def createLinks(self, retries=1, delayForRetries=10):
         success = False
-        while retries>0:
+        while retries>=0:
             #connect_xprdA_N1_to_roadmA_PP1
             response = self.trpceClient.linkXpdrToRoadm("XPDR-A1", "1", "1",
                 "ROADM-A1", "1", "SRG1-PP1-TXRX")
-            if not response.isSucceeded():
-                return False
-            #connect_roadmA_PP1_to_xpdrA_N1
-            response = self.trpceClient.linkRoadmTpXpdr("XPDR-A1", "1", "1",
-                "ROADM-A1", "1", "SRG1-PP1-TXRX")
-            if not response.isSucceeded():
-                return False
-            
-            #connect_xprdC_N1_to_roadmC_PP1
-            response = self.trpceClient.linkXpdrToRoadm("XPDR-C1", "1", "1",
-                "ROADM-C1", "1", "SRG1-PP1-TXRX")
-            if not response.isSucceeded():
-                return False
-        
-            #connect_roadmC_PP1_to_xpdrC_N1
-            response = self.trpceClient.linkRoadmTpXpdr("XPDR-C1", "1", "1",
-                "ROADM-C1", "1", "SRG1-PP1-TXRX")
-            
+            if response.isSucceeded():
+                #connect_roadmA_PP1_to_xpdrA_N1
+                response = self.trpceClient.linkRoadmTpXpdr("XPDR-A1", "1", "1",
+                    "ROADM-A1", "1", "SRG1-PP1-TXRX")
+                if response.isSucceeded():
+                    #connect_xprdC_N1_to_roadmC_PP1
+                    response = self.trpceClient.linkXpdrToRoadm("XPDR-C1", "1", "1",
+                        "ROADM-C1", "1", "SRG1-PP1-TXRX")
+                    if response.isSucceeded():
+                        #connect_roadmC_PP1_to_xpdrC_N1
+                        response = self.trpceClient.linkRoadmTpXpdr("XPDR-C1", "1", "1",
+                            "ROADM-C1", "1", "SRG1-PP1-TXRX")
             retries-=1
             success = response.isSucceeded()
             if success:
                 break
-            time.sleep(delayForRetries)
             if retries>0:
-                print("service still not with state inServerice. waiting...")
-        
+                print("creating links failed. waiting for retry...")
+            else:
+                break
+            
+            time.sleep(delayForRetries)
+            
         return success
 
 
