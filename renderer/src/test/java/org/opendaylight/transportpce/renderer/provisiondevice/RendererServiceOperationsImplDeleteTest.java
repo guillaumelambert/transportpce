@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.binding.api.MountPoint;
@@ -32,6 +33,7 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManagerImpl;
 import org.opendaylight.transportpce.common.fixedflex.FixedFlexImpl;
 import org.opendaylight.transportpce.common.fixedflex.FixedFlexInterface;
+import org.opendaylight.transportpce.common.fixedflex.FlexGridImpl;
 import org.opendaylight.transportpce.common.mapping.MappingUtils;
 import org.opendaylight.transportpce.common.mapping.MappingUtilsImpl;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
@@ -75,6 +77,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint32;
 
+@Ignore
 public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
 
     private static final int NUMBER_OF_THREADS = 4;
@@ -116,19 +119,31 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
             this.crossConnectImpl221);
         this.crossConnect = Mockito.spy(crossConnect);
         FixedFlexInterface fixedFlexInterface = new FixedFlexImpl();
+        FlexGridImpl flexGrid = new FlexGridImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
         OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
+<<<<<<< HEAD
             fixedFlexInterface);
+=======
+            fixedFlexInterface, flexGrid);
+>>>>>>> standalone/stable/aluminium
         OpenRoadmOtnInterface221 openRoadmOTNInterface = new OpenRoadmOtnInterface221(portMapping, openRoadmInterfaces);
         OpenRoadmInterfaceFactory openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,
              openRoadmInterface121, openRoadmInterface221, openRoadmOTNInterface);
 
         this.deviceRenderer = new DeviceRendererServiceImpl(this.getDataBroker(),
             this.deviceTransactionManager, openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect,
+<<<<<<< HEAD
             this.portMapping, null, new DisabledRemoteOpendaylightClient());
 
         this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, crossConnect,
             openRoadmInterfaces, this.deviceTransactionManager, null, new DisabledRemoteOpendaylightClient());
+=======
+            this.portMapping, null);
+
+        this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, crossConnect,
+            openRoadmInterfaces, this.deviceTransactionManager, null);
+>>>>>>> standalone/stable/aluminium
 
     }
 

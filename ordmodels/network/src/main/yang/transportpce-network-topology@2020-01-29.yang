@@ -1,5 +1,5 @@
-module transportpce-topology {
-    namespace "http://transportpce/topology";
+module transportpce-network-topology {
+    namespace "http://transportpce/networktopology";
     prefix "tpce-topo";
 
     import ietf-network {
@@ -76,4 +76,3 @@ module transportpce-topology {
           }
         }
     }
-}

@@ -7,6 +7,10 @@
  */
 package org.opendaylight.transportpce.tapi.validation;
 
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+>>>>>>> standalone/stable/aluminium
 import java.util.List;
 import org.opendaylight.transportpce.common.OperationResult;
 import org.opendaylight.transportpce.servicehandler.validation.checks.ComplianceCheckResult;
@@ -34,7 +38,11 @@ public final class CreateConnectivityServiceValidation {
         LOG.info("checking rpc create-connectivity-service input parameters...");
         try {
             LOG.info("checking EndPoints...");
+<<<<<<< HEAD
             List<EndPoint> endPointList = input.getEndPoint();
+=======
+            List<EndPoint> endPointList = new ArrayList<>(input.getEndPoint().values());
+>>>>>>> standalone/stable/aluminium
             ComplianceCheckResult endPointCheckResult = EndPointCheck.check(endPointList);
             if (endPointCheckResult.hasPassed()) {
                 LOG.info("create-connectivity-service end-points compliant !");

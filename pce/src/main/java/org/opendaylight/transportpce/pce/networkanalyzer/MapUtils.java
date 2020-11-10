@@ -9,22 +9,42 @@ package org.opendaylight.transportpce.pce.networkanalyzer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+<<<<<<< HEAD
 import java.util.List;
+=======
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+>>>>>>> standalone/stable/aluminium
 import java.util.TreeMap;
 import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.link.rev181130.span.attributes.LinkConcatenation;
+<<<<<<< HEAD
+=======
+import org.opendaylight.yang.gen.v1.http.org.openroadm.link.rev181130.span.attributes.LinkConcatenationKey;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.link.oms.attributes.Span;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.OpenroadmLinkType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.node.SupportingNode;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.LinkId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link;
+<<<<<<< HEAD
+=======
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.link.SupportingLink;
+>>>>>>> standalone/stable/aluminium
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class MapUtils {
+<<<<<<< HEAD
+=======
+    private static final String MAP_UTILS_NO_LINK_AUGMENTATION_AVAILABLE_MSG =
+            "MapUtils: No Link augmentation available. {}";
+>>>>>>> standalone/stable/aluminium
     /* Logging. */
     private static final Logger LOG = LoggerFactory.getLogger(MapUtils.class);
 
@@ -76,6 +96,7 @@ public final class MapUtils {
 
     public static String getCLLI(Node node) {
         // TODO STUB retrieve CLLI from node. for now it is supporting node ID of the first supp node
+<<<<<<< HEAD
         return node.getSupportingNode().get(0).getNodeRef().getValue();
     }
 
@@ -88,11 +109,29 @@ public final class MapUtils {
             }
         } catch (NullPointerException e) {
             LOG.debug("No concatenation for this link");
+=======
+        return node.nonnullSupportingNode().values().iterator().next().getNodeRef().getValue();
+    }
+
+    public static List<Long> getSRLG(Link link) {
+        Span omsAttributesSpan = getOmsAttributesSpan(link);
+        if (omsAttributesSpan == null) {
+            LOG.debug("No concatenation for this link");
+            return new ArrayList<>();
+        }
+        List<Long> srlgList = new ArrayList<>();
+        Map<LinkConcatenationKey, LinkConcatenation> linkList = omsAttributesSpan.nonnullLinkConcatenation();
+        for (LinkConcatenation lc : linkList.values()) {
+            if (lc != null && lc.getSRLGId() != null) {
+                srlgList.add(lc.getSRLGId().toJava());
+            }
+>>>>>>> standalone/stable/aluminium
         }
         return srlgList;
     }
 
     public static List<Long> getSRLGfromLink(Link link) {
+<<<<<<< HEAD
         List<Long> srlgList = new ArrayList<>();
         org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1 linkC =
             link.augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1.class);
@@ -111,14 +150,33 @@ public final class MapUtils {
                 }
             } catch (NullPointerException e) {
                 LOG.debug("No concatenation for this link");
+=======
+        org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1 linkC = link
+                .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1.class);
+        if (linkC == null) {
+            LOG.error(MAP_UTILS_NO_LINK_AUGMENTATION_AVAILABLE_MSG, link.getLinkId().getValue());
+            return new ArrayList<>();
+        }
+        List<Long> srlgList = new ArrayList<>();
+        for (org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130
+                .networks.network.link.LinkConcatenation lc : linkC.nonnullLinkConcatenation().values()) {
+            if (lc != null && lc.getSRLGId() != null) {
+                srlgList.add(lc.getSRLGId().toJava());
+            } else {
+                LOG.debug("No concatenation or SLRG id for this link");
+>>>>>>> standalone/stable/aluminium
             }
         }
         return srlgList;
     }
 
     public static String getSupNetworkNode(Node node) {
+<<<<<<< HEAD
         List<SupportingNode> supNodes = node.getSupportingNode();
         for (SupportingNode snode : supNodes) {
+=======
+        for (SupportingNode snode : node.nonnullSupportingNode().values()) {
+>>>>>>> standalone/stable/aluminium
             if (NetworkUtils.UNDERLAY_NETWORK_ID.equals(snode.getNetworkRef().getValue())) {
                 return snode.getNodeRef().getValue();
             }
@@ -127,8 +185,12 @@ public final class MapUtils {
     }
 
     public static String getSupClliNode(Node node) {
+<<<<<<< HEAD
         List<SupportingNode> supNodes = node.getSupportingNode();
         for (SupportingNode snode : supNodes) {
+=======
+        for (SupportingNode snode : node.nonnullSupportingNode().values()) {
+>>>>>>> standalone/stable/aluminium
             if (NetworkUtils.CLLI_NETWORK_ID.equals(snode.getNetworkRef().getValue())) {
                 return snode.getNodeRef().getValue();
             }
@@ -136,6 +198,7 @@ public final class MapUtils {
         return null;
     }
 
+<<<<<<< HEAD
     public static TreeMap<String, String> getAllSupNode(Node node) {
         TreeMap<String, String> allSupNodes = new TreeMap<>();
         List<SupportingNode> supNodes = new ArrayList<>();
@@ -145,6 +208,11 @@ public final class MapUtils {
             LOG.debug("No Supporting Node for the node {}", node);
         }
         for (SupportingNode supnode :supNodes) {
+=======
+    public static SortedMap<String, String> getAllSupNode(Node node) {
+        TreeMap<String, String> allSupNodes = new TreeMap<>();
+        for (SupportingNode supnode : node.nonnullSupportingNode().values()) {
+>>>>>>> standalone/stable/aluminium
             allSupNodes.put(supnode.getNetworkRef().getValue(),
                     supnode.getNodeRef().getValue());
         }
@@ -152,6 +220,7 @@ public final class MapUtils {
     }
 
     public static String getSupLink(Link link) {
+<<<<<<< HEAD
         String supLink = "";
         try {
             supLink = link.getSupportingLink().get(0).getLinkRef().toString();
@@ -159,6 +228,17 @@ public final class MapUtils {
             LOG.debug("No Supporting Link for the link {}", link);
         }
         return supLink;
+=======
+        Iterator<SupportingLink> supportingLinkIterator = link.nonnullSupportingLink().values().iterator();
+        if (!supportingLinkIterator.hasNext()) {
+            return "";
+        }
+        SupportingLink first = supportingLinkIterator.next();
+        if (first == null || first.getLinkRef() == null) {
+            return "";
+        }
+        return first.getLinkRef().toString();
+>>>>>>> standalone/stable/aluminium
     }
 
 
@@ -194,7 +274,11 @@ public final class MapUtils {
         // ID and type
         link1 = link.augmentation(Link1.class);
         if (link1 == null) {
+<<<<<<< HEAD
             LOG.error("MapUtils: No Link augmentation available. {}", link.getLinkId().getValue());
+=======
+            LOG.error(MAP_UTILS_NO_LINK_AUGMENTATION_AVAILABLE_MSG, link.getLinkId().getValue());
+>>>>>>> standalone/stable/aluminium
             return null;
         }
 
@@ -209,11 +293,15 @@ public final class MapUtils {
 
     public static Span getOmsAttributesSpan(Link link) {
         org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1 link1 = null;
+<<<<<<< HEAD
         Span tempSpan = null;
+=======
+>>>>>>> standalone/stable/aluminium
         link1 =
             link.augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1.class);
 
         if (link1 == null) {
+<<<<<<< HEAD
             LOG.error("MapUtils: No Link augmentation available. {}", link.getLinkId().getValue());
         }
         try {
@@ -224,6 +312,16 @@ public final class MapUtils {
         }
 
         return tempSpan;
+=======
+            LOG.error(MAP_UTILS_NO_LINK_AUGMENTATION_AVAILABLE_MSG, link.getLinkId().getValue());
+            return null;
+        }
+        if (link1.getOMSAttributes() == null) {
+            LOG.error("MapUtils: No Link getOMSAttributes available. {}", link.getLinkId().getValue());
+            return null;
+        }
+        return link1.getOMSAttributes().getSpan();
+>>>>>>> standalone/stable/aluminium
     }
 
     public static LinkId extractOppositeLink(Link link) {

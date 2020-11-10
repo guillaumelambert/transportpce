@@ -8,7 +8,10 @@
 
 package org.opendaylight.transportpce.pce.gnpy;
 
+<<<<<<< HEAD
 //import com.google.common.base.Preconditions;
+=======
+>>>>>>> standalone/stable/aluminium
 import com.google.gson.stream.JsonReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,13 +20,18 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Collections;
+=======
+import java.util.Collection;
+>>>>>>> standalone/stable/aluminium
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+<<<<<<< HEAD
 import javax.annotation.Nonnull;
 import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
 import org.opendaylight.mdsal.binding.dom.codec.impl.BindingNormalizedNodeCodecRegistry;
@@ -37,6 +45,19 @@ import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.generic.path.properties.
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.result.Response;
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.result.response.response.type.NoPathCase;
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.result.response.response.type.PathCase;
+=======
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import org.opendaylight.mdsal.binding.dom.codec.api.BindingNormalizedNodeSerializer;
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.Result;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.explicit.route.hop.type.NumUnnumHop;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.generic.path.properties.path.properties.PathMetric;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.generic.path.properties.path.properties.PathRouteObjects;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.result.Response;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.result.response.response.type.NoPathCase;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.result.response.response.type.PathCase;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.General;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.GeneralBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.general.Include;
@@ -51,8 +72,9 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier.PathArgument;
 import org.opendaylight.yangtools.yang.data.api.schema.ContainerNode;
@@ -63,7 +85,11 @@ import org.opendaylight.yangtools.yang.data.codec.gson.JSONCodecFactorySupplier;
 import org.opendaylight.yangtools.yang.data.codec.gson.JsonParserStream;
 import org.opendaylight.yangtools.yang.data.impl.schema.ImmutableNormalizedNodeStreamWriter;
 import org.opendaylight.yangtools.yang.data.impl.schema.NormalizedNodeResult;
+<<<<<<< HEAD
 import org.opendaylight.yangtools.yang.model.api.SchemaContext;
+=======
+import org.opendaylight.yangtools.yang.model.api.EffectiveModelContext;
+>>>>>>> standalone/stable/aluminium
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +105,7 @@ public class GnpyResult {
     private static final Logger LOG = LoggerFactory.getLogger(GnpyResult.class);
     private Response response = null;
     private Map<String, IpAddress> mapNodeRefIp = new HashMap<>();
+<<<<<<< HEAD
 
     public GnpyResult(String gnpyResponseString, GnpyTopoImpl gnpyTopo) throws GnpyException, Exception {
         this.mapNodeRefIp = gnpyTopo.getMapNodeRefIp();
@@ -97,6 +124,17 @@ public class GnpyResult {
 
         // Create the data object
         QName pathQname = QName.create("gnpy:path", "2020-02-02", "result");
+=======
+    private EffectiveModelContext effectiveModelcontext;
+
+    public GnpyResult(String gnpyResponseString, GnpyTopoImpl gnpyTopo,
+            BindingDOMCodecServices bindingDOMCodecServices) throws GnpyException {
+        this.mapNodeRefIp = gnpyTopo.getMapNodeRefIp();
+        effectiveModelcontext = bindingDOMCodecServices.getRuntimeContext().getEffectiveModelContext();
+
+        // Create the data object
+        QName pathQname = QName.create("gnpy:path", "2020-09-09", "result");
+>>>>>>> standalone/stable/aluminium
         LOG.debug("the Qname is {} / namesapce {} ; module {}; ", pathQname, pathQname.getNamespace(),
             pathQname.getModule());
         YangInstanceIdentifier yangId = YangInstanceIdentifier.of(pathQname);
@@ -112,6 +150,7 @@ public class GnpyResult {
             throw new GnpyException("In GnpyResult: the Normalized Node is not present");
         }
         NormalizedNode<? extends PathArgument, ?> normalizedNode = transformIntoNormalizedNode.get();
+<<<<<<< HEAD
 
         if (codecRegistry.fromNormalizedNode(yangId, normalizedNode) != null) {
             dataObject = codecRegistry.fromNormalizedNode(yangId, normalizedNode).getValue();
@@ -121,6 +160,18 @@ public class GnpyResult {
         List<Response> responses = null;
         responses = ((Result) dataObject).getResponse();
         if (responses == null) {
+=======
+        Entry<InstanceIdentifier<?>, DataObject> fromNormalizedNode = bindingDOMCodecServices
+                .fromNormalizedNode(yangId, normalizedNode);
+
+        if (fromNormalizedNode != null) {
+            dataObject = fromNormalizedNode.getValue();
+        } else {
+            throw new GnpyException("In GnpyResult: the codec registry from the normalized node is null");
+        }
+        List<Response> responses = new ArrayList<>(((Result) dataObject).nonnullResponse().values());
+        if (responses.isEmpty()) {
+>>>>>>> standalone/stable/aluminium
             throw new GnpyException("In GnpyResult: the response from GNpy is null!");
         }
         LOG.info("The response id is {}; ", responses.get(0).getResponseId());
@@ -151,7 +202,12 @@ public class GnpyResult {
                 if (((noPathType.equals("NO_FEASIBLE_BAUDRATE_WITH_SPACING"))
                     && (noPathType.equals("NO_FEASIBLE_MODE"))) && ((noPathType.equals("MODE_NOT_FEASIBLE"))
                         && (noPathType.equals("NO_SPECTRUM")))) {
+<<<<<<< HEAD
                     List<PathMetric> pathMetricList = noPathCase.getNoPath().getPathProperties().getPathMetric();
+=======
+                    Collection<PathMetric> pathMetricList = noPathCase.getNoPath()
+                            .getPathProperties().nonnullPathMetric().values();
+>>>>>>> standalone/stable/aluminium
                     LOG.info("GNPy : path is not feasible : {}", noPathType);
                     for (PathMetric pathMetric : pathMetricList) {
                         String metricType = pathMetric.getMetricType().getSimpleName();
@@ -162,7 +218,12 @@ public class GnpyResult {
             } else if (response.getResponseType() instanceof PathCase) {
                 LOG.info("GNPy : path is feasible");
                 PathCase pathCase = (PathCase) response.getResponseType();
+<<<<<<< HEAD
                 List<PathMetric> pathMetricList = pathCase.getPathProperties().getPathMetric();
+=======
+                Collection<PathMetric> pathMetricList = pathCase
+                        .getPathProperties().nonnullPathMetric().values();
+>>>>>>> standalone/stable/aluminium
                 // Path metrics
                 for (PathMetric pathMetric : pathMetricList) {
                     String metricType = pathMetric.getMetricType().getSimpleName();
@@ -185,7 +246,11 @@ public class GnpyResult {
         int counter = 0;
         for (PathRouteObjects pathRouteObjects : pathRouteObjectList) {
             if (pathRouteObjects.getPathRouteObject().getType() instanceof NumUnnumHop) {
+<<<<<<< HEAD
                 NumUnnumHop numUnnumHop = (org.opendaylight.yang.gen.v1.gnpy.path.rev200202.explicit.route.hop.type
+=======
+                NumUnnumHop numUnnumHop = (org.opendaylight.yang.gen.v1.gnpy.path.rev200909.explicit.route.hop.type
+>>>>>>> standalone/stable/aluminium
                     .NumUnnumHop) pathRouteObjects.getPathRouteObject().getType();
                 String nodeIp = numUnnumHop.getNumUnnumHop().getNodeId();
                 try {
@@ -197,7 +262,12 @@ public class GnpyResult {
                             .ordered.constraints.sp.hop.type.hop.type.Node node = new NodeBuilder().setNodeId(nodeId)
                             .build();
                         HopType hopType = new HopTypeBuilder().setHopType(node).build();
+<<<<<<< HEAD
                         OrderedHops orderedHops = new OrderedHopsBuilder().setHopNumber(counter).setHopType(hopType)
+=======
+                        OrderedHops orderedHops = new OrderedHopsBuilder()
+                                .setHopNumber(Uint16.valueOf(counter)).setHopType(hopType)
+>>>>>>> standalone/stable/aluminium
                             .build();
                         orderedHopsList.add(orderedHops);
                         counter++;
@@ -207,7 +277,14 @@ public class GnpyResult {
                 }
             }
         }
+<<<<<<< HEAD
         Include include = new IncludeBuilder().setOrderedHops(orderedHopsList).build();
+=======
+        Include include = new IncludeBuilder()
+                .setOrderedHops(orderedHopsList.stream()
+                        .collect(Collectors.toMap(OrderedHops::key, orderedHops -> orderedHops)))
+                .build();
+>>>>>>> standalone/stable/aluminium
         General general = new GeneralBuilder().setInclude(include).build();
         hardConstraints = new HardConstraintsBuilder().setCoRoutingOrGeneral(general).build();
         return hardConstraints;
@@ -230,13 +307,21 @@ public class GnpyResult {
      * @throws Exception exception
      */
     private Optional<NormalizedNode<? extends YangInstanceIdentifier.PathArgument, ?>> parseInputJSON(JsonReader reader,
+<<<<<<< HEAD
         Class<? extends DataObject> objectClass) throws Exception {
+=======
+        Class<? extends DataObject> objectClass) {
+>>>>>>> standalone/stable/aluminium
         NormalizedNodeResult result = new NormalizedNodeResult();
-        SchemaContext schemaContext = getSchemaContext(objectClass);
         try (NormalizedNodeStreamWriter streamWriter = ImmutableNormalizedNodeStreamWriter.from(result);
             JsonParserStream jsonParser = JsonParserStream.create(streamWriter,
+<<<<<<< HEAD
                 JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.getShared(schemaContext),
                 schemaContext);) {
+=======
+                JSONCodecFactorySupplier.DRAFT_LHOTKA_NETMOD_YANG_JSON_02.getShared(effectiveModelcontext),
+                effectiveModelcontext);) {
+>>>>>>> standalone/stable/aluminium
             jsonParser.parse(reader);
         } catch (IOException e) {
             LOG.warn("GNPy: exception {} occured during parsing Json input stream", e.getMessage());
@@ -245,6 +330,7 @@ public class GnpyResult {
         return Optional.ofNullable(result.getResult());
     }
 
+<<<<<<< HEAD
     private SchemaContext getSchemaContext(Class<? extends DataObject> objectClass) throws GnpyException, Exception {
 
         final ModuleInfoBackedContext moduleContext = ModuleInfoBackedContext.create();
@@ -255,6 +341,8 @@ public class GnpyResult {
         schemaContext = moduleContext.tryToCreateSchemaContext().get();
         return schemaContext;
     }
+=======
+>>>>>>> standalone/stable/aluminium
 
     /**
      * Transforms the given input {@link NormalizedNode} into the given {@link DataObject}.

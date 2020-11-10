@@ -8,9 +8,14 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+# pylint: disable=no-member
+# pylint: disable=too-many-public-methods
 
 import unittest
+<<<<<<< HEAD
 import json
+=======
+>>>>>>> standalone/stable/aluminium
 import time
 import requests
 from common import test_utils
@@ -19,6 +24,7 @@ from common import test_utils
 class TransportPCEFulltesting(unittest.TestCase):
 
     processes = None
+<<<<<<< HEAD
     WAITING = 20  # nominal value is 300
 
     @classmethod
@@ -131,6 +137,23 @@ class TransportPCEFulltesting(unittest.TestCase):
                     "node-id": "XPDR-A1",
                     "service-format": "Ethernet",
                     "clli": "SNJSCAMCJP8",
+=======
+    cr_serv_sample_data = {"input": {
+        "sdnc-request-header": {
+            "request-id": "e3028bae-a90f-4ddd-a83f-cf224eba0e58",
+            "rpc-action": "service-create",
+            "request-system-id": "appname",
+            "notification-url": "http://localhost:8585/NotificationServer/notify"
+        },
+        "service-name": "service1",
+        "common-id": "ASATT1234567",
+        "connection-type": "service",
+        "service-a-end": {
+            "service-rate": "100",
+            "node-id": "XPDR-A1",
+            "service-format": "Ethernet",
+            "clli": "SNJSCAMCJP8",
+>>>>>>> standalone/stable/aluminium
                     "tx-direction": {
                         "port": {
                             "port-device-name": "ROUTER_SNJSCAMCJP8_000000.00_00",
@@ -146,7 +169,7 @@ class TransportPCEFulltesting(unittest.TestCase):
                             "lgx-port-shelf": "00"
                         }
                     },
-                    "rx-direction": {
+            "rx-direction": {
                         "port": {
                             "port-device-name": "ROUTER_SNJSCAMCJP8_000000.00_00",
                             "port-type": "router",
@@ -161,13 +184,13 @@ class TransportPCEFulltesting(unittest.TestCase):
                             "lgx-port-shelf": "00"
                         }
                     },
-                    "optic-type": "gray"
-                },
-                "service-z-end": {
-                    "service-rate": "100",
-                    "node-id": "XPDR-C1",
-                    "service-format": "Ethernet",
-                    "clli": "SNJSCAMCJT4",
+            "optic-type": "gray"
+        },
+        "service-z-end": {
+            "service-rate": "100",
+            "node-id": "XPDR-C1",
+            "service-format": "Ethernet",
+            "clli": "SNJSCAMCJT4",
                     "tx-direction": {
                         "port": {
                             "port-device-name": "ROUTER_SNJSCAMCJT4_000000.00_00",
@@ -183,7 +206,7 @@ class TransportPCEFulltesting(unittest.TestCase):
                             "lgx-port-shelf": "00"
                         }
                     },
-                    "rx-direction": {
+            "rx-direction": {
                         "port": {
                             "port-device-name": "ROUTER_SNJSCAMCJT4_000000.00_00",
                             "port-type": "router",
@@ -198,6 +221,7 @@ class TransportPCEFulltesting(unittest.TestCase):
                             "lgx-port-shelf": "00"
                         }
                     },
+<<<<<<< HEAD
                     "optic-type": "gray"
                 },
                 "due-date": "2016-11-28T00:00:01Z",
@@ -205,6 +229,114 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+            "optic-type": "gray"
+        },
+        "due-date": "2016-11-28T00:00:01Z",
+        "operator-contact": "pw1234"
+    }
+    }
+
+    WAITING = 20  # nominal value is 300
+
+    @classmethod
+    def setUpClass(cls):
+        cls.processes = test_utils.start_tpce()
+        cls.processes = test_utils.start_sims(['xpdra', 'roadma', 'roadmc', 'xpdrc'])
+
+    @classmethod
+    def tearDownClass(cls):
+        # pylint: disable=not-an-iterable
+        for process in cls.processes:
+            test_utils.shutdown_process(process)
+        print("all processes killed")
+
+    def setUp(self):  # instruction executed before each test method
+        print("execution of {}".format(self.id().split(".")[-1]))
+
+    def test_01_connect_xpdrA(self):
+        response = test_utils.mount_device("XPDR-A1", 'xpdra')
+        self.assertEqual(response.status_code, requests.codes.created, test_utils.CODE_SHOULD_BE_201)
+
+    def test_02_connect_xpdrC(self):
+        response = test_utils.mount_device("XPDR-C1", 'xpdrc')
+        self.assertEqual(response.status_code, requests.codes.created, test_utils.CODE_SHOULD_BE_201)
+
+    def test_03_connect_rdmA(self):
+        response = test_utils.mount_device("ROADM-A1", 'roadma')
+        self.assertEqual(response.status_code, requests.codes.created, test_utils.CODE_SHOULD_BE_201)
+
+    def test_04_connect_rdmC(self):
+        response = test_utils.mount_device("ROADM-C1", 'roadmc')
+        self.assertEqual(response.status_code, requests.codes.created, test_utils.CODE_SHOULD_BE_201)
+
+    def test_05_connect_xprdA_N1_to_roadmA_PP1(self):
+        response = test_utils.connect_xpdr_to_rdm_request("XPDR-A1", "1", "1",
+                                                          "ROADM-A1", "1", "SRG1-PP1-TXRX")
+        self.assertEqual(response.status_code, requests.codes.ok)
+        res = response.json()
+        self.assertIn('Xponder Roadm Link created successfully', res["output"]["result"])
+        time.sleep(2)
+
+    def test_06_connect_roadmA_PP1_to_xpdrA_N1(self):
+        response = test_utils.connect_rdm_to_xpdr_request("XPDR-A1", "1", "1",
+                                                          "ROADM-A1", "1", "SRG1-PP1-TXRX")
+        self.assertEqual(response.status_code, requests.codes.ok)
+        res = response.json()
+        self.assertIn('Roadm Xponder links created successfully', res["output"]["result"])
+        time.sleep(2)
+
+    def test_07_connect_xprdC_N1_to_roadmC_PP1(self):
+        response = test_utils.connect_xpdr_to_rdm_request("XPDR-C1", "1", "1",
+                                                          "ROADM-C1", "1", "SRG1-PP1-TXRX")
+        self.assertEqual(response.status_code, requests.codes.ok)
+        res = response.json()
+        self.assertIn('Xponder Roadm Link created successfully', res["output"]["result"])
+        time.sleep(2)
+
+    def test_08_connect_roadmC_PP1_to_xpdrC_N1(self):
+        response = test_utils.connect_rdm_to_xpdr_request("XPDR-C1", "1", "1",
+                                                          "ROADM-C1", "1", "SRG1-PP1-TXRX")
+        self.assertEqual(response.status_code, requests.codes.ok)
+        res = response.json()
+        self.assertIn('Roadm Xponder links created successfully', res["output"]["result"])
+        time.sleep(2)
+
+    def test_09_add_omsAttributes_ROADMA_ROADMC(self):
+        # Config ROADMA-ROADMC oms-attributes
+        data = {"span": {
+            "auto-spanloss": "true",
+            "spanloss-base": 11.4,
+            "spanloss-current": 12,
+            "engineered-spanloss": 12.2,
+            "link-concatenation": [{
+                "SRLG-Id": 0,
+                "fiber-type": "smf",
+                "SRLG-length": 100000,
+                "pmd": 0.5}]}}
+        response = test_utils.add_oms_attr_request("ROADM-A1-DEG2-DEG2-TTP-TXRXtoROADM-C1-DEG1-DEG1-TTP-TXRX", data)
+        self.assertEqual(response.status_code, requests.codes.created)
+
+    def test_10_add_omsAttributes_ROADMC_ROADMA(self):
+        # Config ROADMC-ROADMA oms-attributes
+        data = {"span": {
+            "auto-spanloss": "true",
+            "spanloss-base": 11.4,
+            "spanloss-current": 12,
+            "engineered-spanloss": 12.2,
+            "link-concatenation": [{
+                "SRLG-Id": 0,
+                "fiber-type": "smf",
+                "SRLG-length": 100000,
+                "pmd": 0.5}]}}
+        response = test_utils.add_oms_attr_request("ROADM-C1-DEG1-DEG1-TTP-TXRXtoROADM-A1-DEG2-DEG2-TTP-TXRX", data)
+        self.assertEqual(response.status_code, requests.codes.created)
+
+# test service-create for Eth service from xpdr to xpdr
+    def test_11_create_eth_service1(self):
+        self.cr_serv_sample_data["input"]["service-name"] = "service1"
+        response = test_utils.service_create_request(self.cr_serv_sample_data)
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('PCE calculation in progress',
@@ -212,8 +344,12 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(self.WAITING)
 
     def test_12_get_eth_service1(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list/services/service1"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("services/service1")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -231,6 +367,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
+<<<<<<< HEAD
         self.assertDictEqual(
             dict({
                 'connection-name': 'SRG1-PP1-TXRX-DEG2-TTP-TXRX-1',
@@ -243,6 +380,20 @@ class TransportPCEFulltesting(unittest.TestCase):
             {'src-if': 'SRG1-PP1-TXRX-nmc-1'},
             res['roadm-connections'][0]['source'])
         self.assertDictEqual(
+=======
+        self.assertDictEqual(
+            dict({
+                'connection-name': 'SRG1-PP1-TXRX-DEG2-TTP-TXRX-1',
+                'opticalControlMode': 'gainLoss',
+                'target-output-power': -3.0
+            }, **res['roadm-connections'][0]),
+            res['roadm-connections'][0]
+        )
+        self.assertDictEqual(
+            {'src-if': 'SRG1-PP1-TXRX-nmc-1'},
+            res['roadm-connections'][0]['source'])
+        self.assertDictEqual(
+>>>>>>> standalone/stable/aluminium
             {'dst-if': 'DEG2-TTP-TXRX-nmc-1'},
             res['roadm-connections'][0]['destination'])
         time.sleep(5)
@@ -252,6 +403,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
+<<<<<<< HEAD
         self.assertDictEqual(
             dict({
                 'connection-name': 'SRG1-PP1-TXRX-DEG1-TTP-TXRX-1',
@@ -264,6 +416,20 @@ class TransportPCEFulltesting(unittest.TestCase):
             {'src-if': 'SRG1-PP1-TXRX-nmc-1'},
             res['roadm-connections'][0]['source'])
         self.assertDictEqual(
+=======
+        self.assertDictEqual(
+            dict({
+                'connection-name': 'SRG1-PP1-TXRX-DEG1-TTP-TXRX-1',
+                'opticalControlMode': 'gainLoss',
+                'target-output-power': -3.0
+            }, **res['roadm-connections'][0]),
+            res['roadm-connections'][0]
+        )
+        self.assertDictEqual(
+            {'src-if': 'SRG1-PP1-TXRX-nmc-1'},
+            res['roadm-connections'][0]['source'])
+        self.assertDictEqual(
+>>>>>>> standalone/stable/aluminium
             {'dst-if': 'DEG1-TTP-TXRX-nmc-1'},
             res['roadm-connections'][0]['destination'])
         time.sleep(5)
@@ -351,6 +517,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(2)
 
     def test_22_create_eth_service2(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-create"
         data = {"input": {
                 "sdnc-request-header": {
@@ -441,6 +608,10 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        self.cr_serv_sample_data["input"]["service-name"] = "service2"
+        response = test_utils.service_create_request(self.cr_serv_sample_data)
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('PCE calculation in progress',
@@ -448,8 +619,12 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(self.WAITING)
 
     def test_23_get_eth_service2(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list/services/service2"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("services/service2")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -553,6 +728,7 @@ class TransportPCEFulltesting(unittest.TestCase):
 
 #     creation service test on a non-available resource
     def test_28_create_eth_service3(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-create"
         data = {"input": {
                 "sdnc-request-header": {
@@ -643,6 +819,10 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        self.cr_serv_sample_data["input"]["service-name"] = "service3"
+        response = test_utils.service_create_request(self.cr_serv_sample_data)
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('PCE calculation in progress',
@@ -652,6 +832,7 @@ class TransportPCEFulltesting(unittest.TestCase):
 
 # add a test that check the openroadm-service-list still only contains 2 elements
     def test_29_delete_eth_service3(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-delete"
         data = {"input": {
                 "sdnc-request-header": {
@@ -667,6 +848,9 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_delete_request("service3")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Service \'service3\' does not exist in datastore',
@@ -675,6 +859,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(20)
 
     def test_30_delete_eth_service1(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-delete"
         data = {"input": {
                 "sdnc-request-header": {
@@ -690,6 +875,9 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_delete_request("service1")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Renderer service delete in progress',
@@ -697,6 +885,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(20)
 
     def test_31_delete_eth_service2(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-delete"
         data = {"input": {
                 "sdnc-request-header": {
@@ -712,6 +901,9 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_delete_request("service2")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Renderer service delete in progress',
@@ -733,7 +925,11 @@ class TransportPCEFulltesting(unittest.TestCase):
         for ele in liste_tp:
             if ele[u'org-openroadm-common-network:tp-type'] == 'XPONDER-CLIENT':
                 self.assertNotIn('org-openroadm-network-topology:xpdr-client-attributes', dict.keys(ele))
+<<<<<<< HEAD
             elif (ele[u'org-openroadm-common-network:tp-type'] == 'XPONDER-NETWORK'):
+=======
+            elif ele[u'org-openroadm-common-network:tp-type'] == 'XPONDER-NETWORK':
+>>>>>>> standalone/stable/aluminium
                 self.assertIn(u'tail-equipment-id',
                               dict.keys(ele[u'org-openroadm-network-topology:xpdr-network-attributes']))
                 self.assertNotIn('wavelength', dict.keys(
@@ -774,6 +970,7 @@ class TransportPCEFulltesting(unittest.TestCase):
 
 # test service-create for Optical Channel (OC) service from srg-pp to srg-pp
     def test_36_create_oc_service1(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-create"
         data = {"input": {
                 "sdnc-request-header": {
@@ -864,6 +1061,15 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        self.cr_serv_sample_data["input"]["service-name"] = "service1"
+        self.cr_serv_sample_data["input"]["connection-type"] = "roadm-line"
+        self.cr_serv_sample_data["input"]["service-a-end"]["node-id"] = "ROADM-A1"
+        self.cr_serv_sample_data["input"]["service-a-end"]["service-format"] = "OC"
+        self.cr_serv_sample_data["input"]["service-z-end"]["node-id"] = "ROADM-C1"
+        self.cr_serv_sample_data["input"]["service-z-end"]["service-format"] = "OC"
+        response = test_utils.service_create_request(self.cr_serv_sample_data)
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('PCE calculation in progress',
@@ -871,8 +1077,12 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(self.WAITING)
 
     def test_37_get_oc_service1(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list/services/service1"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("services/service1")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -929,6 +1139,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(7)
 
     def test_40_create_oc_service2(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-create"
         data = {"input": {
                 "sdnc-request-header": {
@@ -1019,6 +1230,15 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        self.cr_serv_sample_data["input"]["service-name"] = "service2"
+        self.cr_serv_sample_data["input"]["connection-type"] = "roadm-line"
+        self.cr_serv_sample_data["input"]["service-a-end"]["node-id"] = "ROADM-A1"
+        self.cr_serv_sample_data["input"]["service-a-end"]["service-format"] = "OC"
+        self.cr_serv_sample_data["input"]["service-z-end"]["node-id"] = "ROADM-C1"
+        self.cr_serv_sample_data["input"]["service-z-end"]["service-format"] = "OC"
+        response = test_utils.service_create_request(self.cr_serv_sample_data)
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('PCE calculation in progress',
@@ -1026,8 +1246,12 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(self.WAITING)
 
     def test_41_get_oc_service2(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list/services/service2"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("services/service2")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -1046,6 +1270,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
+<<<<<<< HEAD
         self.assertDictEqual(
             dict({
                 'connection-name': 'SRG1-PP2-TXRX-DEG2-TTP-TXRX-2',
@@ -1058,6 +1283,20 @@ class TransportPCEFulltesting(unittest.TestCase):
             {'src-if': 'SRG1-PP2-TXRX-nmc-2'},
             res['roadm-connections'][0]['source'])
         self.assertDictEqual(
+=======
+        self.assertDictEqual(
+            dict({
+                'connection-name': 'SRG1-PP2-TXRX-DEG2-TTP-TXRX-2',
+                'opticalControlMode': 'gainLoss',
+                'target-output-power': -3.0
+            }, **res['roadm-connections'][0]),
+            res['roadm-connections'][0]
+        )
+        self.assertDictEqual(
+            {'src-if': 'SRG1-PP2-TXRX-nmc-2'},
+            res['roadm-connections'][0]['source'])
+        self.assertDictEqual(
+>>>>>>> standalone/stable/aluminium
             {'dst-if': 'DEG2-TTP-TXRX-nmc-2'},
             res['roadm-connections'][0]['destination'])
         time.sleep(2)
@@ -1068,6 +1307,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(3)
 
     def test_44_delete_oc_service1(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-delete"
         data = {"input": {
                 "sdnc-request-header": {
@@ -1083,6 +1323,9 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_delete_request("service1")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Renderer service delete in progress',
@@ -1090,6 +1333,7 @@ class TransportPCEFulltesting(unittest.TestCase):
         time.sleep(20)
 
     def test_45_delete_oc_service2(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-delete"
         data = {"input": {
                 "sdnc-request-header": {
@@ -1105,6 +1349,9 @@ class TransportPCEFulltesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_delete_request("service2")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Renderer service delete in progress',
@@ -1113,9 +1360,14 @@ class TransportPCEFulltesting(unittest.TestCase):
 
     def test_46_get_no_oc_services(self):
         print("start test")
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list"
         response = test_utils.get_request(url)
         self.assertEqual(response.status_code, requests.codes.not_found)
+=======
+        response = test_utils.get_service_list_request("")
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
@@ -1147,6 +1399,7 @@ class TransportPCEFulltesting(unittest.TestCase):
             self.test_30_delete_eth_service1()
 
     def test_50_loop_create_oc_service(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list/services/service1"
         response = test_utils.get_request(url)
         if response.status_code != 404:
@@ -1165,6 +1418,11 @@ class TransportPCEFulltesting(unittest.TestCase):
             }
             }
             test_utils.post_request(url, data)
+=======
+        response = test_utils.get_service_list_request("services/service1")
+        if response.status_code != 404:
+            response = test_utils.service_delete_request("service1")
+>>>>>>> standalone/stable/aluminium
             time.sleep(5)
 
         for i in range(1, 6):

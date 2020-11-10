@@ -26,9 +26,13 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.Ra
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.LineAmplifier;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.LineAmplifierKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.CircuitPack;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.CircuitPackKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.LinePort;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.LinePortKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.OscPort;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.OscPortKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.OtdrPort;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.OtdrPortKey;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.AbstractAugmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -81,13 +85,13 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
     private AmplifierGainRange _ampGainRange;
     private Uint8 _ampNumber;
     private AmplifierTypes _ampType;
-    private List<CircuitPack> _circuitPack;
+    private Map<CircuitPackKey, CircuitPack> _circuitPack;
     private LineAmplifierControlMode _controlMode;
     private PowerDBm _egressAverageChannelPower;
     private String _ilaDirectionLabel;
-    private List<LinePort> _linePort;
-    private List<OscPort> _oscPort;
-    private List<OtdrPort> _otdrPort;
+    private Map<LinePortKey, LinePort> _linePort;
+    private Map<OscPortKey, OscPort> _oscPort;
+    private Map<OtdrPortKey, OtdrPort> _otdrPort;
     private RatioDB _outVoaAtt;
     private Uint8 _partnerAmp;
     private RatioDB _targetGain;
@@ -180,7 +184,7 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         return _ampType;
     }
 
-    public List<CircuitPack> getCircuitPack() {
+    public Map<CircuitPackKey, CircuitPack> getCircuitPack() {
         return _circuitPack;
     }
 
@@ -196,15 +200,15 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         return _ilaDirectionLabel;
     }
 
-    public List<LinePort> getLinePort() {
+    public Map<LinePortKey, LinePort> getLinePort() {
         return _linePort;
     }
 
-    public List<OscPort> getOscPort() {
+    public Map<OscPortKey, OscPort> getOscPort() {
         return _oscPort;
     }
 
-    public List<OtdrPort> getOtdrPort() {
+    public Map<OtdrPortKey, OtdrPort> getOtdrPort() {
         return _otdrPort;
     }
 
@@ -271,7 +275,8 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         this._ampType = value;
         return this;
     }
-    public LineAmplifierBuilder setCircuitPack(final List<CircuitPack> values) {
+
+    public LineAmplifierBuilder setCircuitPack(final Map<CircuitPackKey, CircuitPack> values) {
         this._circuitPack = values;
         return this;
     }
@@ -291,17 +296,17 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         this._ilaDirectionLabel = value;
         return this;
     }
-    public LineAmplifierBuilder setLinePort(final List<LinePort> values) {
+    public LineAmplifierBuilder setLinePort(final Map<LinePortKey, LinePort> values) {
         this._linePort = values;
         return this;
     }
 
-    public LineAmplifierBuilder setOscPort(final List<OscPort> values) {
+    public LineAmplifierBuilder setOscPort(final Map<OscPortKey, OscPort> values) {
         this._oscPort = values;
         return this;
     }
 
-    public LineAmplifierBuilder setOtdrPort(final List<OtdrPort> values) {
+    public LineAmplifierBuilder setOtdrPort(final Map<OtdrPortKey, OtdrPort> values) {
         this._otdrPort = values;
         return this;
     }
@@ -350,7 +355,8 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         return this;
     }
 
-    public LineAmplifierBuilder addAugmentation(Class<? extends Augmentation<LineAmplifier>> augmentationType, Augmentation<LineAmplifier> augmentationValue) {
+    public LineAmplifierBuilder addAugmentation(Class<? extends Augmentation<LineAmplifier>> augmentationType, 
+        Augmentation<LineAmplifier> augmentationValue) {
         if (augmentationValue == null) {
             return removeAugmentation(augmentationType);
         }
@@ -382,13 +388,13 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         private final AmplifierGainRange _ampGainRange;
         private final Uint8 _ampNumber;
         private final AmplifierTypes _ampType;
-        private final List<CircuitPack> _circuitPack;
+        private final Map<CircuitPackKey, CircuitPack> _circuitPack;
         private final LineAmplifierControlMode _controlMode;
         private final PowerDBm _egressAverageChannelPower;
         private final String _ilaDirectionLabel;
-        private final List<LinePort> _linePort;
-        private final List<OscPort> _oscPort;
-        private final List<OtdrPort> _otdrPort;
+        private final Map<LinePortKey,LinePort> _linePort;
+        private final Map<OscPortKey, OscPort> _oscPort;
+        private final Map<OtdrPortKey, OtdrPort> _otdrPort;
         private final RatioDB _outVoaAtt;
         private final Uint8 _partnerAmp;
         private final RatioDB _targetGain;
@@ -439,7 +445,7 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         }
 
         @Override
-        public List<CircuitPack> getCircuitPack() {
+        public Map<CircuitPackKey, CircuitPack> getCircuitPack() {
             return _circuitPack;
         }
 
@@ -459,17 +465,17 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         }
 
         @Override
-        public List<LinePort> getLinePort() {
+        public Map<LinePortKey,LinePort> getLinePort() {
             return _linePort;
         }
 
         @Override
-        public List<OscPort> getOscPort() {
+        public Map<OscPortKey, OscPort> getOscPort() {
             return _oscPort;
         }
 
         @Override
-        public List<OtdrPort> getOtdrPort() {
+        public Map<OtdrPortKey,OtdrPort> getOtdrPort() {
             return _otdrPort;
         }
 

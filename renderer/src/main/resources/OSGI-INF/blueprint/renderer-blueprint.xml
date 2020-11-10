@@ -11,11 +11,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
   odl:use-default-for-reference-types="true">
 
- <reference id="dataBroker" interface="org.opendaylight.mdsal.binding.api.DataBroker"
-        odl:type="default" />
+ <reference id="dataBroker" interface="org.opendaylight.mdsal.binding.api.DataBroker"/>
   <reference id="notificationPublishService"
-        interface="org.opendaylight.mdsal.binding.api.NotificationPublishService"
-        odl:type="default" />
+        interface="org.opendaylight.mdsal.binding.api.NotificationPublishService"/>
   <reference id="rpcProviderService" interface="org.opendaylight.mdsal.binding.api.RpcProviderService" />
   <reference id="deviceTransactionManager" interface="org.opendaylight.transportpce.common.device.DeviceTransactionManager" />
   <reference id="openRoadmInterfaces" interface="org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces" />
@@ -25,6 +23,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <reference id="FixedFlexImpl" interface="org.opendaylight.transportpce.common.fixedflex.FixedFlexInterface"/>
   <reference id="networkModelService" interface="org.opendaylight.transportpce.networkmodel.service.NetworkModelService"/>
   <reference id="odlClient" interface="org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient" />
+  <reference id="FlexGridImpl" interface="org.opendaylight.transportpce.common.fixedflex.FlexGridInterface"/>
 
   <odl:rpc-service id="olmService"
       interface="org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.TransportpceOlmService"/>
@@ -40,6 +39,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <argument ref="portMapping"/>
     <argument ref="openRoadmInterfaces"/>
     <argument ref="FixedFlexImpl"/>
+    <argument ref="FlexGridImpl"/>
+  </bean>
+
+  <bean id="openRoadmOtnInterface"
+        class="org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmOtnInterface221">
+    <argument ref="portMapping"/>
+    <argument ref="openRoadmInterfaces"/>
   </bean>
 
   <bean id="openRoadmOtnInterface"

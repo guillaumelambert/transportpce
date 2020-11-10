@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.ConnectionMap;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.ConnectionMapKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.connection.map.Destination;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.connection.map.DestinationKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.connection.map.Source;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.AbstractAugmentable;
@@ -72,7 +73,7 @@ import org.opendaylight.yangtools.yang.common.Uint32;
 public class ConnectionMapBuilder implements Builder<ConnectionMap> {
 
     private Uint32 _connectionMapNumber;
-    private List<Destination> _destination;
+    private Map<DestinationKey, Destination> _destination;
     private Source _source;
     private ConnectionMapKey key;
 
@@ -105,7 +106,7 @@ public class ConnectionMapBuilder implements Builder<ConnectionMap> {
         return _connectionMapNumber;
     }
 
-    public List<Destination> getDestination() {
+    public Map<DestinationKey, Destination> getDestination() {
         return _destination;
     }
 
@@ -139,7 +140,7 @@ public class ConnectionMapBuilder implements Builder<ConnectionMap> {
 //    public ConnectionMapBuilder setConnectionMapNumber(final Long value) {
 //        return setConnectionMapNumber(CodeHelpers.compatUint(value));
 //    }
-    public ConnectionMapBuilder setDestination(final List<Destination> values) {
+    public ConnectionMapBuilder setDestination(final Map<DestinationKey,Destination> values) {
         this._destination = values;
         return this;
     }
@@ -180,7 +181,7 @@ public class ConnectionMapBuilder implements Builder<ConnectionMap> {
         implements ConnectionMap {
 
         private final Uint32 _connectionMapNumber;
-        private final List<Destination> _destination;
+        private final Map<DestinationKey, Destination> _destination;
         private final Source _source;
         private final ConnectionMapKey key;
 
@@ -207,7 +208,7 @@ public class ConnectionMapBuilder implements Builder<ConnectionMap> {
         }
 
         @Override
-        public List<Destination> getDestination() {
+        public Map<DestinationKey, Destination> getDestination() {
             return _destination;
         }
 

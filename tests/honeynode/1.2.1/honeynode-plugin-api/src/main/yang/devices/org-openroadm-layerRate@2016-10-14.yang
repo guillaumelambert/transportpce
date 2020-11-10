@@ -1,15 +1,16 @@
-module org-openroadm-layerRate {
-  namespace "http://org/openroadm/layerRate";
-  prefix org-openroadm-layerRate;
+module org-openroadm-service-format {
+  namespace "http://org/openroadm/service-format";
+  prefix org-openroadm-service-format;
 
-  organization "Open ROADM MSA";
+  organization
+    "Open ROADM MSA";
   contact
     "OpenROADM.org";
   description
-    "YANG definitions of layer rates.
+    "YANG definitions of service format.
 
       Copyright of the Members of the Open ROADM MSA Agreement dated (c) 2016,
-      AT&T Intellectual Property.  All other rights reserved.
+      All other rights reserved.
 
       Redistribution and use in source and binary forms, with or without modification,
       are permitted provided that the following conditions are met:
@@ -34,55 +35,39 @@ module org-openroadm-layerRate {
       ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
       POSSIBILITY OF SUCH DAMAGE";
 
-  revision 2016-10-14 {
+  revision 2019-05-31 {
     description
-      "Version 1.2";
+      "Version 5.1.0";
   }
 
-  grouping layer-rate {
-    description
-      "Set list of layer rates, plus the ability to report layer rates not yet in set list.";
-    leaf type {
-      type layer-rate-enum;
-      mandatory true;
-    }
-    leaf extension {
-      type string;
-      mandatory false;
-    }
-  }
-
-  typedef layer-rate-enum {
+  typedef service-format {
     type enumeration {
-      enum "vendorExtension" {
+      enum "Ethernet" {
         value 1;
-        description
-          "vendor extension";
       }
-      enum "layer2" {
+      enum "OTU" {
         value 2;
-        description
-          "2";
       }
-      enum "layer3" {
+      enum "OC" {
         value 3;
-        description
-          "3";
       }
-      enum "layer4" {
+      enum "STM" {
         value 4;
-        description
-          "4";
       }
-      enum "layer5" {
+      enum "OMS" {
         value 5;
-        description
-          "5";
       }
-      enum "layer6" {
+      enum "ODU" {
         value 6;
+      }
+      enum "OTM" {
+        value 7;
+      }
+      enum "other" {
+        value 8;
         description
-          "6";
+          "Used in bookending use case when service-format is not standardized by the Open ROADM MSA.
+           When set to other, the specific service format/rate is specified by other-service-format-and-rate";
       }
     }
   }

@@ -2,7 +2,8 @@ module org-openroadm-interfaces {
   namespace "http://org/openroadm/interfaces";
   prefix openROADM-if;
 
-  organization "Open ROADM MSA";
+  organization
+    "Open ROADM MSA";
   contact
     "OpenROADM.org";
   description
@@ -10,7 +11,7 @@ module org-openroadm-interfaces {
      Reused ietf-interfaces and some interface-type defined in iana-if-type.
 
      Copyright of the Members of the Open ROADM MSA Agreement dated (c) 2016,
-     AT&T Intellectual Property.  All other rights reserved.
+     All other rights reserved.
 
      Redistribution and use in source and binary forms, with or without modification,
      are permitted provided that the following conditions are met:
@@ -49,6 +50,26 @@ module org-openroadm-interfaces {
      Section 4.e of the Trust Legal Provisions and are provided without warranty as
      described in the Simplified BSD License.";
 
+  revision 2019-05-31 {
+    description
+      "Version 5.1.0";
+  }
+  revision 2018-11-30 {
+    description
+      "Version 4.1.0";
+  }
+  revision 2018-09-28 {
+    description
+      "Version 4.0.0";
+  }
+  revision 2018-03-30 {
+    description
+      "Version 3.0";
+  }
+  revision 2017-06-26 {
+    description
+      "Version 2.0";
+  }
   revision 2016-10-14 {
     description
       "Version 1.2";
@@ -76,6 +97,18 @@ module org-openroadm-interfaces {
       "IP (for APPN HPR in IP networks).";
   }
 
+  identity mediaChannelTrailTerminationPoint {
+    base interface-type;
+    description
+      "Media Channel Trail Termination Point";
+  }
+
+  identity networkMediaChannelConnectionTerminationPoint {
+    base interface-type;
+    description
+      "Network Media Channel Connection Termination Point";
+  }
+
   identity opticalChannel {
     base interface-type;
     description
@@ -100,9 +133,45 @@ module org-openroadm-interfaces {
       "OTN Optical channel Transport Unit.";
   }
 
+  identity otsi {
+    base interface-type;
+    description
+      "OTSI interface.";
+  }
+
+  identity otsi-group {
+    base interface-type;
+    description
+      "OTSI Group interface.";
+  }
+
+  identity flexo {
+    base interface-type;
+    description
+      "Flexo interface.";
+  }
+
+  identity flexo-group {
+    base interface-type;
+    description
+      "Flexo Group interface.";
+  }
+
   identity openROADMOpticalMultiplex {
     base interface-type;
     description
       "Optical Transport Multiplex type for openROADM";
+  }
+
+  identity ppp {
+    base interface-type;
+    description
+      "PPP for IP GNE.";
+  }
+
+  identity gcc {
+    base interface-type;
+    description
+      "ITU-T G.709 GCC.";
   }
 }

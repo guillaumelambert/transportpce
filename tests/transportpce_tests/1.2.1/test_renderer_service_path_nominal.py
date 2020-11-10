@@ -9,8 +9,14 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 #############################################################################
 
+# pylint: disable=no-member
+# pylint: disable=too-many-public-methods
+
 import unittest
+<<<<<<< HEAD
 import json
+=======
+>>>>>>> standalone/stable/aluminium
 import time
 import requests
 from common import test_utils
@@ -27,6 +33,10 @@ class TransportPCERendererTesting(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+<<<<<<< HEAD
+=======
+        # pylint: disable=not-an-iterable
+>>>>>>> standalone/stable/aluminium
         for process in cls.processes:
             test_utils.shutdown_process(process)
         print("all processes killed")
@@ -75,6 +85,7 @@ class TransportPCERendererTesting(unittest.TestCase):
             res['nodes'][0]['mapping'])
 
     def test_05_service_path_create(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:service-path"
         data = {"renderer:input": {
             "renderer:service-name": "service_test",
@@ -89,6 +100,15 @@ class TransportPCERendererTesting(unittest.TestCase):
                  "renderer:src-tp": "XPDR1-CLIENT1",
                  "renderer:dest-tp": "XPDR1-NETWORK1"}]}}
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_path_request("create", "service_test", "7",
+                                                   [{"renderer:node-id": "ROADMA01",
+                                                     "renderer:src-tp": "SRG1-PP7-TXRX",
+                                                     "renderer:dest-tp": "DEG1-TTP-TXRX"},
+                                                    {"renderer:node-id": "XPDRA01",
+                                                     "renderer:src-tp": "XPDR1-CLIENT1",
+                                                     "renderer:dest-tp": "XPDR1-NETWORK1"}])
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Roadm-connection successfully created for nodes: ROADMA01', res["output"]["result"])
@@ -98,6 +118,7 @@ class TransportPCERendererTesting(unittest.TestCase):
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
+<<<<<<< HEAD
         self.assertDictEqual(
             dict({
                 'name': 'DEG1-TTP-TXRX-7',
@@ -109,6 +130,19 @@ class TransportPCERendererTesting(unittest.TestCase):
             res['interface'][0]
         )
         self.assertDictEqual(
+=======
+        self.assertDictEqual(
+            dict({
+                'name': 'DEG1-TTP-TXRX-7',
+                'administrative-state': 'inService',
+                'supporting-circuit-pack-name': '2/0',
+                'type': 'org-openroadm-interfaces:opticalChannel',
+                'supporting-port': 'L1'
+            }, **res['interface'][0]),
+            res['interface'][0]
+        )
+        self.assertDictEqual(
+>>>>>>> standalone/stable/aluminium
             {'wavelength-number': 7},
             res['interface'][0]['org-openroadm-optical-channel-interfaces:och'])
 
@@ -136,6 +170,7 @@ class TransportPCERendererTesting(unittest.TestCase):
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
+<<<<<<< HEAD
         self.assertDictEqual(
             dict({
                 'connection-number': 'SRG1-PP7-TXRX-DEG1-TTP-TXRX-7',
@@ -148,6 +183,20 @@ class TransportPCERendererTesting(unittest.TestCase):
             {'src-if': 'SRG1-PP7-TXRX-7'},
             res['roadm-connections'][0]['source'])
         self.assertDictEqual(
+=======
+        self.assertDictEqual(
+            dict({
+                'connection-number': 'SRG1-PP7-TXRX-DEG1-TTP-TXRX-7',
+                'wavelength-number': 7,
+                'opticalControlMode': 'off'
+            }, **res['roadm-connections'][0]),
+            res['roadm-connections'][0]
+        )
+        self.assertDictEqual(
+            {'src-if': 'SRG1-PP7-TXRX-7'},
+            res['roadm-connections'][0]['source'])
+        self.assertDictEqual(
+>>>>>>> standalone/stable/aluminium
             {'dst-if': 'DEG1-TTP-TXRX-7'},
             res['roadm-connections'][0]['destination'])
 
@@ -156,6 +205,7 @@ class TransportPCERendererTesting(unittest.TestCase):
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
+<<<<<<< HEAD
         self.assertDictEqual(
             dict({
                 'name': 'XPDR1-NETWORK1-7',
@@ -167,6 +217,19 @@ class TransportPCERendererTesting(unittest.TestCase):
             res['interface'][0]
         )
         self.assertDictEqual(
+=======
+        self.assertDictEqual(
+            dict({
+                'name': 'XPDR1-NETWORK1-7',
+                'administrative-state': 'inService',
+                'supporting-circuit-pack-name': '1/0/1-PLUG-NET',
+                'type': 'org-openroadm-interfaces:opticalChannel',
+                'supporting-port': '1'
+            }, **res['interface'][0]),
+            res['interface'][0]
+        )
+        self.assertDictEqual(
+>>>>>>> standalone/stable/aluminium
             {u'rate': u'org-openroadm-optical-channel-interfaces:R100G',
              u'transmit-power': -5,
              u'wavelength-number': 7,
@@ -250,6 +313,7 @@ class TransportPCERendererTesting(unittest.TestCase):
         self.assertIn('not-reserved-inuse', res['circuit-packs'][0]["equipment-state"])
 
     def test_14_service_path_delete(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:service-path"
         data = {"renderer:input": {
             "renderer:service-name": "service_test",
@@ -263,13 +327,26 @@ class TransportPCERendererTesting(unittest.TestCase):
                  "renderer:src-tp": "XPDR1-CLIENT1",
                  "renderer:dest-tp": "XPDR1-NETWORK1"}]}}
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_path_request("delete", "service_test", "7",
+                                                   [{"renderer:node-id": "ROADMA01",
+                                                     "renderer:src-tp": "SRG1-PP7-TXRX",
+                                                     "renderer:dest-tp": "DEG1-TTP-TXRX"},
+                                                    {"renderer:node-id": "XPDRA01",
+                                                     "renderer:src-tp": "XPDR1-CLIENT1",
+                                                     "renderer:dest-tp": "XPDR1-NETWORK1"}])
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         self.assertEqual(response.json(), {
             'output': {'result': 'Request processed', 'success': True}})
 
     def test_15_service_path_delete_rdm_check(self):
         response = test_utils.check_netconf_node_request("ROADMA01", "interface/DEG1-TTP-TXRX-7")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
@@ -278,56 +355,110 @@ class TransportPCERendererTesting(unittest.TestCase):
 
     def test_16_service_path_delete_rdm_check(self):
         response = test_utils.check_netconf_node_request("ROADMA01", "interface/SRG1-PP7-TXRX-7")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
                 "error-message": "Request could not be completed because the relevant data model content does not exist"},
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+        res = response.json()
+        self.assertIn(
+            {"error-type": "application", "error-tag": "data-missing",
+                "error-message":
+                    "Request could not be completed because the relevant data model content does not exist"},
+>>>>>>> standalone/stable/aluminium
             res['errors']['error'])
 
     def test_17_service_path_delete_rdm_check(self):
         response = test_utils.check_netconf_node_request("ROADMA01", "roadm-connections/SRG1-PP7-TXRX-DEG1-TTP-TXRX-7")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
                 "error-message": "Request could not be completed because the relevant data model content does not exist"},
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+        res = response.json()
+        self.assertIn(
+            {"error-type": "application", "error-tag": "data-missing",
+                "error-message":
+                    "Request could not be completed because the relevant data model content does not exist"},
+>>>>>>> standalone/stable/aluminium
             res['errors']['error'])
 
     def test_18_service_path_delete_xpdr_check(self):
         response = test_utils.check_netconf_node_request("XPDRA01", "interface/XPDR1-NETWORK1-7")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
                 "error-message": "Request could not be completed because the relevant data model content does not exist"},
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+        res = response.json()
+        self.assertIn(
+            {"error-type": "application", "error-tag": "data-missing",
+                "error-message":
+                    "Request could not be completed because the relevant data model content does not exist"},
+>>>>>>> standalone/stable/aluminium
             res['errors']['error'])
 
     def test_19_service_path_delete_xpdr_check(self):
         response = test_utils.check_netconf_node_request("XPDRA01", "interface/XPDR1-NETWORK1-OTU")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
                 "error-message": "Request could not be completed because the relevant data model content does not exist"},
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+        res = response.json()
+        self.assertIn(
+            {"error-type": "application", "error-tag": "data-missing",
+                "error-message":
+                    "Request could not be completed because the relevant data model content does not exist"},
+>>>>>>> standalone/stable/aluminium
             res['errors']['error'])
 
     def test_20_service_path_delete_xpdr_check(self):
         response = test_utils.check_netconf_node_request("XPDRA01", "interface/XPDR1-NETWORK1-ODU")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
                 "error-message": "Request could not be completed because the relevant data model content does not exist"},
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+        res = response.json()
+        self.assertIn(
+            {"error-type": "application", "error-tag": "data-missing",
+                "error-message":
+                    "Request could not be completed because the relevant data model content does not exist"},
+>>>>>>> standalone/stable/aluminium
             res['errors']['error'])
 
     def test_21_service_path_delete_xpdr_check(self):
         response = test_utils.check_netconf_node_request("XPDRA01", "interface/XPDR1-CLIENT1-ETHERNET")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
                 "error-message": "Request could not be completed because the relevant data model content does not exist"},
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+        res = response.json()
+        self.assertIn(
+            {"error-type": "application", "error-tag": "data-missing",
+                "error-message":
+                    "Request could not be completed because the relevant data model content does not exist"},
+>>>>>>> standalone/stable/aluminium
             res['errors']['error'])
 
     def test_22_service_path_delete_xpdr_check(self):

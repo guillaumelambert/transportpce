@@ -57,13 +57,17 @@ public class AlarmNotificationListener implements OrgOpenroadmAlarmListener {
     public void onAlarmNotification(AlarmNotification notification) {
         List<Nodes> allNodeList = new ArrayList<>();
         InstanceIdentifier<ServiceNodelist> serviceNodeListIID = InstanceIdentifier.create(ServiceNodelist.class);
+<<<<<<< HEAD
         try {
             ReadTransaction rtx = dataBroker.newReadOnlyTransaction();
+=======
+        try (ReadTransaction rtx = dataBroker.newReadOnlyTransaction()) {
+>>>>>>> standalone/stable/aluminium
             Optional<ServiceNodelist> serviceListObject =
                     rtx.read(LogicalDatastoreType.OPERATIONAL, serviceNodeListIID).get();
             if (serviceListObject.isPresent()) {
-                for (Nodelist nodelist : serviceListObject.get().getNodelist()) {
-                    allNodeList.addAll(nodelist.getNodes());
+                for (Nodelist nodelist : serviceListObject.get().nonnullNodelist().values()) {
+                    allNodeList.addAll(nodelist.nonnullNodes().values());
                 }
             }
         } catch (InterruptedException | ExecutionException ex) {

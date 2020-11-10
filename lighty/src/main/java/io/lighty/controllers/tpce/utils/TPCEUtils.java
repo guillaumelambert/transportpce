@@ -197,9 +197,15 @@ public final class TPCEUtils {
                     .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.$YangModuleInfoImpl
                     .getInstance(),
+<<<<<<< HEAD
             org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.$YangModuleInfoImpl
                     .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128
+=======
+            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.$YangModuleInfoImpl
+                    .getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128
+>>>>>>> standalone/stable/aluminium
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.$YangModuleInfoImpl
                     .getInstance(),
@@ -209,8 +215,13 @@ public final class TPCEUtils {
             org.opendaylight.yang.gen.v1.gnpy.gnpy.api.rev190103.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.gnpy.gnpy.eqpt.config.rev181119.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.gnpy.gnpy.network.topology.rev181214.$YangModuleInfoImpl.getInstance(),
+<<<<<<< HEAD
             org.opendaylight.yang.gen.v1.gnpy.path.rev200202.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429
+=======
+            org.opendaylight.yang.gen.v1.gnpy.path.rev200909.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827
+>>>>>>> standalone/stable/aluminium
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629
                     .$YangModuleInfoImpl.getInstance(),

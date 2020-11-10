@@ -70,7 +70,11 @@ public final class TopologyUtils {
             .setSource(srcNodeBldr.build())
             .setLinkId(linkId)
             .withKey(new LinkKey(linkId))
+<<<<<<< HEAD
             .addAugmentation(Link1.class,lnk1);
+=======
+            .addAugmentation(lnk1);
+>>>>>>> standalone/stable/aluminium
         return lnkBldr;
     }
 
@@ -101,7 +105,7 @@ public final class TopologyUtils {
                 LinkBuilder linkBuilder = new LinkBuilder(link.get());
                 Link1Builder link1Builder = new Link1Builder(linkBuilder.augmentation(Link1.class));
                 linkBuilder.removeAugmentation(Link1.class);
-                linkBuilder.addAugmentation(Link1.class,link1Builder.build());
+                linkBuilder.addAugmentation(link1Builder.build());
                 networkTransactionService.merge(LogicalDatastoreType.CONFIGURATION, linkIID.build(),
                     linkBuilder.build());
                 networkTransactionService.commit().get(1, TimeUnit.SECONDS);

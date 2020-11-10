@@ -9,9 +9,15 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 #############################################################################
 
+# pylint: disable=no-member
+# pylint: disable=too-many-public-methods
+
 import unittest
 import time
+<<<<<<< HEAD
 import json
+=======
+>>>>>>> standalone/stable/aluminium
 import requests
 from common import test_utils
 
@@ -27,6 +33,10 @@ class TransportOlmTesting(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+<<<<<<< HEAD
+=======
+        # pylint: disable=not-an-iterable
+>>>>>>> standalone/stable/aluminium
         for process in cls.processes:
             test_utils.shutdown_process(process)
         print("all processes killed")
@@ -80,6 +90,7 @@ class TransportOlmTesting(unittest.TestCase):
         self.assertIn('Roadm Xponder links created successfully', res["output"]["result"])
 
     def test_09_create_OTS_ROADMA(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:create-ots-oms"
         data = {
             "input": {
@@ -88,6 +99,9 @@ class TransportOlmTesting(unittest.TestCase):
             }
         }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.create_ots_oms_request("ROADM-A1", "DEG1-TTP-TXRX")
+>>>>>>> standalone/stable/aluminium
         time.sleep(10)
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
@@ -95,6 +109,7 @@ class TransportOlmTesting(unittest.TestCase):
                       res["output"]["result"])
 
     def test_10_create_OTS_ROADMC(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:create-ots-oms"
         data = {
             "input": {
@@ -103,6 +118,9 @@ class TransportOlmTesting(unittest.TestCase):
             }
         }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.create_ots_oms_request("ROADM-C1", "DEG2-TTP-TXRX")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Interfaces OTS-DEG2-TTP-TXRX - OMS-DEG2-TTP-TXRX successfully created on node ROADM-C1',
@@ -224,6 +242,7 @@ class TransportOlmTesting(unittest.TestCase):
         self.assertEqual(17.6, res['org-openroadm-optical-transport-interfaces:ots']['span-loss-receive'])
 
     def test_17_servicePath_create_AToZ(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:service-path"
         data = {
             "input": {
@@ -256,6 +275,17 @@ class TransportOlmTesting(unittest.TestCase):
             }
         }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_path_request("create", "test", "1",
+                                                   [{"node-id": "XPDR-A1",
+                                                     "dest-tp": "XPDR1-NETWORK1", "src-tp": "XPDR1-CLIENT1"},
+                                                    {"node-id": "ROADM-A1",
+                                                     "dest-tp": "DEG2-TTP-TXRX", "src-tp": "SRG1-PP1-TXRX"},
+                                                    {"node-id": "ROADM-C1",
+                                                     "dest-tp": "SRG1-PP1-TXRX", "src-tp": "DEG1-TTP-TXRX"},
+                                                    {"node-id": "XPDR-C1",
+                                                     "dest-tp": "XPDR1-CLIENT1", "src-tp": "XPDR1-NETWORK1"}])
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Roadm-connection successfully created for nodes', res["output"]["result"])
@@ -263,6 +293,7 @@ class TransportOlmTesting(unittest.TestCase):
         time.sleep(10)
 
     def test_18_servicePath_create_ZToA(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:service-path"
         data = {
             "input": {
@@ -295,6 +326,17 @@ class TransportOlmTesting(unittest.TestCase):
             }
         }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_path_request("create", "test", "1",
+                                                   [{"node-id": "XPDR-C1",
+                                                     "dest-tp": "XPDR1-NETWORK1", "src-tp": "XPDR1-CLIENT1"},
+                                                    {"node-id": "ROADM-C1",
+                                                     "dest-tp": "DEG1-TTP-TXRX", "src-tp": "SRG1-PP1-TXRX"},
+                                                    {"node-id": "ROADM-A1",
+                                                     "src-tp": "DEG2-TTP-TXRX", "dest-tp": "SRG1-PP1-TXRX"},
+                                                    {"node-id": "XPDR-A1",
+                                                     "src-tp": "XPDR1-NETWORK1", "dest-tp": "XPDR1-CLIENT1"}])
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Roadm-connection successfully created for nodes', res["output"]["result"])
@@ -458,6 +500,7 @@ class TransportOlmTesting(unittest.TestCase):
         self.assertEqual("off", res['roadm-connections'][0]['opticalControlMode'])
 
     def test_29_servicePath_delete_AToZ(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:service-path"
         data = {
             "input": {
@@ -490,12 +533,24 @@ class TransportOlmTesting(unittest.TestCase):
             }
         }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_path_request("delete", "test", "1",
+                                                   [{"node-id": "XPDR-A1",
+                                                     "dest-tp": "XPDR1-NETWORK1", "src-tp": "XPDR1-CLIENT1"},
+                                                    {"node-id": "ROADM-A1",
+                                                     "dest-tp": "DEG2-TTP-TXRX", "src-tp": "SRG1-PP1-TXRX"},
+                                                    {"node-id": "ROADM-C1",
+                                                     "dest-tp": "SRG1-PP1-TXRX", "src-tp": "DEG1-TTP-TXRX"},
+                                                    {"node-id": "XPDR-C1",
+                                                     "dest-tp": "XPDR1-CLIENT1", "src-tp": "XPDR1-NETWORK1"}])
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Request processed', res["output"]["result"])
         time.sleep(10)
 
     def test_30_servicePath_delete_ZToA(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:service-path"
         data = {
             "input": {
@@ -528,12 +583,23 @@ class TransportOlmTesting(unittest.TestCase):
             }
         }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_path_request("delete", "test", "1",
+                                                   [{"node-id": "XPDR-C1",
+                                                     "dest-tp": "XPDR1-NETWORK1", "src-tp": "XPDR1-CLIENT1"},
+                                                    {"node-id": "ROADM-C1",
+                                                     "dest-tp": "DEG1-TTP-TXRX", "src-tp": "SRG1-PP1-TXRX"},
+                                                    {"node-id": "ROADM-A1",
+                                                     "src-tp": "DEG2-TTP-TXRX", "dest-tp": "SRG1-PP1-TXRX"},
+                                                    {"node-id": "XPDR-A1",
+                                                     "src-tp": "XPDR1-NETWORK1", "dest-tp": "XPDR1-CLIENT1"}])
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Request processed', res["output"]["result"])
         time.sleep(10)
 
-    """to test case where SRG where the xpdr is connected to has no optical range data"""
+   #"""to test case where SRG where the xpdr is connected to has no optical range data"""
 
     def test_31_connect_xprdA_to_roadmA(self):
         response = test_utils.connect_xpdr_to_rdm_request("XPDR-A1", "1", "2",
@@ -550,6 +616,7 @@ class TransportOlmTesting(unittest.TestCase):
         self.assertIn('Roadm Xponder links created successfully', res["output"]["result"])
 
     def test_33_servicePath_create_AToZ(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:service-path"
         data = {
             "input": {
@@ -572,6 +639,13 @@ class TransportOlmTesting(unittest.TestCase):
             }
         }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_path_request("create", "test2", "2",
+                                                   [{"node-id": "XPDR-A1",
+                                                     "dest-tp": "XPDR1-NETWORK2", "src-tp": "XPDR1-CLIENT2"},
+                                                    {"node-id": "ROADM-A1",
+                                                     "dest-tp": "DEG2-TTP-TXRX", "src-tp": "SRG1-PP2-TXRX"}])
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Roadm-connection successfully created for nodes', res["output"]["result"])
@@ -588,6 +662,7 @@ class TransportOlmTesting(unittest.TestCase):
 #         self.assertEqual(2, res['org-openroadm-optical-channel-interfaces:och']['wavelength-number'])
 
     def test_35_servicePath_delete_AToZ(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-device-renderer:service-path"
         data = {
             "input": {
@@ -610,6 +685,13 @@ class TransportOlmTesting(unittest.TestCase):
             }
         }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_path_request("delete", "test", "1",
+                                                   [{"node-id": "XPDR-A1",
+                                                     "dest-tp": "XPDR1-NETWORK2", "src-tp": "XPDR1-CLIENT2"},
+                                                    {"node-id": "ROADM-A1",
+                                                     "dest-tp": "DEG2-TTP-TXRX", "src-tp": "SRG1-PP2-TXRX"}])
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Request processed', res["output"]["result"])

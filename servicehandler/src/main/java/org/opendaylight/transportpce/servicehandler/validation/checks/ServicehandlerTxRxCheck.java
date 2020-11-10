@@ -25,6 +25,10 @@ public final class ServicehandlerTxRxCheck {
     // This is class is public so that these messages can be accessed from Junit (avoid duplications).
     public static final class LogMessages {
 
+<<<<<<< HEAD
+=======
+        private static final String SERVICE = "Service ";
+>>>>>>> standalone/stable/aluminium
         public static final String TXDIR_NOT_SET;
         public static final String TXDIR_PORT_NOT_SET;
         public static final String TXDIR_LGX_NOT_SET;
@@ -43,6 +47,7 @@ public final class ServicehandlerTxRxCheck {
         }
 
         public static String endpointTypeNotSet(ServiceEndpointType endpointType) {
+<<<<<<< HEAD
             return "Service " + endpointType + " is not set";
         }
 
@@ -56,6 +61,21 @@ public final class ServicehandlerTxRxCheck {
 
         public static String clliNotSet(ServiceEndpointType endpointType) {
             return "Service " + endpointType + " clli is not set";
+=======
+            return SERVICE + endpointType + " is not set";
+        }
+
+        public static String rateNotSet(ServiceEndpointType endpointType) {
+            return SERVICE + endpointType + " rate is not set";
+        }
+
+        public static String formatNotSet(ServiceEndpointType endpointType) {
+            return SERVICE + endpointType + " format is not set";
+        }
+
+        public static String clliNotSet(ServiceEndpointType endpointType) {
+            return SERVICE + endpointType + " clli is not set";
+>>>>>>> standalone/stable/aluminium
         }
 
         private LogMessages() {
@@ -71,7 +91,7 @@ public final class ServicehandlerTxRxCheck {
      * @return true if String ok false if not
      */
     public static boolean checkString(String value) {
-        return ((value != null) && (value.compareTo("") != 0));
+        return (value != null && !value.isEmpty());
     }
 
     /**
@@ -81,21 +101,24 @@ public final class ServicehandlerTxRxCheck {
      *            port info
      * @return true if String ok false if not
      */
+    @SuppressWarnings("java:S1067")
+    //sonar issue Reduce the number of conditional operators (4) used in the expression (maximum allowed 3)
+    //won't be fixed because of functional checks needed
     public static boolean checkPort(Port port) {
-        boolean result = false;
-        if (port != null) {
-            String portDeviceName = port.getPortDeviceName();
-            String portType = port.getPortType();
-            String portName = port.getPortName();
-            String portRack = port.getPortRack();
-            String portShelf = port.getPortShelf();
-
-            if (checkString(portDeviceName) && checkString(portType) && checkString(portName) && checkString(portRack)
-                    && checkString(portShelf)) {
-                result = true;
-            }
+        if (port == null) {
+            return false;
         }
-        return result;
+        String portDeviceName = port.getPortDeviceName();
+        String portType = port.getPortType();
+        String portName = port.getPortName();
+        String portRack = port.getPortRack();
+        String portShelf = port.getPortShelf();
+
+        return checkString(portDeviceName)
+                && checkString(portType)
+                && checkString(portName)
+                && checkString(portRack)
+                && checkString(portShelf);
     }
 
     /**
@@ -106,18 +129,17 @@ public final class ServicehandlerTxRxCheck {
      * @return true if String ok false if not
      */
     public static boolean checkLgx(Lgx lgx) {
-        boolean result = false;
-        if (lgx != null) {
-            String lgxDeviceName = lgx.getLgxDeviceName();
-            String lgxPortName = lgx.getLgxPortName();
-            String lgxPortRack = lgx.getLgxPortRack();
-            String lgxPortShelf = lgx.getLgxPortShelf();
-            if (checkString(lgxDeviceName) && checkString(lgxPortName) && checkString(lgxPortRack)
-                    && checkString(lgxPortShelf)) {
-                result = true;
-            }
+        if (lgx == null) {
+            return false;
         }
-        return result;
+        String lgxDeviceName = lgx.getLgxDeviceName();
+        String lgxPortName = lgx.getLgxPortName();
+        String lgxPortRack = lgx.getLgxPortRack();
+        String lgxPortShelf = lgx.getLgxPortShelf();
+        return checkString(lgxDeviceName)
+                && checkString(lgxPortName)
+                && checkString(lgxPortRack)
+                && checkString(lgxPortShelf);
     }
 
     /**
@@ -164,6 +186,7 @@ public final class ServicehandlerTxRxCheck {
             return new ComplianceCheckResult(false, LogMessages.endpointTypeNotSet(endpointType));
         }
 
+<<<<<<< HEAD
 //TODO check if an expected bug was justifying this NPE handling
 //        try {
         Long serviceRate = serviceEnd.getServiceRate().toJava();
@@ -176,6 +199,16 @@ public final class ServicehandlerTxRxCheck {
 //        }
 
         if ((serviceRate == null) || (serviceRate <= 0)) {
+=======
+        if (serviceEnd.getServiceRate() == null) {
+            String message = "Something wrong when accessing Service " + endpointType + " rate, format or clli";
+            return new ComplianceCheckResult(false, message);
+        }
+        Long serviceRate = serviceEnd.getServiceRate().toJava();
+        ServiceFormat serviceformat = serviceEnd.getServiceFormat();
+        String clli = serviceEnd.getClli();
+        if (serviceRate <= 0) {
+>>>>>>> standalone/stable/aluminium
             return new ComplianceCheckResult(false, LogMessages.rateNotSet(endpointType));
         }
         if (serviceformat == null) {

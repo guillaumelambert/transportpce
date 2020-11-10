@@ -32,12 +32,18 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.LinkId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> standalone/stable/aluminium
 public class PcePathDescriptionTests extends AbstractTest {
 
     private PcePathDescription pcePathDescription;
     private PceResult pceResult;
+<<<<<<< HEAD
     private static final Long WAVE_LENGTH = 20L;
+=======
+>>>>>>> standalone/stable/aluminium
     private PceLink pceLink = null;
     private Link link = null;
     private Node node = null;
@@ -92,4 +98,8 @@ public class PcePathDescriptionTests extends AbstractTest {
         MapUtils.getSRLGfromLink(link);
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> standalone/stable/aluminium

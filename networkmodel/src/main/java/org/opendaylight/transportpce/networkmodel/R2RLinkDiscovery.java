@@ -9,13 +9,21 @@ package org.opendaylight.transportpce.networkmodel;
 
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_1_2_1;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_2_2_1;
+<<<<<<< HEAD
 import java.util.List;
+=======
+
+import java.util.Collection;
+>>>>>>> standalone/stable/aluminium
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.Nullable;
+<<<<<<< HEAD
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
+=======
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
@@ -25,11 +33,19 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.transportpce.networkmodel.util.TopologyUtils;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.networkutils.rev170818.InitRoadmNodesInputBuilder;
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.Network;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.NodesKey;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.CpToDegree;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
+=======
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.CpToDegree;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev170929.Direction;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.Protocols;
@@ -49,10 +65,16 @@ public class R2RLinkDiscovery {
     private final DataBroker dataBroker;
     private final NetworkTransactionService networkTransactionService;
     private final DeviceTransactionManager deviceTransactionManager;
+<<<<<<< HEAD
     private final RemoteOpendaylightClient odlClient;
 
     public R2RLinkDiscovery(final DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
         NetworkTransactionService networkTransactionService, RemoteOpendaylightClient odlClient) {
+=======
+
+    public R2RLinkDiscovery(final DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
+        NetworkTransactionService networkTransactionService) {
+>>>>>>> standalone/stable/aluminium
         this.dataBroker = dataBroker;
         this.deviceTransactionManager = deviceTransactionManager;
         this.networkTransactionService = networkTransactionService;
@@ -73,7 +95,8 @@ public class R2RLinkDiscovery {
             }
             NbrList nbrList = protocolObject.get().augmentation(Protocols1.class).getLldp().getNbrList();
             LOG.info("LLDP subtree is present. Device has {} neighbours", nbrList.getIfName().size());
-            for (IfName ifName : nbrList.getIfName()) {
+            boolean success = true;
+            for (IfName ifName : nbrList.nonnullIfName().values()) {
                 if (ifName.getRemoteSysName() == null) {
                     LOG.warn("LLDP subtree neighbour is empty for nodeId: {}, ifName: {}",
                         nodeId.getValue(),ifName.getIfName());
@@ -90,12 +113,12 @@ public class R2RLinkDiscovery {
                             ifName.getRemotePortId())) {
                             LOG.error("Link Creation failed between {} and {} nodes.", nodeId.getValue(),
                                 ifName.getRemoteSysName());
-                            return false;
+                            success = false;
                         }
                     }
                 }
             }
-            return true;
+            return success;
         }
         else if (nodeVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)) {
             InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1> protocolsIID
@@ -115,8 +138,9 @@ public class R2RLinkDiscovery {
             org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.@Nullable NbrList nbrList
                 = protocolObject.get().getLldp().getNbrList();
             LOG.info("LLDP subtree is present. Device has {} neighbours", nbrList.getIfName().size());
+            boolean success = true;
             for (org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.nbr.list.IfName
-                ifName : nbrList.getIfName()) {
+                ifName : nbrList.nonnullIfName().values()) {
                 if (ifName.getRemoteSysName() == null) {
                     LOG.warn("LLDP subtree neighbour is empty for nodeId: {}, ifName: {}",
                         nodeId.getValue(),ifName.getIfName());
@@ -133,12 +157,12 @@ public class R2RLinkDiscovery {
                             ifName.getRemotePortId())) {
                             LOG.error("Link Creation failed between {} and {} nodes.", nodeId, ifName
                                 .getRemoteSysName());
-                            return false;
+                            success = false;
                         }
                     }
                 }
             }
-            return true;
+            return success;
         }
         else {
             LOG.error("Unable to read LLDP data for unmanaged openroadm device version");
@@ -152,7 +176,7 @@ public class R2RLinkDiscovery {
         try (ReadTransaction readTx = this.dataBroker.newReadOnlyTransaction()) {
             Optional<Nodes> nodesObject = readTx.read(LogicalDatastoreType.CONFIGURATION, nodesIID).get();
             if (nodesObject.isPresent() && (nodesObject.get().getMapping() != null)) {
-                List<Mapping> mappingList = nodesObject.get().getMapping();
+                Collection<Mapping> mappingList = nodesObject.get().nonnullMapping().values();
                 mappingList = mappingList.stream().filter(mp -> mp.getLogicalConnectionPoint().contains("DEG"
                     + degreeCounter)).collect(Collectors.toList());
                 if (mappingList.size() == 1) {
@@ -307,8 +331,8 @@ public class R2RLinkDiscovery {
         try (ReadTransaction readTx = this.dataBroker.newReadOnlyTransaction()) {
             Optional<Nodes> nodesObject = readTx.read(LogicalDatastoreType.CONFIGURATION, nodesIID).get();
             if (nodesObject.isPresent() && (nodesObject.get().getCpToDegree() != null)) {
-                List<CpToDegree> cpToDeg = nodesObject.get().getCpToDegree();
-                Stream cpToDegStream = cpToDeg.stream().filter(cp -> cp.getInterfaceName() != null)
+                Collection<CpToDegree> cpToDeg = nodesObject.get().nonnullCpToDegree().values();
+                Stream<CpToDegree> cpToDegStream = cpToDeg.stream().filter(cp -> cp.getInterfaceName() != null)
                     .filter(cp -> cp.getInterfaceName().equals(interfaceName));
                 if (cpToDegStream != null) {
                     @SuppressWarnings("unchecked") Optional<CpToDegree> firstCpToDegree = cpToDegStream.findFirst();

@@ -208,12 +208,22 @@ public class PceCalculation {
             LOG.error("readMdSal: network is null: {}", nwInstanceIdentifier);
             return false;
         }
+<<<<<<< HEAD
         allNodes = nw.getNode().stream().sorted((n1, n2) -> n1.getNodeId().getValue().compareTo(n2.getNodeId()
             .getValue())).collect(Collectors.toList());
         Network1 nw1 = nw.augmentation(Network1.class);
         if (nw1 != null) {
             allLinks = nw1.getLink().stream().sorted((l1, l2) -> l1.getSource().getSourceTp().toString().compareTo(l2
                 .getSource().getSourceTp().toString())).collect(Collectors.toList());
+=======
+        allNodes = nw.nonnullNode().values().stream().sorted((n1, n2)
+            -> n1.getNodeId().getValue().compareTo(n2.getNodeId().getValue())).collect(Collectors.toList());
+        Network1 nw1 = nw.augmentation(Network1.class);
+        if (nw1 != null) {
+            allLinks = nw1.nonnullLink().values().stream().sorted((l1, l2)
+                -> l1.getSource().getSourceTp().toString().compareTo(l2.getSource().getSourceTp().toString()))
+                    .collect(Collectors.toList());
+>>>>>>> standalone/stable/aluminium
         } else {
             LOG.warn("no otn links in otn-topology");
         }

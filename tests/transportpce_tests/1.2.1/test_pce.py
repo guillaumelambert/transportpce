@@ -8,8 +8,15 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+<<<<<<< HEAD
 import unittest
 import json
+=======
+# pylint: disable=no-member
+# pylint: disable=too-many-public-methods
+
+import unittest
+>>>>>>> standalone/stable/aluminium
 import os
 import sys
 import time
@@ -26,6 +33,10 @@ class TransportPCEtesting(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+<<<<<<< HEAD
+=======
+        # pylint: disable=bare-except
+>>>>>>> standalone/stable/aluminium
         try:
             sample_files_parsed = False
             TOPO_BI_DIR_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -61,6 +72,10 @@ class TransportPCEtesting(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+<<<<<<< HEAD
+=======
+        # pylint: disable=not-an-iterable
+>>>>>>> standalone/stable/aluminium
         for process in cls.processes:
             test_utils.shutdown_process(process)
         print("all processes killed")
@@ -95,6 +110,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path Computation success
     def test_04_path_computation_xpdr_bi(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service-1",
@@ -118,6 +134,13 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request-1", "service-1",
+                                                       {"node-id": "XPDRA01", "service-rate": "100",
+                                                           "service-format": "Ethernet", "clli": "nodeA"},
+                                                       {"node-id": "XPDRC01", "service-rate": "100",
+                                                           "service-format": "Ethernet", "clli": "nodeC"})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -126,6 +149,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path Computation success
     def test_05_path_computation_rdm_bi(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service-1",
@@ -149,6 +173,13 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request-1", "service-1",
+                                                       {"node-id": "ROADMA01", "service-rate": "100",
+                                                           "service-format": "Ethernet", "clli": "NodeA"},
+                                                       {"node-id": "ROADMC01", "service-rate": "100",
+                                                           "service-format": "Ethernet", "clli": "NodeC"})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -164,7 +195,11 @@ class TransportPCEtesting(unittest.TestCase):
     # Test deleted topology
     def test_07_test_topology_simple_bi_deleted(self):
         response = test_utils.get_ordm_topo_request("node/ROADMA01-SRG1")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, 404)
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
         time.sleep(1)
 
     # Load simple bidirectional topology
@@ -195,6 +230,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path Computation success
     def test_11_path_computation_xpdr_uni(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service-1",
@@ -218,6 +254,13 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request-1", "service-1",
+                                                       {"node-id": "XPONDER-1-2", "service-rate": "100",
+                                                           "service-format": "Ethernet", "clli": "ORANGE1"},
+                                                       {"node-id": "XPONDER-3-2", "service-rate": "100",
+                                                           "service-format": "Ethernet", "clli": "ORANGE3"})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -226,6 +269,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path Computation success
     def test_12_path_computation_rdm_uni(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service1",
@@ -249,6 +293,13 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request1", "service1",
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "clli": "cll21", "node-id": "OpenROADM-2-1"},
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "clli": "ncli22", "node-id": "OpenROADM-2-2"})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -261,9 +312,9 @@ class TransportPCEtesting(unittest.TestCase):
         for i in range(0, 15):
             atoz = res['output']['response-parameters']['path-description']['aToZ-direction']['aToZ'][i]
             ztoa = res['output']['response-parameters']['path-description']['zToA-direction']['zToA'][i]
-            if (atoz['id'] == '14'):
+            if atoz['id'] == '14':
                 self.assertEqual(atoz['resource']['tp-id'], 'SRG1-PP1-TX')
-            if (ztoa['id'] == '0'):
+            if ztoa['id'] == '0':
                 self.assertEqual(ztoa['resource']['tp-id'], 'SRG1-PP1-RX')
         time.sleep(5)
 
@@ -276,7 +327,11 @@ class TransportPCEtesting(unittest.TestCase):
     # Test deleted topology
     def test_14_test_topology_simple_deleted(self):
         response = test_utils.get_ordm_topo_request("node/XPONDER-1-2")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, 404)
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
         time.sleep(1)
 
     # Load complex topology
@@ -297,6 +352,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Test failed path computation
     def test_17_fail_path_computation(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-handler-header": {
@@ -305,6 +361,10 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.post_request(test_utils.URL_PATH_COMPUTATION_REQUEST,
+                                           {"input": {"service-handler-header": {"request-id": "request-1"}}})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Service Name is not set',
@@ -313,6 +373,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Test1 success path computation
     def test_18_success1_path_computation(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service1",
@@ -401,6 +462,56 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request1", "service1",
+                                                       {"service-format": "Ethernet", "service-rate": "100",
+                                                        "clli": "ORANGE2", "node-id": "XPONDER-2-2",
+                                                        "tx-direction": {"port": {
+                                                            "port-device-name": "Some port-device-name",
+                                                            "port-type": "Some port-type",
+                                                            "port-name": "Some port-name",
+                                                            "port-rack": "Some port-rack",
+                                                            "port-shelf": "Some port-shelf",
+                                                            "port-slot": "Some port-slot",
+                                                            "port-sub-slot": "Some port-sub-slot"
+                                                        }},
+                                                           "rx-direction": {"port": {
+                                                               "port-device-name": "Some port-device-name",
+                                                               "port-type": "Some port-type",
+                                                               "port-name": "Some port-name",
+                                                               "port-rack": "Some port-rack",
+                                                               "port-shelf": "Some port-shelf",
+                                                               "port-slot": "Some port-slot",
+                                                               "port-sub-slot": "Some port-sub-slot"
+                                                           }}},
+                                                       {"service-format": "Ethernet", "service-rate": "100",
+                                                           "clli": "ORANGE1", "node-id": "XPONDER-1-2",
+                                                           "tx-direction": {"port": {
+                                                               "port-device-name": "Some port-device-name",
+                                                               "port-type": "Some port-type",
+                                                               "port-name": "Some port-name",
+                                                               "port-rack": "Some port-rack",
+                                                               "port-shelf": "Some port-shelf",
+                                                               "port-slot": "Some port-slot",
+                                                               "port-sub-slot": "Some port-sub-slot"
+                                                           }},
+                                                           "rx-direction": {"port": {
+                                                               "port-device-name": "Some port-device-name",
+                                                               "port-type": "Some port-type",
+                                                               "port-name": "Some port-name",
+                                                               "port-rack": "Some port-rack",
+                                                               "port-shelf": "Some port-shelf",
+                                                               "port-slot": "Some port-slot",
+                                                               "port-sub-slot": "Some port-sub-slot"
+                                                           }}},
+                                                       {"customer-code": ["Some customer-code"],
+                                                           "co-routing": {"existing-service": ["Some existing-service"]}
+                                                        },
+                                                       {"customer-code": ["Some customer-code"],
+                                                           "co-routing": {"existing-service": ["Some existing-service"]}
+                                                        },
+                                                       "hop-count", {"locally-protected-links": "true"})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -409,6 +520,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Test2 success path computation with path description
     def test_19_success2_path_computation(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service 1",
@@ -432,6 +544,13 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request 1", "service 1",
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "node-id": "XPONDER-1-2", "clli": "ORANGE1"},
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "node-id": "XPONDER-3-2", "clli": "ORANGE3"})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -444,6 +563,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Test3 success path computation with hard-constraints exclude
     def test_20_success3_path_computation(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service 1",
@@ -472,6 +592,14 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request 1", "service 1",
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "node-id": "XPONDER-1-2", "clli": "ORANGE1"},
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "node-id": "XPONDER-3-2", "clli": "ORANGE3"},
+                                                       {"exclude_": {"node-id": ["OpenROADM-2-1", "OpenROADM-2-2"]}})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -484,6 +612,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path computation before deleting oms-attribute of the link :openroadm1-3 to openroadm1-2
     def test_21_path_computation_before_oms_attribute_deletion(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service 1",
@@ -507,6 +636,13 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request 1", "service 1",
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "node-id": "XPONDER-2-2", "clli": "ORANGE2"},
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "node-id": "XPONDER-1-2", "clli": "ORANGE1"})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -517,8 +653,14 @@ class TransportPCEtesting(unittest.TestCase):
         link = {"link-id": "OpenROADM-1-3-DEG2-to-OpenROADM-1-2-DEG2"}
         find = False
         for i in range(0, nbElmPath):
+<<<<<<< HEAD
             resource_i = res['output']['response-parameters']['path-description']['aToZ-direction']['aToZ'][i]['resource']
             if(resource_i == link):
+=======
+            resource_i = (res['output']['response-parameters']['path-description']['aToZ-direction']['aToZ'][i]
+                             ['resource'])
+            if resource_i == link:
+>>>>>>> standalone/stable/aluminium
                 find = True
         self.assertEqual(find, True)
         time.sleep(5)
@@ -531,6 +673,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     # Path computation after deleting oms-attribute of the link :openroadm1-3 to openroadm1-2
     def test_23_path_computation_after_oms_attribute_deletion(self):
+<<<<<<< HEAD
         url = "{}/operations/transportpce-pce:path-computation-request"
         data = {"input": {
                 "service-name": "service 1",
@@ -554,6 +697,13 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.path_computation_request("request 1", "service 1",
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "node-id": "XPONDER-2-2", "clli": "ORANGE2"},
+                                                       {"service-rate": "100", "service-format": "Ethernet",
+                                                           "node-id": "XPONDER-1-2", "clli": "ORANGE1"})
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Path is calculated',
@@ -564,8 +714,14 @@ class TransportPCEtesting(unittest.TestCase):
         link = {"link-id": "OpenROADM-1-3-DEG2-to-OpenROADM-1-2-DEG2"}
         find = False
         for i in range(0, nbElmPath):
+<<<<<<< HEAD
             resource_i = res['output']['response-parameters']['path-description']['aToZ-direction']['aToZ'][i]['resource']
             if (resource_i == link):
+=======
+            resource_i = (res['output']['response-parameters']['path-description']['aToZ-direction']['aToZ'][i]
+                             ['resource'])
+            if resource_i == link:
+>>>>>>> standalone/stable/aluminium
                 find = True
         self.assertNotEqual(find, True)
         time.sleep(5)
@@ -579,7 +735,11 @@ class TransportPCEtesting(unittest.TestCase):
     # Test deleted complex topology
     def test_25_test_topology_complex_deleted(self):
         response = test_utils.get_ordm_topo_request("node/XPONDER-3-2")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, 404)
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
         time.sleep(1)
 
 

@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.OduSwitchingPools;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.OduSwitchingPoolsKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.NonBlockingList;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.NonBlockingListKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.switching.pool.types.rev171215.SwitchingPoolTypes;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.AbstractAugmentable;
@@ -71,7 +72,7 @@ import org.opendaylight.yangtools.yang.common.Uint16;
  */
 public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
 
-    private List<NonBlockingList> _nonBlockingList;
+    private Map<NonBlockingListKey, NonBlockingList> _nonBlockingList;
     private Uint16 _switchingPoolNumber;
     private SwitchingPoolTypes _switchingPoolType;
     private OduSwitchingPoolsKey key;
@@ -101,7 +102,7 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
         return key;
     }
 
-    public List<NonBlockingList> getNonBlockingList() {
+    public Map<NonBlockingListKey, NonBlockingList> getNonBlockingList() {
         return _nonBlockingList;
     }
 
@@ -122,7 +123,7 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
         this.key = key;
         return this;
     }
-    public OduSwitchingPoolsBuilder setNonBlockingList(final List<NonBlockingList> values) {
+    public OduSwitchingPoolsBuilder setNonBlockingList(final Map<NonBlockingListKey, NonBlockingList> values) {
         this._nonBlockingList = values;
         return this;
     }
@@ -179,7 +180,7 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
         extends AbstractAugmentable<OduSwitchingPools>
         implements OduSwitchingPools {
 
-        private final List<NonBlockingList> _nonBlockingList;
+        private final Map<NonBlockingListKey, NonBlockingList> _nonBlockingList;
         private final Uint16 _switchingPoolNumber;
         private final SwitchingPoolTypes _switchingPoolType;
         private final OduSwitchingPoolsKey key;
@@ -202,7 +203,7 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
         }
 
         @Override
-        public List<NonBlockingList> getNonBlockingList() {
+        public Map<NonBlockingListKey, NonBlockingList> getNonBlockingList() {
             return _nonBlockingList;
         }
 

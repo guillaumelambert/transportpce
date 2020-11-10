@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+<<<<<<< HEAD
+=======
+
+>>>>>>> standalone/stable/aluminium
 ##############################################################################
 # Copyright (c) 2020 Orange, Inc. and others.  All rights reserved.
 #
@@ -7,6 +11,12 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+<<<<<<< HEAD
+=======
+
+# pylint: disable=no-member
+
+>>>>>>> standalone/stable/aluminium
 import json
 import os
 import sys
@@ -27,7 +37,11 @@ SAMPLES_DIRECTORY = simulators.SAMPLES_DIRECTORY
 HONEYNODE_OK_START_MSG = "Netconf SSH endpoint started successfully at 0.0.0.0"
 KARAF_OK_START_MSG = re.escape(
     "Blueprint container for bundle org.opendaylight.netconf.restconf")+".* was successfully created"
+<<<<<<< HEAD
 
+=======
+LIGHTY_OK_START_MSG = re.escape("lighty.io and RESTCONF-NETCONF started")
+>>>>>>> standalone/stable/aluminium
 
 RESTCONF_BASE_URL = "http://localhost:8181/restconf"
 ODL_LOGIN = "admin"
@@ -40,6 +54,16 @@ URL_CONFIG_OTN_TOPO = "{}/config/ietf-network:networks/network/otn-topology/"
 URL_CONFIG_CLLI_NET = "{}/config/ietf-network:networks/network/clli-network/"
 URL_CONFIG_ORDM_NET = "{}/config/ietf-network:networks/network/openroadm-network/"
 URL_PORTMAPPING = "{}/config/transportpce-portmapping:network/nodes/"
+<<<<<<< HEAD
+=======
+URL_OPER_SERV_LIST = "{}/operational/org-openroadm-service:service-list/"
+URL_SERV_CREATE = "{}/operations/org-openroadm-service:service-create"
+URL_SERV_DELETE = "{}/operations/org-openroadm-service:service-delete"
+URL_SERVICE_PATH = "{}/operations/transportpce-device-renderer:service-path"
+URL_OTN_SERVICE_PATH = "{}/operations/transportpce-device-renderer:otn-service-path"
+URL_CREATE_OTS_OMS = "{}/operations/transportpce-device-renderer:create-ots-oms"
+URL_PATH_COMPUTATION_REQUEST = "{}/operations/transportpce-pce:path-computation-request"
+>>>>>>> standalone/stable/aluminium
 
 TYPE_APPLICATION_JSON = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 TYPE_APPLICATION_XML = {'Content-Type': 'application/xml', 'Accept': 'application/xml'}
@@ -82,6 +106,7 @@ def start_tpce():
     print("starting OpenDaylight...")
     if "USE_LIGHTY" in os.environ and os.environ['USE_LIGHTY'] == 'True':
         process = start_lighty()
+<<<<<<< HEAD
         # TODO: add some sort of health check similar to Karaf below
     else:
         process = start_karaf()
@@ -93,6 +118,20 @@ def start_tpce():
             for pid in process_list:
                 shutdown_process(pid)
             sys.exit(1)
+=======
+        start_msg = LIGHTY_OK_START_MSG
+    else:
+        process = start_karaf()
+        start_msg = KARAF_OK_START_MSG
+    if wait_until_log_contains(TPCE_LOG, start_msg , time_to_wait=60):
+        print("OpenDaylight started !")
+    else:
+        print("OpenDaylight failed to start !")
+        shutdown_process(process)
+        for pid in process_list:
+            shutdown_process(pid)
+        sys.exit(1)
+>>>>>>> standalone/stable/aluminium
     process_list.append(process)
     return process_list
 
@@ -125,7 +164,11 @@ def install_karaf_feature(feature_name: str):
         "..", "..", "..", "karaf", "target", "assembly", "bin", "client")
     return subprocess.run([executable],
                           input='feature:install ' + feature_name + '\n feature:list | grep tapi \n logout \n',
+<<<<<<< HEAD
                           universal_newlines=True)
+=======
+                          universal_newlines=True, check=False)
+>>>>>>> standalone/stable/aluminium
 
 
 def get_request(url):
@@ -142,11 +185,19 @@ def post_request(url, data):
             data=json.dumps(data),
             headers=TYPE_APPLICATION_JSON,
             auth=(ODL_LOGIN, ODL_PWD))
+<<<<<<< HEAD
     else:
         return requests.request(
             "POST", url.format(RESTCONF_BASE_URL),
             headers=TYPE_APPLICATION_JSON,
             auth=(ODL_LOGIN, ODL_PWD))
+=======
+
+    return requests.request(
+        "POST", url.format(RESTCONF_BASE_URL),
+        headers=TYPE_APPLICATION_JSON,
+        auth=(ODL_LOGIN, ODL_PWD))
+>>>>>>> standalone/stable/aluminium
 
 
 def post_xmlrequest(url, data):
@@ -156,6 +207,10 @@ def post_xmlrequest(url, data):
             data=data,
             headers=TYPE_APPLICATION_XML,
             auth=(ODL_LOGIN, ODL_PWD))
+<<<<<<< HEAD
+=======
+    return None
+>>>>>>> standalone/stable/aluminium
 
 
 def put_request(url, data):
@@ -314,6 +369,79 @@ def portmapping_request(suffix: str):
     return get_request(url)
 
 
+<<<<<<< HEAD
+=======
+def get_service_list_request(suffix: str):
+    url = URL_OPER_SERV_LIST + suffix
+    return get_request(url)
+
+
+def service_create_request(attr):
+    return post_request(URL_SERV_CREATE, attr)
+
+
+def service_delete_request(servicename: str,
+                           requestid="e3028bae-a90f-4ddd-a83f-cf224eba0e58",
+                           notificationurl="http://localhost:8585/NotificationServer/notify"):
+    attr = {"input": {
+        "sdnc-request-header": {
+            "request-id": requestid,
+            "rpc-action": "service-delete",
+            "request-system-id": "appname",
+            "notification-url": notificationurl},
+        "service-delete-req-info": {
+            "service-name": servicename,
+            "tail-retention": "no"}}}
+    return post_request(URL_SERV_DELETE, attr)
+
+
+def service_path_request(operation: str, servicename: str, wavenumber: str, nodes):
+    attr = {"renderer:input": {
+        "renderer:service-name": servicename,
+        "renderer:wave-number": wavenumber,
+        "renderer:modulation-format": "qpsk",
+        "renderer:operation": operation,
+        "renderer:nodes": nodes}}
+    return post_request(URL_SERVICE_PATH, attr)
+
+
+def otn_service_path_request(operation: str, servicename: str, servicerate: str, servicetype: str, nodes,
+                             eth_attr=None):
+    attr = {"service-name": servicename,
+            "operation": operation,
+            "service-rate": servicerate,
+            "service-type": servicetype,
+            "nodes": nodes}
+    if eth_attr:
+        attr.update(eth_attr)
+    return post_request(URL_OTN_SERVICE_PATH, {"renderer:input": attr})
+
+
+def create_ots_oms_request(nodeid: str, lcp: str):
+    attr = {"input": {
+        "node-id": nodeid,
+        "logical-connection-point": lcp}}
+    return post_request(URL_CREATE_OTS_OMS, attr)
+
+
+def path_computation_request(requestid: str, servicename: str, serviceaend, servicezend,
+                             hardconstraints=None, softconstraints=None, metric="hop-count", other_attr=None):
+    attr = {"service-name": servicename,
+            "resource-reserve": "true",
+            "service-handler-header": {"request-id": requestid},
+            "service-a-end": serviceaend,
+            "service-z-end": servicezend,
+            "pce-metric": metric}
+    if hardconstraints:
+        attr.update({"hard-constraints": hardconstraints})
+    if softconstraints:
+        attr.update({"soft-constraints": softconstraints})
+    if other_attr:
+        attr.update(other_attr)
+    return post_request(URL_PATH_COMPUTATION_REQUEST, {"input": attr})
+
+
+>>>>>>> standalone/stable/aluminium
 def shutdown_process(process):
     if process is not None:
         for child in psutil.Process(process.pid).children():
@@ -328,9 +456,17 @@ def start_honeynode(log_file: str, node_port: str, node_config_file_name: str):
             return subprocess.Popen(
                 [HONEYNODE_EXECUTABLE, node_port, os.path.join(SAMPLES_DIRECTORY, node_config_file_name)],
                 stdout=outfile, stderr=outfile)
+<<<<<<< HEAD
 
 
 def wait_until_log_contains(log_file, regexp, time_to_wait=20):
+=======
+    return None
+
+
+def wait_until_log_contains(log_file, regexp, time_to_wait=20):
+    # pylint: disable=lost-exception
+>>>>>>> standalone/stable/aluminium
     stringfound = False
     filefound = False
     line = None
@@ -376,4 +512,8 @@ class TimeOut:
         signal.alarm(self.seconds)
 
     def __exit__(self, type, value, traceback):
+<<<<<<< HEAD
+=======
+        # pylint: disable=W0622
+>>>>>>> standalone/stable/aluminium
         signal.alarm(0)

@@ -8,7 +8,11 @@
 
 package org.opendaylight.transportpce.networkmodel.util;
 
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfo;
+=======
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev181130.Node1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev181130.Node1Builder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
@@ -51,7 +55,11 @@ public final class ClliNetwork {
             Node1 clliAugmentation = new Node1Builder()
                 .setClli(nodeInfo.getNodeClli())
                 .build();
+<<<<<<< HEAD
             nodeBldr.addAugmentation(Node1.class, clliAugmentation);
+=======
+            nodeBldr.addAugmentation(clliAugmentation);
+>>>>>>> standalone/stable/aluminium
         } else {
             LOG.warn("No CLLI configured in configuration of {}", deviceId);
         }

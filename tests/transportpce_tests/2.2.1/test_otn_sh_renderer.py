@@ -9,6 +9,12 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+<<<<<<< HEAD
+=======
+# pylint: disable=no-member
+# pylint: disable=too-many-public-methods
+
+>>>>>>> standalone/stable/aluminium
 import unittest
 import time
 import requests
@@ -26,6 +32,10 @@ class TransportPCEtesting(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+<<<<<<< HEAD
+=======
+        # pylint: disable=not-an-iterable
+>>>>>>> standalone/stable/aluminium
         for process in cls.processes:
             test_utils.shutdown_process(process)
         print("all processes killed")
@@ -177,7 +187,11 @@ class TransportPCEtesting(unittest.TestCase):
 
         self.assertDictEqual(
             {u'frequency': 196.1, u'rate': u'org-openroadm-common-types:R100G',
+<<<<<<< HEAD
              u'transmit-power': -5},
+=======
+             u'transmit-power': -5, u'modulation-format': 'dp-qpsk'},
+>>>>>>> standalone/stable/aluminium
             res['interface'][0]['org-openroadm-optical-channel-interfaces:och'])
 
     def test_05_check_interface_OTU(self):
@@ -220,7 +234,11 @@ class TransportPCEtesting(unittest.TestCase):
 
         self.assertDictEqual(
             {u'frequency': 196.1, u'rate': u'org-openroadm-common-types:R100G',
+<<<<<<< HEAD
              u'transmit-power': -5},
+=======
+             u'transmit-power': -5, u'modulation-format': 'dp-qpsk'},
+>>>>>>> standalone/stable/aluminium
             res['interface'][0]['org-openroadm-optical-channel-interfaces:och'])
 
     def test_07_check_interface_OTU(self):

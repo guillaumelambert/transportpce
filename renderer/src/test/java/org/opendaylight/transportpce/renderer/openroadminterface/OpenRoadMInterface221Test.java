@@ -10,20 +10,38 @@ package org.opendaylight.transportpce.renderer.openroadminterface;
 import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
+<<<<<<< HEAD
+=======
+import org.junit.Ignore;
+>>>>>>> standalone/stable/aluminium
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opendaylight.transportpce.common.fixedflex.FixedFlexImpl;
 import org.opendaylight.transportpce.common.fixedflex.FixedFlexInterface;
+<<<<<<< HEAD
+=======
+import org.opendaylight.transportpce.common.fixedflex.FlexGridImpl;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
 import org.opendaylight.transportpce.test.AbstractTest;
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingBuilder;
 
+=======
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingBuilder;
+
+@Ignore
+>>>>>>> standalone/stable/aluminium
 public class OpenRoadMInterface221Test extends AbstractTest {
 
     private final PortMapping portMapping = Mockito.mock(PortMapping.class);
     private final FixedFlexInterface fixedFlex = Mockito.spy(FixedFlexInterface.class);
+<<<<<<< HEAD
+=======
+    private final FlexGridImpl flexGrid = Mockito.spy(FlexGridImpl.class);
+>>>>>>> standalone/stable/aluminium
     private OpenRoadmInterface221 openRoadMInterface221;
     private final String nodeId = "node1";
 
@@ -31,7 +49,11 @@ public class OpenRoadMInterface221Test extends AbstractTest {
     public void setup() {
 
         OpenRoadmInterfaces openRoadmInterfaces = Mockito.spy(OpenRoadmInterfaces.class);
+<<<<<<< HEAD
         this.openRoadMInterface221 = new OpenRoadmInterface221(portMapping, openRoadmInterfaces, fixedFlex);
+=======
+        this.openRoadMInterface221 = new OpenRoadmInterface221(portMapping, openRoadmInterfaces, fixedFlex, flexGrid);
+>>>>>>> standalone/stable/aluminium
     }
 
     @Test

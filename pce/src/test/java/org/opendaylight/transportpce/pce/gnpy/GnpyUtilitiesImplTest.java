@@ -17,8 +17,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
+=======
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+>>>>>>> standalone/stable/aluminium
 import java.util.concurrent.ExecutionException;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -42,6 +47,12 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdes
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZ;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZKey;
+<<<<<<< HEAD
+=======
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ztoa.direction.ZToA;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ztoa.direction.ZToABuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ztoa.direction.ZToAKey;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.Resource;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.ResourceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.resource.resource.TerminationPoint;
@@ -52,10 +63,17 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.NetworkKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.QName;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+=======
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+>>>>>>> standalone/stable/aluminium
 public class GnpyUtilitiesImplTest extends AbstractTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(GnpyUtilitiesImplTest.class);
@@ -63,18 +81,28 @@ public class GnpyUtilitiesImplTest extends AbstractTest {
     private NetworkTransactionImpl networkTransaction;
     private static HttpServer httpServer;
 
+<<<<<<< HEAD
     public GnpyUtilitiesImplTest() {
+=======
+    public GnpyUtilitiesImplTest() throws IOException {
+>>>>>>> standalone/stable/aluminium
         networkTransaction = new NetworkTransactionImpl(new RequestProcessor(this.getDataBroker()));
         JsonReader networkReader = null;
         JsonReader topoReader = null;
 
         try {
             // load openroadm-network
+<<<<<<< HEAD
             Reader gnpyNetwork = new FileReader("src/test/resources/gnpy/gnpy_network.json");
+=======
+            Reader gnpyNetwork = new FileReader("src/test/resources/gnpy/gnpy_network.json",
+                    StandardCharsets.UTF_8);
+>>>>>>> standalone/stable/aluminium
 
             networkReader = new JsonReader(gnpyNetwork);
             Networks networks = (Networks) JsonUtil.getInstance().getDataObjectFromJson(networkReader,
                     QName.create("urn:ietf:params:xml:ns:yang:ietf-network", "2018-02-26", "networks"));
+<<<<<<< HEAD
             saveOpenRoadmNetwork(networks.getNetwork().get(0), NetworkUtils.UNDERLAY_NETWORK_ID);
             // load openroadm-topology
             Reader gnpyTopo = new FileReader("src/test/resources/gnpy/gnpy_topology.json");
@@ -82,6 +110,16 @@ public class GnpyUtilitiesImplTest extends AbstractTest {
             networks = (Networks) JsonUtil.getInstance().getDataObjectFromJson(topoReader,
                     QName.create("urn:ietf:params:xml:ns:yang:ietf-network", "2018-02-26", "networks"));
             saveOpenRoadmNetwork(networks.getNetwork().get(0), NetworkUtils.OVERLAY_NETWORK_ID);
+=======
+            saveOpenRoadmNetwork(networks.getNetwork().values().iterator().next(), NetworkUtils.UNDERLAY_NETWORK_ID);
+            // load openroadm-topology
+            Reader gnpyTopo = new FileReader("src/test/resources/gnpy/gnpy_topology.json",
+                    StandardCharsets.UTF_8);
+            topoReader = new JsonReader(gnpyTopo);
+            networks = (Networks) JsonUtil.getInstance().getDataObjectFromJson(topoReader,
+                    QName.create("urn:ietf:params:xml:ns:yang:ietf-network", "2018-02-26", "networks"));
+            saveOpenRoadmNetwork(networks.getNetwork().values().iterator().next(), NetworkUtils.OVERLAY_NETWORK_ID);
+>>>>>>> standalone/stable/aluminium
         } catch (FileNotFoundException | InterruptedException | ExecutionException e) {
             LOG.error("Cannot init test ", e);
             fail("Cannot init test ");
@@ -125,7 +163,12 @@ public class GnpyUtilitiesImplTest extends AbstractTest {
     @Test
     public void askNewPathFromGnpyNullResultTest() throws Exception {
         gnpyUtilitiesImpl = new GnpyUtilitiesImpl(networkTransaction,
+<<<<<<< HEAD
                 PceTestData.getGnpyPCERequest("XPONDER-1", "XPONDER-2"));
+=======
+                PceTestData.getGnpyPCERequest("XPONDER-1", "XPONDER-2"),
+                JsonUtil.getInstance().getBindingDOMCodecServices());
+>>>>>>> standalone/stable/aluminium
         assertNull("No hard constraints should be available", gnpyUtilitiesImpl.askNewPathFromGnpy(null));
 
     }
@@ -133,7 +176,12 @@ public class GnpyUtilitiesImplTest extends AbstractTest {
     @Test
     public void askNewPathFromGnpyTest() throws Exception {
         gnpyUtilitiesImpl = new GnpyUtilitiesImpl(networkTransaction,
+<<<<<<< HEAD
                 PceTestData.getGnpyPCERequest("XPONDER-3", "XPONDER-4"));
+=======
+                PceTestData.getGnpyPCERequest("XPONDER-3", "XPONDER-4"),
+                JsonUtil.getInstance().getBindingDOMCodecServices());
+>>>>>>> standalone/stable/aluminium
         PceConstraintsCalc constraints = new PceConstraintsCalc(PceTestData.getPCE_simpletopology_test1_request(),
                 networkTransaction);
         PceConstraints pceHardConstraints = constraints.getPceHardConstraints();
@@ -150,7 +198,12 @@ public class GnpyUtilitiesImplTest extends AbstractTest {
         ZToADirectionBuilder ztoADirectionBldr = buildZtoA();
 
         gnpyUtilitiesImpl = new GnpyUtilitiesImpl(networkTransaction,
+<<<<<<< HEAD
                 PceTestData.getGnpyPCERequest("XPONDER-1", "XPONDER-2"));
+=======
+                PceTestData.getGnpyPCERequest("XPONDER-1", "XPONDER-2"),
+                JsonUtil.getInstance().getBindingDOMCodecServices());
+>>>>>>> standalone/stable/aluminium
         PceConstraintsCalc constraints = new PceConstraintsCalc(PceTestData.getPCE_simpletopology_test1_request(),
                 networkTransaction);
         PceConstraints pceHardConstraints = constraints.getPceHardConstraints();
@@ -161,27 +214,51 @@ public class GnpyUtilitiesImplTest extends AbstractTest {
     }
 
     private AToZDirectionBuilder buildAtZ() {
+<<<<<<< HEAD
         List<AToZ> atozList = new ArrayList<>();
+=======
+>>>>>>> standalone/stable/aluminium
         AToZKey clientKey = new AToZKey("key");
         TerminationPoint stp = new TerminationPointBuilder()
                 .setTpId("tpName").setTpNodeId("xname")
                 .build();
         Resource clientResource = new ResourceBuilder().setResource(stp).build();
         AToZ firstResource = new AToZBuilder().setId("tpName").withKey(clientKey).setResource(clientResource).build();
+<<<<<<< HEAD
         atozList.add(firstResource);
 
         return new AToZDirectionBuilder()
                 .setRate(100L)
                 .setAToZ(atozList)
                 .setAToZWavelengthNumber(Long.valueOf(0));
+=======
+
+        return new AToZDirectionBuilder()
+                .setRate(Uint32.valueOf(100))
+                .setAToZ(Map.of(firstResource.key(),firstResource))
+                .setAToZWavelengthNumber(Uint32.valueOf(0));
+>>>>>>> standalone/stable/aluminium
 
     }
 
     private ZToADirectionBuilder buildZtoA() {
+<<<<<<< HEAD
         return new ZToADirectionBuilder()
                 .setRate(100L)
                 .setZToA(new ArrayList())
                 .setZToAWavelengthNumber(Long.valueOf(0));
+=======
+        ZToAKey clientKey = new ZToAKey("key");
+        TerminationPoint stp = new TerminationPointBuilder()
+                .setTpId("tpName").setTpNodeId("xname")
+                .build();
+        Resource clientResource = new ResourceBuilder().setResource(stp).build();
+        ZToA firstResource = new ZToABuilder().setId("tpName").withKey(clientKey).setResource(clientResource).build();
+        return new ZToADirectionBuilder()
+                .setRate(Uint32.valueOf(100))
+                .setZToA(Map.of(firstResource.key(),firstResource))
+                .setZToAWavelengthNumber(Uint32.valueOf(0));
+>>>>>>> standalone/stable/aluminium
 
     }
 }

@@ -8,14 +8,21 @@
 package org.opendaylight.transportpce.pce.service;
 
 import java.math.BigDecimal;
+<<<<<<< HEAD
 import java.util.Arrays;
+=======
+import java.util.Map;
+>>>>>>> standalone/stable/aluminium
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+<<<<<<< HEAD
 import org.opendaylight.transportpce.common.DataStoreContext;
+=======
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.transportpce.common.network.NetworkTransactionImpl;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.transportpce.common.network.RequestProcessor;
@@ -25,6 +32,7 @@ import org.opendaylight.transportpce.pce.utils.PceTestData;
 import org.opendaylight.transportpce.pce.utils.PceTestUtils;
 import org.opendaylight.transportpce.pce.utils.TransactionUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.PathBandwidth;
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.generic.path.properties.PathPropertiesBuilder;
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.generic.path.properties.path.properties.PathMetricBuilder;
@@ -35,6 +43,18 @@ import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.result.response.response
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.result.response.response.type.PathCaseBuilder;
 
 
+=======
+import org.opendaylight.transportpce.test.DataStoreContext;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.PathBandwidth;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.generic.path.properties.PathPropertiesBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.generic.path.properties.path.properties.PathMetric;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.generic.path.properties.path.properties.PathMetricBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.no.path.info.NoPathBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.result.Response;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.result.ResponseBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.result.response.response.type.NoPathCaseBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.result.response.response.type.PathCaseBuilder;
+>>>>>>> standalone/stable/aluminium
 
 public class PathComputationServiceImplTest extends AbstractTest {
 
@@ -52,7 +72,11 @@ public class PathComputationServiceImplTest extends AbstractTest {
         gnpyResult = Mockito.mock(GnpyResult.class);
         pathComputationServiceImpl = new PathComputationServiceImpl(
                 networkTransactionService,
+<<<<<<< HEAD
                 this.getNotificationPublishService());
+=======
+                this.getNotificationPublishService(), null);
+>>>>>>> standalone/stable/aluminium
         pathComputationServiceImpl.init();
     }
 
@@ -77,10 +101,18 @@ public class PathComputationServiceImplTest extends AbstractTest {
 
     @Test
     public void testPathComputationRequestPathCase() {
+<<<<<<< HEAD
         Response response = new ResponseBuilder().setResponseType(new PathCaseBuilder()
                 .setPathProperties(new PathPropertiesBuilder().setPathMetric(Arrays.asList(new PathMetricBuilder()
                 .setAccumulativeValue(new BigDecimal(21))
                         .setMetricType(PathBandwidth.class).build()))
+=======
+        PathMetric pathMetric = new PathMetricBuilder()
+                .setAccumulativeValue(new BigDecimal(21))
+                .setMetricType(PathBandwidth.class).build();
+        Response response = new ResponseBuilder().setResponseType(new PathCaseBuilder()
+                .setPathProperties(new PathPropertiesBuilder().setPathMetric(Map.of(pathMetric.key(),pathMetric))
+>>>>>>> standalone/stable/aluminium
                 .build()).build()).build();
 
         pathComputationServiceImpl.generateGnpyResponse(response,"path");
@@ -95,7 +127,11 @@ public class PathComputationServiceImplTest extends AbstractTest {
         GnpyResult gnpyResult2 =
                 new GnpyResult("A-to-Z",
                         new GnpyTopoImpl(new NetworkTransactionImpl(
+<<<<<<< HEAD
                                 new RequestProcessor(dataBroker))));
+=======
+                                new RequestProcessor(dataBroker))), null);
+>>>>>>> standalone/stable/aluminium
         pathComputationServiceImpl.generateGnpyResponse(gnpyResult2.getResponse(), "A-to-Z");
     }
 

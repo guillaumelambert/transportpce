@@ -11,10 +11,17 @@ package org.opendaylight.transportpce.pce.gnpy;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+>>>>>>> standalone/stable/aluminium
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+<<<<<<< HEAD
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints.ResourcePair;
@@ -43,6 +50,41 @@ import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.synchronization.info.Syn
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.synchronization.info.SynchronizationBuilder;
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.synchronization.info.synchronization.Svec;
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.synchronization.info.synchronization.SvecBuilder;
+=======
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.transportpce.pce.constraints.PceConstraints;
+import org.opendaylight.transportpce.pce.constraints.PceConstraints.ResourcePair;
+import org.opendaylight.transportpce.pce.gnpy.utils.AToZComparator;
+import org.opendaylight.transportpce.pce.gnpy.utils.ZToAComparator;
+import org.opendaylight.yang.gen.v1.gnpy.gnpy.network.topology.rev181214.topo.Elements;
+import org.opendaylight.yang.gen.v1.gnpy.gnpy.network.topology.rev181214.topo.ElementsKey;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.RouteIncludeEro;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.TeHopType;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.TeNodeId;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.TePathDisjointness;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.TeTpId;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.common.constraints_config.TeBandwidth;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.common.constraints_config.TeBandwidthBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.explicit.route.hop.Type;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.explicit.route.hop.type.NumUnnumHopBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.explicit.route.hop.type.num.unnum.hop.NumUnnumHop;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.generic.path.constraints.PathConstraints;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.generic.path.constraints.PathConstraintsBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.gnpy.specific.parameters.EffectiveFreqSlot;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.gnpy.specific.parameters.EffectiveFreqSlotBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.path.route.objects.ExplicitRouteObjects;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.path.route.objects.ExplicitRouteObjectsBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.path.route.objects.explicit.route.objects.RouteObjectIncludeExclude;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.path.route.objects.explicit.route.objects.RouteObjectIncludeExcludeBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.service.PathRequest;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.service.PathRequestBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.service.PathRequestKey;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.synchronization.info.Synchronization;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.synchronization.info.SynchronizationBuilder;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.synchronization.info.synchronization.Svec;
+import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.synchronization.info.synchronization.SvecBuilder;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestInput;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.AToZDirection;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ZToADirection;
@@ -75,17 +117,32 @@ public class GnpyServiceImpl {
     private static final double FLEX_CENTRAL_FREQ = 193.1;
   //Convert THz to Hz
     private static final double CONVERT_TH_HZ = 1e12;
+<<<<<<< HEAD
 
     private List<PathRequest> pathRequest = new ArrayList<>();
+=======
+    private static final Comparator<RouteObjectIncludeExclude> ROUTE_OBJECT_COMPARATOR =
+            Comparator.comparing(RouteObjectIncludeExclude::getIndex);
+
+    private Map<PathRequestKey, PathRequest> pathRequest = new HashMap<>();
+>>>>>>> standalone/stable/aluminium
     private List<Synchronization> synchronization = new ArrayList<>();
     private Map<String, String> mapDisgNodeRefNode = new HashMap<>();
     private Map<String, IpAddress> mapNodeRefIp = new HashMap<>();
     private Map<String, List<String>> mapLinkFiber = new HashMap<>();
     private Map<String, IpAddress> mapFiberIp = new HashMap<>();
     private List<String> trxList = new ArrayList<>();
+<<<<<<< HEAD
     private List<Elements> elements = new ArrayList<>();
     private List<RouteObjectIncludeExclude> routeObjectIncludeExcludes = new ArrayList<>();
     private IpAddress currentNodeIpAddress = null;
+=======
+    private Map<ElementsKey, Elements> elements = new HashMap<>();
+    private List<RouteObjectIncludeExclude> routeObjectIncludeExcludes = new ArrayList<>();
+    private IpAddress currentNodeIpAddress = null;
+    private AToZComparator atoZComparator =  new AToZComparator();
+    private ZToAComparator ztoAComparator =  new ZToAComparator();
+>>>>>>> standalone/stable/aluminium
 
     /*
      * Construct the GnpyServiceImpl
@@ -122,8 +179,14 @@ public class GnpyServiceImpl {
         }
     }
 
+<<<<<<< HEAD
     private List<PathRequest> extractPathRequest(PathComputationRequestInput input, AToZDirection atoz, Long requestId,
         PceConstraints pceHardConstraints) throws GnpyException {
+=======
+    private Map<PathRequestKey, PathRequest> extractPathRequest(
+            PathComputationRequestInput input, AToZDirection atoz, Long requestId,
+            PceConstraints pceHardConstraints) throws GnpyException {
+>>>>>>> standalone/stable/aluminium
 
         // Create the source and destination nodes
         String sourceNode = input.getServiceAEnd().getNodeId();
@@ -133,12 +196,23 @@ public class GnpyServiceImpl {
         }
 
         // Create explicitRouteObjects
+<<<<<<< HEAD
         List<AToZ> listAtoZ = atoz.getAToZ();
         if (listAtoZ != null) {
+=======
+        List<AToZ> listAtoZ = new ArrayList<>(atoz.nonnullAToZ().values());
+        if (!listAtoZ.isEmpty()) {
+            Collections.sort(listAtoZ, atoZComparator);
+>>>>>>> standalone/stable/aluminium
             extractRouteObjectIcludeAtoZ(listAtoZ);
         } else {
             extractHardConstraints(pceHardConstraints);
         }
+<<<<<<< HEAD
+=======
+
+        Collections.sort(routeObjectIncludeExcludes, ROUTE_OBJECT_COMPARATOR);
+>>>>>>> standalone/stable/aluminium
         ExplicitRouteObjects explicitRouteObjects = new ExplicitRouteObjectsBuilder()
             .setRouteObjectIncludeExclude(routeObjectIncludeExcludes).build();
         //Create Path Constraint
@@ -149,13 +223,19 @@ public class GnpyServiceImpl {
         PathConstraints pathConstraints = createPathConstraints(atoz.getRate().toJava(), atozWavelength);
 
         // Create the path request
+<<<<<<< HEAD
         List<PathRequest> pathRequestList = new ArrayList<>();
         PathRequest pathRequestEl = new PathRequestBuilder().setRequestId(requestId)
+=======
+        Map<PathRequestKey, PathRequest> pathRequestMap = new HashMap<>();
+        PathRequest pathRequestEl = new PathRequestBuilder().setRequestId(Uint32.valueOf(requestId))
+>>>>>>> standalone/stable/aluminium
             .setSource(this.mapNodeRefIp.get(sourceNode)).setDestination(this.mapNodeRefIp.get(destNode))
             .setSrcTpId("srcTpId".getBytes(StandardCharsets.UTF_8))
             .setDstTpId("dstTpId".getBytes(StandardCharsets.UTF_8))
             .setBidirectional(false).setPathConstraints(pathConstraints).setPathConstraints(pathConstraints)
             .setExplicitRouteObjects(explicitRouteObjects).build();
+<<<<<<< HEAD
         pathRequestList.add(pathRequestEl);
         LOG.debug("In GnpyServiceImpl: path request AToZ is extracted");
         return pathRequestList;
@@ -163,6 +243,16 @@ public class GnpyServiceImpl {
 
     private List<PathRequest> extractPathRequest(PathComputationRequestInput input, ZToADirection ztoa, Long requestId,
         PceConstraints pceHardConstraints) throws GnpyException {
+=======
+        pathRequestMap.put(pathRequestEl.key(),pathRequestEl);
+        LOG.debug("In GnpyServiceImpl: path request AToZ is extracted");
+        return pathRequestMap;
+    }
+
+    private Map<PathRequestKey, PathRequest> extractPathRequest(
+            PathComputationRequestInput input, ZToADirection ztoa, Long requestId,
+            PceConstraints pceHardConstraints) throws GnpyException {
+>>>>>>> standalone/stable/aluminium
         // Create the source and destination nodes
         String sourceNode = input.getServiceZEnd().getNodeId();
         String destNode = input.getServiceAEnd().getNodeId();
@@ -170,12 +260,22 @@ public class GnpyServiceImpl {
             throw new GnpyException("In GnpyServiceImpl: source and destination should be transmitter nodes");
         }
         // Create explicitRouteObjects
+<<<<<<< HEAD
         List<ZToA> listZtoA = ztoa.getZToA();
         if (listZtoA != null) {
+=======
+        @NonNull List<ZToA> listZtoA = new ArrayList<>(ztoa.nonnullZToA().values());
+        if (!listZtoA.isEmpty()) {
+            Collections.sort(listZtoA, ztoAComparator);
+>>>>>>> standalone/stable/aluminium
             extractRouteObjectIcludeZtoA(listZtoA);
         } else {
             extractHardConstraints(pceHardConstraints);
         }
+<<<<<<< HEAD
+=======
+        Collections.sort(routeObjectIncludeExcludes, ROUTE_OBJECT_COMPARATOR);
+>>>>>>> standalone/stable/aluminium
         ExplicitRouteObjects explicitRouteObjects = new ExplicitRouteObjectsBuilder()
             .setRouteObjectIncludeExclude(routeObjectIncludeExcludes).build();
         //Create Path Constraint
@@ -186,13 +286,19 @@ public class GnpyServiceImpl {
         PathConstraints pathConstraints = createPathConstraints(ztoa.getRate().toJava(), ztoaWavelength);
 
         // Create the path request
+<<<<<<< HEAD
         List<PathRequest> pathRequestList = new ArrayList<>();
         PathRequest pathRequestEl = new PathRequestBuilder().setRequestId(requestId)
+=======
+        Map<PathRequestKey, PathRequest> pathRequestMap = new HashMap<>();
+        PathRequest pathRequestEl = new PathRequestBuilder().setRequestId(Uint32.valueOf(requestId))
+>>>>>>> standalone/stable/aluminium
             .setSource(this.mapNodeRefIp.get(sourceNode)).setDestination(this.mapNodeRefIp.get(destNode))
             .setSrcTpId("srcTpId".getBytes(StandardCharsets.UTF_8))
             .setDstTpId("dstTpId".getBytes(StandardCharsets.UTF_8))
             .setBidirectional(false).setPathConstraints(pathConstraints)
             .setExplicitRouteObjects(explicitRouteObjects).build();
+<<<<<<< HEAD
         pathRequestList.add(pathRequestEl);
         LOG.debug("In GnpyServiceImpl: path request ZToA is extracted");
         return pathRequestList;
@@ -203,14 +309,33 @@ public class GnpyServiceImpl {
         Long index = 0L;
         for (int i = 0; i < listAtoZ.size(); i++) {
             index = createResource(listAtoZ.get(i).getResource().getResource(),index);
+=======
+        pathRequestMap.put(pathRequestEl.key(),pathRequestEl);
+        LOG.debug("In GnpyServiceImpl: path request ZToA is extracted");
+        return pathRequestMap;
+    }
+
+    //Extract RouteObjectIncludeExclude list in the case of pre-computed path A-to-Z
+    private void extractRouteObjectIcludeAtoZ(Collection<AToZ> listAtoZ) throws GnpyException {
+        Long index = 0L;
+        for (AToZ entry : listAtoZ) {
+            index = createResource(entry.getResource().getResource(),index);
+>>>>>>> standalone/stable/aluminium
         }
     }
 
     //Extract RouteObjectIncludeExclude list in the case of pre-computed path Z-to-A
+<<<<<<< HEAD
     private void extractRouteObjectIcludeZtoA(List<ZToA> listZtoA) throws GnpyException {
         Long index = 0L;
         for (int i = 0; i < listZtoA.size(); i++) {
             index = createResource(listZtoA.get(i).getResource().getResource(),index);
+=======
+    private void extractRouteObjectIcludeZtoA(@NonNull List<ZToA> listZtoA) throws GnpyException {
+        Long index = 0L;
+        for (ZToA entry : listZtoA) {
+            index = createResource(entry.getResource().getResource(),index);
+>>>>>>> standalone/stable/aluminium
         }
     }
 
@@ -280,12 +405,21 @@ public class GnpyServiceImpl {
             throw new GnpyException(String.format("In gnpyServiceImpl : NodeRef %s does not exist", nodeRef));
         }
 
+<<<<<<< HEAD
         for (Elements element : this.elements) {
             if (element.getUid().contains(ipAddress.getIpv4Address().getValue())) {
                 if ((this.currentNodeIpAddress == null) || (!this.currentNodeIpAddress.equals(ipAddress))) {
                     this.currentNodeIpAddress = ipAddress;
                     RouteObjectIncludeExclude routeObjectIncludeExclude =
                         addRouteObjectIncludeExclude(ipAddress, Uint32.valueOf(1),idx);
+=======
+        for (Elements element : this.elements.values()) {
+            if (element.getUid().equals(ipAddress.getIpv4Address().getValue())) {
+                if ((this.currentNodeIpAddress == null) || (!this.currentNodeIpAddress.equals(ipAddress))) {
+                    this.currentNodeIpAddress = ipAddress;
+                    RouteObjectIncludeExclude routeObjectIncludeExclude = addRouteObjectIncludeExclude(ipAddress,
+                            Uint32.valueOf(1), idx);
+>>>>>>> standalone/stable/aluminium
                     routeObjectIncludeExcludes.add(routeObjectIncludeExclude);
                     idx += 1;
                 }
@@ -327,7 +461,11 @@ public class GnpyServiceImpl {
     private RouteObjectIncludeExclude addRouteObjectIncludeExclude(IpAddress ipAddress, Uint32 teTpValue, Long index) {
         TeNodeId teNodeId = new TeNodeId(ipAddress);
         TeTpId teTpId = new TeTpId(teTpValue);
+<<<<<<< HEAD
         NumUnnumHop numUnnumHop = new org.opendaylight.yang.gen.v1.gnpy.path.rev200202.explicit.route.hop.type.num
+=======
+        NumUnnumHop numUnnumHop = new org.opendaylight.yang.gen.v1.gnpy.path.rev200909.explicit.route.hop.type.num
+>>>>>>> standalone/stable/aluminium
             .unnum.hop.NumUnnumHopBuilder()
                 .setNodeId(teNodeId.getIpv4Address().getValue())
                 .setLinkTpId(teTpId.getUint32().toString())
@@ -335,7 +473,11 @@ public class GnpyServiceImpl {
         Type type1 = new NumUnnumHopBuilder().setNumUnnumHop(numUnnumHop).build();
         // Create routeObjectIncludeExclude element
         return new RouteObjectIncludeExcludeBuilder()
+<<<<<<< HEAD
             .setIndex(index).setExplicitRouteUsage(RouteIncludeEro.class).setType(type1).build();
+=======
+            .setIndex(Uint32.valueOf(index)).setExplicitRouteUsage(RouteIncludeEro.class).setType(type1).build();
+>>>>>>> standalone/stable/aluminium
     }
 
     //Create the path constraints
@@ -346,6 +488,7 @@ public class GnpyServiceImpl {
             double freq = (MAX_CENTRAL_FREQ - FIX_CH * (wavelengthNumber - 1));
             freqNdex = (int) Math.round((freq - FLEX_CENTRAL_FREQ) / SLOT_BW);
         }
+<<<<<<< HEAD
         List<EffectiveFreqSlot> effectiveFreqSlot = new ArrayList<>();
         EffectiveFreqSlot effectiveFreqSlot1 = new EffectiveFreqSlotBuilder().setM(NB_SLOT_BW).setN(freqNdex).build();
         effectiveFreqSlot.add(effectiveFreqSlot1);
@@ -353,6 +496,13 @@ public class GnpyServiceImpl {
         TeBandwidth teBandwidth = new TeBandwidthBuilder().setPathBandwidth(new BigDecimal(rate))
             .setTechnology("flexi-grid").setTrxType("openroadm-beta1")
             .setTrxMode("W100G").setEffectiveFreqSlot(effectiveFreqSlot)
+=======
+        EffectiveFreqSlot effectiveFreqSlot1 = new EffectiveFreqSlotBuilder().setM(NB_SLOT_BW).setN(freqNdex).build();
+        // Create Te-Bandwidth
+        TeBandwidth teBandwidth = new TeBandwidthBuilder().setPathBandwidth(new BigDecimal(rate))
+            .setTechnology("flexi-grid").setTrxType("openroadm-beta1")
+            .setTrxMode("W100G").setEffectiveFreqSlot(Map.of(effectiveFreqSlot1.key(),effectiveFreqSlot1))
+>>>>>>> standalone/stable/aluminium
             .setSpacing(BigDecimal.valueOf(FIX_CH * CONVERT_TH_HZ)).build();
         return new PathConstraintsBuilder().setTeBandwidth(teBandwidth).build();
     }
@@ -367,17 +517,29 @@ public class GnpyServiceImpl {
             .setDisjointness(new TePathDisjointness(true, true, false))
             .setRequestIdNumber(requestIdNumber).build();
         List<Synchronization> synchro = new ArrayList<>();
+<<<<<<< HEAD
         Synchronization synchronization1 = new SynchronizationBuilder().setSynchronizationId(Long.valueOf(0))
+=======
+        Synchronization synchronization1 = new SynchronizationBuilder().setSynchronizationId(Uint32.valueOf(0))
+>>>>>>> standalone/stable/aluminium
                 .setSvec(svec).build();
         synchro.add(synchronization1);
         return (synchro);
     }
 
+<<<<<<< HEAD
     public List<PathRequest> getPathRequest() {
         return pathRequest;
     }
 
     public void setPathRequest(List<PathRequest> pathRequest) {
+=======
+    public Map<PathRequestKey, PathRequest> getPathRequest() {
+        return pathRequest;
+    }
+
+    public void setPathRequest(Map<PathRequestKey, PathRequest> pathRequest) {
+>>>>>>> standalone/stable/aluminium
         this.pathRequest = pathRequest;
     }
 

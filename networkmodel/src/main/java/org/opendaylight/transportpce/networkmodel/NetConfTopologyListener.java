@@ -16,8 +16,11 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+<<<<<<< HEAD
 import org.eclipse.jdt.annotation.Nullable;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.DeviceConnectionChangedHandler;
+=======
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataObjectModification.ModificationType;
@@ -75,7 +78,13 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
         this.registrations22 = new ConcurrentHashMap<>();
     }
 
+<<<<<<< HEAD
     @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED", justification = "nothing to verify once rpc has been sent")
+=======
+    @SuppressFBWarnings(
+        value = "RV_RETURN_VALUE_IGNORED",
+        justification = "nothing to verify once rpc has been sent")
+>>>>>>> standalone/stable/aluminium
     private void onDeviceConnected(final String nodeId, String openRoadmVersion) {
         LOG.info("onDeviceConnected: {}", nodeId);
         Optional<MountPoint> mountPointOpt = this.deviceTransactionManager.getDeviceMountPoint(nodeId);
@@ -87,7 +96,12 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
             return;
         }
 
+<<<<<<< HEAD
         final Optional<NotificationService> notificationService = mountPoint.getService(NotificationService.class);
+=======
+        final Optional<NotificationService> notificationService =
+                mountPoint.getService(NotificationService.class);
+>>>>>>> standalone/stable/aluminium
         if (!notificationService.isPresent()) {
             LOG.error("Failed to get RpcService for node {}", nodeId);
             return;
@@ -108,7 +122,11 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
             final OrgOpenroadmDeviceListener deviceListener = new DeviceListener();
             LOG.info("Registering notification listener on OrgOpenroadmDeviceListener for node: {}", nodeId);
             final ListenerRegistration<OrgOpenroadmDeviceListener> accessDeviceNotificationListenerRegistration =
+<<<<<<< HEAD
                     notificationService.get().registerNotificationListener(deviceListener);
+=======
+                notificationService.get().registerNotificationListener(deviceListener);
+>>>>>>> standalone/stable/aluminium
 
             TcaListener tcaListener = new TcaListener();
             LOG.info("Registering notification listener on OrgOpenroadmTcaListener for node: {}", nodeId);
@@ -157,8 +175,21 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
             final org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.OrgOpenroadmDeviceListener deviceListener =
                     new DeviceListener221();
             LOG.info("Registering notification listener on OrgOpenroadmDeviceListener for node: {}", nodeId);
+<<<<<<< HEAD
             final ListenerRegistration<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.OrgOpenroadmDeviceListener> accessDeviceNotificationListenerRegistration =
                     notificationService.get().registerNotificationListener(deviceListener);
+=======
+            final ListenerRegistration<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019
+                .OrgOpenroadmDeviceListener> accessDeviceNotificationListenerRegistration =
+                notificationService.get().registerNotificationListener(deviceListener);
+
+            final org.opendaylight.yang.gen.v1.http.org.openroadm.tca.rev181019.OrgOpenroadmTcaListener
+                tcaListener = new TcaListener221();
+            LOG.info("Registering notification listener on OrgOpenroadmTcaListener for node: {}", nodeId);
+            final ListenerRegistration<org.opendaylight.yang.gen.v1.http.org.openroadm.tca.rev181019
+                .OrgOpenroadmTcaListener> accessTcaNotificationListenerRegistration =
+                notificationService.get().registerNotificationListener(tcaListener);
+>>>>>>> standalone/stable/aluminium
 
             final org.opendaylight.yang.gen.v1.http.org.openroadm.tca.rev181019.OrgOpenroadmTcaListener tcaListener =
                     new TcaListener221();
@@ -206,7 +237,13 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
     }
 
     @Override
+<<<<<<< HEAD
     @SuppressFBWarnings(value = "SF_SWITCH_FALLTHROUGH", justification = "intentional fallthrough")
+=======
+    @SuppressFBWarnings(
+        value = "SF_SWITCH_FALLTHROUGH",
+        justification = "intentional fallthrough")
+>>>>>>> standalone/stable/aluminium
     public void onDataTreeChanged(@Nonnull Collection<DataTreeModification<Node>> changes) {
         LOG.info("onDataTreeChanged");
         for (DataTreeModification<Node> change : changes) {
@@ -233,7 +270,11 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
                 switch (rootNode.getModificationType()) {
                     case WRITE:
                         LOG.info("Node added: {}", nodeId);
+<<<<<<< HEAD
                         // fallthrough
+=======
+                    //fallthrough
+>>>>>>> standalone/stable/aluminium
                     case SUBTREE_MODIFIED:
                         NetconfNodeConnectionStatus.ConnectionStatus connectionStatus =
                                 netconfNode.getConnectionStatus();
@@ -277,9 +318,15 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
         }
     }
 
+<<<<<<< HEAD
     @Override
     public void onRemoteDeviceConnected(String nodeId, NetconfNode netconfNode) {
         LOG.debug("handle on remote device connected for {} with data {}",nodeId, netconfNode);
+=======
+
+    /*private String getSupportedStream(String nodeId) {
+        InstanceIdentifier<Streams> streamsIID = InstanceIdentifier.create(Netconf.class).child(Streams.class);
+>>>>>>> standalone/stable/aluminium
         try {
             @Nullable
             AvailableCapabilities caps = netconfNode.getAvailableCapabilities();
@@ -301,6 +348,7 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
         } catch (NullPointerException e) {
             LOG.error("Cannot get available Capabilities: ",e);
         }
+<<<<<<< HEAD
     }
 
     @Override
@@ -339,4 +387,7 @@ public class NetConfTopologyListener implements DataTreeChangeListener<Node>, De
      * error("NullPointerException thrown while getting Info from a non Open ROADM device {}"
      * , nodeId); return "NETCONF"; } }
      */
+=======
+    }*/
+>>>>>>> standalone/stable/aluminium
 }

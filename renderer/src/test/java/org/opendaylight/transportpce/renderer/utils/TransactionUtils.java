@@ -38,7 +38,11 @@ public final class TransactionUtils {
             return false;
         }
         DeviceTransaction deviceTx = deviceTxFuture.get().get();
+<<<<<<< HEAD
         deviceTx.put(logicalDatastoreType, instanceIdentifier, object, true);
+=======
+        deviceTx.put(logicalDatastoreType, instanceIdentifier, object);
+>>>>>>> standalone/stable/aluminium
         deviceTx.commit(Timeouts.DEVICE_WRITE_TIMEOUT, Timeouts.DEVICE_WRITE_TIMEOUT_UNIT).get();
         return true;
     }

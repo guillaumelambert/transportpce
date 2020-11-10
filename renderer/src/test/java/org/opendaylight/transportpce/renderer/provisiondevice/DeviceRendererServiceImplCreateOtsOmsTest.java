@@ -9,11 +9,21 @@
 package org.opendaylight.transportpce.renderer.provisiondevice;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.concurrent.ExecutionException;
+>>>>>>> standalone/stable/aluminium
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
+<<<<<<< HEAD
+=======
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnectImpl;
@@ -23,6 +33,7 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManagerImpl;
 import org.opendaylight.transportpce.common.fixedflex.FixedFlexImpl;
 import org.opendaylight.transportpce.common.fixedflex.FixedFlexInterface;
+import org.opendaylight.transportpce.common.fixedflex.FlexGridImpl;
 import org.opendaylight.transportpce.common.mapping.MappingUtils;
 import org.opendaylight.transportpce.common.mapping.MappingUtilsImpl;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
@@ -43,9 +54,22 @@ import org.opendaylight.transportpce.renderer.stub.MountPointServiceStub;
 import org.opendaylight.transportpce.renderer.utils.CreateOtsOmsDataUtils;
 import org.opendaylight.transportpce.renderer.utils.MountPointUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsOutput;
+=======
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.CreateOtsOmsInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.CreateOtsOmsOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfoBuilder;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+>>>>>>> standalone/stable/aluminium
 
+@Ignore
 public class DeviceRendererServiceImplCreateOtsOmsTest extends AbstractTest {
 
     private DeviceRendererService deviceRendererService;
@@ -81,9 +105,14 @@ public class DeviceRendererServiceImplCreateOtsOmsTest extends AbstractTest {
         PortMapping portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22,
             this.portMappingVersion121);
         FixedFlexInterface fixedFlexInterface = new FixedFlexImpl();
+        FlexGridImpl flexGrid = new FlexGridImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
         OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
+<<<<<<< HEAD
             fixedFlexInterface);
+=======
+            fixedFlexInterface, flexGrid);
+>>>>>>> standalone/stable/aluminium
         OpenRoadmOtnInterface221 openRoadmOTNInterface = new OpenRoadmOtnInterface221(portMapping, openRoadmInterfaces);
         this.openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,openRoadmInterface121,
             openRoadmInterface221, openRoadmOTNInterface);
@@ -95,7 +124,11 @@ public class DeviceRendererServiceImplCreateOtsOmsTest extends AbstractTest {
         this.crossConnect = Mockito.spy(this.crossConnect);
         this.deviceRendererService = new DeviceRendererServiceImpl(this.getDataBroker(),
             this.deviceTransactionManager, this.openRoadmInterfaceFactory, this.openRoadmInterfaces,
+<<<<<<< HEAD
             this.crossConnect, portMapping, null, new DisabledRemoteOpendaylightClient());
+=======
+            this.crossConnect, portMapping, null);
+>>>>>>> standalone/stable/aluminium
     }
 
     @Test
@@ -117,7 +150,18 @@ public class DeviceRendererServiceImplCreateOtsOmsTest extends AbstractTest {
     }
 
     @Test
-    public void testCreateOtsOmsWhenDeviceIsMountedWithMapping() throws OpenRoadmInterfaceException {
+    public void testCreateOtsOmsWhenDeviceIsMountedWithMapping()
+            throws OpenRoadmInterfaceException, InterruptedException, ExecutionException {
+        InstanceIdentifier<NodeInfo> nodeInfoIID = InstanceIdentifier.builder(Network.class).child(Nodes.class,
+                new NodesKey("node 1")).child(NodeInfo.class).build();
+        InstanceIdentifier<Nodes> nodeIID = InstanceIdentifier.builder(Network.class).child(Nodes.class,
+                new NodesKey("node 1")).build();
+        final NodeInfo nodeInfo = new NodeInfoBuilder().setOpenroadmVersion(NodeInfo.OpenroadmVersion._221).build();
+        Nodes nodes = new NodesBuilder().setNodeId("node 1").setNodeInfo(nodeInfo).build();
+        WriteTransaction wr = getDataBroker().newWriteOnlyTransaction();
+        wr.merge(LogicalDatastoreType.CONFIGURATION, nodeIID, nodes);
+        wr.merge(LogicalDatastoreType.CONFIGURATION, nodeInfoIID, nodeInfo);
+        wr.commit().get();
         setMountPoint(MountPointUtils.getMountPoint(new ArrayList<>(), getDataBroker()));
         CreateOtsOmsInput input = CreateOtsOmsDataUtils.buildCreateOtsOms();
         writePortMapping(input);

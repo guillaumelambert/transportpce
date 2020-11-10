@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.CircuitPacks;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.CircuitPacksKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.ConnectionPorts;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.ConnectionPortsKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.OtdrPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.mc.capabilities.g.McCapabilities;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Degree;
@@ -72,8 +74,8 @@ import org.opendaylight.yangtools.yang.common.Uint16;
  */
 public class DegreeBuilder implements Builder<Degree> {
 
-    private List<CircuitPacks> _circuitPacks;
-    private List<ConnectionPorts> _connectionPorts;
+    private Map<CircuitPacksKey, CircuitPacks> _circuitPacks;
+    private Map<ConnectionPortsKey, ConnectionPorts> _connectionPorts;
     private Uint16 _degreeNumber;
     private Uint16 _maxWavelengths;
     private McCapabilities _mcCapabilities;
@@ -145,11 +147,11 @@ public class DegreeBuilder implements Builder<Degree> {
         return key;
     }
 
-    public List<CircuitPacks> getCircuitPacks() {
+    public Map<CircuitPacksKey, CircuitPacks> getCircuitPacks() {
         return _circuitPacks;
     }
 
-    public List<ConnectionPorts> getConnectionPorts() {
+    public Map<ConnectionPortsKey, ConnectionPorts> getConnectionPorts() {
         return _connectionPorts;
     }
 
@@ -178,12 +180,12 @@ public class DegreeBuilder implements Builder<Degree> {
         this.key = key;
         return this;
     }
-    public DegreeBuilder setCircuitPacks(final List<CircuitPacks> values) {
+    public DegreeBuilder setCircuitPacks(final Map<CircuitPacksKey, CircuitPacks> values) {
         this._circuitPacks = values;
         return this;
     }
 
-    public DegreeBuilder setConnectionPorts(final List<ConnectionPorts> values) {
+    public DegreeBuilder setConnectionPorts(final Map<ConnectionPortsKey, ConnectionPorts> values) {
         this._connectionPorts = values;
         return this;
     }
@@ -262,8 +264,8 @@ public class DegreeBuilder implements Builder<Degree> {
         extends AbstractAugmentable<Degree>
         implements Degree {
 
-        private final List<CircuitPacks> _circuitPacks;
-        private final List<ConnectionPorts> _connectionPorts;
+        private final Map<CircuitPacksKey, CircuitPacks> _circuitPacks;
+        private final Map<ConnectionPortsKey, ConnectionPorts> _connectionPorts;
         private final Uint16 _degreeNumber;
         private final Uint16 _maxWavelengths;
         private final McCapabilities _mcCapabilities;
@@ -291,12 +293,12 @@ public class DegreeBuilder implements Builder<Degree> {
         }
 
         @Override
-        public List<CircuitPacks> getCircuitPacks() {
+        public Map<CircuitPacksKey, CircuitPacks> getCircuitPacks() {
             return _circuitPacks;
         }
 
         @Override
-        public List<ConnectionPorts> getConnectionPorts() {
+        public Map<ConnectionPortsKey, ConnectionPorts> getConnectionPorts() {
             return _connectionPorts;
         }
 

@@ -72,6 +72,7 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.ServicePathNotificationTypes;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.handler.header.ServiceHandlerHeaderBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 public final class ServiceDataUtils {
 
@@ -83,7 +84,11 @@ public final class ServiceDataUtils {
         org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.create.input
             .ServiceZEnd serviceZEnd = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service
             .create.input.ServiceZEndBuilder()
+<<<<<<< HEAD
             .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+            .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
             .setNodeId(new NodeIdType("XPONDER-3-2"))
             .setTxDirection(getTxDirection())
             .setRxDirection(getRxDirection())
@@ -110,7 +115,11 @@ public final class ServiceDataUtils {
         org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.create.input
                 .ServiceZEnd serviceZEnd = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service
                 .create.input.ServiceZEndBuilder()
+<<<<<<< HEAD
                 .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+                .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
                 .setNodeId(new NodeIdType("XPONDER-3-2"))
                 .setTxDirection(getTxDirection())
                 .setRxDirection(getRxDirection())
@@ -138,7 +147,11 @@ public final class ServiceDataUtils {
         org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.create.input
                 .ServiceZEnd serviceZEnd = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service
                 .create.input.ServiceZEndBuilder()
+<<<<<<< HEAD
                 .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+                .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
                 .setNodeId(new NodeIdType("XPONDER-3-2"))
                 .setTxDirection(getTxDirection())
                 .setRxDirection(getRxDirection())
@@ -184,7 +197,11 @@ public final class ServiceDataUtils {
         org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.create.input
             .ServiceAEnd serviceAEnd = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531
             .temp.service.create.input.ServiceAEndBuilder()
+<<<<<<< HEAD
             .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+            .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
             .setNodeId(new NodeIdType("XPONDER-1-2"))
             .setTxDirection(getTxDirection())
             .setRxDirection(getRxDirection())
@@ -192,7 +209,11 @@ public final class ServiceDataUtils {
         org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.create.input
             .ServiceZEnd serviceZEnd = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp
             .service.create.input.ServiceZEndBuilder()
+<<<<<<< HEAD
             .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+            .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
             .setNodeId(new NodeIdType("XPONDER-3-2"))
             .setTxDirection(getTxDirection())
             .setRxDirection(getRxDirection())
@@ -213,6 +234,7 @@ public final class ServiceDataUtils {
     public static ServiceFeasibilityCheckInput buildServiceFeasibilityCheckInput() {
 
         ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
+<<<<<<< HEAD
                     .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
                     .setNodeId(new NodeIdType("XPONDER-1-2"))
                     .setTxDirection(getTxDirection()).setRxDirection(getRxDirection()).build();
@@ -221,6 +243,15 @@ public final class ServiceDataUtils {
                     .setNodeId(new NodeIdType("XPONDER-3-2"))
                     .setTxDirection(getTxDirection()).setRxDirection(getRxDirection()).build();
         ServiceAEnd serviceAEndvalue = new ServiceAEndBuilder().build();
+=======
+                    .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+                    .setNodeId(new NodeIdType("XPONDER-1-2"))
+                    .setTxDirection(getTxDirection()).setRxDirection(getRxDirection()).build();
+        ServiceZEnd serviceZEnd = new ServiceZEndBuilder()
+                    .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+                    .setNodeId(new NodeIdType("XPONDER-3-2"))
+                    .setTxDirection(getTxDirection()).setRxDirection(getRxDirection()).build();
+>>>>>>> standalone/stable/aluminium
 
         ServiceFeasibilityCheckInputBuilder builtInput = new ServiceFeasibilityCheckInputBuilder()
             .setCommonId("commonId")
@@ -237,7 +268,11 @@ public final class ServiceDataUtils {
         .ServiceAEndBuilder getServiceAEndBuild() {
         return new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.create.input
             .ServiceAEndBuilder()
+<<<<<<< HEAD
             .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+            .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
             .setNodeId(new NodeIdType("XPONDER-1-2"))
             .setTxDirection(getTxDirection())
             .setRxDirection(getRxDirection());
@@ -247,7 +282,11 @@ public final class ServiceDataUtils {
         .ServiceZEndBuilder getServiceZEndBuild() {
         return new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.create.input
             .ServiceZEndBuilder()
+<<<<<<< HEAD
             .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+            .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
             .setNodeId(new NodeIdType("XPONDER-1-2"))
             .setTxDirection(getTxDirection())
             .setRxDirection(getRxDirection());
@@ -322,14 +361,22 @@ public final class ServiceDataUtils {
         org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.reconfigure.input
             .ServiceAEnd serviceAEnd = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service
                 .reconfigure.input.ServiceAEndBuilder()
+<<<<<<< HEAD
                 .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+                .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
                 .setNodeId(new NodeIdType("XPONDER-1-2")).setTxDirection(getTxDirection())
                 .setRxDirection(getRxDirection())
                 .build();
         org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.reconfigure.input
             .ServiceZEnd serviceZEnd = new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service
                 .reconfigure.input.ServiceZEndBuilder()
+<<<<<<< HEAD
                 .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+                .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
                 .setNodeId(new NodeIdType("XPONDER-3-2")).setTxDirection(getTxDirection())
                 .setRxDirection(getRxDirection())
                 .build();
@@ -359,9 +406,6 @@ public final class ServiceDataUtils {
     public static ServicePathRpcResult buildServicePathRpcResult(
             ServicePathNotificationTypes servicePathNotificationTypes, String serviceName, RpcStatusEx rpcStatusEx,
             String message, Boolean pathDescription) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxx");
-        OffsetDateTime offsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
-        DateAndTime datetime = new DateAndTime(dtf.format(offsetDateTime));
         ServicePathRpcResultBuilder builder = new ServicePathRpcResultBuilder();
         builder.setNotificationType(servicePathNotificationTypes)
                 .setServiceName(serviceName)
@@ -407,9 +451,6 @@ public final class ServiceDataUtils {
 
     public static ServiceRpcResultSp buildServiceRpcResultSp(ServicePathNotificationTypes servicePathNotificationTypes,
             String serviceName, RpcStatusEx rpcStatusEx, String message) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxx");
-        OffsetDateTime offsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
-        DateAndTime datetime = new DateAndTime(dtf.format(offsetDateTime));
         ServiceRpcResultSpBuilder builder = new ServiceRpcResultSpBuilder();
         builder.setNotificationType(servicePathNotificationTypes).setServiceName(serviceName)
                 .setStatus(rpcStatusEx).setStatusMessage(message);
@@ -422,9 +463,12 @@ public final class ServiceDataUtils {
             org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.RpcStatusEx
                 rpcStatusEx,
             String message) {
+<<<<<<< HEAD
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxx");
         OffsetDateTime offsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
         DateAndTime datetime = new DateAndTime(dtf.format(offsetDateTime));
+=======
+>>>>>>> standalone/stable/aluminium
         ServiceRpcResultShBuilder builder = new ServiceRpcResultShBuilder();
         builder.setNotificationType(serviceNotificationTypes).setServiceName(serviceName)
                 .setStatus(rpcStatusEx).setStatusMessage(message);
@@ -444,14 +488,12 @@ public final class ServiceDataUtils {
     public static PathDescription createPathDescription(long azRate, long azWaveLength, long zaRate,
         long zaWaveLength) {
         AToZDirection atozDirection = new AToZDirectionBuilder()
-            .setRate(azRate)
-            .setAToZWavelengthNumber(azWaveLength)
-            .setAToZ(null)
+            .setRate(Uint32.valueOf(azRate))
+            .setAToZWavelengthNumber(Uint32.valueOf(azWaveLength))
             .build();
         ZToADirection ztoaDirection = new ZToADirectionBuilder()
-            .setRate(zaRate)
-            .setZToAWavelengthNumber(zaWaveLength)
-            .setZToA(null)
+            .setRate(Uint32.valueOf(zaRate))
+            .setZToAWavelengthNumber(Uint32.valueOf(zaWaveLength))
             .build();
         PathDescription pathDescription = new PathDescriptionBuilder()
             .setAToZDirection(atozDirection)
@@ -464,7 +506,11 @@ public final class ServiceDataUtils {
         .ServiceAEndBuilder getServiceAEndBuildReconfigure() {
         return new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.reconfigure.input
             .ServiceAEndBuilder()
+<<<<<<< HEAD
             .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+            .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
             .setNodeId(new NodeIdType("XPONDER-1-2"))
             .setTxDirection(getTxDirection())
             .setRxDirection(getRxDirection());
@@ -474,7 +520,11 @@ public final class ServiceDataUtils {
         .ServiceZEndBuilder getServiceZEndBuildReconfigure() {
         return new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.reconfigure.input
             .ServiceZEndBuilder()
+<<<<<<< HEAD
             .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate((long) 1)
+=======
+            .setClli("clli").setServiceFormat(ServiceFormat.OC).setServiceRate(Uint32.valueOf(1))
+>>>>>>> standalone/stable/aluminium
             .setNodeId(new NodeIdType("XPONDER-1-2"))
             .setTxDirection(getTxDirection())
             .setRxDirection(getRxDirection());

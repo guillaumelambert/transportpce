@@ -14,8 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+<<<<<<< HEAD
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.Timeouts;
+=======
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
@@ -23,10 +26,17 @@ import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfa
 import org.opendaylight.transportpce.olm.util.OlmUtils;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerTurndownInput;
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingKey;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfo.OpenroadmVersion;
+=======
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo.OpenroadmVersion;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.OpticalControlMode;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeTypes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.Interface;
@@ -64,7 +74,10 @@ public class PowerMgmtImpl implements PowerMgmt {
      */
     //TODO Need to Case Optical Power mode/NodeType in case of 2.2 devices
     //@SuppressFBwarnings("DM_CONVERT_CASE")
+<<<<<<< HEAD
     @Override
+=======
+>>>>>>> standalone/stable/aluminium
     public Boolean setPower(ServicePowerSetupInput input) {
         LOG.info("Olm-setPower initiated");
         for (int i = 0; i < input.getNodes().size(); i++) {
@@ -81,11 +94,17 @@ public class PowerMgmtImpl implements PowerMgmt {
                 Nodes inputNode = inputNodeOptional.get();
                 OpenroadmVersion openroadmVersion = inputNode.getNodeInfo().getOpenroadmVersion();
                 LOG.info("Getting data from input node {}", inputNode.getNodeInfo().getNodeType());
+<<<<<<< HEAD
                 LOG.info("Getting mapping data for node is {}", inputNode.getMapping().stream().filter(o -> o.key()
+=======
+                LOG.info("Getting mapping data for node is {}",
+                        inputNode.nonnullMapping().values().stream().filter(o -> o.key()
+>>>>>>> standalone/stable/aluminium
                          .equals(new MappingKey(destTpId))).findFirst().toString());
                 // If its A-End transponder
                 if (destTpId.toLowerCase().contains("network")) {
-                    java.util.Optional<Mapping> mappingObject = inputNode.getMapping().stream().filter(o -> o.key()
+                    java.util.Optional<Mapping> mappingObject = inputNode.nonnullMapping()
+                            .values().stream().filter(o -> o.key()
                             .equals(new MappingKey(destTpId))).findFirst();
                     if (mappingObject.isPresent()) {
                         String circuitPackName = mappingObject.get().getSupportingCircuitPackName();
@@ -104,7 +123,7 @@ public class PowerMgmtImpl implements PowerMgmt {
                             String nextNodeId = input.getNodes().get(i + 1).getNodeId();
                             Map<String, Double> rxSRGPowerRangeMap = new HashMap<>();
                             Optional<Mapping> mappingObjectSRG = OlmUtils.getNode(nextNodeId, db)
-                                    .flatMap(node -> node.getMapping()
+                                    .flatMap(node -> node.nonnullMapping().values()
                                             .stream().filter(o -> o.key()
                                                     .equals(new MappingKey(srgId))).findFirst());
                             if (mappingObjectSRG.isPresent()) {
@@ -193,7 +212,8 @@ public class PowerMgmtImpl implements PowerMgmt {
                 String connectionNumber = srcTpId + "-" + destTpId + "-" + input.getWaveNumber();
                 LOG.info("Connection number is {}", connectionNumber);
                 if (destTpId.toLowerCase().contains("deg")) {
-                    Optional<Mapping> mappingObjectOptional = inputNode.getMapping().stream().filter(o -> o.key()
+                    Optional<Mapping> mappingObjectOptional = inputNode.nonnullMapping()
+                            .values().stream().filter(o -> o.key()
                             .equals(new MappingKey(destTpId))).findFirst();
                     if (mappingObjectOptional.isPresent()) {
                         BigDecimal spanLossTx = null;

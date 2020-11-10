@@ -7,6 +7,16 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+<<<<<<< HEAD
+=======
+
+# pylint: disable=no-member
+# pylint: disable=too-many-public-methods
+# some pylint false positives specific to tapi test
+# pylint: disable=unsubscriptable-object
+# pylint: disable=unsupported-assignment-operation
+
+>>>>>>> standalone/stable/aluminium
 import os
 import sys
 import time
@@ -27,7 +37,12 @@ class TransportTapitesting(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.init_failed = False
+<<<<<<< HEAD
 
+=======
+        os.environ['JAVA_MIN_MEM'] = '1024M'
+        os.environ['JAVA_MAX_MEM'] = '4069M'
+>>>>>>> standalone/stable/aluminium
         cls.processes = test_utils.start_tpce()
         # TAPI feature is not installed by default in Karaf
         if "USE_LIGHTY" not in os.environ or os.environ['USE_LIGHTY'] != 'True':
@@ -49,6 +64,10 @@ class TransportTapitesting(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+<<<<<<< HEAD
+=======
+        # pylint: disable=not-an-iterable
+>>>>>>> standalone/stable/aluminium
         for process in cls.processes:
             test_utils.shutdown_process(process)
         print("all processes killed")

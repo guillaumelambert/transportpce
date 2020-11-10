@@ -8,7 +8,10 @@
 
 package org.opendaylight.transportpce.pce.impl;
 
+<<<<<<< HEAD
 import static org.mockito.ArgumentMatchers.anyObject;
+=======
+>>>>>>> standalone/stable/aluminium
 import static org.mockito.ArgumentMatchers.eq;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -26,7 +29,10 @@ import org.opendaylight.transportpce.test.AbstractTest;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.TransportpcePceService;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> standalone/stable/aluminium
 public class PceProviderTest extends AbstractTest {
 
     private RpcProviderService rpcService;
@@ -43,7 +49,12 @@ public class PceProviderTest extends AbstractTest {
         notificationPublishService = new NotificationPublishServiceMock();
         requestProcessor = Mockito.mock(RequestProcessor.class);
         networkTransaction = new NetworkTransactionImpl(requestProcessor);
+<<<<<<< HEAD
         pathComputationService = new PathComputationServiceImpl(networkTransaction, notificationPublishService);
+=======
+        pathComputationService = new PathComputationServiceImpl(networkTransaction, notificationPublishService,
+                null);
+>>>>>>> standalone/stable/aluminium
         pceProvider = new PceProvider(rpcService, pathComputationService);
     }
 
@@ -61,11 +72,17 @@ public class PceProviderTest extends AbstractTest {
 
             }
         };
+<<<<<<< HEAD
 
 
         Mockito
                 .when(rpcService
                         .registerRpcImplementation(eq(TransportpcePceService.class), anyObject()))
+=======
+        Mockito
+                .when(rpcService
+                        .registerRpcImplementation(eq(TransportpcePceService.class), Mockito.any()))
+>>>>>>> standalone/stable/aluminium
                 .thenReturn(rpcRegistration);
         pceProvider.init();
         pceProvider.close();

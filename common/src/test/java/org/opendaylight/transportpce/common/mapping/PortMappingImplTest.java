@@ -24,18 +24,18 @@ import org.junit.Test;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.transportpce.common.DataStoreContext;
-import org.opendaylight.transportpce.common.DataStoreContextImpl;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.Network;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.NodesKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfo;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfoBuilder;
+import org.opendaylight.transportpce.test.DataStoreContext;
+import org.opendaylight.transportpce.test.DataStoreContextImpl;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfoBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
 
 public class PortMappingImplTest {
 
@@ -82,19 +82,22 @@ public class PortMappingImplTest {
                 new NodesKey("node")).child(NodeInfo.class).build();
         final NodeInfo nodeInfo = new NodeInfoBuilder().setOpenroadmVersion(NodeInfo.OpenroadmVersion._221).build();
         final NodeInfo nodeInfo2 = new NodeInfoBuilder().setOpenroadmVersion(NodeInfo.OpenroadmVersion._121).build();
-
+        Nodes nodes = new NodesBuilder().setNodeId("node").setNodeInfo(nodeInfo).build();
+        InstanceIdentifier<Nodes> nodeIID = InstanceIdentifier.builder(Network.class).child(Nodes.class,
+                new NodesKey("node")).build();
         //create node with portmapping and nodeifno version 2
         WriteTransaction wr = dataBroker.newWriteOnlyTransaction();
-        wr.merge(LogicalDatastoreType.CONFIGURATION, portMappingIID, mapping, true);
-        wr.merge(LogicalDatastoreType.CONFIGURATION, nodeInfoIID, nodeInfo, true);
+        wr.merge(LogicalDatastoreType.CONFIGURATION, nodeIID, nodes);
+        wr.merge(LogicalDatastoreType.CONFIGURATION, portMappingIID, mapping);
+        wr.merge(LogicalDatastoreType.CONFIGURATION, nodeInfoIID, nodeInfo);
         wr.commit().get();
         //test update port mapping version 2
         when(portMappingVersion221.updateMapping("node", mapping)).thenReturn(true);
-        assertEquals(portMapping.updateMapping("node", mapping), true);
+        assertTrue("Update sould be ok", portMapping.updateMapping("node", mapping));
 
         //replace node nodefino version 1 instead of version 2
         WriteTransaction wr2 = dataBroker.newWriteOnlyTransaction();
-        wr2.put(LogicalDatastoreType.CONFIGURATION, nodeInfoIID, nodeInfo2, true);
+        wr2.merge(LogicalDatastoreType.CONFIGURATION, nodeInfoIID, nodeInfo2);
         wr2.commit().get();
 
         //test update portmapping version 1

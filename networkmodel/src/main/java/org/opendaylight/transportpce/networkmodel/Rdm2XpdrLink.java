@@ -8,7 +8,11 @@
 
 package org.opendaylight.transportpce.networkmodel;
 
+<<<<<<< HEAD
 import com.google.common.collect.ImmutableList;
+=======
+import com.google.common.collect.ImmutableMap;
+>>>>>>> standalone/stable/aluminium
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -37,10 +41,17 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NodeKey;
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1Builder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1Builder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.TpId;
+=======
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1Builder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1Builder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.TpId;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.LinkBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPoint;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPointBuilder;
@@ -114,9 +125,13 @@ final class Rdm2XpdrLink {
     private static NetworkBuilder createNetworkBuilder(String srcNode, String srcTp, String destNode, String destTp,
         boolean isXponderInput, TerminationPoint xpdrTp) {
         //update tp of nodes
+<<<<<<< HEAD
         LOG.info("create tp from {}",xpdrTp);
         TerminationPointBuilder xpdrTpBldr = new TerminationPointBuilder(xpdrTp);
         LOG.info("builder of tp is {}",xpdrTpBldr);
+=======
+        TerminationPointBuilder xpdrTpBldr = new TerminationPointBuilder(xpdrTp);
+>>>>>>> standalone/stable/aluminium
         if (xpdrTpBldr.augmentation(TerminationPoint1.class) != null) {
             LOG.warn("Rewritting tail-equipment-id {} on tp {} of node {}", xpdrTpBldr
                 .augmentation(TerminationPoint1.class).getXpdrNetworkAttributes().getTailEquipmentId(), srcTp, srcNode);
@@ -129,12 +144,20 @@ final class Rdm2XpdrLink {
             tp1Bldr.setXpdrNetworkAttributes(new XpdrNetworkAttributesBuilder()
                 .setTailEquipmentId(destNode + "--" + destTp).build());
         }
+<<<<<<< HEAD
         xpdrTpBldr.addAugmentation(TerminationPoint1.class, tp1Bldr.build());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1 node1 =
             new Node1Builder().setTerminationPoint(ImmutableList.of(xpdrTpBldr.build())).build();
         NodeBuilder nodeBldr = new NodeBuilder()
             .addAugmentation(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226
             .Node1.class, node1);
+=======
+        xpdrTpBldr.addAugmentation(tp1Bldr.build());
+        TerminationPoint newXpdrTp = xpdrTpBldr.build();
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1 node1 =
+            new Node1Builder().setTerminationPoint(ImmutableMap.of(newXpdrTp.key(),newXpdrTp)).build();
+        NodeBuilder nodeBldr = new NodeBuilder().addAugmentation(node1);
+>>>>>>> standalone/stable/aluminium
         if (isXponderInput) {
             nodeBldr.setNodeId(new NodeId(destNode));
         } else {
@@ -147,6 +170,7 @@ final class Rdm2XpdrLink {
                 .setLinkType(isXponderInput ? OpenroadmLinkType.XPONDERINPUT : OpenroadmLinkType.XPONDEROUTPUT)
                 .setOppositeLink(LinkIdUtil.getOppositeLinkId(srcNode, srcTp, destNode, destTp));
         LinkBuilder linkBuilder = TopologyUtils.createLink(srcNode, destNode, srcTp, destTp, null)
+<<<<<<< HEAD
             .addAugmentation(Link1.class, lnk1bldr.build())
             .addAugmentation(
                 org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1.class,
@@ -162,6 +186,23 @@ final class Rdm2XpdrLink {
             .withKey(new NetworkKey(nwId))
             .addAugmentation(Network1.class, nwBldr1.build())
             .setNode(ImmutableList.of(nodeBldr.build()));
+=======
+            .addAugmentation(lnk1bldr.build())
+            .addAugmentation(lnk2bldr.build());
+
+        LOG.info("Link id in the linkbldr {}", linkBuilder.getLinkId());
+        LOG.info("Link with oppo link {}", linkBuilder.augmentation(Link1.class));
+        Link link = linkBuilder.build();
+        Network1Builder nwBldr1 = new Network1Builder().setLink(ImmutableMap.of(link.key(),link));
+
+        NetworkId nwId = new NetworkId(NetworkUtils.OVERLAY_NETWORK_ID);
+        Node node = nodeBldr.build();
+        NetworkBuilder nwBuilder = new NetworkBuilder()
+            .setNetworkId(nwId)
+            .withKey(new NetworkKey(nwId))
+            .addAugmentation(nwBldr1.build())
+            .setNode(ImmutableMap.of(node.key(),node));
+>>>>>>> standalone/stable/aluminium
         return nwBuilder;
     }
 

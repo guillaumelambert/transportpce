@@ -11,6 +11,7 @@ package org.opendaylight.transportpce.pce.gnpy;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+<<<<<<< HEAD
 import org.opendaylight.transportpce.common.network.NetworkTransactionImpl;
 import org.opendaylight.transportpce.test.AbstractTest;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.OrgOpenroadmDevice;
@@ -31,6 +32,19 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
     public void createXMLFromDeviceTest() throws GnpyException {
         serviceDataStoreOperations.createXMLFromDevice(this.getDataStoreContextUtil(),
                 orgOpenroadmDevice, "some-output");
+=======
+import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
+import org.opendaylight.transportpce.test.AbstractTest;
+
+public class ServiceDataStoreOperationsImplTest extends AbstractTest {
+
+    private ServiceDataStoreOperationsImpl serviceDataStoreOperations;
+    private BindingDOMCodecServices bindingDOMCodecServices = Mockito.mock(BindingDOMCodecServices.class);
+
+    @Before
+    public void setUp() throws GnpyException {
+        serviceDataStoreOperations = new ServiceDataStoreOperationsImpl(bindingDOMCodecServices);
+>>>>>>> standalone/stable/aluminium
     }
 
     @Test

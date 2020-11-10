@@ -33,6 +33,10 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdes
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.ResponseParameters;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.ResponseParametersBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.response.parameters.PathDescriptionBuilder;
+<<<<<<< HEAD
+=======
+import org.opendaylight.yangtools.yang.common.Uint32;
+>>>>>>> standalone/stable/aluminium
 
 //writeOrModifyOrDeleteServiceList deprecated method should not raise warnings in tests
 @SuppressWarnings("deprecation")
@@ -92,7 +96,7 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
                 .setResponseCode(ResponseCodes.RESPONSE_OK).setResponseMessage("PCE calculation in progress").build();
         PathComputationRequestOutput pathComputationRequestOutput = new PathComputationRequestOutputBuilder()
                 .setConfigurationResponseCommon(configurationResponseCommon).build();
-        OperationResult createOutput = this.serviceDataStoreOperations.createService(createInput);
+        this.serviceDataStoreOperations.createService(createInput);
         String result = serviceDataStoreOperations.writeOrModifyOrDeleteServiceList("service 1",
             createInput, pathComputationRequestOutput, 0);
         Assert.assertNull(result);
@@ -107,7 +111,7 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
                 .setResponseCode(ResponseCodes.RESPONSE_OK).setResponseMessage("PCE calculation in progress").build();
         PathComputationRequestOutput pathComputationRequestOutput = new PathComputationRequestOutputBuilder()
                 .setConfigurationResponseCommon(configurationResponseCommon).build();
-        OperationResult createOutput = this.serviceDataStoreOperations.createService(createInput);
+        this.serviceDataStoreOperations.createService(createInput);
         String result = serviceDataStoreOperations.writeOrModifyOrDeleteServiceList("service 1",
             createInput, pathComputationRequestOutput, 1);
         Assert.assertNull(result);
@@ -121,7 +125,7 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
                 .setResponseCode(ResponseCodes.RESPONSE_OK).setResponseMessage("PCE calculation in progress").build();
         PathComputationRequestOutput pathComputationRequestOutput = new PathComputationRequestOutputBuilder()
                 .setConfigurationResponseCommon(configurationResponseCommon).build();
-        OperationResult createOutput = this.serviceDataStoreOperations.createService(createInput);
+        this.serviceDataStoreOperations.createService(createInput);
         String result = serviceDataStoreOperations.writeOrModifyOrDeleteServiceList("service 1",
             createInput, pathComputationRequestOutput, 2);
         Assert.assertNull(result);
@@ -226,8 +230,10 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
                 .setResponseCode(ResponseCodes.RESPONSE_OK).setResponseMessage("PCE calculation in progress").build();
         ResponseParameters responseParameters = new ResponseParametersBuilder()
             .setPathDescription(new PathDescriptionBuilder()
-                .setAToZDirection(new AToZDirectionBuilder().setAToZWavelengthNumber(1L).setRate(1L).build())
-                .setZToADirection(new ZToADirectionBuilder().setZToAWavelengthNumber(1L).setRate(1L).build()).build())
+                .setAToZDirection(new AToZDirectionBuilder()
+                        .setAToZWavelengthNumber(Uint32.valueOf(1)).setRate(Uint32.valueOf(1)).build())
+                .setZToADirection(new ZToADirectionBuilder()
+                        .setZToAWavelengthNumber(Uint32.valueOf(1)).setRate(Uint32.valueOf(1)).build()).build())
             .build();
         PathComputationRequestOutput pathComputationRequestOutput = new PathComputationRequestOutputBuilder()
             .setConfigurationResponseCommon(configurationResponseCommon).setResponseParameters(responseParameters)
@@ -264,8 +270,10 @@ public class ServiceDataStoreOperationsImplTest extends AbstractTest {
             .setResponseCode(ResponseCodes.RESPONSE_OK).setResponseMessage("PCE calculation in progress").build();
         ResponseParameters responseParameters = new ResponseParametersBuilder()
             .setPathDescription(new PathDescriptionBuilder()
-                .setAToZDirection(new AToZDirectionBuilder().setAToZWavelengthNumber(1L).setRate(1L).build())
-                .setZToADirection(new ZToADirectionBuilder().setZToAWavelengthNumber(1L).setRate(1L).build()).build())
+                .setAToZDirection(new AToZDirectionBuilder()
+                        .setAToZWavelengthNumber(Uint32.valueOf(1)).setRate(Uint32.valueOf(1)).build())
+                .setZToADirection(new ZToADirectionBuilder()
+                        .setZToAWavelengthNumber(Uint32.valueOf(1)).setRate(Uint32.valueOf(1)).build()).build())
             .build();
         PathComputationRequestOutput pathComputationRequestOutput = new PathComputationRequestOutputBuilder()
             .setConfigurationResponseCommon(configurationResponseCommon).setResponseParameters(responseParameters)

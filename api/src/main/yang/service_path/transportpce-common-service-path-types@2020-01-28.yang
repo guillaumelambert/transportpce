@@ -2,12 +2,6 @@ module transportpce-common-service-path-types {
   namespace "http://org/transportpce/B-C-interface/service/types";
   prefix transportpce-common-service-path-types;
 
-  import ietf-yang-types {
-    prefix yang;
-  }
-  import ietf-inet-types {
-    prefix inet;
-  }
   import transportpce-routing-constraints {
     prefix transportpce-routing-constraints;
   }

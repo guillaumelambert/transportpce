@@ -7,8 +7,13 @@
  */
 package org.opendaylight.transportpce.renderer.provisiondevice;
 
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathOutput;
+=======
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.OtnServicePathInput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.OtnServicePathOutput;
+>>>>>>> standalone/stable/aluminium
 
 public interface OtnDeviceRendererService {
     OtnServicePathOutput setupOtnServicePath(OtnServicePathInput input);

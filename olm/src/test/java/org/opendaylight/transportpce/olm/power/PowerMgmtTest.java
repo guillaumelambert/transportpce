@@ -115,6 +115,7 @@ public class PowerMgmtTest extends AbstractTest {
         boolean output = this.powerMgmt.setPower(input);
         Assert.assertEquals(true, output);
     }
+<<<<<<< HEAD
 
     @Test
     public void testPowerTurnDown() {
@@ -138,6 +139,31 @@ public class PowerMgmtTest extends AbstractTest {
     }
 
     @Test
+=======
+
+    @Test
+    public void testPowerTurnDown() {
+        ServicePowerTurndownInput input = OlmPowerServiceRpcImplUtil.getServicePowerTurndownInput();
+        boolean output = this.powerMgmt.powerTurnDown(input);
+        Assert.assertEquals(true, output);
+    }
+
+    @Test
+    public void testPowerTurnDown2() {
+        ServicePowerTurndownInput input = OlmPowerServiceRpcImplUtil.getServicePowerTurndownInput2();
+        boolean output = this.powerMgmt.powerTurnDown(input);
+        Assert.assertEquals(false, output);
+    }
+
+    @Test
+    public void testPowerTurnDown3() {
+        ServicePowerTurndownInput input = OlmPowerServiceRpcImplUtil.getServicePowerTurndownInput3();
+        boolean output = this.powerMgmt.powerTurnDown(input);
+        Assert.assertEquals(true, output);
+    }
+
+    @Test
+>>>>>>> standalone/stable/aluminium
     public void testPowerTurnDown4() {
         ServicePowerTurndownInput input = OlmPowerServiceRpcImplUtil.getServicePowerTurndownInput4();
         boolean output = this.powerMgmt.powerTurnDown(input);

@@ -2,17 +2,16 @@ module transportpce-renderer {
   namespace "http://org/opendaylight/transportpce/renderer";
   prefix org-opendaylight-transportpce-renderer;
 
-  import ietf-yang-types {
-    prefix yang;
-  }
   import org-openroadm-common-service-types {
     prefix org-openroadm-common-service-types;
+    revision-date 2019-05-31;
   }
   import transportpce-common-service-path-types {
     prefix transportpce-common-service-path-types;
   }
   import org-openroadm-topology {
     prefix org-openroadm-topology;
+    revision-date 2019-05-31;
   }
   import transportpce-pathDescription {
     prefix transportpce-pathDescription;
@@ -53,6 +52,11 @@ module transportpce-renderer {
       ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
       POSSIBILITY OF SUCH DAMAGE";
 
+  revision 2020-05-20 {
+    description
+      "Version 1.6.1";
+  }
+
   revision 2017-10-17 {
     description
       "Version 1.6";
@@ -70,6 +74,9 @@ module transportpce-renderer {
         description
           "Identifier for the service to be created in
            the ROADM network, e.g., CLFI, CLCI, etc. This is reported against the service, but may not get reflected in the service in the network.";
+      }
+      leaf connection-type {
+        type org-openroadm-common-service-types:connection-type;
       }
       uses transportpce-common-service-path-types:service-handler-header;
       container service-a-end {

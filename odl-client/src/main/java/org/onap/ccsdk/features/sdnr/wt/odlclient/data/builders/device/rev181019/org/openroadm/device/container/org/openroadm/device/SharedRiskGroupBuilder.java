@@ -23,6 +23,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.mc.capab
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.SharedRiskGroup;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.SharedRiskGroupKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.srg.CircuitPacks;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.srg.CircuitPacksKey;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.AbstractAugmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -72,7 +73,7 @@ import org.opendaylight.yangtools.yang.common.Uint16;
  */
 public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
 
-    private List<CircuitPacks> _circuitPacks;
+    private Map<CircuitPacksKey, CircuitPacks> _circuitPacks;
     private Uint16 _currentProvisionedAddDropPorts;
     private Uint16 _maxAddDropPorts;
     private McCapabilities _mcCapabilities;
@@ -145,7 +146,7 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
         return key;
     }
 
-    public List<CircuitPacks> getCircuitPacks() {
+    public Map<CircuitPacksKey, CircuitPacks> getCircuitPacks() {
         return _circuitPacks;
     }
 
@@ -178,7 +179,7 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
         this.key = key;
         return this;
     }
-    public SharedRiskGroupBuilder setCircuitPacks(final List<CircuitPacks> values) {
+    public SharedRiskGroupBuilder setCircuitPacks(final Map<CircuitPacksKey, CircuitPacks> values) {
         this._circuitPacks = values;
         return this;
     }
@@ -274,7 +275,7 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
         extends AbstractAugmentable<SharedRiskGroup>
         implements SharedRiskGroup {
 
-        private final List<CircuitPacks> _circuitPacks;
+        private final Map<CircuitPacksKey, CircuitPacks> _circuitPacks;
         private final Uint16 _currentProvisionedAddDropPorts;
         private final Uint16 _maxAddDropPorts;
         private final McCapabilities _mcCapabilities;
@@ -303,7 +304,7 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
         }
 
         @Override
-        public List<CircuitPacks> getCircuitPacks() {
+        public Map<CircuitPacksKey, CircuitPacks> getCircuitPacks() {
             return _circuitPacks;
         }
 

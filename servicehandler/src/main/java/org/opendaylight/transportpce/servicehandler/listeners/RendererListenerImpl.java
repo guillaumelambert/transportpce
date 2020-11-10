@@ -47,6 +47,7 @@ public class RendererListenerImpl implements TransportpceRendererListener {
 
     @Override
     public void onServiceRpcResultSp(ServiceRpcResultSp notification) {
+<<<<<<< HEAD
         if (!compareServiceRpcResultSp(notification)) {
             serviceRpcResultSp = notification;
             String serviceName = serviceRpcResultSp.getServiceName();
@@ -116,10 +117,32 @@ public class RendererListenerImpl implements TransportpceRendererListener {
                     break;
             }
         } else {
+=======
+        if (compareServiceRpcResultSp(notification)) {
+>>>>>>> standalone/stable/aluminium
             LOG.warn("ServiceRpcResultSp already wired !");
+            return;
+        }
+        serviceRpcResultSp = notification;
+        String serviceName = serviceRpcResultSp.getServiceName();
+        int notifType = serviceRpcResultSp.getNotificationType().getIntValue();
+        LOG.info("Renderer '{}' Notification received : {}", serviceRpcResultSp.getNotificationType().getName(),
+                notification);
+        switch (notifType) {
+            /* service-implementation-request. */
+            case 3 :
+                onServiceImplementationResult(serviceName);
+                break;
+            /* service-delete. */
+            case 4 :
+                onServiceDeleteResult(serviceName);
+                break;
+            default:
+                break;
         }
     }
 
+<<<<<<< HEAD
     @SuppressFBWarnings(
         value = "ES_COMPARING_STRINGS_WITH_EQ",
         justification = "false positives, not strings but real object references comparisons")
@@ -127,21 +150,124 @@ public class RendererListenerImpl implements TransportpceRendererListener {
         Boolean result = true;
         if (serviceRpcResultSp == null) {
             result = false;
+=======
+    /**
+     * Process service delete result for serviceName.
+     * @param serviceName String
+     */
+    private void onServiceDeleteResult(String serviceName) {
+        if (serviceRpcResultSp.getStatus() == RpcStatusEx.Failed) {
+            LOG.error("Renderer service delete failed !");
+            return;
+        } else if (serviceRpcResultSp.getStatus() == RpcStatusEx.Pending) {
+            LOG.warn("Renderer service delete returned a Penging RpcStatusEx code!");
+            return;
+        } else if (serviceRpcResultSp.getStatus() != RpcStatusEx.Successful) {
+            LOG.error("Renderer service delete returned an unknown RpcStatusEx code!");
+            return;
+        }
+        LOG.info("Service '{}' deleted !", serviceName);
+        if (this.input == null) {
+            LOG.error("ServiceInput parameter is null !");
+            return;
+        }
+        LOG.info("sending PCE cancel resource reserve for '{}'",  this.input.getServiceName());
+        this.pceServiceWrapper.cancelPCEResource(this.input.getServiceName(),
+                ServiceNotificationTypes.ServiceDeleteResult);
+    }
+
+    /**
+     * Process service implementation result for serviceName.
+     * @param serviceName String
+     * @param serviceName String
+     */
+    private void onServiceImplementationResult(String serviceName) {
+        if (serviceRpcResultSp.getStatus() == RpcStatusEx.Successful) {
+            onSuccededServiceImplementation();
+        } else if (serviceRpcResultSp.getStatus() == RpcStatusEx.Failed) {
+            onFailedServiceImplementation(serviceName);
+        } else if (serviceRpcResultSp.getStatus() == RpcStatusEx.Pending) {
+            LOG.warn("Service Implementation still pending according to RpcStatusEx");
+>>>>>>> standalone/stable/aluminium
         } else {
-            if (serviceRpcResultSp.getNotificationType() != notification.getNotificationType()) {
-                result = false;
+            LOG.warn("Service Implementation has an unknown RpcStatusEx code");
+        }
+
+    }
+
+    /**
+     * Process succeeded service implementation for service.
+     */
+    private void onSuccededServiceImplementation() {
+        LOG.info("Service implemented !");
+        if (serviceDataStoreOperations == null) {
+            LOG.debug("serviceDataStoreOperations is null");
+            return;
+        }
+        OperationResult operationResult = null;
+        if (tempService) {
+            operationResult = this.serviceDataStoreOperations.modifyTempService(
+                    serviceRpcResultSp.getServiceName(), State.InService, AdminStates.InService);
+            if (!operationResult.isSuccess()) {
+                LOG.warn("Temp Service status not updated in datastore !");
             }
-            if (serviceRpcResultSp.getServiceName() != notification.getServiceName()) {
-                result = false;
-            }
-            if (serviceRpcResultSp.getStatus() != notification.getStatus()) {
-                result = false;
-            }
-            if (serviceRpcResultSp.getStatusMessage() != notification.getStatusMessage()) {
-                result = false;
+        } else {
+            operationResult = this.serviceDataStoreOperations.modifyService(
+                    serviceRpcResultSp.getServiceName(),
+                    State.InService,
+                    AdminStates.InService);
+            if (!operationResult.isSuccess()) {
+                LOG.warn("Service status not updated in datastore !");
             }
         }
-        return result;
+    }
+
+    /**
+     * Process failed service implementation for serviceName.
+     * @param serviceName String
+     */
+    private void onFailedServiceImplementation(String serviceName) {
+        LOG.error("Renderer implementation failed !");
+        OperationResult deleteServicePathOperationResult =
+                this.serviceDataStoreOperations.deleteServicePath(serviceName);
+        if (!deleteServicePathOperationResult.isSuccess()) {
+            LOG.warn("Service path was not removed from datastore!");
+        }
+        if (tempService) {
+            OperationResult deleteServiceOperationResult =
+                    this.serviceDataStoreOperations.deleteTempService(serviceName);
+            if (!deleteServiceOperationResult.isSuccess()) {
+                LOG.warn("Temp Service was not removed from datastore!");
+            }
+        } else {
+            OperationResult deleteServiceOperationResult =
+                    this.serviceDataStoreOperations.deleteService(serviceName);
+            if (!deleteServiceOperationResult.isSuccess()) {
+                LOG.warn("Service was not removed from datastore!");
+            }
+        }
+    }
+
+    @SuppressFBWarnings(
+        value = "ES_COMPARING_STRINGS_WITH_EQ",
+        justification = "false positives, not strings but real object references comparisons")
+    private Boolean compareServiceRpcResultSp(ServiceRpcResultSp notification) {
+        if (serviceRpcResultSp == null) {
+            return false;
+        }
+        if (serviceRpcResultSp.getNotificationType() != notification.getNotificationType()) {
+            return false;
+        }
+        if (serviceRpcResultSp.getServiceName() != notification.getServiceName()) {
+            return false;
+        }
+        if (serviceRpcResultSp.getStatus() != notification.getStatus()) {
+            return false;
+        }
+        if (serviceRpcResultSp.getStatusMessage() != notification.getStatusMessage()) {
+            return false;
+        }
+        return true;
     }
 
     public void setServiceInput(ServiceInput serviceInput) {

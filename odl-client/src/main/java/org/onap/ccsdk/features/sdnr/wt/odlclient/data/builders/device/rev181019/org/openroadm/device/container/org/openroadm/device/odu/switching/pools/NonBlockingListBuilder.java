@@ -22,7 +22,9 @@ import java.util.Objects;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.NonBlockingList;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.NonBlockingListKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.non.blocking.list.PluggableOpticsHolderList;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.non.blocking.list.PluggableOpticsHolderListKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.non.blocking.list.PortList;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.non.blocking.list.PortListKey;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.AbstractAugmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -76,8 +78,8 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
     private Uint32 _interconnectBandwidth;
     private Uint32 _interconnectBandwidthUnit;
     private Uint16 _nblNumber;
-    private List<PluggableOpticsHolderList> _pluggableOpticsHolderList;
-    private List<PortList> _portList;
+    private Map<PluggableOpticsHolderListKey, PluggableOpticsHolderList> _pluggableOpticsHolderList;
+    private Map<PortListKey, PortList> _portList;
     private NonBlockingListKey key;
 
 
@@ -119,11 +121,11 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
         return _nblNumber;
     }
 
-    public List<PluggableOpticsHolderList> getPluggableOpticsHolderList() {
+    public Map<PluggableOpticsHolderListKey, PluggableOpticsHolderList> getPluggableOpticsHolderList() {
         return _pluggableOpticsHolderList;
     }
 
-    public List<PortList> getPortList() {
+    public Map<PortListKey, PortList> getPortList() {
         return _portList;
     }
 
@@ -187,12 +189,12 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
 //    public NonBlockingListBuilder setNblNumber(final Integer value) {
 //        return setNblNumber(CodeHelpers.compatUint(value));
 //    }
-    public NonBlockingListBuilder setPluggableOpticsHolderList(final List<PluggableOpticsHolderList> values) {
+    public NonBlockingListBuilder setPluggableOpticsHolderList(final Map<PluggableOpticsHolderListKey, PluggableOpticsHolderList> values) {
         this._pluggableOpticsHolderList = values;
         return this;
     }
 
-    public NonBlockingListBuilder setPortList(final List<PortList> values) {
+    public NonBlockingListBuilder setPortList(final Map<PortListKey, PortList> values) {
         this._portList = values;
         return this;
     }
@@ -230,8 +232,8 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
         private final Uint32 _interconnectBandwidth;
         private final Uint32 _interconnectBandwidthUnit;
         private final Uint16 _nblNumber;
-        private final List<PluggableOpticsHolderList> _pluggableOpticsHolderList;
-        private final List<PortList> _portList;
+        private final Map<PluggableOpticsHolderListKey,  PluggableOpticsHolderList> _pluggableOpticsHolderList;
+        private final Map<PortListKey, PortList> _portList;
         private final NonBlockingListKey key;
 
         NonBlockingListImpl(NonBlockingListBuilder base) {
@@ -269,12 +271,12 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
         }
 
         @Override
-        public List<PluggableOpticsHolderList> getPluggableOpticsHolderList() {
+        public Map<PluggableOpticsHolderListKey, PluggableOpticsHolderList> getPluggableOpticsHolderList() {
             return _pluggableOpticsHolderList;
         }
 
         @Override
-        public List<PortList> getPortList() {
+        public Map<PortListKey, PortList> getPortList() {
             return _portList;
         }
 

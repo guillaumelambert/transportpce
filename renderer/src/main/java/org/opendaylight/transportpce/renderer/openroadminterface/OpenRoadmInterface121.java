@@ -12,9 +12,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+<<<<<<< HEAD
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
+=======
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.Timeouts;
@@ -22,7 +25,11 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
+=======
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
+>>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.PowerDBm;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.InterfaceKey;
@@ -31,7 +38,6 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.open
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.RoadmConnectionsKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev161014.AdminStates;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.ethernet.interfaces.rev161014.EthAttributes;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.ethernet.interfaces.rev161014.Interface1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.ethernet.interfaces.rev161014.Interface1Builder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.ethernet.interfaces.rev161014.ethernet.container.EthernetBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev161014.EthernetCsmacd;
@@ -54,6 +60,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev161
 import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev161014.OtuAttributes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev161014.otu.container.OtuBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,15 +89,20 @@ public class OpenRoadmInterface121 {
                 .setAutoNegotiation(EthAttributes.AutoNegotiation.Enabled)
                 .setDuplex(EthAttributes.Duplex.Full)
                 .setFec(EthAttributes.Fec.Off)
+<<<<<<< HEAD
                 .setSpeed(100000L)
                 .setMtu(9000L);
+=======
+                .setSpeed(Uint32.valueOf(100000))
+                .setMtu(Uint32.valueOf(9000));
+>>>>>>> standalone/stable/aluminium
 
         InterfaceBuilder ethInterfaceBldr = createGenericInterfaceBuilder(portMap, EthernetCsmacd.class,
                                                                           logicalConnPoint + "-ETHERNET");
 
         // Create Interface1 type object required for adding as augmentation
         Interface1Builder ethIf1Builder = new Interface1Builder();
-        ethInterfaceBldr.addAugmentation(Interface1.class, ethIf1Builder.setEthernet(ethIfBuilder.build()).build());
+        ethInterfaceBldr.addAugmentation(ethIf1Builder.setEthernet(ethIfBuilder.build()).build());
 
         // Post interface on the device
         this.openRoadmInterfaces.postInterface(nodeId, ethInterfaceBldr);
@@ -103,7 +115,11 @@ public class OpenRoadmInterface121 {
 
     private InterfaceBuilder createGenericInterfaceBuilder(Mapping portMap, Class<? extends InterfaceType> type,
                                                            String key) {
+<<<<<<< HEAD
         InterfaceBuilder interfaceBuilder = new InterfaceBuilder()
+=======
+        return new InterfaceBuilder()
+>>>>>>> standalone/stable/aluminium
                 .setDescription("  TBD   ")
                 .setCircuitId("   TBD    ")
                 .setSupportingCircuitPackName(portMap.getSupportingCircuitPackName())
@@ -112,7 +128,10 @@ public class OpenRoadmInterface121 {
                 .setType(type)
                 .setName(key)
                 .withKey(new InterfaceKey(key));
+<<<<<<< HEAD
         return interfaceBuilder;
+=======
+>>>>>>> standalone/stable/aluminium
     }
     /**
      * This methods creates an OTU interface on the given termination point.
@@ -145,9 +164,7 @@ public class OpenRoadmInterface121 {
         // TODO look at imports of different versions of class
         org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev161014.Interface1Builder otuIf1Builder =
                 new org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev161014.Interface1Builder();
-        otuInterfaceBldr.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev161014.Interface1.class,
-                        otuIf1Builder.setOtu(otuIfBuilder.build()).build());
+        otuInterfaceBldr.addAugmentation(otuIf1Builder.setOtu(otuIfBuilder.build()).build());
 
         // Post interface on the device
         this.openRoadmInterfaces.postInterface(nodeId, otuInterfaceBldr);
@@ -189,9 +206,7 @@ public class OpenRoadmInterface121 {
         // TODO look at imports of different versions of class
         org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev161014.Interface1Builder oduIf1Builder =
                 new org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev161014.Interface1Builder();
-        oduInterfaceBldr.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev161014.Interface1.class,
-                oduIf1Builder.setOdu(oduIfBuilder.build()).build());
+        oduInterfaceBldr.addAugmentation(oduIf1Builder.setOdu(oduIfBuilder.build()).build());
 
         // Post interface on the device
         this.openRoadmInterfaces.postInterface(nodeId, oduInterfaceBldr);
@@ -224,7 +239,11 @@ public class OpenRoadmInterface121 {
             createOpenRoadmOchInterfaceName(logicalConnPoint, waveNumber));
 
         // OCH interface specific data
+<<<<<<< HEAD
         OchBuilder ocIfBuilder = new OchBuilder().setWavelengthNumber(waveNumber);
+=======
+        OchBuilder ocIfBuilder = new OchBuilder().setWavelengthNumber(Uint32.valueOf(waveNumber));
+>>>>>>> standalone/stable/aluminium
 
         // Add supporting OMS interface
         if (portMap.getSupportingOms() != null) {
@@ -235,9 +254,7 @@ public class OpenRoadmInterface121 {
         org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev161014.Interface1Builder
                 ochIf1Builder = new org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces
                 .rev161014.Interface1Builder();
-        ochInterfaceBldr.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev161014.Interface1.class,
-                ochIf1Builder.setOch(ocIfBuilder.build()).build());
+        ochInterfaceBldr.addAugmentation(ochIf1Builder.setOch(ocIfBuilder.build()).build());
 
         List<String> interfacesCreated = new ArrayList<>();
         // Post interface on the device
@@ -257,7 +274,11 @@ public class OpenRoadmInterface121 {
 
         // OCH interface specific data
         OchBuilder ocIfBuilder = new OchBuilder()
+<<<<<<< HEAD
                 .setWavelengthNumber(waveNumber)
+=======
+                .setWavelengthNumber(Uint32.valueOf(waveNumber))
+>>>>>>> standalone/stable/aluminium
                 .setModulationFormat(format)
                 .setRate(R100G.class)
                 .setTransmitPower(new PowerDBm(new BigDecimal("-5")));
@@ -270,9 +291,7 @@ public class OpenRoadmInterface121 {
         // Create generic interface
         InterfaceBuilder ochInterfaceBldr = createGenericInterfaceBuilder(portMap, OpticalChannel.class,
             createOpenRoadmOchInterfaceName(logicalConnPoint, waveNumber));
-        ochInterfaceBldr.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev161014.Interface1.class,
-                ochIf1Builder.setOch(ocIfBuilder.build()).build());
+        ochInterfaceBldr.addAugmentation(ochIf1Builder.setOch(ocIfBuilder.build()).build());
 
         // Post interface on the device
         this.openRoadmInterfaces.postInterface(nodeId, ochInterfaceBldr);
@@ -322,10 +341,7 @@ public class OpenRoadmInterface121 {
             org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014
                     .Interface1Builder otsIf1Builder = new org.opendaylight.yang.gen.v1.http.org.openroadm
                     .optical.transport.interfaces.rev161014.Interface1Builder();
-            otsInterfaceBldr.addAugmentation(
-                    org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014
-                    .Interface1.class,
-                    otsIf1Builder.setOts(otsIfBuilder.build()).build());
+            otsInterfaceBldr.addAugmentation(otsIf1Builder.setOts(otsIfBuilder.build()).build());
             this.openRoadmInterfaces.postInterface(nodeId, otsInterfaceBldr);
             this.portMapping.updateMapping(nodeId, mapping);
             return otsInterfaceBldr.build().getName();

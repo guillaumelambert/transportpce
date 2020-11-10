@@ -147,8 +147,8 @@ public class XponderBuilder implements Builder<Xponder> {
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
-    public <E$$ extends Augmentation<Xponder>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+    public <T extends Augmentation<Xponder>> T augmentation(Class<T> augmentationType) {
+        return (T) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
     }
 
     public XponderBuilder withKey(final XponderKey key) {
@@ -247,7 +247,7 @@ public class XponderBuilder implements Builder<Xponder> {
         }
 
         @Override
-        public List<XpdrPort> getXpdrPort() {
+        public Map<XpdrPortKey, XpdrPort> getXpdrPort() {
             return _xpdrPort;
         }
 

@@ -9,6 +9,12 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+<<<<<<< HEAD
+=======
+# pylint: disable=no-member
+# pylint: disable=too-many-public-methods
+
+>>>>>>> standalone/stable/aluminium
 import unittest
 import time
 import requests
@@ -20,6 +26,111 @@ class TransportPCEtesting(unittest.TestCase):
     processes = None
     WAITING = 20  # nominal value is 300
 
+<<<<<<< HEAD
+=======
+    cr_serv_sample_data = {"input": {
+        "sdnc-request-header": {
+            "request-id": "request-1",
+            "rpc-action": "service-create",
+            "request-system-id": "appname"
+        },
+        "service-name": "service1-OCH-OTU4",
+        "common-id": "commonId",
+        "connection-type": "infrastructure",
+        "service-a-end": {
+            "service-rate": "100",
+            "node-id": "SPDR-SA1",
+            "service-format": "OTU",
+            "otu-service-rate": "org-openroadm-otn-common-types:OTU4",
+            "clli": "NodeSA",
+            "subrate-eth-sla": {
+                    "subrate-eth-sla": {
+                        "committed-info-rate": "100000",
+                        "committed-burst-size": "64"
+                    }
+            },
+            "tx-direction": {
+                "port": {
+                    "port-device-name": "SPDR-SA1-XPDR1",
+                    "port-type": "fixed",
+                    "port-name": "XPDR1-NETWORK1",
+                    "port-rack": "000000.00",
+                    "port-shelf": "Chassis#1"
+                },
+                "lgx": {
+                    "lgx-device-name": "Some lgx-device-name",
+                    "lgx-port-name": "Some lgx-port-name",
+                    "lgx-port-rack": "000000.00",
+                    "lgx-port-shelf": "00"
+                }
+            },
+            "rx-direction": {
+                "port": {
+                    "port-device-name": "SPDR-SA1-XPDR1",
+                    "port-type": "fixed",
+                    "port-name": "XPDR1-NETWORK1",
+                    "port-rack": "000000.00",
+                    "port-shelf": "Chassis#1"
+                },
+                "lgx": {
+                    "lgx-device-name": "Some lgx-device-name",
+                    "lgx-port-name": "Some lgx-port-name",
+                    "lgx-port-rack": "000000.00",
+                    "lgx-port-shelf": "00"
+                }
+            },
+            "optic-type": "gray"
+        },
+        "service-z-end": {
+            "service-rate": "100",
+            "node-id": "SPDR-SC1",
+            "service-format": "OTU",
+            "otu-service-rate": "org-openroadm-otn-common-types:OTU4",
+            "clli": "NodeSC",
+            "subrate-eth-sla": {
+                    "subrate-eth-sla": {
+                        "committed-info-rate": "100000",
+                        "committed-burst-size": "64"
+                    }
+            },
+            "tx-direction": {
+                "port": {
+                    "port-device-name": "SPDR-SC1-XPDR1",
+                    "port-type": "fixed",
+                    "port-name": "XPDR1-NETWORK1",
+                    "port-rack": "000000.00",
+                    "port-shelf": "Chassis#1"
+                },
+                "lgx": {
+                    "lgx-device-name": "Some lgx-device-name",
+                    "lgx-port-name": "Some lgx-port-name",
+                    "lgx-port-rack": "000000.00",
+                    "lgx-port-shelf": "00"
+                }
+            },
+            "rx-direction": {
+                "port": {
+                    "port-device-name": "SPDR-SC1-XPDR1",
+                    "port-type": "fixed",
+                    "port-name": "XPDR1-NETWORK1",
+                    "port-rack": "000000.00",
+                    "port-shelf": "Chassis#1"
+                },
+                "lgx": {
+                    "lgx-device-name": "Some lgx-device-name",
+                    "lgx-port-name": "Some lgx-port-name",
+                    "lgx-port-rack": "000000.00",
+                    "lgx-port-shelf": "00"
+                }
+            },
+            "optic-type": "gray"
+        },
+        "due-date": "2018-06-15T00:00:01Z",
+        "operator-contact": "pw1234"
+    }
+    }
+
+>>>>>>> standalone/stable/aluminium
     @classmethod
     def setUpClass(cls):
         cls.processes = test_utils.start_tpce()
@@ -27,6 +138,10 @@ class TransportPCEtesting(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
+<<<<<<< HEAD
+=======
+        # pylint: disable=not-an-iterable
+>>>>>>> standalone/stable/aluminium
         for process in cls.processes:
             test_utils.shutdown_process(process)
         print("all processes killed")
@@ -122,6 +237,7 @@ class TransportPCEtesting(unittest.TestCase):
         self.assertNotIn('ietf-network-topology:link', res['network'][0])
 
     def test_12_create_OCH_OTU4_service(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-create"
         data = {"input": {
                 "sdnc-request-header": {
@@ -225,6 +341,9 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_create_request(self.cr_serv_sample_data)
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('PCE calculation in progress',
@@ -232,8 +351,12 @@ class TransportPCEtesting(unittest.TestCase):
         time.sleep(self.WAITING)
 
     def test_13_get_OCH_OTU4_service1(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list/services/service1-OCH-OTU4"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("services/service1-OCH-OTU4")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -261,7 +384,11 @@ class TransportPCEtesting(unittest.TestCase):
 
         self.assertDictEqual(
             {u'frequency': 196.1, u'rate': u'org-openroadm-common-types:R100G',
+<<<<<<< HEAD
              u'transmit-power': -5},
+=======
+             u'transmit-power': -5, u'modulation-format': 'dp-qpsk'},
+>>>>>>> standalone/stable/aluminium
             res['interface'][0]['org-openroadm-optical-channel-interfaces:och'])
 
     def test_15_check_interface_OTU4_spdra(self):
@@ -301,7 +428,11 @@ class TransportPCEtesting(unittest.TestCase):
 
         self.assertDictEqual(
             {u'frequency': 196.1, u'rate': u'org-openroadm-common-types:R100G',
+<<<<<<< HEAD
              u'transmit-power': -5},
+=======
+             u'transmit-power': -5, u'modulation-format': 'dp-qpsk'},
+>>>>>>> standalone/stable/aluminium
             res['interface'][0]['org-openroadm-optical-channel-interfaces:och'])
 
     def test_17_check_interface_OTU4_spdrc(self):
@@ -332,7 +463,11 @@ class TransportPCEtesting(unittest.TestCase):
 
     def test_18_check_no_interface_ODU4_spdra(self):
         response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-NETWORK1-ODU4")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
@@ -402,6 +537,7 @@ class TransportPCEtesting(unittest.TestCase):
 
 # test service-create for ODU4 service from spdr to spdr
     def test_23_create_ODU4_service(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-create"
         data = {"input": {
                 "sdnc-request-header": {
@@ -505,6 +641,17 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        self.cr_serv_sample_data["input"]["service-name"] = "service1-ODU4"
+        self.cr_serv_sample_data["input"]["service-a-end"]["service-format"] = "ODU"
+        del self.cr_serv_sample_data["input"]["service-a-end"]["otu-service-rate"]
+        self.cr_serv_sample_data["input"]["service-a-end"]["odu-service-rate"] = "org-openroadm-otn-common-types:ODU4"
+        self.cr_serv_sample_data["input"]["service-z-end"]["service-format"] = "ODU"
+        del self.cr_serv_sample_data["input"]["service-z-end"]["otu-service-rate"]
+        self.cr_serv_sample_data["input"]["service-z-end"]["odu-service-rate"] = "org-openroadm-otn-common-types:ODU4"
+
+        response = test_utils.service_create_request(self.cr_serv_sample_data)
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('PCE calculation in progress',
@@ -512,8 +659,12 @@ class TransportPCEtesting(unittest.TestCase):
         time.sleep(self.WAITING)
 
     def test_24_get_ODU4_service1(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list/services/service1-ODU4"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("services/service1-ODU4")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -590,12 +741,21 @@ class TransportPCEtesting(unittest.TestCase):
         self.assertEqual(nb_links, 4)
         for link in res['network'][0]['ietf-network-topology:link']:
             linkId = link['link-id']
+<<<<<<< HEAD
             if (linkId == 'OTU4-SPDR-SA1-XPDR1-XPDR1-NETWORK1toSPDR-SC1-XPDR1-XPDR1-NETWORK1' or
                     linkId == 'OTU4-SPDR-SC1-XPDR1-XPDR1-NETWORK1toSPDR-SA1-XPDR1-XPDR1-NETWORK1'):
                 self.assertEqual(link['org-openroadm-otn-network-topology:available-bandwidth'], 0)
                 self.assertEqual(link['org-openroadm-otn-network-topology:used-bandwidth'], 100000)
             elif (linkId == 'ODU4-SPDR-SA1-XPDR1-XPDR1-NETWORK1toSPDR-SC1-XPDR1-XPDR1-NETWORK1' or
                   linkId == 'ODU4-SPDR-SC1-XPDR1-XPDR1-NETWORK1toSPDR-SA1-XPDR1-XPDR1-NETWORK1'):
+=======
+            if (linkId in ('OTU4-SPDR-SA1-XPDR1-XPDR1-NETWORK1toSPDR-SC1-XPDR1-XPDR1-NETWORK1',
+                           'OTU4-SPDR-SC1-XPDR1-XPDR1-NETWORK1toSPDR-SA1-XPDR1-XPDR1-NETWORK1')):
+                self.assertEqual(link['org-openroadm-otn-network-topology:available-bandwidth'], 0)
+                self.assertEqual(link['org-openroadm-otn-network-topology:used-bandwidth'], 100000)
+            elif (linkId in ('ODU4-SPDR-SA1-XPDR1-XPDR1-NETWORK1toSPDR-SC1-XPDR1-XPDR1-NETWORK1',
+                             'ODU4-SPDR-SC1-XPDR1-XPDR1-NETWORK1toSPDR-SA1-XPDR1-XPDR1-NETWORK1')):
+>>>>>>> standalone/stable/aluminium
                 self.assertEqual(link['org-openroadm-otn-network-topology:available-bandwidth'], 100000)
                 self.assertEqual(link['org-openroadm-otn-network-topology:used-bandwidth'], 0)
                 self.assertEqual(link['transportpce-topology:otn-link-type'], 'ODTU4')
@@ -610,10 +770,17 @@ class TransportPCEtesting(unittest.TestCase):
         response = test_utils.get_otn_topo_request()
         res = response.json()
         for node in res['network'][0]['node']:
+<<<<<<< HEAD
             if (node['node-id'] == 'SPDR-SA1-XPDR1' or 'SPDR-SC1-XPDR1'):
                 tpList = node['ietf-network-topology:termination-point']
                 for tp in tpList:
                     if (tp['tp-id'] == 'XPDR1-NETWORK1'):
+=======
+            if node['node-id'] == 'SPDR-SA1-XPDR1' or 'SPDR-SC1-XPDR1':
+                tpList = node['ietf-network-topology:termination-point']
+                for tp in tpList:
+                    if tp['tp-id'] == 'XPDR1-NETWORK1':
+>>>>>>> standalone/stable/aluminium
                         xpdrTpPortConAt = tp['org-openroadm-otn-network-topology:xpdr-tp-port-connection-attributes']
                         self.assertEqual(len(xpdrTpPortConAt['ts-pool']), 80)
                         self.assertEqual(len(xpdrTpPortConAt['odtu-tpn-pool'][0]['tpn-pool']), 80)
@@ -622,6 +789,7 @@ class TransportPCEtesting(unittest.TestCase):
 
 # test service-create for 10GE service from spdr to spdr
     def test_29_create_10GE_service(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-create"
         data = {"input": {
                 "sdnc-request-header": {
@@ -723,6 +891,21 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        self.cr_serv_sample_data["input"]["service-name"] = "service1-10GE"
+        self.cr_serv_sample_data["input"]["connection-type"] = "service"
+        self.cr_serv_sample_data["input"]["service-a-end"]["service-rate"] = "10"
+        self.cr_serv_sample_data["input"]["service-a-end"]["service-format"] = "Ethernet"
+        del self.cr_serv_sample_data["input"]["service-a-end"]["odu-service-rate"]
+        self.cr_serv_sample_data["input"]["service-a-end"]["tx-direction"]["port"]["port-name"] = "XPDR1-CLIENT1"
+        self.cr_serv_sample_data["input"]["service-a-end"]["rx-direction"]["port"]["port-name"] = "XPDR1-CLIENT1"
+        self.cr_serv_sample_data["input"]["service-z-end"]["service-rate"] = "10"
+        self.cr_serv_sample_data["input"]["service-z-end"]["service-format"] = "Ethernet"
+        del self.cr_serv_sample_data["input"]["service-z-end"]["odu-service-rate"]
+        self.cr_serv_sample_data["input"]["service-z-end"]["tx-direction"]["port"]["port-name"] = "XPDR1-CLIENT1"
+        self.cr_serv_sample_data["input"]["service-z-end"]["rx-direction"]["port"]["port-name"] = "XPDR1-CLIENT1"
+        response = test_utils.service_create_request(self.cr_serv_sample_data)
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('PCE calculation in progress',
@@ -730,8 +913,12 @@ class TransportPCEtesting(unittest.TestCase):
         time.sleep(self.WAITING)
 
     def test_30_get_10GE_service1(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list/services/service1-10GE"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("services/service1-10GE")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(
@@ -930,8 +1117,13 @@ class TransportPCEtesting(unittest.TestCase):
         self.assertEqual(nb_links, 4)
         for link in res['network'][0]['ietf-network-topology:link']:
             linkId = link['link-id']
+<<<<<<< HEAD
             if (linkId == 'ODU4-SPDR-SA1-XPDR1-XPDR1-NETWORK1toSPDR-SC1-XPDR1-XPDR1-NETWORK1' or
                     linkId == 'ODU4-SPDR-SC1-XPDR1-XPDR1-NETWORK1toSPDR-SA1-XPDR1-XPDR1-NETWORK1'):
+=======
+            if (linkId in ('ODU4-SPDR-SA1-XPDR1-XPDR1-NETWORK1toSPDR-SC1-XPDR1-XPDR1-NETWORK1',
+                           'ODU4-SPDR-SC1-XPDR1-XPDR1-NETWORK1toSPDR-SA1-XPDR1-XPDR1-NETWORK1')):
+>>>>>>> standalone/stable/aluminium
                 self.assertEqual(link['org-openroadm-otn-network-topology:available-bandwidth'], 90000)
                 self.assertEqual(link['org-openroadm-otn-network-topology:used-bandwidth'], 10000)
 
@@ -939,6 +1131,7 @@ class TransportPCEtesting(unittest.TestCase):
         response = test_utils.get_otn_topo_request()
         res = response.json()
         for node in res['network'][0]['node']:
+<<<<<<< HEAD
             if (node['node-id'] == 'SPDR-SA1-XPDR1' or 'SPDR-SC1-XPDR1'):
                 tpList = node['ietf-network-topology:termination-point']
                 for tp in tpList:
@@ -946,11 +1139,21 @@ class TransportPCEtesting(unittest.TestCase):
                         xpdrTpPortConAt = tp['org-openroadm-otn-network-topology:xpdr-tp-port-connection-attributes']
                         self.assertEqual(len(xpdrTpPortConAt['ts-pool']), 72)
                         tsPoolList = [i for i in range(1, 9)]
+=======
+            if node['node-id'] == 'SPDR-SA1-XPDR1' or 'SPDR-SC1-XPDR1':
+                tpList = node['ietf-network-topology:termination-point']
+                for tp in tpList:
+                    if tp['tp-id'] == 'XPDR1-NETWORK1':
+                        xpdrTpPortConAt = tp['org-openroadm-otn-network-topology:xpdr-tp-port-connection-attributes']
+                        self.assertEqual(len(xpdrTpPortConAt['ts-pool']), 72)
+                        tsPoolList = list(range(1, 9))
+>>>>>>> standalone/stable/aluminium
                         self.assertNotIn(tsPoolList, xpdrTpPortConAt['ts-pool'])
                         self.assertEqual(len(xpdrTpPortConAt['odtu-tpn-pool'][0]['tpn-pool']), 79)
                         self.assertNotIn(1, xpdrTpPortConAt['odtu-tpn-pool'][0]['tpn-pool'])
 
     def test_41_delete_10GE_service(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-delete"
         data = {"input": {
                 "sdnc-request-header": {
@@ -966,6 +1169,9 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_delete_request("service1-10GE")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Renderer service delete in progress',
@@ -973,8 +1179,12 @@ class TransportPCEtesting(unittest.TestCase):
         time.sleep(20)
 
     def test_42_check_service_list(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(len(res['service-list']['services']), 2)
@@ -989,6 +1199,7 @@ class TransportPCEtesting(unittest.TestCase):
 
     def test_44_check_no_interface_ODU2E_NETWORK_spdra(self):
         response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-NETWORK1-ODU2e-service1")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
 
     def test_45_check_no_interface_ODU2E_CLIENT_spdra(self):
@@ -998,6 +1209,17 @@ class TransportPCEtesting(unittest.TestCase):
     def test_46_check_no_interface_10GE_CLIENT_spdra(self):
         response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-CLIENT1-ETHERNET10G")
         self.assertEqual(response.status_code, requests.codes.not_found)
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+
+    def test_45_check_no_interface_ODU2E_CLIENT_spdra(self):
+        response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-CLIENT1-ODU2e-service1")
+        self.assertEqual(response.status_code, requests.codes.conflict)
+
+    def test_46_check_no_interface_10GE_CLIENT_spdra(self):
+        response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-CLIENT1-ETHERNET10G")
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
 
     def test_47_check_otn_topo_links(self):
         response = test_utils.get_otn_topo_request()
@@ -1007,8 +1229,13 @@ class TransportPCEtesting(unittest.TestCase):
         self.assertEqual(nb_links, 4)
         for link in res['network'][0]['ietf-network-topology:link']:
             linkId = link['link-id']
+<<<<<<< HEAD
             if (linkId == 'ODU4-SPDR-SA1-XPDR1-XPDR1-NETWORK1toSPDR-SC1-XPDR1-XPDR1-NETWORK1' or
                     linkId == 'ODU4-SPDR-SC1-XPDR1-XPDR1-NETWORK1toSPDR-SA1-XPDR1-XPDR1-NETWORK1'):
+=======
+            if (linkId in ('ODU4-SPDR-SA1-XPDR1-XPDR1-NETWORK1toSPDR-SC1-XPDR1-XPDR1-NETWORK1',
+                           'ODU4-SPDR-SC1-XPDR1-XPDR1-NETWORK1toSPDR-SA1-XPDR1-XPDR1-NETWORK1')):
+>>>>>>> standalone/stable/aluminium
                 self.assertEqual(link['org-openroadm-otn-network-topology:available-bandwidth'], 100000)
                 self.assertEqual(link['org-openroadm-otn-network-topology:used-bandwidth'], 0)
 
@@ -1019,12 +1246,17 @@ class TransportPCEtesting(unittest.TestCase):
             if (node['node-id'] == 'SPDR-SA1-XPDR1' or 'SPDR-SC1-XPDR1'):
                 tpList = node['ietf-network-topology:termination-point']
                 for tp in tpList:
+<<<<<<< HEAD
                     if (tp['tp-id'] == 'XPDR1-NETWORK1'):
+=======
+                    if tp['tp-id'] == 'XPDR1-NETWORK1':
+>>>>>>> standalone/stable/aluminium
                         xpdrTpPortConAt = tp['org-openroadm-otn-network-topology:xpdr-tp-port-connection-attributes']
                         self.assertEqual(len(xpdrTpPortConAt['ts-pool']), 80)
                         self.assertEqual(len(xpdrTpPortConAt['odtu-tpn-pool'][0]['tpn-pool']), 80)
 
     def test_49_delete_ODU4_service(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-delete"
         data = {"input": {
                 "sdnc-request-header": {
@@ -1040,6 +1272,9 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_delete_request("service1-ODU4")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Renderer service delete in progress',
@@ -1047,8 +1282,12 @@ class TransportPCEtesting(unittest.TestCase):
         time.sleep(20)
 
     def test_50_check_service_list(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list"
         response = test_utils.get_request(url)
+=======
+        response = test_utils.get_service_list_request("")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(len(res['service-list']['services']), 1)
@@ -1056,7 +1295,11 @@ class TransportPCEtesting(unittest.TestCase):
 
     def test_51_check_no_interface_ODU4_spdra(self):
         response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-NETWORK1-ODU4")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
 
     def test_52_check_otn_topo_links(self):
         self.test_22_check_otn_topo_otu4_links()
@@ -1065,15 +1308,23 @@ class TransportPCEtesting(unittest.TestCase):
         response = test_utils.get_otn_topo_request()
         res = response.json()
         for node in res['network'][0]['node']:
+<<<<<<< HEAD
             if (node['node-id'] == 'SPDR-SA1-XPDR1' or 'SPDR-SC1-XPDR1'):
                 tpList = node['ietf-network-topology:termination-point']
                 for tp in tpList:
                     if (tp['tp-id'] == 'XPDR1-NETWORK1'):
+=======
+            if node['node-id'] == 'SPDR-SA1-XPDR1' or 'SPDR-SC1-XPDR1':
+                tpList = node['ietf-network-topology:termination-point']
+                for tp in tpList:
+                    if tp['tp-id'] == 'XPDR1-NETWORK1':
+>>>>>>> standalone/stable/aluminium
                         xpdrTpPortConAt = tp['org-openroadm-otn-network-topology:xpdr-tp-port-connection-attributes']
                         self.assertNotIn('ts-pool', dict.keys(xpdrTpPortConAt))
                         self.assertNotIn('odtu-tpn-pool', dict.keys(xpdrTpPortConAt))
 
     def test_54_delete_OCH_OTU4_service(self):
+<<<<<<< HEAD
         url = "{}/operations/org-openroadm-service:service-delete"
         data = {"input": {
                 "sdnc-request-header": {
@@ -1089,6 +1340,9 @@ class TransportPCEtesting(unittest.TestCase):
                 }
                 }
         response = test_utils.post_request(url, data)
+=======
+        response = test_utils.service_delete_request("service1-OCH-OTU4")
+>>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertIn('Renderer service delete in progress',
@@ -1096,9 +1350,14 @@ class TransportPCEtesting(unittest.TestCase):
         time.sleep(20)
 
     def test_55_get_no_service(self):
+<<<<<<< HEAD
         url = "{}/operational/org-openroadm-service:service-list"
         response = test_utils.get_request(url)
         self.assertEqual(response.status_code, requests.codes.not_found)
+=======
+        response = test_utils.get_service_list_request("")
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
@@ -1108,11 +1367,19 @@ class TransportPCEtesting(unittest.TestCase):
 
     def test_56_check_no_interface_OTU4_spdra(self):
         response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-NETWORK1-OTU")
+<<<<<<< HEAD
         self.assertEqual(response.status_code, requests.codes.not_found)
 
     def test_57_check_no_interface_OCH_spdra(self):
         response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-NETWORK1-1")
         self.assertEqual(response.status_code, requests.codes.not_found)
+=======
+        self.assertEqual(response.status_code, requests.codes.conflict)
+
+    def test_57_check_no_interface_OCH_spdra(self):
+        response = test_utils.check_netconf_node_request("SPDR-SA1", "interface/XPDR1-NETWORK1-1")
+        self.assertEqual(response.status_code, requests.codes.conflict)
+>>>>>>> standalone/stable/aluminium
 
     def test_58_getLinks_OtnTopology(self):
         response = test_utils.get_otn_topo_request()

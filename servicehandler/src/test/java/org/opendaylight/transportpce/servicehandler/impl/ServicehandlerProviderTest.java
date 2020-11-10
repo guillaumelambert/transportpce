@@ -22,7 +22,10 @@ import org.opendaylight.transportpce.renderer.NetworkModelWavelengthService;
 import org.opendaylight.transportpce.renderer.provisiondevice.RendererServiceOperations;
 import org.opendaylight.transportpce.test.AbstractTest;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> standalone/stable/aluminium
 public class ServicehandlerProviderTest  extends AbstractTest {
 
     @Mock
