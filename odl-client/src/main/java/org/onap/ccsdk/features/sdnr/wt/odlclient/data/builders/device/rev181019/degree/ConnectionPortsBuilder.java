@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.degree;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -126,73 +127,100 @@ public class ConnectionPortsBuilder implements Builder<ConnectionPorts> {
     public ConnectionPortsKey key() {
         return key;
     }
-
+    
     public String getCircuitPackName() {
         return _circuitPackName;
     }
-
+    
     public Uint32 getIndex() {
         return _index;
     }
-
+    
     public Object getPortName() {
         return _portName;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<ConnectionPorts>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public ConnectionPortsBuilder withKey(final ConnectionPortsKey key) {
         this.key = key;
         return this;
     }
-
+    
     public ConnectionPortsBuilder setCircuitPackName(final String value) {
         this._circuitPackName = value;
         return this;
     }
-
+    
     public ConnectionPortsBuilder setIndex(final Uint32 value) {
         this._index = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setIndex(Uint32)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public ConnectionPortsBuilder setIndex(final Long value) {
-//        return setIndex(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setIndex(Uint32)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public ConnectionPortsBuilder setIndex(final Long value) {
+        return setIndex(CodeHelpers.compatUint(value));
+    }*/
+    
     public ConnectionPortsBuilder setPortName(final Object value) {
         this._portName = value;
         return this;
     }
-
-    public ConnectionPortsBuilder addAugmentation(Class<? extends Augmentation<ConnectionPorts>> augmentationType, Augmentation<ConnectionPorts> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public ConnectionPortsBuilder addAugmentation(Augmentation<ConnectionPorts> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public ConnectionPortsBuilder addAugmentation(Class<? extends Augmentation<ConnectionPorts>> augmentationType, Augmentation<ConnectionPorts> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public ConnectionPortsBuilder removeAugmentation(Class<? extends Augmentation<ConnectionPorts>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private ConnectionPortsBuilder doAddAugmentation(Class<? extends Augmentation<ConnectionPorts>> augmentationType, Augmentation<ConnectionPorts> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -204,12 +232,12 @@ public class ConnectionPortsBuilder implements Builder<ConnectionPorts> {
     private static final class ConnectionPortsImpl
         extends AbstractAugmentable<ConnectionPorts>
         implements ConnectionPorts {
-
+    
         private final String _circuitPackName;
         private final Uint32 _index;
         private final Object _portName;
         private final ConnectionPortsKey key;
-
+    
         ConnectionPortsImpl(ConnectionPortsBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -221,48 +249,48 @@ public class ConnectionPortsBuilder implements Builder<ConnectionPorts> {
             this._circuitPackName = base.getCircuitPackName();
             this._portName = base.getPortName();
         }
-
+    
         @Override
         public ConnectionPortsKey key() {
             return key;
         }
-
+        
         @Override
         public String getCircuitPackName() {
             return _circuitPackName;
         }
-
+        
         @Override
         public Uint32 getIndex() {
             return _index;
         }
-
+        
         @Override
         public Object getPortName() {
             return _portName;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_circuitPackName);
             result = prime * result + Objects.hashCode(_index);
             result = prime * result + Objects.hashCode(_portName);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -304,7 +332,7 @@ public class ConnectionPortsBuilder implements Builder<ConnectionPorts> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("ConnectionPorts");

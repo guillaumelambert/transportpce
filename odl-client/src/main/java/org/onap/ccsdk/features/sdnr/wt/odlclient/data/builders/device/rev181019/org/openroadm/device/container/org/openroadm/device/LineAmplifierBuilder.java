@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.Short;
@@ -171,127 +172,143 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
     public LineAmplifierKey key() {
         return key;
     }
-
+    
     public AmplifierGainRange getAmpGainRange() {
         return _ampGainRange;
     }
-
+    
     public Uint8 getAmpNumber() {
         return _ampNumber;
     }
-
+    
     public AmplifierTypes getAmpType() {
         return _ampType;
     }
-
+    
     public Map<CircuitPackKey, CircuitPack> getCircuitPack() {
         return _circuitPack;
     }
-
+    
     public LineAmplifierControlMode getControlMode() {
         return _controlMode;
     }
-
+    
     public PowerDBm getEgressAverageChannelPower() {
         return _egressAverageChannelPower;
     }
-
+    
     public String getIlaDirectionLabel() {
         return _ilaDirectionLabel;
     }
-
+    
     public Map<LinePortKey, LinePort> getLinePort() {
         return _linePort;
     }
-
+    
     public Map<OscPortKey, OscPort> getOscPort() {
         return _oscPort;
     }
-
+    
     public Map<OtdrPortKey, OtdrPort> getOtdrPort() {
         return _otdrPort;
     }
-
+    
     public RatioDB getOutVoaAtt() {
         return _outVoaAtt;
     }
-
+    
     public Uint8 getPartnerAmp() {
         return _partnerAmp;
     }
-
+    
     public RatioDB getTargetGain() {
         return _targetGain;
     }
-
+    
     public RatioDB getTargetTilt() {
         return _targetTilt;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<LineAmplifier>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public LineAmplifierBuilder withKey(final LineAmplifierKey key) {
         this.key = key;
         return this;
     }
-
+    
     public LineAmplifierBuilder setAmpGainRange(final AmplifierGainRange value) {
         this._ampGainRange = value;
         return this;
     }
-
+    
     private static void checkAmpNumberRange(final short value) {
         if (value >= (short)1 && value <= (short)128) {
             return;
         }
         CodeHelpers.throwInvalidRange("[[1..128]]", value);
     }
-
+    
     public LineAmplifierBuilder setAmpNumber(final Uint8 value) {
         if (value != null) {
             checkAmpNumberRange(value.shortValue());
-
+            
         }
         this._ampNumber = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setAmpNumber(Uint8)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public LineAmplifierBuilder setAmpNumber(final Short value) {
-//        return setAmpNumber(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setAmpNumber(Uint8)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public LineAmplifierBuilder setAmpNumber(final Short value) {
+        return setAmpNumber(CodeHelpers.compatUint(value));
+    }*/
+    
     public LineAmplifierBuilder setAmpType(final AmplifierTypes value) {
         this._ampType = value;
         return this;
     }
-
     public LineAmplifierBuilder setCircuitPack(final Map<CircuitPackKey, CircuitPack> values) {
         this._circuitPack = values;
         return this;
     }
-
-
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setCircuitPack(Map)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public LineAmplifierBuilder setCircuitPack(final List<CircuitPack> values) {
+        return setCircuitPack(CodeHelpers.compatMap(values));
+    }*/
+    
     public LineAmplifierBuilder setControlMode(final LineAmplifierControlMode value) {
         this._controlMode = value;
         return this;
     }
-
+    
     public LineAmplifierBuilder setEgressAverageChannelPower(final PowerDBm value) {
         this._egressAverageChannelPower = value;
         return this;
     }
-
+    
     public LineAmplifierBuilder setIlaDirectionLabel(final String value) {
         this._ilaDirectionLabel = value;
         return this;
@@ -300,79 +317,158 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         this._linePort = values;
         return this;
     }
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setLinePort(Map)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public LineAmplifierBuilder setLinePort(final List<LinePort> values) {
+        return setLinePort(CodeHelpers.compatMap(values));
+    }*/
 
     public LineAmplifierBuilder setOscPort(final Map<OscPortKey, OscPort> values) {
         this._oscPort = values;
         return this;
     }
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setOscPort(Map)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public LineAmplifierBuilder setOscPort(final List<OscPort> values) {
+        return setOscPort(CodeHelpers.compatMap(values));
+    }*/
 
     public LineAmplifierBuilder setOtdrPort(final Map<OtdrPortKey, OtdrPort> values) {
         this._otdrPort = values;
         return this;
     }
-
-
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setOtdrPort(Map)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public LineAmplifierBuilder setOtdrPort(final List<OtdrPort> values) {
+        return setOtdrPort(CodeHelpers.compatMap(values));
+    }*/
+    
     public LineAmplifierBuilder setOutVoaAtt(final RatioDB value) {
         this._outVoaAtt = value;
         return this;
     }
-
+    
     private static void checkPartnerAmpRange(final short value) {
         if (value >= (short)1 && value <= (short)128) {
             return;
         }
         CodeHelpers.throwInvalidRange("[[1..128]]", value);
     }
-
+    
     public LineAmplifierBuilder setPartnerAmp(final Uint8 value) {
         if (value != null) {
             checkPartnerAmpRange(value.shortValue());
-
+            
         }
         this._partnerAmp = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setPartnerAmp(Uint8)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public LineAmplifierBuilder setPartnerAmp(final Short value) {
-//        return setPartnerAmp(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setPartnerAmp(Uint8)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public LineAmplifierBuilder setPartnerAmp(final Short value) {
+        return setPartnerAmp(CodeHelpers.compatUint(value));
+    }*/
+    
     public LineAmplifierBuilder setTargetGain(final RatioDB value) {
         this._targetGain = value;
         return this;
     }
-
+    
     public LineAmplifierBuilder setTargetTilt(final RatioDB value) {
         this._targetTilt = value;
         return this;
     }
-
-    public LineAmplifierBuilder addAugmentation(Class<? extends Augmentation<LineAmplifier>> augmentationType, 
-        Augmentation<LineAmplifier> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public LineAmplifierBuilder addAugmentation(Augmentation<LineAmplifier> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public LineAmplifierBuilder addAugmentation(Class<? extends Augmentation<LineAmplifier>> augmentationType, Augmentation<LineAmplifier> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public LineAmplifierBuilder removeAugmentation(Class<? extends Augmentation<LineAmplifier>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private LineAmplifierBuilder doAddAugmentation(Class<? extends Augmentation<LineAmplifier>> augmentationType, Augmentation<LineAmplifier> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -384,7 +480,7 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
     private static final class LineAmplifierImpl
         extends AbstractAugmentable<LineAmplifier>
         implements LineAmplifier {
-
+    
         private final AmplifierGainRange _ampGainRange;
         private final Uint8 _ampNumber;
         private final AmplifierTypes _ampType;
@@ -392,7 +488,7 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         private final LineAmplifierControlMode _controlMode;
         private final PowerDBm _egressAverageChannelPower;
         private final String _ilaDirectionLabel;
-        private final Map<LinePortKey,LinePort> _linePort;
+        private final Map<LinePortKey, LinePort> _linePort;
         private final Map<OscPortKey, OscPort> _oscPort;
         private final Map<OtdrPortKey, OtdrPort> _otdrPort;
         private final RatioDB _outVoaAtt;
@@ -400,7 +496,7 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
         private final RatioDB _targetGain;
         private final RatioDB _targetTilt;
         private final LineAmplifierKey key;
-
+    
         LineAmplifierImpl(LineAmplifierBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -411,103 +507,103 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
             this._ampNumber = key.getAmpNumber();
             this._ampGainRange = base.getAmpGainRange();
             this._ampType = base.getAmpType();
-            this._circuitPack = base.getCircuitPack();
+            this._circuitPack = CodeHelpers.emptyToNull(base.getCircuitPack());
             this._controlMode = base.getControlMode();
             this._egressAverageChannelPower = base.getEgressAverageChannelPower();
             this._ilaDirectionLabel = base.getIlaDirectionLabel();
-            this._linePort = base.getLinePort();
-            this._oscPort = base.getOscPort();
-            this._otdrPort = base.getOtdrPort();
+            this._linePort = CodeHelpers.emptyToNull(base.getLinePort());
+            this._oscPort = CodeHelpers.emptyToNull(base.getOscPort());
+            this._otdrPort = CodeHelpers.emptyToNull(base.getOtdrPort());
             this._outVoaAtt = base.getOutVoaAtt();
             this._partnerAmp = base.getPartnerAmp();
             this._targetGain = base.getTargetGain();
             this._targetTilt = base.getTargetTilt();
         }
-
+    
         @Override
         public LineAmplifierKey key() {
             return key;
         }
-
+        
         @Override
         public AmplifierGainRange getAmpGainRange() {
             return _ampGainRange;
         }
-
+        
         @Override
         public Uint8 getAmpNumber() {
             return _ampNumber;
         }
-
+        
         @Override
         public AmplifierTypes getAmpType() {
             return _ampType;
         }
-
+        
         @Override
         public Map<CircuitPackKey, CircuitPack> getCircuitPack() {
             return _circuitPack;
         }
-
+        
         @Override
         public LineAmplifierControlMode getControlMode() {
             return _controlMode;
         }
-
+        
         @Override
         public PowerDBm getEgressAverageChannelPower() {
             return _egressAverageChannelPower;
         }
-
+        
         @Override
         public String getIlaDirectionLabel() {
             return _ilaDirectionLabel;
         }
-
+        
         @Override
-        public Map<LinePortKey,LinePort> getLinePort() {
+        public Map<LinePortKey, LinePort> getLinePort() {
             return _linePort;
         }
-
+        
         @Override
         public Map<OscPortKey, OscPort> getOscPort() {
             return _oscPort;
         }
-
+        
         @Override
-        public Map<OtdrPortKey,OtdrPort> getOtdrPort() {
+        public Map<OtdrPortKey, OtdrPort> getOtdrPort() {
             return _otdrPort;
         }
-
+        
         @Override
         public RatioDB getOutVoaAtt() {
             return _outVoaAtt;
         }
-
+        
         @Override
         public Uint8 getPartnerAmp() {
             return _partnerAmp;
         }
-
+        
         @Override
         public RatioDB getTargetGain() {
             return _targetGain;
         }
-
+        
         @Override
         public RatioDB getTargetTilt() {
             return _targetTilt;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_ampGainRange);
@@ -525,12 +621,12 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
             result = prime * result + Objects.hashCode(_targetGain);
             result = prime * result + Objects.hashCode(_targetTilt);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -605,7 +701,7 @@ public class LineAmplifierBuilder implements Builder<LineAmplifier> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("LineAmplifier");

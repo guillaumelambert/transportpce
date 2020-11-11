@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.circuit.pack.ports;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -93,56 +94,83 @@ public class OtdrPortBuilder implements Builder<OtdrPort> {
     public Uint32 getLaunchCableLength() {
         return _launchCableLength;
     }
-
+    
     public Direction getPortDirection() {
         return _portDirection;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<OtdrPort>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
-
+    
     public OtdrPortBuilder setLaunchCableLength(final Uint32 value) {
         this._launchCableLength = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setLaunchCableLength(Uint32)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public OtdrPortBuilder setLaunchCableLength(final Long value) {
-//        return setLaunchCableLength(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setLaunchCableLength(Uint32)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public OtdrPortBuilder setLaunchCableLength(final Long value) {
+        return setLaunchCableLength(CodeHelpers.compatUint(value));
+    }*/
+    
     public OtdrPortBuilder setPortDirection(final Direction value) {
         this._portDirection = value;
         return this;
     }
-
-    public OtdrPortBuilder addAugmentation(Class<? extends Augmentation<OtdrPort>> augmentationType, Augmentation<OtdrPort> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public OtdrPortBuilder addAugmentation(Augmentation<OtdrPort> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public OtdrPortBuilder addAugmentation(Class<? extends Augmentation<OtdrPort>> augmentationType, Augmentation<OtdrPort> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public OtdrPortBuilder removeAugmentation(Class<? extends Augmentation<OtdrPort>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private OtdrPortBuilder doAddAugmentation(Class<? extends Augmentation<OtdrPort>> augmentationType, Augmentation<OtdrPort> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -154,46 +182,46 @@ public class OtdrPortBuilder implements Builder<OtdrPort> {
     private static final class OtdrPortImpl
         extends AbstractAugmentable<OtdrPort>
         implements OtdrPort {
-
+    
         private final Uint32 _launchCableLength;
         private final Direction _portDirection;
-
+    
         OtdrPortImpl(OtdrPortBuilder base) {
             super(base.augmentation);
             this._launchCableLength = base.getLaunchCableLength();
             this._portDirection = base.getPortDirection();
         }
-
+    
         @Override
         public Uint32 getLaunchCableLength() {
             return _launchCableLength;
         }
-
+        
         @Override
         public Direction getPortDirection() {
             return _portDirection;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_launchCableLength);
             result = prime * result + Objects.hashCode(_portDirection);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -232,7 +260,7 @@ public class OtdrPortBuilder implements Builder<OtdrPort> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("OtdrPort");

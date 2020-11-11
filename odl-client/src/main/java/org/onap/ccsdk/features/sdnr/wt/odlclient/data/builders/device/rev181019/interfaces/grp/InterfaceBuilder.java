@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.interfaces.grp;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -20,14 +21,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.St
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.AdminStates;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.EthernetCsmacd;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.InterfaceType;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpenROADMOpticalMultiplex;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalChannel;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalTransport;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OtnOdu;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1Builder;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.AbstractAugmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -85,19 +79,16 @@ public class InterfaceBuilder implements Builder<Interface> {
     private String _supportingInterface;
     private Object _supportingPort;
     private Class<? extends InterfaceType> _type;
-    //private InterfaceType _type2;
     private InterfaceKey key;
 
 
     Map<Class<? extends Augmentation<Interface>>, Augmentation<Interface>> augmentation = Collections.emptyMap();
 
     public InterfaceBuilder() {
-        this.addAugmentation(Interface1.class, new Interface1Builder().build());
     }
     public InterfaceBuilder(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.SupportingPortName arg) {
         this._supportingCircuitPackName = arg.getSupportingCircuitPackName();
         this._supportingPort = arg.getSupportingPort();
-        this.addAugmentation(Interface1.class, new Interface1Builder().build());
     }
 
     public InterfaceBuilder(Interface base) {
@@ -118,8 +109,6 @@ public class InterfaceBuilder implements Builder<Interface> {
         this._supportingInterface = base.getSupportingInterface();
         this._supportingPort = base.getSupportingPort();
         this._type = base.getType();
-        this.addAugmentation(Interface1.class, new Interface1Builder().build());
-
     }
 
     /**
@@ -144,58 +133,58 @@ public class InterfaceBuilder implements Builder<Interface> {
     public InterfaceKey key() {
         return key;
     }
-
+    
     public AdminStates getAdministrativeState() {
         return _administrativeState;
     }
-
+    
     public String getCircuitId() {
         return _circuitId;
     }
-
+    
     public String getDescription() {
         return _description;
     }
-
+    
     public String getName() {
         return _name;
     }
-
+    
     public State getOperationalState() {
         return _operationalState;
     }
-
+    
     public String getSupportingCircuitPackName() {
         return _supportingCircuitPackName;
     }
-
+    
     public String getSupportingInterface() {
         return _supportingInterface;
     }
-
+    
     public Object getSupportingPort() {
         return _supportingPort;
     }
-
+    
     public Class<? extends InterfaceType> getType() {
         return _type;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<Interface>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public InterfaceBuilder withKey(final InterfaceKey key) {
         this.key = key;
         return this;
     }
-
+    
     public InterfaceBuilder setAdministrativeState(final AdminStates value) {
         this._administrativeState = value;
         return this;
     }
-
+    
     private static void check_circuitIdLength(final String value) {
         final int length = value.length();
         if (length <= 45) {
@@ -203,79 +192,95 @@ public class InterfaceBuilder implements Builder<Interface> {
         }
         CodeHelpers.throwInvalidLength("[[0..45]]", value);
     }
-
+    
     public InterfaceBuilder setCircuitId(final String value) {
         if (value != null) {
             check_circuitIdLength(value);
-
+            
         }
         this._circuitId = value;
         return this;
     }
-
+    
     public InterfaceBuilder setDescription(final String value) {
         this._description = value;
         return this;
     }
-
+    
     public InterfaceBuilder setName(final String value) {
         this._name = value;
         return this;
     }
-
+    
     public InterfaceBuilder setOperationalState(final State value) {
         this._operationalState = value;
         return this;
     }
-
+    
     public InterfaceBuilder setSupportingCircuitPackName(final String value) {
         this._supportingCircuitPackName = value;
         return this;
     }
-
+    
     public InterfaceBuilder setSupportingInterface(final String value) {
         this._supportingInterface = value;
         return this;
     }
-
+    
     public InterfaceBuilder setSupportingPort(final Object value) {
         this._supportingPort = value;
         return this;
     }
-
-    public InterfaceBuilder setType(String value) {
-
-        if (value.endsWith("ethernetCsmacd")) {
-            this._type = EthernetCsmacd.class;
-        } else if (value.endsWith("opticalTransport")) {
-            this._type = OpticalTransport.class;
-        } else if (value.endsWith("openROADMOpticalMultiplex")) {
-            this._type = OpenROADMOpticalMultiplex.class;
-        } else if (value.endsWith("otnOdu")) {
-            this._type = OtnOdu.class;
-        }else if (value.endsWith("opticalChannel")) {
-            this._type = OpticalChannel.class;
-        }
+    
+    public InterfaceBuilder setType(final Class<? extends InterfaceType> value) {
+        this._type = value;
         return this;
     }
-
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public InterfaceBuilder addAugmentation(Augmentation<Interface> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
+    }
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      */
+    @Deprecated(forRemoval = true)
     public InterfaceBuilder addAugmentation(Class<? extends Augmentation<Interface>> augmentationType, Augmentation<Interface> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
     }
-
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public InterfaceBuilder removeAugmentation(Class<? extends Augmentation<Interface>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private InterfaceBuilder doAddAugmentation(Class<? extends Augmentation<Interface>> augmentationType, Augmentation<Interface> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -287,7 +292,7 @@ public class InterfaceBuilder implements Builder<Interface> {
     private static final class InterfaceImpl
         extends AbstractAugmentable<Interface>
         implements Interface {
-
+    
         private final AdminStates _administrativeState;
         private final String _circuitId;
         private final String _description;
@@ -298,7 +303,7 @@ public class InterfaceBuilder implements Builder<Interface> {
         private final Object _supportingPort;
         private final Class<? extends InterfaceType> _type;
         private final InterfaceKey key;
-
+    
         InterfaceImpl(InterfaceBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -316,66 +321,66 @@ public class InterfaceBuilder implements Builder<Interface> {
             this._supportingPort = base.getSupportingPort();
             this._type = base.getType();
         }
-
+    
         @Override
         public InterfaceKey key() {
             return key;
         }
-
+        
         @Override
         public AdminStates getAdministrativeState() {
             return _administrativeState;
         }
-
+        
         @Override
         public String getCircuitId() {
             return _circuitId;
         }
-
+        
         @Override
         public String getDescription() {
             return _description;
         }
-
+        
         @Override
         public String getName() {
             return _name;
         }
-
+        
         @Override
         public State getOperationalState() {
             return _operationalState;
         }
-
+        
         @Override
         public String getSupportingCircuitPackName() {
             return _supportingCircuitPackName;
         }
-
+        
         @Override
         public String getSupportingInterface() {
             return _supportingInterface;
         }
-
+        
         @Override
         public Object getSupportingPort() {
             return _supportingPort;
         }
-
+        
         @Override
         public Class<? extends InterfaceType> getType() {
             return _type;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_administrativeState);
@@ -388,12 +393,12 @@ public class InterfaceBuilder implements Builder<Interface> {
             result = prime * result + Objects.hashCode(_supportingPort);
             result = prime * result + Objects.hashCode(_type);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -453,7 +458,7 @@ public class InterfaceBuilder implements Builder<Interface> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("Interface");

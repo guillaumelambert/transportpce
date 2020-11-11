@@ -1,3 +1,4 @@
+  
 /*
  * Copyright (C) 2020 highstreet technologies GmbH Intellectual Property.
  *
@@ -9,6 +10,7 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019
 import com.google.common.base.MoreObjects;
 import java.lang.Boolean;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -23,6 +25,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.Xp
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Xponder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.XponderKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.xponder.XpdrPort;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.xponder.XpdrPortKey;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.AbstractAugmentable;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
@@ -73,7 +76,7 @@ import org.opendaylight.yangtools.yang.common.Uint16;
 public class XponderBuilder implements Builder<Xponder> {
 
     private Uint16 _xpdrNumber;
-    private List<XpdrPort> _xpdrPort;
+    private Map<XpdrPortKey, XpdrPort> _xpdrPort;
     private XpdrNodeTypes _xpdrType;
     private Boolean _recolor;
     private XponderKey key;
@@ -129,82 +132,126 @@ public class XponderBuilder implements Builder<Xponder> {
     public XponderKey key() {
         return key;
     }
-
+    
     public Uint16 getXpdrNumber() {
         return _xpdrNumber;
     }
-
-    public List<XpdrPort> getXpdrPort() {
+    
+    public Map<XpdrPortKey, XpdrPort> getXpdrPort() {
         return _xpdrPort;
     }
-
+    
     public XpdrNodeTypes getXpdrType() {
         return _xpdrType;
     }
-
+    
     public Boolean isRecolor() {
         return _recolor;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
-    public <T extends Augmentation<Xponder>> T augmentation(Class<T> augmentationType) {
-        return (T) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+    public <E$$ extends Augmentation<Xponder>> E$$ augmentation(Class<E$$> augmentationType) {
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public XponderBuilder withKey(final XponderKey key) {
         this.key = key;
         return this;
     }
-
+    
     public XponderBuilder setXpdrNumber(final Uint16 value) {
         this._xpdrNumber = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setXpdrNumber(Uint16)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public XponderBuilder setXpdrNumber(final Integer value) {
-//        return setXpdrNumber(CodeHelpers.compatUint(value));
-//    }
-    public XponderBuilder setXpdrPort(final List<XpdrPort> values) {
+     * @deprecated Use {#link setXpdrNumber(Uint16)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public XponderBuilder setXpdrNumber(final Integer value) {
+        return setXpdrNumber(CodeHelpers.compatUint(value));
+    }*/
+    public XponderBuilder setXpdrPort(final Map<XpdrPortKey, XpdrPort> values) {
         this._xpdrPort = values;
         return this;
     }
-
-
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setXpdrPort(Map)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public XponderBuilder setXpdrPort(final List<XpdrPort> values) {
+        return setXpdrPort(CodeHelpers.compatMap(values));
+    }*/
+    
     public XponderBuilder setXpdrType(final XpdrNodeTypes value) {
         this._xpdrType = value;
         return this;
     }
-
+    
     public XponderBuilder setRecolor(final Boolean value) {
         this._recolor = value;
         return this;
     }
-
-    public XponderBuilder addAugmentation(Class<? extends Augmentation<Xponder>> augmentationType, Augmentation<Xponder> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public XponderBuilder addAugmentation(Augmentation<Xponder> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public XponderBuilder addAugmentation(Class<? extends Augmentation<Xponder>> augmentationType, Augmentation<Xponder> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public XponderBuilder removeAugmentation(Class<? extends Augmentation<Xponder>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private XponderBuilder doAddAugmentation(Class<? extends Augmentation<Xponder>> augmentationType, Augmentation<Xponder> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -216,13 +263,13 @@ public class XponderBuilder implements Builder<Xponder> {
     private static final class XponderImpl
         extends AbstractAugmentable<Xponder>
         implements Xponder {
-
+    
         private final Uint16 _xpdrNumber;
-        private final List<XpdrPort> _xpdrPort;
+        private final Map<XpdrPortKey, XpdrPort> _xpdrPort;
         private final XpdrNodeTypes _xpdrType;
         private final Boolean _recolor;
         private final XponderKey key;
-
+    
         XponderImpl(XponderBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -231,45 +278,45 @@ public class XponderBuilder implements Builder<Xponder> {
                 this.key = new XponderKey(base.getXpdrNumber());
             }
             this._xpdrNumber = key.getXpdrNumber();
-            this._xpdrPort = base.getXpdrPort();
+            this._xpdrPort = CodeHelpers.emptyToNull(base.getXpdrPort());
             this._xpdrType = base.getXpdrType();
             this._recolor = base.isRecolor();
         }
-
+    
         @Override
         public XponderKey key() {
             return key;
         }
-
+        
         @Override
         public Uint16 getXpdrNumber() {
             return _xpdrNumber;
         }
-
+        
         @Override
         public Map<XpdrPortKey, XpdrPort> getXpdrPort() {
             return _xpdrPort;
         }
-
+        
         @Override
         public XpdrNodeTypes getXpdrType() {
             return _xpdrType;
         }
-
+        
         @Override
         public Boolean isRecolor() {
             return _recolor;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_xpdrNumber);
@@ -277,12 +324,12 @@ public class XponderBuilder implements Builder<Xponder> {
             result = prime * result + Objects.hashCode(_xpdrType);
             result = prime * result + Objects.hashCode(_recolor);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -327,7 +374,7 @@ public class XponderBuilder implements Builder<Xponder> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("Xponder");

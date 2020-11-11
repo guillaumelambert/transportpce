@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.xponder;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -128,94 +129,121 @@ public class XpdrPortBuilder implements Builder<XpdrPort> {
     public XpdrPortKey key() {
         return key;
     }
-
+    
     public String getCircuitPackName() {
         return _circuitPackName;
     }
-
+    
     public Uint32 getEqptSrgId() {
         return _eqptSrgId;
     }
-
+    
     public Uint32 getIndex() {
         return _index;
     }
-
+    
     public Object getPortName() {
         return _portName;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<XpdrPort>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public XpdrPortBuilder withKey(final XpdrPortKey key) {
         this.key = key;
         return this;
     }
-
+    
     public XpdrPortBuilder setCircuitPackName(final String value) {
         this._circuitPackName = value;
         return this;
     }
-
+    
     public XpdrPortBuilder setEqptSrgId(final Uint32 value) {
         this._eqptSrgId = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setEqptSrgId(Uint32)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public XpdrPortBuilder setEqptSrgId(final Long value) {
-//        return setEqptSrgId(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setEqptSrgId(Uint32)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public XpdrPortBuilder setEqptSrgId(final Long value) {
+        return setEqptSrgId(CodeHelpers.compatUint(value));
+    }*/
+    
     public XpdrPortBuilder setIndex(final Uint32 value) {
         this._index = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setIndex(Uint32)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public XpdrPortBuilder setIndex(final Long value) {
-//        return setIndex(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setIndex(Uint32)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public XpdrPortBuilder setIndex(final Long value) {
+        return setIndex(CodeHelpers.compatUint(value));
+    }*/
+    
     public XpdrPortBuilder setPortName(final Object value) {
         this._portName = value;
         return this;
     }
-
-    public XpdrPortBuilder addAugmentation(Class<? extends Augmentation<XpdrPort>> augmentationType, Augmentation<XpdrPort> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public XpdrPortBuilder addAugmentation(Augmentation<XpdrPort> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public XpdrPortBuilder addAugmentation(Class<? extends Augmentation<XpdrPort>> augmentationType, Augmentation<XpdrPort> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public XpdrPortBuilder removeAugmentation(Class<? extends Augmentation<XpdrPort>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private XpdrPortBuilder doAddAugmentation(Class<? extends Augmentation<XpdrPort>> augmentationType, Augmentation<XpdrPort> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -227,13 +255,13 @@ public class XpdrPortBuilder implements Builder<XpdrPort> {
     private static final class XpdrPortImpl
         extends AbstractAugmentable<XpdrPort>
         implements XpdrPort {
-
+    
         private final String _circuitPackName;
         private final Uint32 _eqptSrgId;
         private final Uint32 _index;
         private final Object _portName;
         private final XpdrPortKey key;
-
+    
         XpdrPortImpl(XpdrPortBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -246,41 +274,41 @@ public class XpdrPortBuilder implements Builder<XpdrPort> {
             this._eqptSrgId = base.getEqptSrgId();
             this._portName = base.getPortName();
         }
-
+    
         @Override
         public XpdrPortKey key() {
             return key;
         }
-
+        
         @Override
         public String getCircuitPackName() {
             return _circuitPackName;
         }
-
+        
         @Override
         public Uint32 getEqptSrgId() {
             return _eqptSrgId;
         }
-
+        
         @Override
         public Uint32 getIndex() {
             return _index;
         }
-
+        
         @Override
         public Object getPortName() {
             return _portName;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_circuitPackName);
@@ -288,12 +316,12 @@ public class XpdrPortBuilder implements Builder<XpdrPort> {
             result = prime * result + Objects.hashCode(_index);
             result = prime * result + Objects.hashCode(_portName);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -338,7 +366,7 @@ public class XpdrPortBuilder implements Builder<XpdrPort> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("XpdrPort");

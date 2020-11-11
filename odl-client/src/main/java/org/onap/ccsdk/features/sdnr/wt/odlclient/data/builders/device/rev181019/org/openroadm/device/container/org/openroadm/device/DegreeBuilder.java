@@ -1,13 +1,8 @@
-/*
- * Copyright (C) 2020 highstreet technologies GmbH Intellectual Property.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
- */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -146,34 +141,34 @@ public class DegreeBuilder implements Builder<Degree> {
     public DegreeKey key() {
         return key;
     }
-
+    
     public Map<CircuitPacksKey, CircuitPacks> getCircuitPacks() {
         return _circuitPacks;
     }
-
+    
     public Map<ConnectionPortsKey, ConnectionPorts> getConnectionPorts() {
         return _connectionPorts;
     }
-
+    
     public Uint16 getDegreeNumber() {
         return _degreeNumber;
     }
-
+    
     public Uint16 getMaxWavelengths() {
         return _maxWavelengths;
     }
-
+    
     public McCapabilities getMcCapabilities() {
         return _mcCapabilities;
     }
-
+    
     public OtdrPort getOtdrPort() {
         return _otdrPort;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<Degree>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public DegreeBuilder withKey(final DegreeKey key) {
@@ -184,74 +179,135 @@ public class DegreeBuilder implements Builder<Degree> {
         this._circuitPacks = values;
         return this;
     }
-
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setCircuitPacks(Map)} instead.
+      */
+    /*@Deprecated(forRemoval = true)
+    public DegreeBuilder setCircuitPacks(final List<CircuitPacks> values) {
+        return setCircuitPacks(CodeHelpers.compatMap(values));
+    }*/
     public DegreeBuilder setConnectionPorts(final Map<ConnectionPortsKey, ConnectionPorts> values) {
         this._connectionPorts = values;
         return this;
     }
-
-
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setConnectionPorts(Map)} instead.
+    
+    @Deprecated(forRemoval = true)
+    public DegreeBuilder setConnectionPorts(final List<ConnectionPorts> values) {
+        return setConnectionPorts(CodeHelpers.compatMap(values));
+    }*/
+    
     public DegreeBuilder setDegreeNumber(final Uint16 value) {
         this._degreeNumber = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setDegreeNumber(Uint16)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public DegreeBuilder setDegreeNumber(final Integer value) {
-//        return setDegreeNumber(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setDegreeNumber(Uint16)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public DegreeBuilder setDegreeNumber(final Integer value) {
+        return setDegreeNumber(CodeHelpers.compatUint(value));
+    }*/
+    
     public DegreeBuilder setMaxWavelengths(final Uint16 value) {
         this._maxWavelengths = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setMaxWavelengths(Uint16)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public DegreeBuilder setMaxWavelengths(final Integer value) {
-//        return setMaxWavelengths(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setMaxWavelengths(Uint16)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public DegreeBuilder setMaxWavelengths(final Integer value) {
+        return setMaxWavelengths(CodeHelpers.compatUint(value));
+    }*/
+    
     public DegreeBuilder setMcCapabilities(final McCapabilities value) {
         this._mcCapabilities = value;
         return this;
     }
-
+    
     public DegreeBuilder setOtdrPort(final OtdrPort value) {
         this._otdrPort = value;
         return this;
     }
-
-    public DegreeBuilder addAugmentation(Class<? extends Augmentation<Degree>> augmentationType, Augmentation<Degree> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public DegreeBuilder addAugmentation(Augmentation<Degree> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public DegreeBuilder addAugmentation(Class<? extends Augmentation<Degree>> augmentationType, Augmentation<Degree> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public DegreeBuilder removeAugmentation(Class<? extends Augmentation<Degree>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private DegreeBuilder doAddAugmentation(Class<? extends Augmentation<Degree>> augmentationType, Augmentation<Degree> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -263,7 +319,7 @@ public class DegreeBuilder implements Builder<Degree> {
     private static final class DegreeImpl
         extends AbstractAugmentable<Degree>
         implements Degree {
-
+    
         private final Map<CircuitPacksKey, CircuitPacks> _circuitPacks;
         private final Map<ConnectionPortsKey, ConnectionPorts> _connectionPorts;
         private final Uint16 _degreeNumber;
@@ -271,7 +327,7 @@ public class DegreeBuilder implements Builder<Degree> {
         private final McCapabilities _mcCapabilities;
         private final OtdrPort _otdrPort;
         private final DegreeKey key;
-
+    
         DegreeImpl(DegreeBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -280,57 +336,57 @@ public class DegreeBuilder implements Builder<Degree> {
                 this.key = new DegreeKey(base.getDegreeNumber());
             }
             this._degreeNumber = key.getDegreeNumber();
-            this._circuitPacks = base.getCircuitPacks();
-            this._connectionPorts = base.getConnectionPorts();
+            this._circuitPacks = CodeHelpers.emptyToNull(base.getCircuitPacks());
+            this._connectionPorts = CodeHelpers.emptyToNull(base.getConnectionPorts());
             this._maxWavelengths = base.getMaxWavelengths();
             this._mcCapabilities = base.getMcCapabilities();
             this._otdrPort = base.getOtdrPort();
         }
-
+    
         @Override
         public DegreeKey key() {
             return key;
         }
-
+        
         @Override
         public Map<CircuitPacksKey, CircuitPacks> getCircuitPacks() {
             return _circuitPacks;
         }
-
+        
         @Override
         public Map<ConnectionPortsKey, ConnectionPorts> getConnectionPorts() {
             return _connectionPorts;
         }
-
+        
         @Override
         public Uint16 getDegreeNumber() {
             return _degreeNumber;
         }
-
+        
         @Override
         public Uint16 getMaxWavelengths() {
             return _maxWavelengths;
         }
-
+        
         @Override
         public McCapabilities getMcCapabilities() {
             return _mcCapabilities;
         }
-
+        
         @Override
         public OtdrPort getOtdrPort() {
             return _otdrPort;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_circuitPacks);
@@ -340,12 +396,12 @@ public class DegreeBuilder implements Builder<Degree> {
             result = prime * result + Objects.hashCode(_mcCapabilities);
             result = prime * result + Objects.hashCode(_otdrPort);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -396,7 +452,7 @@ public class DegreeBuilder implements Builder<Degree> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("Degree");

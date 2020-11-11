@@ -1,13 +1,7 @@
-/*
- * Copyright (C) 2020 highstreet technologies GmbH Intellectual Property.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
- */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -115,64 +109,91 @@ public class CircuitPackBuilder implements Builder<CircuitPack> {
     public CircuitPackKey key() {
         return key;
     }
-
+    
     public String getCircuitPackName() {
         return _circuitPackName;
     }
-
+    
     public Uint32 getIndex() {
         return _index;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<CircuitPack>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public CircuitPackBuilder withKey(final CircuitPackKey key) {
         this.key = key;
         return this;
     }
-
+    
     public CircuitPackBuilder setCircuitPackName(final String value) {
         this._circuitPackName = value;
         return this;
     }
-
+    
     public CircuitPackBuilder setIndex(final Uint32 value) {
         this._index = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setIndex(Uint32)} instead.
+     * @deprecated Use {#link setIndex(Uint32)} instead.
      */
-//    @Deprecated(forRemoval = true)
-//    public CircuitPackBuilder setIndex(final Long value) {
-//        return setIndex(CodeHelpers.compatUint(value));
-//    }
-
-    public CircuitPackBuilder addAugmentation(Class<? extends Augmentation<CircuitPack>> augmentationType, Augmentation<CircuitPack> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+   // @Deprecated(forRemoval = true)
+    //public CircuitPackBuilder setIndex(final Long value) {
+      //  return setIndex(CodeHelpers.compatUint(value));
+    //}
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public CircuitPackBuilder addAugmentation(Augmentation<CircuitPack> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public CircuitPackBuilder addAugmentation(Class<? extends Augmentation<CircuitPack>> augmentationType, Augmentation<CircuitPack> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public CircuitPackBuilder removeAugmentation(Class<? extends Augmentation<CircuitPack>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private CircuitPackBuilder doAddAugmentation(Class<? extends Augmentation<CircuitPack>> augmentationType, Augmentation<CircuitPack> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -184,11 +205,11 @@ public class CircuitPackBuilder implements Builder<CircuitPack> {
     private static final class CircuitPackImpl
         extends AbstractAugmentable<CircuitPack>
         implements CircuitPack {
-
+    
         private final String _circuitPackName;
         private final Uint32 _index;
         private final CircuitPackKey key;
-
+    
         CircuitPackImpl(CircuitPackBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -199,42 +220,42 @@ public class CircuitPackBuilder implements Builder<CircuitPack> {
             this._index = key.getIndex();
             this._circuitPackName = base.getCircuitPackName();
         }
-
+    
         @Override
         public CircuitPackKey key() {
             return key;
         }
-
+        
         @Override
         public String getCircuitPackName() {
             return _circuitPackName;
         }
-
+        
         @Override
         public Uint32 getIndex() {
             return _index;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_circuitPackName);
             result = prime * result + Objects.hashCode(_index);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -273,7 +294,7 @@ public class CircuitPackBuilder implements Builder<CircuitPack> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("CircuitPack");

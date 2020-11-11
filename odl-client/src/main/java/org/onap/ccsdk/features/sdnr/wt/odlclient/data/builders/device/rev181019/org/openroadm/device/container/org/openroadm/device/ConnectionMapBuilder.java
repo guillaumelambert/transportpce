@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -101,73 +102,117 @@ public class ConnectionMapBuilder implements Builder<ConnectionMap> {
     public ConnectionMapKey key() {
         return key;
     }
-
+    
     public Uint32 getConnectionMapNumber() {
         return _connectionMapNumber;
     }
-
+    
     public Map<DestinationKey, Destination> getDestination() {
         return _destination;
     }
-
+    
     public Source getSource() {
         return _source;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<ConnectionMap>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public ConnectionMapBuilder withKey(final ConnectionMapKey key) {
         this.key = key;
         return this;
     }
-
+    
     public ConnectionMapBuilder setConnectionMapNumber(final Uint32 value) {
         this._connectionMapNumber = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setConnectionMapNumber(Uint32)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public ConnectionMapBuilder setConnectionMapNumber(final Long value) {
-//        return setConnectionMapNumber(CodeHelpers.compatUint(value));
-//    }
-    public ConnectionMapBuilder setDestination(final Map<DestinationKey,Destination> values) {
+     * @deprecated Use {#link setConnectionMapNumber(Uint32)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public ConnectionMapBuilder setConnectionMapNumber(final Long value) {
+        return setConnectionMapNumber(CodeHelpers.compatUint(value));
+    }*/
+    public ConnectionMapBuilder setDestination(final Map<DestinationKey, Destination> values) {
         this._destination = values;
         return this;
     }
-
-
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setDestination(Map)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public ConnectionMapBuilder setDestination(final List<Destination> values) {
+        return setDestination(CodeHelpers.compatMap(values));
+    }*/
+    
     public ConnectionMapBuilder setSource(final Source value) {
         this._source = value;
         return this;
     }
-
-    public ConnectionMapBuilder addAugmentation(Class<? extends Augmentation<ConnectionMap>> augmentationType, Augmentation<ConnectionMap> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public ConnectionMapBuilder addAugmentation(Augmentation<ConnectionMap> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public ConnectionMapBuilder addAugmentation(Class<? extends Augmentation<ConnectionMap>> augmentationType, Augmentation<ConnectionMap> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public ConnectionMapBuilder removeAugmentation(Class<? extends Augmentation<ConnectionMap>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private ConnectionMapBuilder doAddAugmentation(Class<? extends Augmentation<ConnectionMap>> augmentationType, Augmentation<ConnectionMap> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -179,12 +224,12 @@ public class ConnectionMapBuilder implements Builder<ConnectionMap> {
     private static final class ConnectionMapImpl
         extends AbstractAugmentable<ConnectionMap>
         implements ConnectionMap {
-
+    
         private final Uint32 _connectionMapNumber;
         private final Map<DestinationKey, Destination> _destination;
         private final Source _source;
         private final ConnectionMapKey key;
-
+    
         ConnectionMapImpl(ConnectionMapBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -193,51 +238,51 @@ public class ConnectionMapBuilder implements Builder<ConnectionMap> {
                 this.key = new ConnectionMapKey(base.getConnectionMapNumber());
             }
             this._connectionMapNumber = key.getConnectionMapNumber();
-            this._destination = base.getDestination();
+            this._destination = CodeHelpers.emptyToNull(base.getDestination());
             this._source = base.getSource();
         }
-
+    
         @Override
         public ConnectionMapKey key() {
             return key;
         }
-
+        
         @Override
         public Uint32 getConnectionMapNumber() {
             return _connectionMapNumber;
         }
-
+        
         @Override
         public Map<DestinationKey, Destination> getDestination() {
             return _destination;
         }
-
+        
         @Override
         public Source getSource() {
             return _source;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_connectionMapNumber);
             result = prime * result + Objects.hashCode(_destination);
             result = prime * result + Objects.hashCode(_source);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -279,7 +324,7 @@ public class ConnectionMapBuilder implements Builder<ConnectionMap> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("ConnectionMap");

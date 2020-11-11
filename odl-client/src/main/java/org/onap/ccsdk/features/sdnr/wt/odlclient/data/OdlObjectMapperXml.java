@@ -67,7 +67,7 @@ public class OdlObjectMapperXml extends XmlMapper {
 
     @Override
     public <T> T readValue(String content, Class<T> valueType)
-            throws IOException, JsonParseException, JsonMappingException {
+            throws JsonParseException, JsonMappingException {
         if (this.doNormalize) {
             content = this.normalizeContent(content);
         }

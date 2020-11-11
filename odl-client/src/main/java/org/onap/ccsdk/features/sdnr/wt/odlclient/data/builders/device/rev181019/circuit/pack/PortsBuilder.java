@@ -8,11 +8,11 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.circuit.pack;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +31,6 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.port.Int
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.port.ParentPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.port.PartnerPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.AdminStates;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev181019.IfOCH;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev181019.IfOMS;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev181019.IfOTS;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev181019.PortWavelengthTypes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev181019.SupportedIfCapability;
 import org.opendaylight.yangtools.concepts.Builder;
@@ -189,94 +186,94 @@ public class PortsBuilder implements Builder<Ports> {
     public PortsKey key() {
         return key;
     }
-
+    
     public AdminStates getAdministrativeState() {
         return _administrativeState;
     }
-
+    
     public String getCircuitId() {
         return _circuitId;
     }
-
+    
     public IlaPort getIlaPort() {
         return _ilaPort;
     }
-
+    
     public List<Interfaces> getInterfaces() {
         return _interfaces;
     }
-
+    
     public String getLabel() {
         return _label;
     }
-
+    
     public String getLogicalConnectionPoint() {
         return _logicalConnectionPoint;
     }
-
+    
     public State getOperationalState() {
         return _operationalState;
     }
-
+    
     public OtdrPort getOtdrPort() {
         return _otdrPort;
     }
-
+    
     public ParentPort getParentPort() {
         return _parentPort;
     }
-
+    
     public PartnerPort getPartnerPort() {
         return _partnerPort;
     }
-
+    
     public Direction getPortDirection() {
         return _portDirection;
     }
-
+    
     public String getPortName() {
         return _portName;
     }
-
+    
     public PortQual getPortQual() {
         return _portQual;
     }
-
+    
     public String getPortType() {
         return _portType;
     }
-
+    
     public PortWavelengthTypes getPortWavelengthType() {
         return _portWavelengthType;
     }
-
+    
     public RoadmPort getRoadmPort() {
         return _roadmPort;
     }
-
+    
     public List<Class<? extends SupportedIfCapability>> getSupportedInterfaceCapability() {
         return _supportedInterfaceCapability;
     }
-
+    
     public TransponderPort getTransponderPort() {
         return _transponderPort;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<Ports>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public PortsBuilder withKey(final PortsKey key) {
         this.key = key;
         return this;
     }
-
+    
     public PortsBuilder setAdministrativeState(final AdminStates value) {
         this._administrativeState = value;
         return this;
     }
-
+    
     private static void check_circuitIdLength(final String value) {
         final int length = value.length();
         if (length <= 45) {
@@ -284,16 +281,16 @@ public class PortsBuilder implements Builder<Ports> {
         }
         CodeHelpers.throwInvalidLength("[[0..45]]", value);
     }
-
+    
     public PortsBuilder setCircuitId(final String value) {
         if (value != null) {
             check_circuitIdLength(value);
-
+            
         }
         this._circuitId = value;
         return this;
     }
-
+    
     public PortsBuilder setIlaPort(final IlaPort value) {
         this._ilaPort = value;
         return this;
@@ -302,106 +299,122 @@ public class PortsBuilder implements Builder<Ports> {
         this._interfaces = values;
         return this;
     }
-
-
+    
+    
     public PortsBuilder setLabel(final String value) {
         this._label = value;
         return this;
     }
-
+    
     public PortsBuilder setLogicalConnectionPoint(final String value) {
         this._logicalConnectionPoint = value;
         return this;
     }
-
+    
     public PortsBuilder setOperationalState(final State value) {
         this._operationalState = value;
         return this;
     }
-
+    
     public PortsBuilder setOtdrPort(final OtdrPort value) {
         this._otdrPort = value;
         return this;
     }
-
+    
     public PortsBuilder setParentPort(final ParentPort value) {
         this._parentPort = value;
         return this;
     }
-
+    
     public PortsBuilder setPartnerPort(final PartnerPort value) {
         this._partnerPort = value;
         return this;
     }
-
+    
     public PortsBuilder setPortDirection(final Direction value) {
         this._portDirection = value;
         return this;
     }
-
+    
     public PortsBuilder setPortName(final String value) {
         this._portName = value;
         return this;
     }
-
+    
     public PortsBuilder setPortQual(final PortQual value) {
         this._portQual = value;
         return this;
     }
-
+    
     public PortsBuilder setPortType(final String value) {
         this._portType = value;
         return this;
     }
-
+    
     public PortsBuilder setPortWavelengthType(final PortWavelengthTypes value) {
         this._portWavelengthType = value;
         return this;
     }
-
+    
     public PortsBuilder setRoadmPort(final RoadmPort value) {
         this._roadmPort = value;
         return this;
     }
-
-    public PortsBuilder setSupportedInterfaceCapability(final List<String> values) {
-        List<Class<? extends SupportedIfCapability>> parsedValues = new ArrayList<>();
-        for (String value : values) {
-            if (value.endsWith("if-OCH")) {
-                parsedValues.add(IfOCH.class);
-            } else if (value.endsWith("if-OMS")) {
-                parsedValues.add(IfOMS.class);
-            } else if (value.endsWith("if-OTS")) {
-                parsedValues.add(IfOTS.class);
-            }
-        }
-        this._supportedInterfaceCapability = parsedValues;
+    public PortsBuilder setSupportedInterfaceCapability(final List<Class<? extends SupportedIfCapability>> values) {
+        this._supportedInterfaceCapability = values;
         return this;
     }
-
-
+    
+    
     public PortsBuilder setTransponderPort(final TransponderPort value) {
         this._transponderPort = value;
         return this;
     }
-
-    public PortsBuilder addAugmentation(Class<? extends Augmentation<Ports>> augmentationType, Augmentation<Ports> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public PortsBuilder addAugmentation(Augmentation<Ports> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public PortsBuilder addAugmentation(Class<? extends Augmentation<Ports>> augmentationType, Augmentation<Ports> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public PortsBuilder removeAugmentation(Class<? extends Augmentation<Ports>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private PortsBuilder doAddAugmentation(Class<? extends Augmentation<Ports>> augmentationType, Augmentation<Ports> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -413,7 +426,7 @@ public class PortsBuilder implements Builder<Ports> {
     private static final class PortsImpl
         extends AbstractAugmentable<Ports>
         implements Ports {
-
+    
         private final AdminStates _administrativeState;
         private final String _circuitId;
         private final IlaPort _ilaPort;
@@ -433,7 +446,7 @@ public class PortsBuilder implements Builder<Ports> {
         private final List<Class<? extends SupportedIfCapability>> _supportedInterfaceCapability;
         private final TransponderPort _transponderPort;
         private final PortsKey key;
-
+    
         PortsImpl(PortsBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -445,7 +458,7 @@ public class PortsBuilder implements Builder<Ports> {
             this._administrativeState = base.getAdministrativeState();
             this._circuitId = base.getCircuitId();
             this._ilaPort = base.getIlaPort();
-            this._interfaces = base.getInterfaces();
+            this._interfaces = CodeHelpers.emptyToNull(base.getInterfaces());
             this._label = base.getLabel();
             this._logicalConnectionPoint = base.getLogicalConnectionPoint();
             this._operationalState = base.getOperationalState();
@@ -460,111 +473,111 @@ public class PortsBuilder implements Builder<Ports> {
             this._supportedInterfaceCapability = base.getSupportedInterfaceCapability();
             this._transponderPort = base.getTransponderPort();
         }
-
+    
         @Override
         public PortsKey key() {
             return key;
         }
-
+        
         @Override
         public AdminStates getAdministrativeState() {
             return _administrativeState;
         }
-
+        
         @Override
         public String getCircuitId() {
             return _circuitId;
         }
-
+        
         @Override
         public IlaPort getIlaPort() {
             return _ilaPort;
         }
-
+        
         @Override
         public List<Interfaces> getInterfaces() {
             return _interfaces;
         }
-
+        
         @Override
         public String getLabel() {
             return _label;
         }
-
+        
         @Override
         public String getLogicalConnectionPoint() {
             return _logicalConnectionPoint;
         }
-
+        
         @Override
         public State getOperationalState() {
             return _operationalState;
         }
-
+        
         @Override
         public OtdrPort getOtdrPort() {
             return _otdrPort;
         }
-
+        
         @Override
         public ParentPort getParentPort() {
             return _parentPort;
         }
-
+        
         @Override
         public PartnerPort getPartnerPort() {
             return _partnerPort;
         }
-
+        
         @Override
         public Direction getPortDirection() {
             return _portDirection;
         }
-
+        
         @Override
         public String getPortName() {
             return _portName;
         }
-
+        
         @Override
         public PortQual getPortQual() {
             return _portQual;
         }
-
+        
         @Override
         public String getPortType() {
             return _portType;
         }
-
+        
         @Override
         public PortWavelengthTypes getPortWavelengthType() {
             return _portWavelengthType;
         }
-
+        
         @Override
         public RoadmPort getRoadmPort() {
             return _roadmPort;
         }
-
+        
         @Override
         public List<Class<? extends SupportedIfCapability>> getSupportedInterfaceCapability() {
             return _supportedInterfaceCapability;
         }
-
+        
         @Override
         public TransponderPort getTransponderPort() {
             return _transponderPort;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_administrativeState);
@@ -586,12 +599,12 @@ public class PortsBuilder implements Builder<Ports> {
             result = prime * result + Objects.hashCode(_supportedInterfaceCapability);
             result = prime * result + Objects.hashCode(_transponderPort);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -678,7 +691,7 @@ public class PortsBuilder implements Builder<Ports> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("Ports");

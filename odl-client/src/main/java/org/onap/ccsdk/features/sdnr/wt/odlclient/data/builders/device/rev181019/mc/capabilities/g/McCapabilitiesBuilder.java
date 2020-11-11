@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.mc.capabilities.g;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
@@ -97,86 +98,113 @@ public class McCapabilitiesBuilder implements Builder<McCapabilities> {
     public FrequencyGHz getCenterFreqGranularity() {
         return _centerFreqGranularity;
     }
-
+    
     public Uint32 getMaxSlots() {
         return _maxSlots;
     }
-
+    
     public Uint32 getMinSlots() {
         return _minSlots;
     }
-
+    
     public FrequencyGHz getSlotWidthGranularity() {
         return _slotWidthGranularity;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<McCapabilities>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
-
+    
     public McCapabilitiesBuilder setCenterFreqGranularity(final FrequencyGHz value) {
         this._centerFreqGranularity = value;
         return this;
     }
-
+    
     public McCapabilitiesBuilder setMaxSlots(final Uint32 value) {
         this._maxSlots = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setMaxSlots(Uint32)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public McCapabilitiesBuilder setMaxSlots(final Long value) {
-//        return setMaxSlots(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setMaxSlots(Uint32)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public McCapabilitiesBuilder setMaxSlots(final Long value) {
+        return setMaxSlots(CodeHelpers.compatUint(value));
+    }*/
+    
     public McCapabilitiesBuilder setMinSlots(final Uint32 value) {
         this._minSlots = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setMinSlots(Uint32)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public McCapabilitiesBuilder setMinSlots(final Long value) {
-//        return setMinSlots(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setMinSlots(Uint32)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public McCapabilitiesBuilder setMinSlots(final Long value) {
+        return setMinSlots(CodeHelpers.compatUint(value));
+    }*/
+    
     public McCapabilitiesBuilder setSlotWidthGranularity(final FrequencyGHz value) {
         this._slotWidthGranularity = value;
         return this;
     }
-
-    public McCapabilitiesBuilder addAugmentation(Class<? extends Augmentation<McCapabilities>> augmentationType, Augmentation<McCapabilities> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public McCapabilitiesBuilder addAugmentation(Augmentation<McCapabilities> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public McCapabilitiesBuilder addAugmentation(Class<? extends Augmentation<McCapabilities>> augmentationType, Augmentation<McCapabilities> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    } */
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public McCapabilitiesBuilder removeAugmentation(Class<? extends Augmentation<McCapabilities>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private McCapabilitiesBuilder doAddAugmentation(Class<? extends Augmentation<McCapabilities>> augmentationType, Augmentation<McCapabilities> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -188,12 +216,12 @@ public class McCapabilitiesBuilder implements Builder<McCapabilities> {
     private static final class McCapabilitiesImpl
         extends AbstractAugmentable<McCapabilities>
         implements McCapabilities {
-
+    
         private final FrequencyGHz _centerFreqGranularity;
         private final Uint32 _maxSlots;
         private final Uint32 _minSlots;
         private final FrequencyGHz _slotWidthGranularity;
-
+    
         McCapabilitiesImpl(McCapabilitiesBuilder base) {
             super(base.augmentation);
             this._centerFreqGranularity = base.getCenterFreqGranularity();
@@ -201,36 +229,36 @@ public class McCapabilitiesBuilder implements Builder<McCapabilities> {
             this._minSlots = base.getMinSlots();
             this._slotWidthGranularity = base.getSlotWidthGranularity();
         }
-
+    
         @Override
         public FrequencyGHz getCenterFreqGranularity() {
             return _centerFreqGranularity;
         }
-
+        
         @Override
         public Uint32 getMaxSlots() {
             return _maxSlots;
         }
-
+        
         @Override
         public Uint32 getMinSlots() {
             return _minSlots;
         }
-
+        
         @Override
         public FrequencyGHz getSlotWidthGranularity() {
             return _slotWidthGranularity;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_centerFreqGranularity);
@@ -238,12 +266,12 @@ public class McCapabilitiesBuilder implements Builder<McCapabilities> {
             result = prime * result + Objects.hashCode(_minSlots);
             result = prime * result + Objects.hashCode(_slotWidthGranularity);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -288,7 +316,7 @@ public class McCapabilitiesBuilder implements Builder<McCapabilities> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("McCapabilities");

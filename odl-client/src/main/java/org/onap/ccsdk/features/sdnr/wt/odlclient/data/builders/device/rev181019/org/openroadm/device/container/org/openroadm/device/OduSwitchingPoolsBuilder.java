@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -101,22 +102,22 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
     public OduSwitchingPoolsKey key() {
         return key;
     }
-
+    
     public Map<NonBlockingListKey, NonBlockingList> getNonBlockingList() {
         return _nonBlockingList;
     }
-
+    
     public Uint16 getSwitchingPoolNumber() {
         return _switchingPoolNumber;
     }
-
+    
     public SwitchingPoolTypes getSwitchingPoolType() {
         return _switchingPoolType;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<OduSwitchingPools>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public OduSwitchingPoolsBuilder withKey(final OduSwitchingPoolsKey key) {
@@ -127,47 +128,91 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
         this._nonBlockingList = values;
         return this;
     }
-
-
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setNonBlockingList(Map)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public OduSwitchingPoolsBuilder setNonBlockingList(final List<NonBlockingList> values) {
+        return setNonBlockingList(CodeHelpers.compatMap(values));
+    }*/
+    
     public OduSwitchingPoolsBuilder setSwitchingPoolNumber(final Uint16 value) {
         this._switchingPoolNumber = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setSwitchingPoolNumber(Uint16)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public OduSwitchingPoolsBuilder setSwitchingPoolNumber(final Integer value) {
-//        return setSwitchingPoolNumber(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setSwitchingPoolNumber(Uint16)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public OduSwitchingPoolsBuilder setSwitchingPoolNumber(final Integer value) {
+        return setSwitchingPoolNumber(CodeHelpers.compatUint(value));
+    }*/
+    
     public OduSwitchingPoolsBuilder setSwitchingPoolType(final SwitchingPoolTypes value) {
         this._switchingPoolType = value;
         return this;
     }
-
-    public OduSwitchingPoolsBuilder addAugmentation(Class<? extends Augmentation<OduSwitchingPools>> augmentationType, Augmentation<OduSwitchingPools> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public OduSwitchingPoolsBuilder addAugmentation(Augmentation<OduSwitchingPools> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public OduSwitchingPoolsBuilder addAugmentation(Class<? extends Augmentation<OduSwitchingPools>> augmentationType, Augmentation<OduSwitchingPools> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public OduSwitchingPoolsBuilder removeAugmentation(Class<? extends Augmentation<OduSwitchingPools>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private OduSwitchingPoolsBuilder doAddAugmentation(Class<? extends Augmentation<OduSwitchingPools>> augmentationType, Augmentation<OduSwitchingPools> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -179,12 +224,12 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
     private static final class OduSwitchingPoolsImpl
         extends AbstractAugmentable<OduSwitchingPools>
         implements OduSwitchingPools {
-
+    
         private final Map<NonBlockingListKey, NonBlockingList> _nonBlockingList;
         private final Uint16 _switchingPoolNumber;
         private final SwitchingPoolTypes _switchingPoolType;
         private final OduSwitchingPoolsKey key;
-
+    
         OduSwitchingPoolsImpl(OduSwitchingPoolsBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -193,51 +238,51 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
                 this.key = new OduSwitchingPoolsKey(base.getSwitchingPoolNumber());
             }
             this._switchingPoolNumber = key.getSwitchingPoolNumber();
-            this._nonBlockingList = base.getNonBlockingList();
+            this._nonBlockingList = CodeHelpers.emptyToNull(base.getNonBlockingList());
             this._switchingPoolType = base.getSwitchingPoolType();
         }
-
+    
         @Override
         public OduSwitchingPoolsKey key() {
             return key;
         }
-
+        
         @Override
         public Map<NonBlockingListKey, NonBlockingList> getNonBlockingList() {
             return _nonBlockingList;
         }
-
+        
         @Override
         public Uint16 getSwitchingPoolNumber() {
             return _switchingPoolNumber;
         }
-
+        
         @Override
         public SwitchingPoolTypes getSwitchingPoolType() {
             return _switchingPoolType;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_nonBlockingList);
             result = prime * result + Objects.hashCode(_switchingPoolNumber);
             result = prime * result + Objects.hashCode(_switchingPoolType);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -279,7 +324,7 @@ public class OduSwitchingPoolsBuilder implements Builder<OduSwitchingPools> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("OduSwitchingPools");

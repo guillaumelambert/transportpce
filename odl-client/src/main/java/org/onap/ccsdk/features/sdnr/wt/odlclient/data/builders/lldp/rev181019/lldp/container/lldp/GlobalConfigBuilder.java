@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.lldp.rev181019.lldp.container.lldp;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -96,99 +97,126 @@ public class GlobalConfigBuilder implements Builder<GlobalConfig> {
     public GlobalConfig.AdminStatus getAdminStatus() {
         return _adminStatus;
     }
-
+    
     public Uint8 getMsgTxHoldMultiplier() {
         return _msgTxHoldMultiplier;
     }
-
+    
     public Uint16 getMsgTxInterval() {
         return _msgTxInterval;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<GlobalConfig>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
-
+    
     public GlobalConfigBuilder setAdminStatus(final GlobalConfig.AdminStatus value) {
         this._adminStatus = value;
         return this;
     }
-
+    
     private static void checkMsgTxHoldMultiplierRange(final short value) {
         if (value >= (short)2 && value <= (short)10) {
             return;
         }
         CodeHelpers.throwInvalidRange("[[2..10]]", value);
     }
-
+    
     public GlobalConfigBuilder setMsgTxHoldMultiplier(final Uint8 value) {
         if (value != null) {
             checkMsgTxHoldMultiplierRange(value.shortValue());
-
+            
         }
         this._msgTxHoldMultiplier = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setMsgTxHoldMultiplier(Uint8)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public GlobalConfigBuilder setMsgTxHoldMultiplier(final Short value) {
-//        return setMsgTxHoldMultiplier(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setMsgTxHoldMultiplier(Uint8)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public GlobalConfigBuilder setMsgTxHoldMultiplier(final Short value) {
+        return setMsgTxHoldMultiplier(CodeHelpers.compatUint(value));
+    }*/
+    
     private static void checkMsgTxIntervalRange(final int value) {
         if (value >= 5 && value <= 32768) {
             return;
         }
         CodeHelpers.throwInvalidRange("[[5..32768]]", value);
     }
-
+    
     public GlobalConfigBuilder setMsgTxInterval(final Uint16 value) {
         if (value != null) {
             checkMsgTxIntervalRange(value.intValue());
-
+            
         }
         this._msgTxInterval = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setMsgTxInterval(Uint16)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public GlobalConfigBuilder setMsgTxInterval(final Integer value) {
-//        return setMsgTxInterval(CodeHelpers.compatUint(value));
-//    }
-
-    public GlobalConfigBuilder addAugmentation(Class<? extends Augmentation<GlobalConfig>> augmentationType, Augmentation<GlobalConfig> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+     * @deprecated Use {#link setMsgTxInterval(Uint16)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public GlobalConfigBuilder setMsgTxInterval(final Integer value) {
+        return setMsgTxInterval(CodeHelpers.compatUint(value));
+    }*/
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public GlobalConfigBuilder addAugmentation(Augmentation<GlobalConfig> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public GlobalConfigBuilder addAugmentation(Class<? extends Augmentation<GlobalConfig>> augmentationType, Augmentation<GlobalConfig> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public GlobalConfigBuilder removeAugmentation(Class<? extends Augmentation<GlobalConfig>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private GlobalConfigBuilder doAddAugmentation(Class<? extends Augmentation<GlobalConfig>> augmentationType, Augmentation<GlobalConfig> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -200,54 +228,54 @@ public class GlobalConfigBuilder implements Builder<GlobalConfig> {
     private static final class GlobalConfigImpl
         extends AbstractAugmentable<GlobalConfig>
         implements GlobalConfig {
-
+    
         private final GlobalConfig.AdminStatus _adminStatus;
         private final Uint8 _msgTxHoldMultiplier;
         private final Uint16 _msgTxInterval;
-
+    
         GlobalConfigImpl(GlobalConfigBuilder base) {
             super(base.augmentation);
             this._adminStatus = base.getAdminStatus();
             this._msgTxHoldMultiplier = base.getMsgTxHoldMultiplier();
             this._msgTxInterval = base.getMsgTxInterval();
         }
-
+    
         @Override
         public GlobalConfig.AdminStatus getAdminStatus() {
             return _adminStatus;
         }
-
+        
         @Override
         public Uint8 getMsgTxHoldMultiplier() {
             return _msgTxHoldMultiplier;
         }
-
+        
         @Override
         public Uint16 getMsgTxInterval() {
             return _msgTxInterval;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_adminStatus);
             result = prime * result + Objects.hashCode(_msgTxHoldMultiplier);
             result = prime * result + Objects.hashCode(_msgTxInterval);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -289,7 +317,7 @@ public class GlobalConfigBuilder implements Builder<GlobalConfig> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("GlobalConfig");

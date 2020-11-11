@@ -1,3 +1,4 @@
+  
 /*
  * Copyright (C) 2020 highstreet technologies GmbH Intellectual Property.
  *
@@ -8,6 +9,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device;
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -145,34 +147,34 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
     public SharedRiskGroupKey key() {
         return key;
     }
-
+    
     public Map<CircuitPacksKey, CircuitPacks> getCircuitPacks() {
         return _circuitPacks;
     }
-
+    
     public Uint16 getCurrentProvisionedAddDropPorts() {
         return _currentProvisionedAddDropPorts;
     }
-
+    
     public Uint16 getMaxAddDropPorts() {
         return _maxAddDropPorts;
     }
-
+    
     public McCapabilities getMcCapabilities() {
         return _mcCapabilities;
     }
-
+    
     public Uint16 getSrgNumber() {
         return _srgNumber;
     }
-
+    
     public WavelengthDuplicationType getWavelengthDuplication() {
         return _wavelengthDuplication;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<SharedRiskGroup>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public SharedRiskGroupBuilder withKey(final SharedRiskGroupKey key) {
@@ -183,86 +185,130 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
         this._circuitPacks = values;
         return this;
     }
-
-
+    
+    /**
+      * Utility migration setter.
+      *
+      * <b>IMPORTANT NOTE</b>: This method does not completely match previous mechanics, as the list is processed as
+      *                        during this method's execution. Any future modifications of the list are <b>NOT</b>
+      *                        reflected in this builder nor its products.
+      *
+      * @param values Legacy List of values
+      * @return this builder
+      * @throws IllegalArgumentException if the list contains entries with the same key
+      * @throws NullPointerException if the list contains a null entry
+      * @deprecated Use {#link #setCircuitPacks(Map)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public SharedRiskGroupBuilder setCircuitPacks(final List<CircuitPacks> values) {
+        return setCircuitPacks(CodeHelpers.compatMap(values));
+    }*/
+    
     public SharedRiskGroupBuilder setCurrentProvisionedAddDropPorts(final Uint16 value) {
         this._currentProvisionedAddDropPorts = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setCurrentProvisionedAddDropPorts(Uint16)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public SharedRiskGroupBuilder setCurrentProvisionedAddDropPorts(final Integer value) {
-//        return setCurrentProvisionedAddDropPorts(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setCurrentProvisionedAddDropPorts(Uint16)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public SharedRiskGroupBuilder setCurrentProvisionedAddDropPorts(final Integer value) {
+        return setCurrentProvisionedAddDropPorts(CodeHelpers.compatUint(value));
+    }*/
+    
     public SharedRiskGroupBuilder setMaxAddDropPorts(final Uint16 value) {
         this._maxAddDropPorts = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setMaxAddDropPorts(Uint16)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public SharedRiskGroupBuilder setMaxAddDropPorts(final Integer value) {
-//        return setMaxAddDropPorts(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setMaxAddDropPorts(Uint16)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public SharedRiskGroupBuilder setMaxAddDropPorts(final Integer value) {
+        return setMaxAddDropPorts(CodeHelpers.compatUint(value));
+    }*/
+    
     public SharedRiskGroupBuilder setMcCapabilities(final McCapabilities value) {
         this._mcCapabilities = value;
         return this;
     }
-
+    
     public SharedRiskGroupBuilder setSrgNumber(final Uint16 value) {
         this._srgNumber = value;
         return this;
     }
-
+    
     /**
      * Utility migration setter.
      *
      * @param value field value in legacy type
      * @return this builder
-     * #@deprecated Use {#link setSrgNumber(Uint16)} instead.
-     */
-//    @Deprecated(forRemoval = true)
-//    public SharedRiskGroupBuilder setSrgNumber(final Integer value) {
-//        return setSrgNumber(CodeHelpers.compatUint(value));
-//    }
-
+     * @deprecated Use {#link setSrgNumber(Uint16)} instead.
+     
+    @Deprecated(forRemoval = true)
+    public SharedRiskGroupBuilder setSrgNumber(final Integer value) {
+        return setSrgNumber(CodeHelpers.compatUint(value));
+    }*/
+    
     public SharedRiskGroupBuilder setWavelengthDuplication(final WavelengthDuplicationType value) {
         this._wavelengthDuplication = value;
         return this;
     }
-
-    public SharedRiskGroupBuilder addAugmentation(Class<? extends Augmentation<SharedRiskGroup>> augmentationType, Augmentation<SharedRiskGroup> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public SharedRiskGroupBuilder addAugmentation(Augmentation<SharedRiskGroup> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public SharedRiskGroupBuilder addAugmentation(Class<? extends Augmentation<SharedRiskGroup>> augmentationType, Augmentation<SharedRiskGroup> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public SharedRiskGroupBuilder removeAugmentation(Class<? extends Augmentation<SharedRiskGroup>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private SharedRiskGroupBuilder doAddAugmentation(Class<? extends Augmentation<SharedRiskGroup>> augmentationType, Augmentation<SharedRiskGroup> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -274,7 +320,7 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
     private static final class SharedRiskGroupImpl
         extends AbstractAugmentable<SharedRiskGroup>
         implements SharedRiskGroup {
-
+    
         private final Map<CircuitPacksKey, CircuitPacks> _circuitPacks;
         private final Uint16 _currentProvisionedAddDropPorts;
         private final Uint16 _maxAddDropPorts;
@@ -282,7 +328,7 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
         private final Uint16 _srgNumber;
         private final WavelengthDuplicationType _wavelengthDuplication;
         private final SharedRiskGroupKey key;
-
+    
         SharedRiskGroupImpl(SharedRiskGroupBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -291,57 +337,57 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
                 this.key = new SharedRiskGroupKey(base.getSrgNumber());
             }
             this._srgNumber = key.getSrgNumber();
-            this._circuitPacks = base.getCircuitPacks();
+            this._circuitPacks = CodeHelpers.emptyToNull(base.getCircuitPacks());
             this._currentProvisionedAddDropPorts = base.getCurrentProvisionedAddDropPorts();
             this._maxAddDropPorts = base.getMaxAddDropPorts();
             this._mcCapabilities = base.getMcCapabilities();
             this._wavelengthDuplication = base.getWavelengthDuplication();
         }
-
+    
         @Override
         public SharedRiskGroupKey key() {
             return key;
         }
-
+        
         @Override
         public Map<CircuitPacksKey, CircuitPacks> getCircuitPacks() {
             return _circuitPacks;
         }
-
+        
         @Override
         public Uint16 getCurrentProvisionedAddDropPorts() {
             return _currentProvisionedAddDropPorts;
         }
-
+        
         @Override
         public Uint16 getMaxAddDropPorts() {
             return _maxAddDropPorts;
         }
-
+        
         @Override
         public McCapabilities getMcCapabilities() {
             return _mcCapabilities;
         }
-
+        
         @Override
         public Uint16 getSrgNumber() {
             return _srgNumber;
         }
-
+        
         @Override
         public WavelengthDuplicationType getWavelengthDuplication() {
             return _wavelengthDuplication;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_circuitPacks);
@@ -351,12 +397,12 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
             result = prime * result + Objects.hashCode(_srgNumber);
             result = prime * result + Objects.hashCode(_wavelengthDuplication);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -407,7 +453,7 @@ public class SharedRiskGroupBuilder implements Builder<SharedRiskGroup> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("SharedRiskGroup");

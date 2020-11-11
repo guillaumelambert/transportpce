@@ -6,9 +6,9 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.lldp.rev181019.lldp.container.lldp;
-
 import com.google.common.base.MoreObjects;
 import java.lang.Class;
+import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -25,8 +25,6 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 import org.opendaylight.yangtools.yang.binding.AugmentationHolder;
 import org.opendaylight.yangtools.yang.binding.CodeHelpers;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Class that builds {@link PortConfigBuilder} instances. Overall design of the class is that of a
@@ -69,9 +67,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PortConfigBuilder implements Builder<PortConfig> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PortConfigBuilder.class);
-
-     private PortConfig.AdminStatus _adminStatus;
+    private PortConfig.AdminStatus _adminStatus;
     private String _ifName;
     private PortConfigKey key;
 
@@ -79,7 +75,6 @@ public class PortConfigBuilder implements Builder<PortConfig> {
     Map<Class<? extends Augmentation<PortConfig>>, Augmentation<PortConfig>> augmentation = Collections.emptyMap();
 
     public PortConfigBuilder() {
-        LOG.debug("construct");
     }
 
     public PortConfigBuilder(PortConfig base) {
@@ -99,54 +94,79 @@ public class PortConfigBuilder implements Builder<PortConfig> {
     public PortConfigKey key() {
         return key;
     }
-
+    
     public PortConfig.AdminStatus getAdminStatus() {
         return _adminStatus;
     }
-
+    
     public String getIfName() {
         return _ifName;
     }
 
     @SuppressWarnings({ "unchecked", "checkstyle:methodTypeParameterName"})
     public <E$$ extends Augmentation<PortConfig>> E$$ augmentation(Class<E$$> augmentationType) {
-        return (E$$) augmentation.get(CodeHelpers.nonNullValue(augmentationType, "augmentationType"));
+        return (E$$) augmentation.get(Objects.requireNonNull(augmentationType));
     }
 
     public PortConfigBuilder withKey(final PortConfigKey key) {
         this.key = key;
         return this;
     }
-
+    
     public PortConfigBuilder setAdminStatus(final PortConfig.AdminStatus value) {
-        LOG.debug("set admin status {}", value);
         this._adminStatus = value;
         return this;
     }
-
+    
     public PortConfigBuilder setIfName(final String value) {
-        LOG.debug("set if {}", value);
         this._ifName = value;
         return this;
     }
-
-    public PortConfigBuilder addAugmentation(Class<? extends Augmentation<PortConfig>> augmentationType, Augmentation<PortConfig> augmentationValue) {
-        if (augmentationValue == null) {
-            return removeAugmentation(augmentationType);
-        }
-
-        if (!(this.augmentation instanceof HashMap)) {
-            this.augmentation = new HashMap<>();
-        }
-
-        this.augmentation.put(augmentationType, augmentationValue);
-        return this;
+    
+    /**
+      * Add an augmentation to this builder's product.
+      *
+      * @param augmentation augmentation to be added
+      * @return this builder
+      * @throws NullPointerException if {@code augmentation} is null
+      */
+    public PortConfigBuilder addAugmentation(Augmentation<PortConfig> augmentation) {
+        return doAddAugmentation(augmentation.implementedInterface(), augmentation);
     }
-
+    
+    /**
+      * Add or remove an augmentation to this builder's product.
+      *
+      * @param augmentationType augmentation type to be added or removed
+      * @param augmentationValue augmentation value, null if the augmentation type should be removed
+      * @return this builder
+      * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
+      
+    @Deprecated(forRemoval = true)
+    public PortConfigBuilder addAugmentation(Class<? extends Augmentation<PortConfig>> augmentationType, Augmentation<PortConfig> augmentationValue) {
+        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+    }*/
+    
+    /**
+      * Remove an augmentation from this builder's product. If this builder does not track such an augmentation
+      * type, this method does nothing.
+      *
+      * @param augmentationType augmentation type to be removed
+      * @return this builder
+      */
     public PortConfigBuilder removeAugmentation(Class<? extends Augmentation<PortConfig>> augmentationType) {
         if (this.augmentation instanceof HashMap) {
             this.augmentation.remove(augmentationType);
         }
+        return this;
+    }
+    
+    private PortConfigBuilder doAddAugmentation(Class<? extends Augmentation<PortConfig>> augmentationType, Augmentation<PortConfig> augmentationValue) {
+        if (!(this.augmentation instanceof HashMap)) {
+            this.augmentation = new HashMap<>();
+        }
+    
+        this.augmentation.put(augmentationType, augmentationValue);
         return this;
     }
 
@@ -158,11 +178,11 @@ public class PortConfigBuilder implements Builder<PortConfig> {
     private static final class PortConfigImpl
         extends AbstractAugmentable<PortConfig>
         implements PortConfig {
-
+    
         private final PortConfig.AdminStatus _adminStatus;
         private final String _ifName;
         private final PortConfigKey key;
-
+    
         PortConfigImpl(PortConfigBuilder base) {
             super(base.augmentation);
             if (base.key() != null) {
@@ -173,42 +193,42 @@ public class PortConfigBuilder implements Builder<PortConfig> {
             this._ifName = key.getIfName();
             this._adminStatus = base.getAdminStatus();
         }
-
+    
         @Override
         public PortConfigKey key() {
             return key;
         }
-
+        
         @Override
         public PortConfig.AdminStatus getAdminStatus() {
             return _adminStatus;
         }
-
+        
         @Override
         public String getIfName() {
             return _ifName;
         }
-
+    
         private int hash = 0;
         private volatile boolean hashValid = false;
-
+        
         @Override
         public int hashCode() {
             if (hashValid) {
                 return hash;
             }
-
+        
             final int prime = 31;
             int result = 1;
             result = prime * result + Objects.hashCode(_adminStatus);
             result = prime * result + Objects.hashCode(_ifName);
             result = prime * result + Objects.hashCode(augmentations());
-
+        
             hash = result;
             hashValid = true;
             return result;
         }
-
+    
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
@@ -247,7 +267,7 @@ public class PortConfigBuilder implements Builder<PortConfig> {
             }
             return true;
         }
-
+    
         @Override
         public String toString() {
             final MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper("PortConfig");
