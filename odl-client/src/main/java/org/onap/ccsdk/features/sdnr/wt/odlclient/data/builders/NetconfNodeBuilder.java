@@ -16,8 +16,11 @@ import java.lang.Override;
 import java.lang.String;
 import java.math.BigDecimal;
 import java.util.Objects;
+
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.optional.rev190614.netconf.node.augmented.optional.fields.IgnoreMissingSchemaSources;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNodeConnectionStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.netconf.node.connection.parameters.NonModuleCapabilities;
@@ -662,7 +665,7 @@ public class NetconfNodeBuilder implements Builder<NetconfNode> {
         public Uint16 getActorResponseWaitTime() {
             return _actorResponseWaitTime;
         }
-
+        
         @Override
         public AvailableCapabilities getAvailableCapabilities() {
             return _availableCapabilities;
@@ -955,5 +958,11 @@ public class NetconfNodeBuilder implements Builder<NetconfNode> {
             CodeHelpers.appendValue(helper, "_tcpOnly", _tcpOnly);
             return helper.toString();
         }
+
+		@Override
+		public @Nullable IgnoreMissingSchemaSources getIgnoreMissingSchemaSources() {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
 }

@@ -75,10 +75,6 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.types.rev161014.
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint64;
-<<<<<<< HEAD
-
-=======
->>>>>>> standalone/stable/aluminium
 
 public class OlmPowerServiceRpcImplTest extends AbstractTest {
 

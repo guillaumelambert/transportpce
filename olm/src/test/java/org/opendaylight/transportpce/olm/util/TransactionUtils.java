@@ -19,19 +19,6 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.NetworkUtils;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.Network;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.NodesBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.NodesKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.CpToDegree;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.CpToDegreeBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfo.OpenroadmVersion;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfoBuilder;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesBuilder;
@@ -44,7 +31,6 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmappi
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingKey;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo.OpenroadmVersion;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfoBuilder;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.link.types.rev181130.FiberPmd;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.link.types.rev181130.RatioDB;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.state.types.rev181130.State;
@@ -138,53 +124,6 @@ public final class TransactionUtils {
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network
             .rev180226.networks.Network getOverLayNetwork() {
-<<<<<<< HEAD
-        List<SupportingNode> supportingNodes1 = new ArrayList<>();
-        supportingNodes1
-            .add(new SupportingNodeBuilder()
-                    .setNodeRef(new NodeId("node 1"))
-                    .setNetworkRef(new NetworkId(NetworkUtils.UNDERLAY_NETWORK_ID))
-                .build());
-        NodeBuilder node1Builder = new NodeBuilder()
-                .setNodeId(new NodeId("node 1"))
-                .withKey(new NodeKey(new NodeId("node 1")))
-                .setSupportingNode(supportingNodes1);
-        List<Node> nodes = new ArrayList<>();
-        nodes.add(node1Builder.build());
-        List<SupportingNode> supportingNodes = new ArrayList<>();
-        supportingNodes
-                .add(new SupportingNodeBuilder()
-                    .setNodeRef(new NodeId("node 2"))
-                    .setNetworkRef(new NetworkId(NetworkUtils.UNDERLAY_NETWORK_ID))
-                .build());
-        NodeBuilder node2Builder = new NodeBuilder()
-                .setNodeId(new NodeId("node 2"))
-                .withKey(new NodeKey(new NodeId("node 2")))
-                .setSupportingNode(supportingNodes);
-        nodes.add(node2Builder.build());
-        List<SupportingNode> supportingNodes3 = new ArrayList<>();
-        supportingNodes3
-            .add(new SupportingNodeBuilder()
-                .setNodeRef(new NodeId("node 3"))
-                .setNetworkRef(new NetworkId(NetworkUtils.UNDERLAY_NETWORK_ID))
-            .build());
-        NodeBuilder node3Builder = new NodeBuilder()
-                .setNodeId(new NodeId("node 3"))
-                .withKey(new NodeKey(new NodeId("node 3")))
-                .setSupportingNode(supportingNodes3);
-        nodes.add(node3Builder.build());
-        List<SupportingNode> supportingNodes4 = new ArrayList<>();
-        supportingNodes4
-            .add(new SupportingNodeBuilder()
-                .setNodeRef(new NodeId("node 4"))
-                .setNetworkRef(new NetworkId(NetworkUtils.UNDERLAY_NETWORK_ID))
-            .build());
-        NodeBuilder node4Builder = new NodeBuilder()
-                .setNodeId(new NodeId("node 4"))
-                .withKey(new NodeKey(new NodeId("node 4")))
-                .setSupportingNode(supportingNodes4);
-        nodes.add(node4Builder.build());
-=======
         SupportingNode supportingNode = new SupportingNodeBuilder()
                 .setNodeRef(new NodeId("node 1"))
                 .setNetworkRef(new NetworkId(NetworkUtils.UNDERLAY_NETWORK_ID))
@@ -226,7 +165,6 @@ public final class TransactionUtils {
                 .setSupportingNode(Map.of(supportingNode4.key(),supportingNode4));
         Node node4 = node4Builder.build();
         nodes.put(node4.key(),node4);
->>>>>>> standalone/stable/aluminium
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.NetworkBuilder
             networkBuilder =
                 new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks
@@ -240,11 +178,7 @@ public final class TransactionUtils {
     }
 
     public static Network1 getNetwork() {
-<<<<<<< HEAD
-        List<SupportingLink> supportingLinks = new ArrayList<>();
-=======
         Map<SupportingLinkKey,SupportingLink> supportingLinks = new HashMap<>();
->>>>>>> standalone/stable/aluminium
         SupportingLink supportingLink1 = new SupportingLinkBuilder()
                 .setLinkRef("ref1")
                 .setNetworkRef(new NetworkId("net1"))
@@ -253,15 +187,9 @@ public final class TransactionUtils {
                 .setLinkRef("ref2")
                 .setNetworkRef(new NetworkId("net2"))
                 .build();
-<<<<<<< HEAD
-        supportingLinks.add(supportingLink1);
-        supportingLinks.add(supportingLink2);
-        List<Link> links = new ArrayList<>();
-=======
         supportingLinks.put(supportingLink1.key(),supportingLink1);
         supportingLinks.put(supportingLink2.key(),supportingLink2);
         Map<LinkKey,Link> links = new HashMap<>();
->>>>>>> standalone/stable/aluminium
         Link link1 = new LinkBuilder()
                 .setLinkId(new LinkId("link 1"))
                 .setDestination(
@@ -290,13 +218,8 @@ public final class TransactionUtils {
                         .build())
                 .setSupportingLink(supportingLinks)
                 .build();
-<<<<<<< HEAD
-        links.add(link1);
-        links.add(link2);
-=======
         links.put(link1.key(),link1);
         links.put(link2.key(),link2);
->>>>>>> standalone/stable/aluminium
         Network1 network = new Network1Builder().setLink(links).build();
         Optional.of(network);
         return network;
@@ -454,11 +377,7 @@ public final class TransactionUtils {
                 .setOpenroadmVersion(OpenroadmVersion._121)
                 .build())
             .setCpToDegree(cpList)
-<<<<<<< HEAD
-            .setMapping(mappingList)
-=======
             .setMapping(Map.of(map1.key(),map1))
->>>>>>> standalone/stable/aluminium
             .build();
         return nodes;
     }
@@ -490,11 +409,7 @@ public final class TransactionUtils {
                 .setOpenroadmVersion(OpenroadmVersion._121)
                 .build())
             .setCpToDegree(cpList)
-<<<<<<< HEAD
-            .setMapping(mappingList)
-=======
             .setMapping(Map.of(map1.key(),map1))
->>>>>>> standalone/stable/aluminium
             .build();
         return nodes;
     }
@@ -526,11 +441,7 @@ public final class TransactionUtils {
                 .setOpenroadmVersion(OpenroadmVersion._121)
                 .build())
             .setCpToDegree(cpList)
-<<<<<<< HEAD
-            .setMapping(mappingList)
-=======
             .setMapping(Map.of(map1.key(),map1))
->>>>>>> standalone/stable/aluminium
             .build();
         return nodes;
     }

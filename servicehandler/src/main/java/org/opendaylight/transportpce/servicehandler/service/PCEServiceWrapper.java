@@ -120,62 +120,10 @@ public class PCEServiceWrapper {
         try {
             notificationPublishService.putNotification(notification);
         } catch (InterruptedException e) {
-<<<<<<< HEAD
-            LOG.info("notification offer rejected : ", e);
-        }
-        FutureCallback<PathComputationRequestOutput> pceCallback = new FutureCallback<PathComputationRequestOutput>() {
-            String message = "";
-            ServiceRpcResultSh notification = null;
-
-            @Override
-            public void onSuccess(PathComputationRequestOutput response) {
-                if (response != null) {
-                    /**
-                     * If PCE reply is received before timer expiration with a positive result, a
-                     * service is created with admin and operational status 'down'.
-                     */
-                    message = "PCE replied to PCR Request !";
-                    LOG.info("PCE replied to PCR Request : {}", response);
-                    notification = new ServiceRpcResultShBuilder().setNotificationType(notifType)
-                            .setServiceName(serviceName)
-                            .setStatus(RpcStatusEx.Successful).setStatusMessage(message).build();
-                    try {
-                        notificationPublishService.putNotification(notification);
-                    } catch (InterruptedException e) {
-                        LOG.info("notification offer rejected : ", e);
-                    }
-                } else {
-                    message = "PCE failed ";
-                    notification = new ServiceRpcResultShBuilder().setNotificationType(notifType).setServiceName("")
-                            .setStatus(RpcStatusEx.Failed).setStatusMessage(message).build();
-                    try {
-                        notificationPublishService.putNotification(notification);
-                    } catch (InterruptedException e) {
-                        LOG.info("notification offer rejected : ", e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable arg0) {
-                LOG.error("Path not calculated..");
-                notification = new ServiceRpcResultShBuilder().setNotificationType(notifType)
-                        .setServiceName(serviceName)
-                        .setStatus(RpcStatusEx.Failed).setStatusMessage("PCR Request failed  : " + arg0.getMessage())
-                        .build();
-                try {
-                    notificationPublishService.putNotification(notification);
-                } catch (InterruptedException e) {
-                    LOG.info("notification offer rejected : ", e);
-                }
-            }
-        };
-=======
             LOG.info(NOTIFICATION_OFFER_REJECTED_MSG, e);
         }
         FutureCallback<PathComputationRequestOutput> pceCallback =
                 new PathComputationRequestOutputCallback(notifType, serviceName);
->>>>>>> standalone/stable/aluminium
         PathComputationRequestInput pathComputationRequestInput = createPceRequestInput(serviceName, sdncRequestHeader,
                 mappingConstraints.getServicePathHardConstraints(), mappingConstraints.getServicePathSoftConstraints(),
                 reserveResource, serviceAEnd, serviceZEnd);
@@ -244,62 +192,10 @@ public class PCEServiceWrapper {
         try {
             notificationPublishService.putNotification(notification);
         } catch (InterruptedException e) {
-<<<<<<< HEAD
-            LOG.info("notification offer rejected : ", e);
-        }
-        FutureCallback<CancelResourceReserveOutput> pceCallback = new FutureCallback<CancelResourceReserveOutput>() {
-
-            String message = "";
-            ServiceRpcResultSh notification = null;
-
-            @Override
-            public void onSuccess(CancelResourceReserveOutput response) {
-                if (response != null) {
-                    /**
-                     * If PCE reply is received before timer expiration with a positive result, a
-                     * service is created with admin and operational status 'down'.
-                     */
-                    message = "PCE replied to CRR Request !";
-                    LOG.info("PCE replied to CRR Request : {}", response);
-                    notification =
-                            new ServiceRpcResultShBuilder().setNotificationType(notifType).setServiceName(serviceName)
-                                    .setStatus(RpcStatusEx.Successful).setStatusMessage(message).build();
-                    try {
-                        notificationPublishService.putNotification(notification);
-                    } catch (InterruptedException e) {
-                        LOG.info("notification offer rejected : ", e);
-                    }
-                } else {
-                    message = "PCE failed ";
-                    notification = new ServiceRpcResultShBuilder().setNotificationType(notifType).setServiceName("")
-                            .setStatus(RpcStatusEx.Failed).setStatusMessage(message).build();
-                    try {
-                        notificationPublishService.putNotification(notification);
-                    } catch (InterruptedException e) {
-                        LOG.info("notification offer rejected : ", e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable arg0) {
-                LOG.error("Cancel resource failed !");
-                notification = new ServiceRpcResultShBuilder().setNotificationType(notifType)
-                        .setServiceName(serviceName).setStatus(RpcStatusEx.Failed)
-                        .setStatusMessage("CRR Request failed  : " + arg0.getMessage()).build();
-                try {
-                    notificationPublishService.putNotification(notification);
-                } catch (InterruptedException e) {
-                    LOG.info("notification offer rejected : ", e);
-                }
-            }
-        };
-=======
             LOG.info(NOTIFICATION_OFFER_REJECTED_MSG, e);
         }
         FutureCallback<CancelResourceReserveOutput> pceCallback =
                 new CancelResourceReserveOutputFutureCallback(notifType, serviceName);
->>>>>>> standalone/stable/aluminium
         CancelResourceReserveInput cancelResourceReserveInput = mappingCancelResourceReserve(serviceName, null);
         ConfigurationResponseCommonBuilder configurationResponseCommon = new ConfigurationResponseCommonBuilder();
         if (cancelResourceReserveInput != null) {

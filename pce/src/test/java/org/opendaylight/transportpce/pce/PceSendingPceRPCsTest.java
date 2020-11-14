@@ -11,15 +11,10 @@ package org.opendaylight.transportpce.pce;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-<<<<<<< HEAD
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.transportpce.common.DataStoreContext;
-=======
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.transportpce.common.network.NetworkTransactionImpl;
 import org.opendaylight.transportpce.common.network.RequestProcessor;
 import org.opendaylight.transportpce.pce.gnpy.ConnectToGnpyServer;
@@ -27,28 +22,17 @@ import org.opendaylight.transportpce.pce.gnpy.JerseyServer;
 import org.opendaylight.transportpce.pce.utils.PceTestData;
 import org.opendaylight.transportpce.pce.utils.PceTestUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
-<<<<<<< HEAD
-
-
-//@RunWith(MockitoJUnitRunner.class)
-=======
 import org.opendaylight.yangtools.yang.model.parser.api.YangParserFactory;
 
 @RunWith(MockitoJUnitRunner.class)
->>>>>>> standalone/stable/aluminium
 public class PceSendingPceRPCsTest extends AbstractTest {
 
     private PceSendingPceRPCs pceSendingPceRPCs;
     private NetworkTransactionImpl networkTransaction;
-<<<<<<< HEAD
-    private DataStoreContext dataStoreContext = this.getDataStoreContextUtil();
-    private DataBroker dataBroker = this.getDataBroker();
-=======
     @Mock
     private YangParserFactory yangParserFactory;
     @Mock
     private BindingDOMCodecServices bindingDOMCodecServices;
->>>>>>> standalone/stable/aluminium
     private JerseyServer jerseyServer = new JerseyServer();
 
 
@@ -56,13 +40,8 @@ public class PceSendingPceRPCsTest extends AbstractTest {
     public void setUp() {
         networkTransaction = new NetworkTransactionImpl(new RequestProcessor(this.getDataBroker()));
         PceTestUtils.writeNetworkInDataStore(this.getDataBroker());
-<<<<<<< HEAD
-        pceSendingPceRPCs =
-                new PceSendingPceRPCs(PceTestData.getPCE_test1_request_54(), networkTransaction);
-=======
         pceSendingPceRPCs = new PceSendingPceRPCs(PceTestData.getPCE_test1_request_54(),
                         networkTransaction, bindingDOMCodecServices);
->>>>>>> standalone/stable/aluminium
     }
 
     @Test
@@ -76,11 +55,7 @@ public class PceSendingPceRPCsTest extends AbstractTest {
         jerseyServer.setUp();
         pceSendingPceRPCs =
                 new PceSendingPceRPCs(PceTestData.getGnpyPCERequest("XPONDER-1", "XPONDER-2"),
-<<<<<<< HEAD
-                        networkTransaction);
-=======
                         networkTransaction, null);
->>>>>>> standalone/stable/aluminium
 
         pceSendingPceRPCs.pathComputation();
         ConnectToGnpyServer connectToGnpy = new ConnectToGnpyServer();

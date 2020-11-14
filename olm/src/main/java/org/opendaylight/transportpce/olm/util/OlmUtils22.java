@@ -14,11 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-<<<<<<< HEAD
-import org.eclipse.jdt.annotation.Nullable;
-=======
 import org.eclipse.jdt.annotation.NonNull;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;

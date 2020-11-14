@@ -14,11 +14,7 @@ import org.opendaylight.transportpce.renderer.ServicePathInputData;
 import org.opendaylight.transportpce.renderer.provisiondevice.DeviceRendererService;
 import org.opendaylight.transportpce.renderer.provisiondevice.DeviceRenderingResult;
 import org.opendaylight.transportpce.renderer.provisiondevice.servicepath.ServicePathDirection;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathOutput;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.ServicePathOutput;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.renderer.input.Nodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

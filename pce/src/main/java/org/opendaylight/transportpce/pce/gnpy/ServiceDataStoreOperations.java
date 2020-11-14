@@ -13,15 +13,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface ServiceDataStoreOperations {
 
-<<<<<<< HEAD
-    void createXMLFromDevice(DataStoreContext dataStoreContextUtil, OrgOpenroadmDevice device, String output)
-        throws GnpyException;
-
-    String createJsonStringFromDataObject(InstanceIdentifier<?> id, DataObject object) throws GnpyException, Exception;
-
-=======
     String createJsonStringFromDataObject(InstanceIdentifier<GnpyApi> id, GnpyApi object) throws GnpyException;
 
->>>>>>> standalone/stable/aluminium
     void writeStringFile(String jsonString, String fileName) throws GnpyException;
 }

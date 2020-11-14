@@ -70,11 +70,7 @@ public final class TopologyUtils {
             .setSource(srcNodeBldr.build())
             .setLinkId(linkId)
             .withKey(new LinkKey(linkId))
-<<<<<<< HEAD
-            .addAugmentation(Link1.class,lnk1);
-=======
             .addAugmentation(lnk1);
->>>>>>> standalone/stable/aluminium
         return lnkBldr;
     }
 

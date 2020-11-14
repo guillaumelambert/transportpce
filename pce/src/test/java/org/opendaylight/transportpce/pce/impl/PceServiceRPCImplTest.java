@@ -26,11 +26,6 @@ import org.opendaylight.transportpce.test.AbstractTest;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.CancelResourceReserveInputBuilder;
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> standalone/stable/aluminium
 public class PceServiceRPCImplTest extends AbstractTest {
 
     private PathComputationService pathComputationService;
@@ -44,12 +39,8 @@ public class PceServiceRPCImplTest extends AbstractTest {
                 TransactionUtils.getNetworkForSpanLoss());
         notificationPublishService = new NotificationPublishServiceMock();
         networkTransaction =  new NetworkTransactionImpl(new RequestProcessor(this.getDataBroker()));
-<<<<<<< HEAD
-        pathComputationService = new PathComputationServiceImpl(networkTransaction, notificationPublishService);
-=======
         pathComputationService = new PathComputationServiceImpl(networkTransaction, notificationPublishService,
                 null);
->>>>>>> standalone/stable/aluminium
         pceServiceRPC = new PceServiceRPCImpl(pathComputationService);
 
     }

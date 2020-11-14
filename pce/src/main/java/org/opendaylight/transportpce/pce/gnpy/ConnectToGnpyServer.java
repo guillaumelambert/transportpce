@@ -34,11 +34,7 @@ public class ConnectToGnpyServer {
 
     public String returnGnpyResponse(String jsonTxt) throws GnpyException  {
         String jsonRespTxt = null;
-<<<<<<< HEAD
-
-=======
         LOG.debug("Sending request {}",jsonTxt);
->>>>>>> standalone/stable/aluminium
         try {
             // Send the request to the GNPy
             HttpURLConnection conn = connectToGNPy("POST");

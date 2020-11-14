@@ -515,6 +515,7 @@ public class PortMappingVersion221 {
         }
     }
 
+
     private HashMap<Integer, List<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.srg
         .CircuitPacks>> getSrgCps(String deviceId, Info ordmInfo) {
         HashMap<Integer, List<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.srg
@@ -1120,22 +1121,8 @@ public class PortMappingVersion221 {
                     LOG.error("Number of connection port for DEG{} on {} is incorrect", cpMapEntry.getKey(), nodeId);
                     continue;
             }
-            if (deviceInfo.getModel() != null) {
-                nodeInfoBldr.setNodeModel(deviceInfo.getModel());
-            }
-            if (deviceInfo.getVendor() != null) {
-                nodeInfoBldr.setNodeVendor(deviceInfo.getVendor());
-            }
-            if (deviceInfo.getIpAddress() != null) {
-                nodeInfoBldr.setNodeIpAddress(deviceInfo.getIpAddress());
-            }
-            else {
-                // TODO make mandatory in yang
-                LOG.error("Node type field is missing");
-                return null;
-            }
         }
-        return nodeInfoBldr.build();
+        return true;
     }
 
     private NodeInfo createNodeInfo(Info deviceInfo, String nodeId) {

@@ -39,7 +39,6 @@ public class PcePathDescription {
     private static final Logger LOG = LoggerFactory.getLogger(PcePathDescription.class);
 
     private List<PceLink> pathAtoZ = null;
-    private List<PceLink> pathZtoA = null;
     private PceResult rc;
     private Map<LinkId, PceLink> allPceLinks = null;
 
@@ -52,80 +51,24 @@ public class PcePathDescription {
 
     public PceResult buildDescriptions() {
         LOG.info("In buildDescriptions: AtoZ =  {}", pathAtoZ);
-<<<<<<< HEAD
-        List<AToZ> atozList = new ArrayList<>();
-=======
         Map<AToZKey,AToZ> atozMap = new HashMap<>();
->>>>>>> standalone/stable/aluminium
         if (pathAtoZ == null) {
             rc.setRC(ResponseCodes.RESPONSE_FAILED);
             LOG.error("In buildDescriptions: there is empty AtoZ path");
             return rc;
         }
 
-<<<<<<< HEAD
-        buildAtoZ(atozList, pathAtoZ);
-        AToZDirectionBuilder atoZDirectionBldr = new AToZDirectionBuilder()
-            .setRate(Uint32.valueOf(rc.getRate()))
-            .setAToZ(atozList);
-        if ("100GE".equals(rc.getServiceType()) || "OTU4".equals(rc.getServiceType())) {
-            atoZDirectionBldr.setAToZWavelengthNumber(Uint32.valueOf(rc.getResultWavelength()));
-        } else if ("10GE".equals(rc.getServiceType()) || "1GE".equals(rc.getServiceType())
-            || "ODU4".equals(rc.getServiceType())) {
-            if (rc.getResultTribSlot() != null && rc.getResultTribPort() != null) {
-                List<Uint16> tribSlotList = (List<Uint16>) rc.getResultTribSlot().values().toArray()[0];
-                atoZDirectionBldr.setAToZWavelengthNumber(Uint32.valueOf(0))
-                    .setTribPortNumber(Uint16.valueOf(rc.getResultTribPort().values().toArray()[0].toString()))
-                    .setTribSlotNumber(tribSlotList.get(0));
-            } else {
-                LOG.error("Trib port and trib slot number should be present");
-                atoZDirectionBldr.setTribSlotNumber(Uint16.valueOf(0)).setTribPortNumber(Uint16.valueOf(0));
-            }
-        }
-        rc.setAtoZDirection(atoZDirectionBldr.build());
-        pathZtoA = ImmutableList.copyOf(pathAtoZ).reverse();
-        LOG.info("In buildDescriptions: ZtoA {}", pathZtoA);
-
-        List<ZToA> ztoaList = new ArrayList<>();
-=======
         buildAtoZ(atozMap, pathAtoZ);
         rc.setAtoZDirection(buildAtoZDirection(atozMap).build());
         List<PceLink> pathZtoA = ImmutableList.copyOf(pathAtoZ).reverse();
         LOG.info("In buildDescriptions: ZtoA {}", pathZtoA);
 
         Map<ZToAKey,ZToA> ztoaMap = new HashMap<>();
->>>>>>> standalone/stable/aluminium
         if (pathZtoA == null) {
             rc.setRC(ResponseCodes.RESPONSE_FAILED);
             LOG.error("In buildDescriptions: there is empty ZtoA path");
             return rc;
         }
-<<<<<<< HEAD
-        buildZtoA(ztoaList, pathZtoA);
-        ZToADirectionBuilder ztoADirectionBldr = new ZToADirectionBuilder()
-            .setRate(Uint32.valueOf(rc.getRate()))
-            .setZToA(ztoaList);
-        if ("100GE".equals(rc.getServiceType()) || "OTU4".equals(rc.getServiceType())) {
-            ztoADirectionBldr.setZToAWavelengthNumber(Uint32.valueOf(rc.getResultWavelength()));
-        } else if ("10GE".equals(rc.getServiceType()) || "1GE".equals(rc.getServiceType())
-            || "ODU4".equals(rc.getServiceType())) {
-            if (rc.getResultTribSlot() != null && rc.getResultTribPort() != null) {
-                List<Uint16> tribSlotList = (List<Uint16>) rc.getResultTribSlot().values().toArray()[0];
-                ztoADirectionBldr.setZToAWavelengthNumber(Uint32.valueOf(0))
-                    .setTribPortNumber(Uint16.valueOf(rc.getResultTribPort().values().toArray()[0].toString()))
-                    .setTribSlotNumber(tribSlotList.get(0));
-            } else {
-                LOG.error("Trib port and trib slot number should be present");
-                ztoADirectionBldr.setTribSlotNumber(Uint16.valueOf(0)).setTribPortNumber(Uint16.valueOf(0));
-            }
-        }
-        rc.setZtoADirection(ztoADirectionBldr.build());
-
-        return rc;
-    }
-
-    private void buildAtoZ(List<AToZ> etoeList, List<PceLink> path) {
-=======
         buildZtoA(ztoaMap, pathZtoA);
         rc.setZtoADirection(buildZtoADirection(ztoaMap).build());
 
@@ -190,7 +133,6 @@ public class PcePathDescription {
     //sonar issue This method has 77 lines, which is greater than the 75 lines authorized. Split it into smaller
     //ignore as it's not relevant to split it from functional point
     private void buildAtoZ(Map<AToZKey, AToZ> atozMap, List<PceLink> path) {
->>>>>>> standalone/stable/aluminium
         Integer index = 0;
         PceLink lastLink = null;
         AToZ lastResource = null;
@@ -205,11 +147,7 @@ public class PcePathDescription {
         AToZKey clientKey = new AToZKey(index.toString());
         Resource clientResource = new ResourceBuilder().setResource(stp).build();
         AToZ firstResource = new AToZBuilder().setId(tpName).withKey(clientKey).setResource(clientResource).build();
-<<<<<<< HEAD
-        etoeList.add(firstResource);
-=======
         atozMap.put(firstResource.key(),firstResource);
->>>>>>> standalone/stable/aluminium
         index += 1;
         for (PceLink pcelink : path) {
             String srcName = pcelink.getSourceId().getValue();
@@ -224,11 +162,7 @@ public class PcePathDescription {
             Resource nodeResource1 = new ResourceBuilder().setResource(sourceNode).build();
             AToZ srcResource = new AToZBuilder().setId(srcName).withKey(sourceKey).setResource(nodeResource1).build();
             index += 1;
-<<<<<<< HEAD
-            etoeList.add(srcResource);
-=======
             atozMap.put(srcResource.key(),srcResource);
->>>>>>> standalone/stable/aluminium
 
             // source TP
             tpName = pcelink.getSourceTP().toString();
@@ -241,11 +175,7 @@ public class PcePathDescription {
             Resource tpResource1 = new ResourceBuilder().setResource(stp).build();
             AToZ stpResource = new AToZBuilder().setId(tpName).withKey(srcTPKey).setResource(tpResource1).build();
             index += 1;
-<<<<<<< HEAD
-            etoeList.add(stpResource);
-=======
             atozMap.put(stpResource.key(),stpResource);
->>>>>>> standalone/stable/aluminium
 
             String linkName = pcelink.getLinkId().getValue();
             // Link
@@ -259,11 +189,7 @@ public class PcePathDescription {
             Resource nodeResource2 = new ResourceBuilder().setResource(atozLink).build();
             AToZ linkResource = new AToZBuilder().setId(linkName).withKey(linkKey).setResource(nodeResource2).build();
             index += 1;
-<<<<<<< HEAD
-            etoeList.add(linkResource);
-=======
             atozMap.put(linkResource.key(),linkResource);
->>>>>>> standalone/stable/aluminium
 
             String destName = pcelink.getDestId().getValue();
             // target TP
@@ -277,11 +203,7 @@ public class PcePathDescription {
             Resource tpResource2 = new ResourceBuilder().setResource(dtp).build();
             AToZ ttpResource = new AToZBuilder().setId(tpName).withKey(destTPKey).setResource(tpResource2).build();
             index += 1;
-<<<<<<< HEAD
-            etoeList.add(ttpResource);
-=======
             atozMap.put(ttpResource.key(),ttpResource);
->>>>>>> standalone/stable/aluminium
 
             org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce
                 .resource.resource.resource.Node targetNode = new NodeBuilder()
@@ -331,11 +253,7 @@ public class PcePathDescription {
         ZToAKey clientKey = new ZToAKey(index.toString());
         Resource clientResource = new ResourceBuilder().setResource(stp).build();
         ZToA firstResource = new ZToABuilder().setId(tpName).withKey(clientKey).setResource(clientResource).build();
-<<<<<<< HEAD
-        etoelist.add(firstResource);
-=======
         ztoaList.put(firstResource.key(),firstResource);
->>>>>>> standalone/stable/aluminium
         index += 1;
 
         for (PceLink pcelinkAtoZ : path) {
@@ -357,11 +275,7 @@ public class PcePathDescription {
             Resource nodeResource1 = new ResourceBuilder().setResource(sourceNode).build();
             ZToA srcResource = new ZToABuilder().setId(srcName).withKey(sourceKey).setResource(nodeResource1).build();
             index += 1;
-<<<<<<< HEAD
-            etoelist.add(srcResource);
-=======
             ztoaList.put(srcResource.key(),srcResource);
->>>>>>> standalone/stable/aluminium
 
             // source TP
             tpName = pcelink.getSourceTP().toString();
@@ -374,11 +288,7 @@ public class PcePathDescription {
             Resource tpResource1 = new ResourceBuilder().setResource(stp).build();
             ZToA stpResource = new ZToABuilder().setId(tpName).withKey(srcTPKey).setResource(tpResource1).build();
             index += 1;
-<<<<<<< HEAD
-            etoelist.add(stpResource);
-=======
             ztoaList.put(stpResource.key(),stpResource);
->>>>>>> standalone/stable/aluminium
 
             String linkName = pcelink.getLinkId().getValue();
             // Link
@@ -391,11 +301,7 @@ public class PcePathDescription {
             Resource nodeResource2 = new ResourceBuilder().setResource(ztoaLink).build();
             ZToA linkResource = new ZToABuilder().setId(linkName).withKey(linkKey).setResource(nodeResource2).build();
             index += 1;
-<<<<<<< HEAD
-            etoelist.add(linkResource);
-=======
             ztoaList.put(linkResource.key(),linkResource);
->>>>>>> standalone/stable/aluminium
 
             String destName = pcelink.getDestId().getValue();
             // target TP
@@ -408,11 +314,7 @@ public class PcePathDescription {
             Resource tpResource2 = new ResourceBuilder().setResource(ttp).build();
             ZToA ttpResource = new ZToABuilder().setId(tpName).withKey(destTPKey).setResource(tpResource2).build();
             index += 1;
-<<<<<<< HEAD
-            etoelist.add(ttpResource);
-=======
             ztoaList.put(ttpResource.key(),ttpResource);
->>>>>>> standalone/stable/aluminium
 
 
             org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce
@@ -439,11 +341,7 @@ public class PcePathDescription {
         clientKey = new ZToAKey(index.toString());
         clientResource = new ResourceBuilder().setResource(stp).build();
         lastResource = new ZToABuilder().setId(tpName).withKey(clientKey).setResource(clientResource).build();
-<<<<<<< HEAD
-        etoelist.add(lastResource);
-=======
         ztoaList.put(lastResource.key(),lastResource);
->>>>>>> standalone/stable/aluminium
     }
 
     public PceResult getReturnStructure() {

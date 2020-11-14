@@ -8,10 +8,7 @@
 package org.opendaylight.transportpce.renderer.provisiondevice.otn;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
 import java.util.Collection;
->>>>>>> standalone/stable/aluminium
 import java.util.List;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.CircuitPacks;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.Ports;
@@ -30,19 +27,11 @@ public class OtnDeviceOperationsImpl implements OtnDeviceOperations {
     public String validateClientPort(String circuitPackName, String portName, String capacity,
             PortGroupRestriction portGroupRestriction) {
 
-<<<<<<< HEAD
-        List<PortBandwidthSharing> portBandwidthSharingList = portGroupRestriction
-                .getPortBandwidthSharing();
-        if (portGroupRestriction.getPortBandwidthSharing() != null) {
-            for (PortBandwidthSharing portBandwidthSharing : portBandwidthSharingList) {
-                List<PortList> portLists = portBandwidthSharing.getPortList();
-=======
         Collection<PortBandwidthSharing> portBandwidthSharingList = portGroupRestriction
                 .nonnullPortBandwidthSharing().values();
         if (portGroupRestriction.getPortBandwidthSharing() != null) {
             for (PortBandwidthSharing portBandwidthSharing : portBandwidthSharingList) {
                 Collection<PortList> portLists = portBandwidthSharing.nonnullPortList().values();
->>>>>>> standalone/stable/aluminium
                 for (PortList portList : portLists) {
                     if (portList.getCircuitPackName().equals(circuitPackName)
                             && portList.getPortName().equals(portName)) {
@@ -62,18 +51,12 @@ public class OtnDeviceOperationsImpl implements OtnDeviceOperations {
     }
 
     private Integer getConfigID(PortBandwidthSharing portBandwidthSharing, String circuitPackName, String portName) {
-<<<<<<< HEAD
-        List<PossiblePortConfig> possiblePortConfigList = portBandwidthSharing.getPossiblePortConfig();
-        for (PossiblePortConfig possiblePortConfig: possiblePortConfigList
-             ) {
-            List<PortIfTypeConfig> portIfTypeConfigList = possiblePortConfig.getPortIfTypeConfig();
-=======
+
         Collection<PossiblePortConfig> possiblePortConfigList = portBandwidthSharing
                 .nonnullPossiblePortConfig().values();
         for (PossiblePortConfig possiblePortConfig: possiblePortConfigList
              ) {
             Collection<PortIfTypeConfig> portIfTypeConfigList = possiblePortConfig.nonnullPortIfTypeConfig().values();
->>>>>>> standalone/stable/aluminium
             for (PortIfTypeConfig portIfTypeConfig : portIfTypeConfigList) {
                 if (portIfTypeConfig.getCircuitPackName().equals(circuitPackName)
                         && portIfTypeConfig.getPortName().equals(portName)) {
@@ -98,32 +81,21 @@ public class OtnDeviceOperationsImpl implements OtnDeviceOperations {
         List<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org
                 .openroadm.device.container.org.openroadm.device.odu.switching
                 .pools.non.blocking.list.PortList> networkPortList = new ArrayList<>();
-<<<<<<< HEAD
-        List<NonBlockingList> nonBlockingLists = oduSwitchingPools.getNonBlockingList();
-=======
+
         Collection<NonBlockingList> nonBlockingLists = oduSwitchingPools.nonnullNonBlockingList().values();
->>>>>>> standalone/stable/aluminium
 
 
         for (NonBlockingList nonBlockingList: nonBlockingLists) {
 
             for (org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device
                     .container.org.openroadm.device.odu.switching.pools.non.blocking.list.PortList port:
-<<<<<<< HEAD
-                 nonBlockingList.getPortList()) {
-=======
                  nonBlockingList.nonnullPortList().values()) {
->>>>>>> standalone/stable/aluminium
 
                 if (port.getCircuitPackName().equals(circuitPackName) && port.getPortName().equals(portName)) {
                     org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device
                             .container.org.openroadm.device.odu.switching.pools.non.blocking.list
-<<<<<<< HEAD
-                            .PortList networkPort = checkNetworkPorts(nonBlockingList.getPortList(), circuitPacks);
-=======
                             .PortList networkPort = checkNetworkPorts(nonBlockingList
                                     .nonnullPortList().values(), circuitPacks);
->>>>>>> standalone/stable/aluminium
                     if (networkPort != null) {
                         networkPortList.add(networkPort);
                     }
@@ -136,19 +108,11 @@ public class OtnDeviceOperationsImpl implements OtnDeviceOperations {
 
     private org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device
             .container.org.openroadm.device.odu.switching.pools.non.blocking.list.PortList
-<<<<<<< HEAD
-        checkNetworkPorts(List<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org
-            .openroadm.device.container.org.openroadm.device.odu.switching.pools.non.blocking.list.PortList> portList,
-                CircuitPacks circuitPacks) {
-        List<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.packs
-            .CircuitPacks> circuitPackList = circuitPacks.getCircuitPacks();
-=======
         checkNetworkPorts(Collection<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org
             .openroadm.device.container.org.openroadm.device.odu.switching.pools.non.blocking.list.PortList> portList,
                 CircuitPacks circuitPacks) {
         Collection<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.packs
             .CircuitPacks> circuitPackList = circuitPacks.nonnullCircuitPacks().values();
->>>>>>> standalone/stable/aluminium
 
         for (org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container
             .org.openroadm.device.odu.switching.pools.non.blocking.list.PortList port: portList) {
@@ -167,11 +131,7 @@ public class OtnDeviceOperationsImpl implements OtnDeviceOperations {
             .container.org.openroadm.device.odu.switching.pools.non.blocking.list.PortList port,
             org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.packs.CircuitPacks circuitPack) {
         if (port.getCircuitPackName().equals(circuitPack.getCircuitPackName())) {
-<<<<<<< HEAD
-            for (Ports prt : circuitPack.getPorts()) {
-=======
             for (Ports prt : circuitPack.nonnullPorts().values()) {
->>>>>>> standalone/stable/aluminium
                 if (prt.getPortQual() != null
                         && port.getPortName().equals(prt.getPortName())
                         && "xpdr-network".equals(prt.getPortQual().getName())) {

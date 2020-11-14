@@ -8,20 +8,13 @@
 
 package org.opendaylight.transportpce.renderer.provisiondevice.tasks;
 
-<<<<<<< HEAD
-import java.util.concurrent.Callable;
-import org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRendererService;
-import org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRenderingResult;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.OtnServicePathOutput;
-=======
+
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRendererService;
 import org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRenderingResult;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.OtnServicePathInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.OtnServicePathOutput;
->>>>>>> standalone/stable/aluminium
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,16 +36,10 @@ public class OtnDeviceRenderingTask implements Callable<OtnDeviceRenderingResult
         OtnServicePathOutput output = this.otnDeviceRenderer.setupOtnServicePath(this.otnServicePathInput);
         if (Boolean.TRUE.equals(output.isSuccess())) {
             LOG.info("Device rendering finished successfully.");
-<<<<<<< HEAD
-            return OtnDeviceRenderingResult.ok(output.getNodeInterface());
-
-        } else { //false or null case
-=======
             return OtnDeviceRenderingResult.ok(new ArrayList<>(output.nonnullNodeInterface().values()));
 
         } else {
             //false or null case
->>>>>>> standalone/stable/aluminium
             LOG.warn("Device rendering not successfully finished.");
             return OtnDeviceRenderingResult.failed("Operation Failed");
         }

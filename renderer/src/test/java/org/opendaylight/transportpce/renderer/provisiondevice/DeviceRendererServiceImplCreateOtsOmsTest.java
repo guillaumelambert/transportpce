@@ -9,21 +9,15 @@
 package org.opendaylight.transportpce.renderer.provisiondevice;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
 import java.util.concurrent.ExecutionException;
->>>>>>> standalone/stable/aluminium
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
-<<<<<<< HEAD
-=======
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnectImpl;
@@ -54,10 +48,6 @@ import org.opendaylight.transportpce.renderer.stub.MountPointServiceStub;
 import org.opendaylight.transportpce.renderer.utils.CreateOtsOmsDataUtils;
 import org.opendaylight.transportpce.renderer.utils.MountPointUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsOutput;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.CreateOtsOmsInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.CreateOtsOmsOutput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
@@ -67,7 +57,6 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmappi
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfoBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
->>>>>>> standalone/stable/aluminium
 
 @Ignore
 public class DeviceRendererServiceImplCreateOtsOmsTest extends AbstractTest {
@@ -108,11 +97,7 @@ public class DeviceRendererServiceImplCreateOtsOmsTest extends AbstractTest {
         FlexGridImpl flexGrid = new FlexGridImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
         OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
-<<<<<<< HEAD
-            fixedFlexInterface);
-=======
             fixedFlexInterface, flexGrid);
->>>>>>> standalone/stable/aluminium
         OpenRoadmOtnInterface221 openRoadmOTNInterface = new OpenRoadmOtnInterface221(portMapping, openRoadmInterfaces);
         this.openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,openRoadmInterface121,
             openRoadmInterface221, openRoadmOTNInterface);
@@ -124,11 +109,7 @@ public class DeviceRendererServiceImplCreateOtsOmsTest extends AbstractTest {
         this.crossConnect = Mockito.spy(this.crossConnect);
         this.deviceRendererService = new DeviceRendererServiceImpl(this.getDataBroker(),
             this.deviceTransactionManager, this.openRoadmInterfaceFactory, this.openRoadmInterfaces,
-<<<<<<< HEAD
             this.crossConnect, portMapping, null, new DisabledRemoteOpendaylightClient());
-=======
-            this.crossConnect, portMapping, null);
->>>>>>> standalone/stable/aluminium
     }
 
     @Test

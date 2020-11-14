@@ -57,10 +57,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> standalone/stable/aluminium
 public class OlmPowerServiceImplSpanLossBaseTest extends AbstractTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(OlmPowerServiceImplSpanLossBaseTest.class);
@@ -121,15 +117,9 @@ public class OlmPowerServiceImplSpanLossBaseTest extends AbstractTest {
                 .setSpanLossReceive(new RatioDB(new BigDecimal(25))).build();
         Interface1 ots = new Interface1Builder().setOts(otsValue).build();
         Interface interA = new InterfaceBuilder().setName("OTS-DEG2-TTP-TXRX").setType(OpticalTransport.class)
-<<<<<<< HEAD
-                .addAugmentation(Interface1.class, ots).build();
-        Interface interC = new InterfaceBuilder().setName("OTS-DEG1-TTP-TXRX").setType(OpticalTransport.class)
-                .addAugmentation(Interface1.class, ots).build();
-=======
                 .addAugmentation(ots).build();
         Interface interC = new InterfaceBuilder().setName("OTS-DEG1-TTP-TXRX").setType(OpticalTransport.class)
                 .addAugmentation(ots).build();
->>>>>>> standalone/stable/aluminium
         Optional<Interface> interOptA = Optional.of(interA);
         Optional<Interface> interOptC = Optional.of(interC);
         Mockito.when(this.openRoadmInterfacesImpl221.getInterface("ROADM-A1", "OTS-DEG2-TTP-TXRX"))

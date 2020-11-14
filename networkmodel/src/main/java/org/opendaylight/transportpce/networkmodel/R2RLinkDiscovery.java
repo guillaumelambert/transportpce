@@ -9,21 +9,14 @@ package org.opendaylight.transportpce.networkmodel;
 
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_1_2_1;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_2_2_1;
-<<<<<<< HEAD
-import java.util.List;
-=======
 
 import java.util.Collection;
->>>>>>> standalone/stable/aluminium
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.Nullable;
-<<<<<<< HEAD
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
-=======
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
@@ -33,19 +26,11 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.transportpce.networkmodel.util.TopologyUtils;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.networkutils.rev170818.InitRoadmNodesInputBuilder;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.Network;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.NodesKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.CpToDegree;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesKey;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.CpToDegree;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev170929.Direction;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.Protocols;
@@ -65,16 +50,10 @@ public class R2RLinkDiscovery {
     private final DataBroker dataBroker;
     private final NetworkTransactionService networkTransactionService;
     private final DeviceTransactionManager deviceTransactionManager;
-<<<<<<< HEAD
     private final RemoteOpendaylightClient odlClient;
 
     public R2RLinkDiscovery(final DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
         NetworkTransactionService networkTransactionService, RemoteOpendaylightClient odlClient) {
-=======
-
-    public R2RLinkDiscovery(final DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
-        NetworkTransactionService networkTransactionService) {
->>>>>>> standalone/stable/aluminium
         this.dataBroker = dataBroker;
         this.deviceTransactionManager = deviceTransactionManager;
         this.networkTransactionService = networkTransactionService;

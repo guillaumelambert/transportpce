@@ -586,8 +586,7 @@ public class PortMappingVersion121 {
                     .collect(Collectors.toList()));
             }
         }
-        LOG.info("Device {} has {} degree", deviceId, degrees.size());
-        return degrees;
+        return cpToDegreeList;
     }
 
     private boolean postPortMapping(String nodeId, NodeInfo nodeInfo, List<Mapping> portMapList,

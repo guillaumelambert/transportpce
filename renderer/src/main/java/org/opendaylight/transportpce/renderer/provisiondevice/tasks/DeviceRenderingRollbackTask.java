@@ -13,20 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.transportpce.renderer.provisiondevice.DeviceRendererService;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackOutput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.renderer.rollback.output.FailedToRollback;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterface;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.RendererRollbackInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.RendererRollbackInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.RendererRollbackOutput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.renderer.rollback.output.FailedToRollback;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterface;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterfaceKey;
->>>>>>> standalone/stable/aluminium
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

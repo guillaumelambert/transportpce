@@ -15,28 +15,17 @@ Author: Martial Coulibaly <martial.coulibaly@gfi.com> on behalf of Orange
 
   <reference id="networkTransactionImpl" interface="org.opendaylight.transportpce.common.network.NetworkTransactionService" />
 
-<<<<<<< HEAD
   <reference id="dataBroker"
         interface="org.opendaylight.mdsal.binding.api.DataBroker"
         odl:type="default"/>
-=======
   <reference id="bindingDOMCodecServices" interface="org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices" />
-
-
-  <reference id="dataBroker"
-        interface="org.opendaylight.mdsal.binding.api.DataBroker"/>
->>>>>>> standalone/stable/aluminium
 
   <reference id="rpcService"
         interface="org.opendaylight.mdsal.binding.api.RpcProviderService"/>
 
   <reference id="notificationPublishService"
-<<<<<<< HEAD
         interface="org.opendaylight.mdsal.binding.api.NotificationPublishService"
         odl:type="default" />
-=======
-        interface="org.opendaylight.mdsal.binding.api.NotificationPublishService"/>
->>>>>>> standalone/stable/aluminium
 
   <bean id="pceServiceImpl"
         class="org.opendaylight.transportpce.pce.service.PathComputationServiceImpl"

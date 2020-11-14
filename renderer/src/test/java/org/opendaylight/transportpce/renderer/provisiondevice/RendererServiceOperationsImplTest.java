@@ -62,10 +62,6 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev17
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.TransportpceOlmService;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.get.pm.output.Measurements;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.get.pm.output.MeasurementsBuilder;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathOutputBuilder;
-=======
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceImplementationRequestInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceImplementationRequestOutput;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.pm.types.rev161014.PmGranularity;
@@ -114,11 +110,7 @@ public class RendererServiceOperationsImplTest extends AbstractTest {
         FlexGridImpl flexGrid = new FlexGridImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
         OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
-<<<<<<< HEAD
-            fixedFlexInterface);
-=======
             fixedFlexInterface, flexGrid);
->>>>>>> standalone/stable/aluminium
         OpenRoadmOtnInterface221 openRoadmOTNInterface = new OpenRoadmOtnInterface221(portMapping, openRoadmInterfaces);
         this.openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,openRoadmInterface121,
             openRoadmInterface221, openRoadmOTNInterface);
@@ -134,16 +126,10 @@ public class RendererServiceOperationsImplTest extends AbstractTest {
         this.olmService = new OlmServiceStub();
         this.networkModelWavelengthService = new NetworkModelWavelengthServiceImpl(getDataBroker());
         this.deviceRenderer = new DeviceRendererServiceImpl(this.getDataBroker(), this.deviceTransactionManager,
-<<<<<<< HEAD
             openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect, portMapping, null,
             new DisabledRemoteOpendaylightClient());
         this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, this.crossConnect,
             openRoadmInterfaces, this.deviceTransactionManager, null, new DisabledRemoteOpendaylightClient());
-=======
-            openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect, portMapping, null);
-        this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, this.crossConnect,
-            openRoadmInterfaces, this.deviceTransactionManager, null);
->>>>>>> standalone/stable/aluminium
         Mockito.doNothing().when(this.openRoadmInterfaces).postEquipmentState(Mockito.anyString(),
             Mockito.anyString(), Mockito.anyBoolean());
         NotificationPublishService notificationPublishService = new NotificationPublishServiceMock();

@@ -17,13 +17,16 @@ Author: Martial Coulibaly <martial.coulibaly@gfi.com> on behalf of Orange
           interface="org.opendaylight.mdsal.binding.api.RpcProviderService"/>
 
     <reference id="dataBroker"
-          interface="org.opendaylight.mdsal.binding.api.DataBroker"/>
+          interface="org.opendaylight.mdsal.binding.api.DataBroker"
+          odl:type="default" />
 
     <reference id="notificationService"
-          interface="org.opendaylight.mdsal.binding.api.NotificationService"/>
+          interface="org.opendaylight.mdsal.binding.api.NotificationService"
+          odl:type="default" />
 
     <reference id="notificationPublishService"
-          interface="org.opendaylight.mdsal.binding.api.NotificationPublishService"/>
+          interface="org.opendaylight.mdsal.binding.api.NotificationPublishService"
+          odl:type="default" />
 
     <reference id="pathComputationService"
           interface="org.opendaylight.transportpce.pce.service.PathComputationService"/>

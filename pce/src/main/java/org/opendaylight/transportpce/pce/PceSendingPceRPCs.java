@@ -8,10 +8,7 @@
 
 package org.opendaylight.transportpce.pce;
 
-<<<<<<< HEAD
-=======
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.transportpce.common.ResponseCodes;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints;
@@ -62,10 +59,7 @@ public class PceSendingPceRPCs {
     private Boolean success;
     private String message;
     private String responseCode;
-<<<<<<< HEAD
-=======
     private BindingDOMCodecServices bindingDOMCodecServices;
->>>>>>> standalone/stable/aluminium
 
     public PceSendingPceRPCs() {
         setPathDescription(null);
@@ -74,20 +68,13 @@ public class PceSendingPceRPCs {
     }
 
     public PceSendingPceRPCs(PathComputationRequestInput input,
-<<<<<<< HEAD
-        NetworkTransactionService networkTransaction) {
-=======
         NetworkTransactionService networkTransaction, BindingDOMCodecServices bindingDOMCodecServices) {
->>>>>>> standalone/stable/aluminium
         setPathDescription(null);
 
         // TODO compliance check to check that input is not empty
         this.input = input;
         this.networkTransaction = networkTransaction;
-<<<<<<< HEAD
-=======
         this.bindingDOMCodecServices = bindingDOMCodecServices;
->>>>>>> standalone/stable/aluminium
     }
 
     public void cancelResourceReserve() {
@@ -170,12 +157,8 @@ public class PceSendingPceRPCs {
         try {
             ConnectToGnpyServer connectToGnpy = new ConnectToGnpyServer();
             if (connectToGnpy.isGnpyURLExist()) {
-<<<<<<< HEAD
-                GnpyUtilitiesImpl gnpy = new GnpyUtilitiesImpl(networkTransaction, input);
-=======
                 GnpyUtilitiesImpl gnpy = new GnpyUtilitiesImpl(networkTransaction, input,
                         bindingDOMCodecServices);
->>>>>>> standalone/stable/aluminium
                 if (rc.getStatus() && gnpyToCheckFeasiblity(atoz,ztoa,gnpy)) {
                     setPathDescription(new PathDescriptionBuilder().setAToZDirection(atoz).setZToADirection(ztoa));
                     return;
@@ -192,11 +175,7 @@ public class PceSendingPceRPCs {
     }
 
     private boolean gnpyToCheckFeasiblity(AToZDirection atoz, ZToADirection ztoa, GnpyUtilitiesImpl gnpy)
-<<<<<<< HEAD
-            throws GnpyException, Exception {
-=======
             throws GnpyException {
->>>>>>> standalone/stable/aluminium
 
         //Call GNPy for path verification
         if (gnpy.verifyComputationByGnpy(atoz, ztoa, pceHardConstraints)) {
@@ -208,11 +187,7 @@ public class PceSendingPceRPCs {
         return false;
     }
 
-<<<<<<< HEAD
-    private void callGnpyToComputeNewPath(GnpyUtilitiesImpl gnpy) throws GnpyException, Exception {
-=======
     private void callGnpyToComputeNewPath(GnpyUtilitiesImpl gnpy) throws GnpyException {
->>>>>>> standalone/stable/aluminium
 
         //Call GNPy in the case of non feasibility
         LOG.info("In pceSendingPceRPC: the path is not feasible according to Gnpy");

@@ -256,10 +256,10 @@ public class InterfaceBuilder implements Builder<Interface> {
       * @return this builder
       * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
       */
-    @Deprecated(forRemoval = true)
-    public InterfaceBuilder addAugmentation(Class<? extends Augmentation<Interface>> augmentationType, Augmentation<Interface> augmentationValue) {
-        return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
-    }
+    //@Deprecated(forRemoval = true)
+    //public InterfaceBuilder addAugmentation(Class<? extends Augmentation<Interface>> augmentationType, Augmentation<Interface> augmentationValue) {
+     //   return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
+   // }
     
     /**
       * Remove an augmentation from this builder's product. If this builder does not track such an augmentation

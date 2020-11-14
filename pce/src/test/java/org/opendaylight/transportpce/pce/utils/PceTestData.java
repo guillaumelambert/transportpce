@@ -38,10 +38,7 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.general.ExcludeBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.general.IncludeBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.general.LatencyBuilder;
-<<<<<<< HEAD
-=======
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.general.include_.OrderedHops;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.constraints.sp.co.routing.or.general.general.include_.OrderedHopsBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.diversity.existing.service.contraints.sp.ExistingServiceApplicability;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.diversity.existing.service.contraints.sp.ExistingServiceApplicabilityBuilder;
@@ -58,11 +55,8 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.endpoint.sp.TxDirectionBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.handler.header.ServiceHandlerHeader;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.service.handler.header.ServiceHandlerHeaderBuilder;
-<<<<<<< HEAD
-=======
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
->>>>>>> standalone/stable/aluminium
 
 
 public final class PceTestData {
@@ -107,11 +101,7 @@ public final class PceTestData {
                 .build();
         ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
                 .setServiceFormat(ServiceFormat.ODU)
-<<<<<<< HEAD
-                .setServiceRate(100L)
-=======
                 .setServiceRate(Uint32.valueOf(100))
->>>>>>> standalone/stable/aluminium
                 .setClli("clli11")
                 .setNodeId("XPONDER-2-2")
                 .setTxDirection(new TxDirectionBuilder().setPort(
@@ -139,11 +129,7 @@ public final class PceTestData {
                 .build();
         ServiceZEnd serviceZEnd = new ServiceZEndBuilder()
                 .setServiceFormat(ServiceFormat.ODU)
-<<<<<<< HEAD
-                .setServiceRate(0L)
-=======
                 .setServiceRate(Uint32.valueOf(0))
->>>>>>> standalone/stable/aluminium
                 .setClli("Some clli11")
                 .setNodeId("XPONDER-1-2")
                 .setTxDirection(new TxDirectionBuilder().setPort(
@@ -203,8 +189,6 @@ public final class PceTestData {
     }
 
     public static PathComputationRequestInput getPathComputationRequestInputWithCoRoutingOrGeneral() {
-<<<<<<< HEAD
-=======
         ServiceHandlerHeader serviceHandlerHeader = new ServiceHandlerHeaderBuilder()
                 .setRequestId("request1")
                 .build();
@@ -298,110 +282,12 @@ public final class PceTestData {
     }
 
     public static PathComputationRequestInput getPCERequest() {
->>>>>>> standalone/stable/aluminium
         ServiceHandlerHeader serviceHandlerHeader = new ServiceHandlerHeaderBuilder()
                 .setRequestId("request1")
                 .build();
         ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
                 .setServiceFormat(ServiceFormat.Ethernet)
-<<<<<<< HEAD
-                .setServiceRate(100L)
-                .setClli("clli11")
-                .setNodeId("XPONDER-2-2")
-                .setTxDirection(new TxDirectionBuilder().setPort(
-                        new PortBuilder()
-                                .setPortDeviceName("Some port-device-name")
-                                .setPortType("Some port-type")
-                                .setPortName("Some port-name")
-                                .setPortRack("Some port-rack")
-                                .setPortShelf("Some port-shelf")
-                                .setPortSlot("Some port-slot")
-                                .setPortSubSlot("Some port-sub-slot")
-                                .build()
-                ).build())
-                .setRxDirection(new RxDirectionBuilder().setPort(
-                        new PortBuilder()
-                                .setPortDeviceName("Some port-device-name")
-                                .setPortType("Some port-type")
-                                .setPortName("Some port-name")
-                                .setPortRack("Some port-rack")
-                                .setPortShelf("Some port-shelf")
-                                .setPortSlot("Some port-slot")
-                                .setPortSubSlot("Some port-sub-slot")
-                                .build()
-                ).build())
-                .build();
-        ServiceZEnd serviceZEnd = new ServiceZEndBuilder()
-                .setServiceFormat(ServiceFormat.Ethernet)
-                .setServiceRate(0L)
-                .setClli("Some clli11")
-                .setNodeId("XPONDER-1-2")
-                .setTxDirection(new TxDirectionBuilder().setPort(
-                        new PortBuilder()
-                                .setPortDeviceName("Some port-device-name")
-                                .setPortType("Some port-type")
-                                .setPortName("Some port-name")
-                                .setPortRack("Some port-rack")
-                                .setPortShelf("Some port-shelf")
-                                .setPortSlot("Some port-slot")
-                                .setPortSubSlot("Some port-sub-slot")
-                                .build()
-                ).build())
-                .setRxDirection(new RxDirectionBuilder().setPort(
-                        new PortBuilder()
-                                .setPortDeviceName("Some port-device-name")
-                                .setPortType("Some port-type")
-                                .setPortName("Some port-name")
-                                .setPortRack("Some port-rack")
-                                .setPortShelf("Some port-shelf")
-                                .setPortSlot("Some port-slot")
-                                .setPortSubSlot("Some port-sub-slot")
-                                .build()
-                ).build())
-                .build();
-        PathComputationRequestInput input = new PathComputationRequestInputBuilder()
-                .setServiceName("service1")
-                .setResourceReserve(true)
-                .setPceMetric(PceMetric.HopCount)
-                .setLocallyProtectedLinks(true)
-                .setServiceHandlerHeader(serviceHandlerHeader)
-                .setServiceAEnd(serviceAEnd)
-                .setServiceZEnd(serviceZEnd)
-                .setHardConstraints(new HardConstraintsBuilder()
-                        .setCustomerCode(Arrays.asList("Some customer-code"))
-                        .setCoRoutingOrGeneral(new CoRoutingBuilder()
-                                .setCoRouting(new org.opendaylight.yang.gen.v1.http.org
-                                        .transportpce.b.c._interface.routing.constraints.rev171017
-                                        .constraints.sp.co.routing.or.general.co.routing.CoRoutingBuilder()
-                                        .setExistingService(Arrays.asList("Some existing-service"))
-
-                                        .build())
-                                .build())
-                        .build())
-                .setSoftConstraints(new SoftConstraintsBuilder()
-                        .setCustomerCode(Arrays.asList("Some customer-code"))
-                        .setCoRoutingOrGeneral(new CoRoutingBuilder()
-                                .setCoRouting(new org.opendaylight.yang.gen.v1.http.org
-                                        .transportpce.b.c._interface.routing.constraints.rev171017
-                                        .constraints.sp.co.routing.or.general.co.routing.CoRoutingBuilder()
-                                        .setExistingService(Arrays.asList("Some existing-service"))
-                                        .build())
-                                .build())
-                        .build())
-                .build();
-        return input;
-    }
-
-    public static PathComputationRequestInput getPCERequest() {
-        ServiceHandlerHeader serviceHandlerHeader = new ServiceHandlerHeaderBuilder()
-                .setRequestId("request1")
-                .build();
-        ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
-                .setServiceFormat(ServiceFormat.Ethernet)
-                .setServiceRate(100L)
-=======
                 .setServiceRate(Uint32.valueOf(100))
->>>>>>> standalone/stable/aluminium
                 .setClli("clli11")
                 .setNodeId("XPONDER-2-2")
                 .setTxDirection(new TxDirectionBuilder().setPort(
@@ -628,19 +514,9 @@ public final class PceTestData {
                                 .setExclude(new ExcludeBuilder()
                                         .setNodeId(Arrays.asList("OpenROADM-2-2"))
                                         .build())
-<<<<<<< HEAD
-                                .setLatency(new LatencyBuilder().setMaxLatency(3223L).build())
-                                .setInclude(new IncludeBuilder()
-                                        .setOrderedHops(Arrays.asList(new OrderedHopsBuilder()
-                                                .setHopNumber(22)
-                                                .setHopType(new HopTypeBuilder()
-                                                        .setHopType(new HopTypeBuilder().getHopType()).build())
-                                                .build()))
-=======
                                 .setLatency(new LatencyBuilder().setMaxLatency(Uint32.valueOf(3223)).build())
                                 .setInclude(new IncludeBuilder()
                                         .setOrderedHops(Map.of(orderedHops.key(),orderedHops))
->>>>>>> standalone/stable/aluminium
                                         .build())
                                 .build())
                         .build())
@@ -741,19 +617,11 @@ public final class PceTestData {
                 .setRequestId("request 1")
                 .build();
         ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
-<<<<<<< HEAD
-                .setServiceRate(0L)
-                .setNodeId("XPONDER-1-2")
-                .build();
-        ServiceZEnd serviceZEnd = new ServiceZEndBuilder()
-                .setServiceRate(0L)
-=======
                 .setServiceRate(Uint32.valueOf(0))
                 .setNodeId("XPONDER-1-2")
                 .build();
         ServiceZEnd serviceZEnd = new ServiceZEndBuilder()
                 .setServiceRate(Uint32.valueOf(0))
->>>>>>> standalone/stable/aluminium
                 .setNodeId("XPONDER-3-2")
                 .build();
         HardConstraints hardConstrains = new HardConstraintsBuilder().build();
@@ -883,11 +751,7 @@ public final class PceTestData {
                 .setHardConstraints(new HardConstraintsBuilder()
                         .setCoRoutingOrGeneral(new GeneralBuilder()
                                 .setLatency(new LatencyBuilder()
-<<<<<<< HEAD
-                                        .setMaxLatency(3223L).build())
-=======
                                         .setMaxLatency(Uint32.valueOf(3223)).build())
->>>>>>> standalone/stable/aluminium
                                 .setDiversity(new DiversityBuilder()
                                         .setExistingService(Arrays.asList(base.getServiceName()))
                                         .setExistingServiceApplicability(nodeTrue)
@@ -904,11 +768,7 @@ public final class PceTestData {
                 new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531
                         .service.create.input.ServiceAEndBuilder()
                         .setClli("clli")
-<<<<<<< HEAD
-                        .setServiceRate((long) 0)
-=======
                         .setServiceRate(Uint32.valueOf(0))
->>>>>>> standalone/stable/aluminium
                         .setNodeId(new NodeIdType("XPONDER-1-2"))
                         .setTxDirection(new org.opendaylight.yang.gen.v1.http.org
                                 .openroadm.common.service.types.rev190531.service.endpoint.TxDirectionBuilder()
@@ -924,11 +784,7 @@ public final class PceTestData {
                 new org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531
                         .service.create.input.ServiceZEndBuilder()
                         .setClli("clli")
-<<<<<<< HEAD
-                        .setServiceRate((long) 0)
-=======
                         .setServiceRate(Uint32.valueOf(0))
->>>>>>> standalone/stable/aluminium
                         .setNodeId(new NodeIdType("XPONDER-3-2"))
                         .setTxDirection(new org.opendaylight.yang.gen.v1.http.org
                                 .openroadm.common.service.types.rev190531.service.endpoint.TxDirectionBuilder()
@@ -960,11 +816,7 @@ public final class PceTestData {
                 .build();
         ServiceAEnd serviceAEnd = new ServiceAEndBuilder()
                 .setServiceFormat(ServiceFormat.Ethernet)
-<<<<<<< HEAD
-                .setServiceRate(100L)
-=======
                 .setServiceRate(Uint32.valueOf(100))
->>>>>>> standalone/stable/aluminium
                 .setClli("clli11")
                 .setNodeId(nodeA)
                 .setTxDirection(new TxDirectionBuilder().setPort(
@@ -992,11 +844,7 @@ public final class PceTestData {
                 .build();
         ServiceZEnd serviceZEnd = new ServiceZEndBuilder()
                 .setServiceFormat(ServiceFormat.Ethernet)
-<<<<<<< HEAD
-                .setServiceRate(0L)
-=======
                 .setServiceRate(Uint32.valueOf(0))
->>>>>>> standalone/stable/aluminium
                 .setClli("Some clli11")
                 .setNodeId(nodeZ)
                 .setTxDirection(new TxDirectionBuilder().setPort(

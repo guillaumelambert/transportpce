@@ -151,11 +151,11 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
      * @param value field value in legacy type
      * @return this builder
      * @deprecated Use {#link setInterconnectBandwidth(Uint32)} instead.
-     */
+     
     @Deprecated(forRemoval = true)
     public NonBlockingListBuilder setInterconnectBandwidth(final Long value) {
         return setInterconnectBandwidth(CodeHelpers.compatUint(value));
-    }
+    }*/
     
     public NonBlockingListBuilder setInterconnectBandwidthUnit(final Uint32 value) {
         this._interconnectBandwidthUnit = value;
@@ -168,11 +168,11 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
      * @param value field value in legacy type
      * @return this builder
      * @deprecated Use {#link setInterconnectBandwidthUnit(Uint32)} instead.
-     */
+     
     @Deprecated(forRemoval = true)
     public NonBlockingListBuilder setInterconnectBandwidthUnit(final Long value) {
         return setInterconnectBandwidthUnit(CodeHelpers.compatUint(value));
-    }
+    }*/
     
     public NonBlockingListBuilder setNblNumber(final Uint16 value) {
         this._nblNumber = value;
@@ -185,11 +185,12 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
      * @param value field value in legacy type
      * @return this builder
      * @deprecated Use {#link setNblNumber(Uint16)} instead.
-     */
+     
     @Deprecated(forRemoval = true)
     public NonBlockingListBuilder setNblNumber(final Integer value) {
         return setNblNumber(CodeHelpers.compatUint(value));
-    }
+    }*/
+
     public NonBlockingListBuilder setPluggableOpticsHolderList(final Map<PluggableOpticsHolderListKey, PluggableOpticsHolderList> values) {
         this._pluggableOpticsHolderList = values;
         return this;
@@ -207,11 +208,12 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
       * @throws IllegalArgumentException if the list contains entries with the same key
       * @throws NullPointerException if the list contains a null entry
       * @deprecated Use {#link #setPluggableOpticsHolderList(Map)} instead.
-      */
+      
     @Deprecated(forRemoval = true)
     public NonBlockingListBuilder setPluggableOpticsHolderList(final List<PluggableOpticsHolderList> values) {
         return setPluggableOpticsHolderList(CodeHelpers.compatMap(values));
-    }
+    }*/
+
     public NonBlockingListBuilder setPortList(final Map<PortListKey, PortList> values) {
         this._portList = values;
         return this;
@@ -229,11 +231,11 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
       * @throws IllegalArgumentException if the list contains entries with the same key
       * @throws NullPointerException if the list contains a null entry
       * @deprecated Use {#link #setPortList(Map)} instead.
-      */
+      
     @Deprecated(forRemoval = true)
     public NonBlockingListBuilder setPortList(final List<PortList> values) {
         return setPortList(CodeHelpers.compatMap(values));
-    }
+    }*/
     
     /**
       * Add an augmentation to this builder's product.
@@ -253,11 +255,11 @@ public class NonBlockingListBuilder implements Builder<NonBlockingList> {
       * @param augmentationValue augmentation value, null if the augmentation type should be removed
       * @return this builder
       * @deprecated Use either {@link #addAugmentation(Augmentation)} or {@link #removeAugmentation(Class)} instead.
-      */
+      
     @Deprecated(forRemoval = true)
     public NonBlockingListBuilder addAugmentation(Class<? extends Augmentation<NonBlockingList>> augmentationType, Augmentation<NonBlockingList> augmentationValue) {
         return augmentationValue == null ? removeAugmentation(augmentationType) : doAddAugmentation(augmentationType, augmentationValue);
-    }
+    }*/
     
     /**
       * Remove an augmentation from this builder's product. If this builder does not track such an augmentation

@@ -73,7 +73,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
         }
     }
 
-    @Override
+   /* @Override
     public <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data, boolean createMissingParents) {
         LOG.warn("rw transaction now implemented: deprecated put, {}", whoCalledMeAll());
@@ -83,7 +83,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
                 | IllegalAccessException e) {
             LOG.warn("problem creating put request: ", e);
         }
-    }
+    }*/
 
     @Override
     public <T extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store,
@@ -91,7 +91,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
         LOG.warn("rw transaction not yet implemented: mergeParentStructurePut, {}", whoCalledMeAll());
     }
 
-    @Override
+    /*@Override
     public <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> instanceIdentifier,
             @NonNull T data, boolean createMissingParents) {
         LOG.warn("rw transaction not yet implemented: deprecated merge, {}", whoCalledMeAll());
@@ -101,7 +101,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
                 | IllegalAccessException e) {
             LOG.warn("problem creating merge request: ", e);
         }
-    }
+    }*/
 
     @Override
     public <T extends DataObject> void merge(@NonNull LogicalDatastoreType store,

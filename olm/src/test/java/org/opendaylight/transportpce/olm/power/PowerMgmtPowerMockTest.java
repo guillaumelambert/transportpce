@@ -9,10 +9,6 @@
 package org.opendaylight.transportpce.olm.power;
 
 import java.math.BigDecimal;
-<<<<<<< HEAD
-import java.util.Arrays;
-=======
->>>>>>> standalone/stable/aluminium
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -49,17 +45,6 @@ import org.opendaylight.transportpce.olm.util.OlmPowerServiceRpcImplUtil;
 import org.opendaylight.transportpce.olm.util.OlmUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupInput;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.Network;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.NodesBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.NodesKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfo;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfoBuilder;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesBuilder;
@@ -69,15 +54,10 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmappi
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingKey;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfoBuilder;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.OpticalControlMode;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.RatioDB;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeTypes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.InterfaceBuilder;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.Interface1;
-=======
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.Interface1Builder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.ots.container.Ots;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.ots.container.OtsBuilder;
@@ -239,11 +219,7 @@ public class PowerMgmtPowerMockTest extends AbstractTest {
         Ots ots = new OtsBuilder().setSpanLossTransmit(new RatioDB(new BigDecimal(23))).build();
         Interface1Builder intf1Builder = new Interface1Builder();
         Mockito.when(openRoadmInterfacesImpl121Spy.getInterface(Mockito.anyString(), Mockito.anyString())).thenReturn(
-<<<<<<< HEAD
-                Optional.of(new InterfaceBuilder().addAugmentation(Interface1.class, intf1Builder.setOts(ots).build())
-=======
                 Optional.of(new InterfaceBuilder().addAugmentation(intf1Builder.setOts(ots).build())
->>>>>>> standalone/stable/aluminium
                         .build()));
         CrossConnect crossConnectMock = Mockito.mock(CrossConnectImpl.class);
         Mockito.when(crossConnectMock
@@ -265,53 +241,32 @@ public class PowerMgmtPowerMockTest extends AbstractTest {
 
     private Nodes getXpdrNodesFromNodesBuilderDeg() {
         MappingBuilder mappingBuilder = getMappingBuilderDeg();
-<<<<<<< HEAD
-        return new NodesBuilder().setNodeId("node 1")
-                .setNodeInfo(new NodeInfoBuilder().setNodeType(NodeTypes.Xpdr).build())
-                .setMapping(Arrays.asList(mappingBuilder.build()))
-=======
         Mapping mapping = mappingBuilder.build();
         return new NodesBuilder().setNodeId("node 1")
                 .setNodeInfo(new NodeInfoBuilder().setNodeType(NodeTypes.Xpdr).build())
                 .setMapping(Map.of(mapping.key(),mapping))
->>>>>>> standalone/stable/aluminium
                 .build();
     }
 
     private Nodes getXpdrNodesFromNodesBuilderNetwork() {
         MappingBuilder mappingBuilder = getMappingBuilderNetWork();
-<<<<<<< HEAD
-=======
         Mapping mapping = mappingBuilder.build();
->>>>>>> standalone/stable/aluminium
         return new NodesBuilder().setNodeId("node 1")
                 .setNodeInfo(new NodeInfoBuilder().setNodeType(NodeTypes.Xpdr)
                         .setOpenroadmVersion(NodeInfo.OpenroadmVersion._121)
                         .build())
-<<<<<<< HEAD
-                .setMapping(Arrays.asList(mappingBuilder.build()))
-=======
                 .setMapping(Map.of(mapping.key(),mapping))
->>>>>>> standalone/stable/aluminium
                 .build();
     }
 
     private Nodes getRdmNodesFromNodesBuilder() {
         MappingBuilder mappingBuilder = getMappingBuilderDeg();
-<<<<<<< HEAD
-
-=======
         Mapping mapping = mappingBuilder.build();
->>>>>>> standalone/stable/aluminium
         return new NodesBuilder().setNodeId("node 1").setNodeInfo(
                 new NodeInfoBuilder().setNodeType(NodeTypes.Rdm)
                         .setOpenroadmVersion(NodeInfo.OpenroadmVersion._121)
                         .build())
-<<<<<<< HEAD
-                .setMapping(Arrays.asList(mappingBuilder.build()))
-=======
                 .setMapping(Map.of(mapping.key(),mapping))
->>>>>>> standalone/stable/aluminium
                 .build();
     }
 

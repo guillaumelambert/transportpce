@@ -25,10 +25,7 @@ public final class ServicehandlerTxRxCheck {
     // This is class is public so that these messages can be accessed from Junit (avoid duplications).
     public static final class LogMessages {
 
-<<<<<<< HEAD
-=======
         private static final String SERVICE = "Service ";
->>>>>>> standalone/stable/aluminium
         public static final String TXDIR_NOT_SET;
         public static final String TXDIR_PORT_NOT_SET;
         public static final String TXDIR_LGX_NOT_SET;
@@ -47,21 +44,6 @@ public final class ServicehandlerTxRxCheck {
         }
 
         public static String endpointTypeNotSet(ServiceEndpointType endpointType) {
-<<<<<<< HEAD
-            return "Service " + endpointType + " is not set";
-        }
-
-        public static String rateNotSet(ServiceEndpointType endpointType) {
-            return "Service " + endpointType + " rate is not set";
-        }
-
-        public static String formatNotSet(ServiceEndpointType endpointType) {
-            return "Service " + endpointType + " format is not set";
-        }
-
-        public static String clliNotSet(ServiceEndpointType endpointType) {
-            return "Service " + endpointType + " clli is not set";
-=======
             return SERVICE + endpointType + " is not set";
         }
 
@@ -75,7 +57,6 @@ public final class ServicehandlerTxRxCheck {
 
         public static String clliNotSet(ServiceEndpointType endpointType) {
             return SERVICE + endpointType + " clli is not set";
->>>>>>> standalone/stable/aluminium
         }
 
         private LogMessages() {
@@ -185,21 +166,6 @@ public final class ServicehandlerTxRxCheck {
         if (serviceEnd == null) {
             return new ComplianceCheckResult(false, LogMessages.endpointTypeNotSet(endpointType));
         }
-
-<<<<<<< HEAD
-//TODO check if an expected bug was justifying this NPE handling
-//        try {
-        Long serviceRate = serviceEnd.getServiceRate().toJava();
-        ServiceFormat serviceformat = serviceEnd.getServiceFormat();
-        String clli = serviceEnd.getClli();
-//        } catch (NullPointerException e) {
-//            String message = "Something wrong when accessing Service " + endpointType + " rate, format or clli";
-//            LOG.error("Service TxRx info check: {}",message, e);
-//            return new ComplianceCheckResult(false, message);
-//        }
-
-        if ((serviceRate == null) || (serviceRate <= 0)) {
-=======
         if (serviceEnd.getServiceRate() == null) {
             String message = "Something wrong when accessing Service " + endpointType + " rate, format or clli";
             return new ComplianceCheckResult(false, message);
@@ -208,7 +174,6 @@ public final class ServicehandlerTxRxCheck {
         ServiceFormat serviceformat = serviceEnd.getServiceFormat();
         String clli = serviceEnd.getClli();
         if (serviceRate <= 0) {
->>>>>>> standalone/stable/aluminium
             return new ComplianceCheckResult(false, LogMessages.rateNotSet(endpointType));
         }
         if (serviceformat == null) {

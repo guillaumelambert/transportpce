@@ -71,13 +71,8 @@ public class PceOpticalNode implements PceNode {
                 this.node.augmentation(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.network.topology.rev180226.Node1.class);
         List<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network
-<<<<<<< HEAD:pce/src/main/java/org/opendaylight/transportpce/pce/networkanalyzer/PceOpticalNode.java
-            .node.TerminationPoint> allTps = nodeTp.getTerminationPoint();
-        if (allTps == null) {
-=======
             .node.TerminationPoint> allTps = new ArrayList<>(nodeTp.nonnullTerminationPoint().values());
         if (allTps.isEmpty()) {
->>>>>>> standalone/stable/aluminium:pce/src/main/java/org/opendaylight/transportpce/pce/PceNode.java
             LOG.error("initSrgTpList: ROADM TerminationPoint list is empty for node {}", this);
             this.valid = false;
             return;
@@ -104,12 +99,8 @@ public class PceOpticalNode implements PceNode {
                     boolean used = true;
                     LOG.info("initSrgTpList: SRG-PP tp = {} found", tp.getTpId().getValue());
                     try {
-<<<<<<< HEAD:pce/src/main/java/org/opendaylight/transportpce/pce/networkanalyzer/PceOpticalNode.java
-                        List<UsedWavelength> usedWavelengths = nttp1.getPpAttributes().getUsedWavelength();
-=======
                         List<UsedWavelength> usedWavelengths =
                             new ArrayList<>(nttp1.getPpAttributes().getUsedWavelength().values());
->>>>>>> standalone/stable/aluminium:pce/src/main/java/org/opendaylight/transportpce/pce/PceNode.java
                         if (usedWavelengths.isEmpty()) {
                             used = false;
                         }

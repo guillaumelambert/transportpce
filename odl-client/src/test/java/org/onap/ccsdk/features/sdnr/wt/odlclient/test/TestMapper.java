@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -46,6 +47,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfac
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.PortConfig;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.PortConfigKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.PasswordType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.UsernameType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev171215.user.profile.User.Group;
@@ -707,9 +709,9 @@ public class TestMapper {
         LOG.info("protocol={}",data);
         LOG.info("protocol lldp={}",data.getLldp());
         @Nullable
-        List<PortConfig> cfgs = data.getLldp().getPortConfig();
+        Map<PortConfigKey, PortConfig> cfgs = data.getLldp().getPortConfig();
         LOG.info("protocol lldp portconfig={}",cfgs);
-        for (PortConfig portConfig : cfgs) {
+        for (PortConfig portConfig : cfgs.values()) {
             LOG.info("portconfig={} if={}",portConfig.getAdminStatus(),portConfig.getIfName());
         }
     }

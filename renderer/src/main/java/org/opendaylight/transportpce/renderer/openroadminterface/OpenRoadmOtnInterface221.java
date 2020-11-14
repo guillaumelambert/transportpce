@@ -13,18 +13,10 @@ import java.util.stream.IntStream;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceKey;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.AdminStates;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.ethernet.interfaces.rev181019.Interface1;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.AdminStates;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.ethernet.interfaces.rev181019.Interface1Builder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.ethernet.interfaces.rev181019.ethernet.container.EthernetBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.EthernetCsmacd;
@@ -41,10 +33,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181
 import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.opu.OpuBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.parent.odu.allocation.ParentOduAllocationBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
-<<<<<<< HEAD
-=======
 import org.opendaylight.yangtools.yang.common.Uint32;
->>>>>>> standalone/stable/aluminium
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,22 +60,13 @@ public class OpenRoadmOtnInterface221 {
 
         // Ethernet interface specific data
         EthernetBuilder ethIfBuilder = new EthernetBuilder()
-<<<<<<< HEAD
-                .setSpeed(1000L);
-=======
                 .setSpeed(Uint32.valueOf(1000));
->>>>>>> standalone/stable/aluminium
         InterfaceBuilder ethInterfaceBldr = createGenericInterfaceBuilder(
                 portMap, EthernetCsmacd.class,
                 logicalConnPoint + "-ETHERNET1G");
         // Create Interface1 type object required for adding as augmentation
         Interface1Builder ethIf1Builder = new Interface1Builder();
-<<<<<<< HEAD
-        ethInterfaceBldr.addAugmentation(Interface1.class,
-                ethIf1Builder.setEthernet(ethIfBuilder.build()).build());
-=======
         ethInterfaceBldr.addAugmentation(ethIf1Builder.setEthernet(ethIfBuilder.build()).build());
->>>>>>> standalone/stable/aluminium
         // Post interface on the device
         this.openRoadmInterfaces.postOTNInterface(nodeId, ethInterfaceBldr);
         // Post the equipment-state change on the device circuit-pack
@@ -107,11 +87,7 @@ public class OpenRoadmOtnInterface221 {
 
     private InterfaceBuilder createGenericInterfaceBuilder(Mapping portMap,
             Class<? extends InterfaceType> type, String key) {
-<<<<<<< HEAD
-        InterfaceBuilder interfaceBuilder = new InterfaceBuilder()
-=======
         return new InterfaceBuilder()
->>>>>>> standalone/stable/aluminium
                 // .setDescription(" TBD ")
                 // .setCircuitId(" TBD ")
                 .setSupportingCircuitPackName(
@@ -120,10 +96,6 @@ public class OpenRoadmOtnInterface221 {
                 .setAdministrativeState(AdminStates.InService)
                 // TODO get rid of unchecked cast warning
                 .setType(type).setName(key).withKey(new InterfaceKey(key));
-<<<<<<< HEAD
-        return interfaceBuilder;
-=======
->>>>>>> standalone/stable/aluminium
     }
 
     public String createOpenRoadmEth10GInterface(String nodeId,
@@ -136,21 +108,12 @@ public class OpenRoadmOtnInterface221 {
         // Ethernet interface specific data
         EthernetBuilder ethIfBuilder = new EthernetBuilder()
                 // .setAutoNegotiation(EthAttributes.AutoNegotiation.Disabled)
-<<<<<<< HEAD
-                .setSpeed(10000L);
-        // Create Interface1 type object required for adding as augmentation
-        Interface1Builder ethIf1Builder = new Interface1Builder();
-        InterfaceBuilder ethInterfaceBldr = createGenericInterfaceBuilder(portMap, EthernetCsmacd.class,
-                logicalConnPoint + "-ETHERNET10G").addAugmentation(Interface1.class,
-                        ethIf1Builder.setEthernet(ethIfBuilder.build()).build());
-=======
                 .setSpeed(Uint32.valueOf(10000));
         // Create Interface1 type object required for adding as augmentation
         Interface1Builder ethIf1Builder = new Interface1Builder();
         InterfaceBuilder ethInterfaceBldr = createGenericInterfaceBuilder(portMap, EthernetCsmacd.class,
                 logicalConnPoint + "-ETHERNET10G").addAugmentation(ethIf1Builder.setEthernet(ethIfBuilder.build())
                         .build());
->>>>>>> standalone/stable/aluminium
         // Post interface on the device
         this.openRoadmInterfaces.postOTNInterface(nodeId, ethInterfaceBldr);
         // Post the equipment-state change on the device circuit-pack
@@ -202,11 +165,7 @@ public class OpenRoadmOtnInterface221 {
             IntStream.range(tribSlotIndex, tribSlotIndex + 8)
                     .forEach(nbr -> tribSlots.add(Uint16.valueOf(nbr)));
             ParentOduAllocationBuilder parentOduAllocationBuilder = new ParentOduAllocationBuilder()
-<<<<<<< HEAD
-                    .setTribPortNumber(tribPortNumber)
-=======
                     .setTribPortNumber(Uint16.valueOf(tribPortNumber))
->>>>>>> standalone/stable/aluminium
                     .setTribSlots(tribSlots);
             oduIfBuilder.setOduFunction(ODUCTP.class)
                     .setMonitoringMode(OduAttributes.MonitoringMode.Monitored)
@@ -223,13 +182,7 @@ public class OpenRoadmOtnInterface221 {
         org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1Builder
             oduIf1Builder = new
                 org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1Builder();
-<<<<<<< HEAD
-        oduInterfaceBldr.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1.class,
-                oduIf1Builder.setOdu(oduIfBuilder.build()).build());
-=======
         oduInterfaceBldr.addAugmentation(oduIf1Builder.setOdu(oduIfBuilder.build()).build());
->>>>>>> standalone/stable/aluminium
 
         // Post interface on the device
         this.openRoadmInterfaces.postOTNInterface(nodeId, oduInterfaceBldr);
@@ -268,11 +221,7 @@ public class OpenRoadmOtnInterface221 {
             tribSlots.add(Uint16.valueOf(tribSlot));
             ParentOduAllocationBuilder parentOduAllocationBuilder = new ParentOduAllocationBuilder()
                     // set trib port numbers
-<<<<<<< HEAD
-                    .setTribPortNumber(tribPortNumber)
-=======
                     .setTribPortNumber(Uint16.valueOf(tribPortNumber))
->>>>>>> standalone/stable/aluminium
                     .setTribSlots(tribSlots);
             oduIfBuilder.setOduFunction(ODUCTP.class)
                     .setMonitoringMode(OduAttributes.MonitoringMode.Monitored)
@@ -293,13 +242,7 @@ public class OpenRoadmOtnInterface221 {
         org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1Builder
             oduIf1Builder = new
             org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1Builder();
-<<<<<<< HEAD
-        oduInterfaceBldr.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1.class,
-                oduIf1Builder.setOdu(oduIfBuilder.build()).build());
-=======
         oduInterfaceBldr.addAugmentation(oduIf1Builder.setOdu(oduIfBuilder.build()).build());
->>>>>>> standalone/stable/aluminium
 
         // Post interface on the device
         this.openRoadmInterfaces.postOTNInterface(nodeId, oduInterfaceBldr);
@@ -337,11 +280,7 @@ public class OpenRoadmOtnInterface221 {
                     .forEach(nbr -> tribSlots.add(Uint16.valueOf(nbr)));
             ParentOduAllocationBuilder parentOduAllocationBuilder = new ParentOduAllocationBuilder()
                     // set trib port numbers
-<<<<<<< HEAD
-                    .setTribPortNumber(tribPortNumber)
-=======
                     .setTribPortNumber(Uint16.valueOf(tribPortNumber))
->>>>>>> standalone/stable/aluminium
                     .setTribSlots(tribSlots);
             oduIfBuilder.setOduFunction(ODUCTP.class)
                     .setMonitoringMode(OduAttributes.MonitoringMode.Monitored)
@@ -361,13 +300,7 @@ public class OpenRoadmOtnInterface221 {
         org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1Builder
             oduIf1Builder = new
                 org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1Builder();
-<<<<<<< HEAD
-        oduInterfaceBldr.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1.class,
-                oduIf1Builder.setOdu(oduIfBuilder.build()).build());
-=======
         oduInterfaceBldr.addAugmentation(oduIf1Builder.setOdu(oduIfBuilder.build()).build());
->>>>>>> standalone/stable/aluminium
 
         // Post interface on the device
         this.openRoadmInterfaces.postOTNInterface(nodeId, oduInterfaceBldr);

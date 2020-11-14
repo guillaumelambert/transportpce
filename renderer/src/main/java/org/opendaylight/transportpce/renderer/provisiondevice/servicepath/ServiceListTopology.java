@@ -9,10 +9,7 @@ package org.opendaylight.transportpce.renderer.provisiondevice.servicepath;
 
 import java.util.HashMap;
 import java.util.List;
-<<<<<<< HEAD
-=======
 import java.util.Map;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.node.types.rev181130.NodeIdType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.Topology;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.TopologyBuilder;
@@ -25,15 +22,10 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.types.rev181130.
 import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.Hop.HopType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.topology.AToZ;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.topology.AToZBuilder;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.topology.ZToA;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.topology.ZToABuilder;
-=======
 import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.topology.AToZKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.topology.ZToA;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.topology.ZToABuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.topology.rev190531.topology.ZToAKey;
->>>>>>> standalone/stable/aluminium
 
 public class ServiceListTopology {
 

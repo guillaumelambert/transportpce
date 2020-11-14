@@ -30,10 +30,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> standalone/stable/aluminium
 public class PceGraphTest {
 
     private Link link = null;

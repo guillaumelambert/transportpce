@@ -12,12 +12,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-<<<<<<< HEAD
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
-=======
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.Timeouts;
@@ -25,11 +22,7 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.PowerDBm;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.InterfaceKey;
@@ -89,13 +82,8 @@ public class OpenRoadmInterface121 {
                 .setAutoNegotiation(EthAttributes.AutoNegotiation.Enabled)
                 .setDuplex(EthAttributes.Duplex.Full)
                 .setFec(EthAttributes.Fec.Off)
-<<<<<<< HEAD
-                .setSpeed(100000L)
-                .setMtu(9000L);
-=======
                 .setSpeed(Uint32.valueOf(100000))
                 .setMtu(Uint32.valueOf(9000));
->>>>>>> standalone/stable/aluminium
 
         InterfaceBuilder ethInterfaceBldr = createGenericInterfaceBuilder(portMap, EthernetCsmacd.class,
                                                                           logicalConnPoint + "-ETHERNET");
@@ -115,11 +103,7 @@ public class OpenRoadmInterface121 {
 
     private InterfaceBuilder createGenericInterfaceBuilder(Mapping portMap, Class<? extends InterfaceType> type,
                                                            String key) {
-<<<<<<< HEAD
-        InterfaceBuilder interfaceBuilder = new InterfaceBuilder()
-=======
         return new InterfaceBuilder()
->>>>>>> standalone/stable/aluminium
                 .setDescription("  TBD   ")
                 .setCircuitId("   TBD    ")
                 .setSupportingCircuitPackName(portMap.getSupportingCircuitPackName())
@@ -128,10 +112,6 @@ public class OpenRoadmInterface121 {
                 .setType(type)
                 .setName(key)
                 .withKey(new InterfaceKey(key));
-<<<<<<< HEAD
-        return interfaceBuilder;
-=======
->>>>>>> standalone/stable/aluminium
     }
     /**
      * This methods creates an OTU interface on the given termination point.
@@ -239,11 +219,7 @@ public class OpenRoadmInterface121 {
             createOpenRoadmOchInterfaceName(logicalConnPoint, waveNumber));
 
         // OCH interface specific data
-<<<<<<< HEAD
-        OchBuilder ocIfBuilder = new OchBuilder().setWavelengthNumber(waveNumber);
-=======
         OchBuilder ocIfBuilder = new OchBuilder().setWavelengthNumber(Uint32.valueOf(waveNumber));
->>>>>>> standalone/stable/aluminium
 
         // Add supporting OMS interface
         if (portMap.getSupportingOms() != null) {
@@ -274,11 +250,7 @@ public class OpenRoadmInterface121 {
 
         // OCH interface specific data
         OchBuilder ocIfBuilder = new OchBuilder()
-<<<<<<< HEAD
-                .setWavelengthNumber(waveNumber)
-=======
                 .setWavelengthNumber(Uint32.valueOf(waveNumber))
->>>>>>> standalone/stable/aluminium
                 .setModulationFormat(format)
                 .setRate(R100G.class)
                 .setTransmitPower(new PowerDBm(new BigDecimal("-5")));

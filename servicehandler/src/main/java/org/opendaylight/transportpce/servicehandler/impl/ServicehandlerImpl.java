@@ -164,11 +164,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         OperationResult validationResult = ServiceCreateValidation.validateServiceCreateRequest(
                 new ServiceInput(input), RpcActions.ServiceCreate);
         if (! validationResult.isSuccess()) {
-<<<<<<< HEAD
-            LOG.warn("serviceCreate: {}", LogMessages.ABORT_VALID_FAILED);
-=======
             LOG.warn(SERVICE_CREATE_MSG, LogMessages.ABORT_VALID_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createCreateServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     validationResult.getResultMessage(), ResponseCodes.RESPONSE_FAILED);
@@ -178,17 +174,10 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         this.pceListenerImpl.setserviceDataStoreOperations(this.serviceDataStoreOperations);
         this.rendererListenerImpl.setserviceDataStoreOperations(serviceDataStoreOperations);
         this.rendererListenerImpl.setServiceInput(new ServiceInput(input));
-<<<<<<< HEAD
-        LOG.debug("serviceCreate: {}", LogMessages.PCE_CALLING);
-        PathComputationRequestOutput output = this.pceServiceWrapper.performPCE(input, true);
-        if (output == null) {
-            LOG.warn("serviceCreate: {}", LogMessages.ABORT_PCE_FAILED);
-=======
         LOG.debug(SERVICE_CREATE_MSG, LogMessages.PCE_CALLING);
         PathComputationRequestOutput output = this.pceServiceWrapper.performPCE(input, true);
         if (output == null) {
             LOG.warn(SERVICE_CREATE_MSG, LogMessages.ABORT_PCE_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createCreateServiceReply(input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.PCE_FAILED, ResponseCodes.RESPONSE_FAILED);
         }
@@ -213,36 +202,17 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
                 input.getServiceDeleteReqInfo().getServiceName(),
                 input.getSdncRequestHeader(), null, RpcActions.ServiceDelete, false, true);
         if (!serviceHandlerCheckResult.hasPassed()) {
-<<<<<<< HEAD
-            LOG.warn("serviceDelete: {}", LogMessages.ABORT_SERVICE_NON_COMPLIANT);
-=======
             LOG.warn(SERVICE_DELETE_MSG, LogMessages.ABORT_SERVICE_NON_COMPLIANT);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createDeleteServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.SERVICE_NON_COMPLIANT, ResponseCodes.RESPONSE_FAILED);
         }
 
         //Check presence of service to be deleted
-<<<<<<< HEAD
-//TODO check if an expected bug was justifying this NPE handling
-//        try {
-        Optional<Services> serviceOpt = this.serviceDataStoreOperations.getService(serviceName);
-//        } catch (NullPointerException e) {
-//            LOG.error("Something wrong when retrieving service '{}' from datastore : ", serviceName, e);
-//            return ModelMappingUtils.createDeleteServiceReply(
-//                    input, ResponseCodes.FINAL_ACK_YES,
-//                    LogMessages.serviceNotInDS(serviceName), ResponseCodes.RESPONSE_FAILED);
-//        }
-        Services service;
-        if (!serviceOpt.isPresent()) {
-            LOG.warn("serviceDelete: {}", LogMessages.serviceNotInDS(serviceName));
-=======
         Optional<Services> serviceOpt = this.serviceDataStoreOperations.getService(serviceName);
         Services service;
         if (!serviceOpt.isPresent()) {
             LOG.warn(SERVICE_DELETE_MSG, LogMessages.serviceNotInDS(serviceName));
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createDeleteServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.serviceNotInDS(serviceName), ResponseCodes.RESPONSE_FAILED);
@@ -262,11 +232,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
                 serviceDeleteInput, ServiceNotificationTypes.ServiceDeleteResult, service);
 
         if (output == null) {
-<<<<<<< HEAD
-            LOG.error("serviceDelete: {}", LogMessages.RENDERER_DELETE_FAILED);
-=======
             LOG.error(SERVICE_DELETE_MSG, LogMessages.RENDERER_DELETE_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createDeleteServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.RENDERER_DELETE_FAILED, ResponseCodes.RESPONSE_FAILED);
@@ -288,11 +254,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         OperationResult validationResult = ServiceCreateValidation.validateServiceCreateRequest(serviceInput,
                 RpcActions.ServiceFeasibilityCheck);
         if (! validationResult.isSuccess()) {
-<<<<<<< HEAD
-            LOG.warn("serviceFeasabilityCheck: {}", LogMessages.ABORT_VALID_FAILED);
-=======
             LOG.warn(SERVICE_FEASABILITY_CHECK_MSG, LogMessages.ABORT_VALID_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createCreateServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     validationResult.getResultMessage(), ResponseCodes.RESPONSE_FAILED);
@@ -303,17 +265,10 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         this.pceListenerImpl.setserviceDataStoreOperations(this.serviceDataStoreOperations);
         this.rendererListenerImpl.setserviceDataStoreOperations(serviceDataStoreOperations);
         this.rendererListenerImpl.setServiceInput(new ServiceInput(input));
-<<<<<<< HEAD
-        LOG.debug("serviceFeasabilityCheck: {}", LogMessages.PCE_CALLING);
-        PathComputationRequestOutput output = this.pceServiceWrapper.performPCE(input, true);
-        if (output == null) {
-            LOG.warn("serviceFeasabilityCheck: {}", LogMessages.ABORT_PCE_FAILED);
-=======
         LOG.debug(SERVICE_FEASABILITY_CHECK_MSG, LogMessages.PCE_CALLING);
         PathComputationRequestOutput output = this.pceServiceWrapper.performPCE(input, true);
         if (output == null) {
             LOG.warn(SERVICE_FEASABILITY_CHECK_MSG, LogMessages.ABORT_PCE_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createCreateServiceReply(input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.PCE_FAILED, ResponseCodes.RESPONSE_FAILED);
         }
@@ -330,11 +285,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         LOG.info("RPC serviceReconfigure received for {}", serviceName);
         Optional<Services> servicesObject = this.serviceDataStoreOperations.getService(serviceName);
         if (!servicesObject.isPresent()) {
-<<<<<<< HEAD
-            LOG.warn("serviceReconfigure: {}", LogMessages.serviceNotInDS(serviceName));
-=======
             LOG.warn(SERVICE_RECONFIGURE_MSG, LogMessages.serviceNotInDS(serviceName));
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createCreateServiceReply(
                 input,
                 LogMessages.serviceNotInDS(serviceName), RpcStatus.Failed);
@@ -343,31 +294,6 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         OperationResult validationResult = ServiceCreateValidation
                 .validateServiceCreateRequest(new ServiceInput(input), RpcActions.ServiceReconfigure);
         if (!validationResult.isSuccess()) {
-<<<<<<< HEAD
-            LOG.warn("serviceReconfigure: {}", LogMessages.ABORT_VALID_FAILED);
-            return ModelMappingUtils.createCreateServiceReply(
-                    input,
-                    validationResult.getResultMessage(), RpcStatus.Failed);
-        }
-        this.pceListenerImpl.setInput(new ServiceInput(input));
-        this.pceListenerImpl.setServiceReconfigure(true);
-        this.pceListenerImpl.setserviceDataStoreOperations(this.serviceDataStoreOperations);
-        this.rendererListenerImpl.setserviceDataStoreOperations(serviceDataStoreOperations);
-        this.rendererListenerImpl.setServiceInput(new ServiceInput(input));
-        org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520
-                .ServiceDeleteInput serviceDeleteInput =
-                        ModelMappingUtils.createServiceDeleteInput(new ServiceInput(input));
-        org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520
-                .ServiceDeleteOutput output = this.rendererServiceWrapper.performRenderer(serviceDeleteInput,
-                        ServiceNotificationTypes.ServiceDeleteResult, null);
-        if (output == null) {
-            LOG.error("serviceReconfigure: {}", LogMessages.RENDERER_DELETE_FAILED);
-            return ModelMappingUtils.createCreateServiceReply(
-                    input,
-                    LogMessages.RENDERER_DELETE_FAILED, RpcStatus.Successful);
-                    //TODO check if RpcStatus.Successful is really expected here
-        }
-=======
             LOG.warn(SERVICE_RECONFIGURE_MSG, LogMessages.ABORT_VALID_FAILED);
             return ModelMappingUtils.createCreateServiceReply(
                     input,
@@ -391,7 +317,6 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
                     LogMessages.RENDERER_DELETE_FAILED, RpcStatus.Successful);
                     //TODO check if RpcStatus.Successful is really expected here
         }
->>>>>>> standalone/stable/aluminium
         LOG.info("RPC serviceReconfigure in progress...");
         ConfigurationResponseCommon common = output.getConfigurationResponseCommon();
         return ModelMappingUtils.createCreateServiceReply(
@@ -406,11 +331,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         Optional<Services> servicesObject = this.serviceDataStoreOperations.getService(serviceName);
 
         if (!servicesObject.isPresent()) {
-<<<<<<< HEAD
-            LOG.warn("serviceRestoration: {}", LogMessages.serviceNotInDS(serviceName));
-=======
             LOG.warn(SERVICE_RESTORATION_MSG, LogMessages.serviceNotInDS(serviceName));
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createRestoreServiceReply(
                     LogMessages.serviceNotInDS(serviceName), RpcStatus.Failed);
         }
@@ -419,11 +340,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         State state = service.getOperationalState();
 
         if (state == State.InService) {
-<<<<<<< HEAD
-            LOG.error("serviceRestoration: {}", LogMessages.serviceInService(serviceName));
-=======
             LOG.error(SERVICE_RESTORATION_MSG, LogMessages.serviceInService(serviceName));
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createRestoreServiceReply(
                     LogMessages.serviceInService(serviceName), RpcStatus.Failed);
         }
@@ -474,11 +391,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
             .ServiceDeleteOutput output = this.rendererServiceWrapper.performRenderer(serviceDeleteInput,
                 ServiceNotificationTypes.ServiceDeleteResult, null);
         if (output == null) {
-<<<<<<< HEAD
-            LOG.error("serviceRestoration: {}", LogMessages.RENDERER_DELETE_FAILED);
-=======
             LOG.error(SERVICE_RESTORATION_MSG, LogMessages.RENDERER_DELETE_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createRestoreServiceReply(
                      LogMessages.RENDERER_DELETE_FAILED, RpcStatus.Failed);
         }
@@ -589,11 +502,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
                 commonId, null, null, RpcActions.ServiceDelete, false, false
             );
         if (!serviceHandlerCheckResult.hasPassed()) {
-<<<<<<< HEAD
-            LOG.warn("tempServiceDelete: {}", LogMessages.ABORT_SERVICE_NON_COMPLIANT);
-=======
             LOG.warn(TEMP_SERVICE_DELETE_MSG, LogMessages.ABORT_SERVICE_NON_COMPLIANT);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createDeleteServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.SERVICE_NON_COMPLIANT, ResponseCodes.RESPONSE_FAILED);
@@ -601,27 +510,11 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
 
         //Check presence of service to be deleted
         LOG.debug("service common-id '{}' is compliant", commonId);
-<<<<<<< HEAD
-//TODO check if an expected bug was justifying this NPE handling
-//        try {
-        Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list.Services>
-                service =
-            this.serviceDataStoreOperations.getTempService(commonId);
-//        } catch (NullPointerException e) {
-//            LOG.info("failed to get service '{}' from datastore : ", commonId, e);
-//            return ModelMappingUtils.createDeleteServiceReply(
-//                    input, ResponseCodes.FINAL_ACK_YES,
-//                    LogMessages.serviceNotInDS(CommonId), ResponseCodes.RESPONSE_FAILED);
-//        }
-        if (!service.isPresent()) {
-            LOG.error("tempServiceDelete: {}", LogMessages.serviceNotInDS(commonId));
-=======
         Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.temp.service.list.Services>
                 service =
             this.serviceDataStoreOperations.getTempService(commonId);
         if (!service.isPresent()) {
             LOG.error(TEMP_SERVICE_DELETE_MSG, LogMessages.serviceNotInDS(commonId));
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createDeleteServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.serviceNotInDS(commonId), ResponseCodes.RESPONSE_FAILED);
@@ -637,11 +530,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteOutput output =
                 this.rendererServiceWrapper.performRenderer(input, ServiceNotificationTypes.ServiceDeleteResult);
         if (output == null) {
-<<<<<<< HEAD
-            LOG.error("tempServiceDelete: {}", LogMessages.RENDERER_DELETE_FAILED);
-=======
             LOG.error(TEMP_SERVICE_DELETE_MSG, LogMessages.RENDERER_DELETE_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createDeleteServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.RENDERER_DELETE_FAILED, ResponseCodes.RESPONSE_FAILED);
@@ -660,22 +549,14 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         OperationResult validationResult = ServiceCreateValidation.validateServiceCreateRequest(
                 new ServiceInput(input), RpcActions.TempServiceCreate);
         if (! validationResult.isSuccess()) {
-<<<<<<< HEAD
-            LOG.warn("tempServiceCreate: {}", LogMessages.ABORT_VALID_FAILED);
-=======
             LOG.warn(TEMP_SERVICE_CREATE_MSG, LogMessages.ABORT_VALID_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createCreateServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     validationResult.getResultMessage(), ResponseCodes.RESPONSE_FAILED);
         }
 
         // Starting service create operation
-<<<<<<< HEAD
-        LOG.debug("tempServiceCreate: {}", LogMessages.PCE_CALLING);
-=======
         LOG.debug(TEMP_SERVICE_CREATE_MSG, LogMessages.PCE_CALLING);
->>>>>>> standalone/stable/aluminium
         this.pceListenerImpl.setInput(new ServiceInput(input));
         this.pceListenerImpl.setServiceReconfigure(false);
         this.pceListenerImpl.setserviceDataStoreOperations(this.serviceDataStoreOperations);
@@ -685,11 +566,7 @@ public class ServicehandlerImpl implements OrgOpenroadmServiceService {
         this.rendererListenerImpl.setTempService(true);
         PathComputationRequestOutput output = this.pceServiceWrapper.performPCE(input, true);
         if (output == null) {
-<<<<<<< HEAD
-            LOG.warn("tempServiceCreate: {}", LogMessages.ABORT_PCE_FAILED);
-=======
             LOG.warn(TEMP_SERVICE_CREATE_MSG, LogMessages.ABORT_PCE_FAILED);
->>>>>>> standalone/stable/aluminium
             return ModelMappingUtils.createCreateServiceReply(
                     input, ResponseCodes.FINAL_ACK_YES,
                     LogMessages.PCE_FAILED, ResponseCodes.RESPONSE_FAILED);

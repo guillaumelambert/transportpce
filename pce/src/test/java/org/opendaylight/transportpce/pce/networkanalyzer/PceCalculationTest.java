@@ -20,10 +20,6 @@ import org.opendaylight.transportpce.pce.utils.TransactionUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestInput;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> standalone/stable/aluminium
 public class PceCalculationTest extends AbstractTest {
 
     private PceCalculation pceCalculation;

@@ -8,17 +8,9 @@
 
 package org.opendaylight.transportpce.pce.networkanalyzer;
 
-<<<<<<< HEAD
-import com.google.common.collect.ImmutableList;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-=======
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
->>>>>>> standalone/stable/aluminium
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +18,6 @@ import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.link.types.rev181130.RatioDB;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1Builder;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.TerminationPoint1;
-=======
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.TerminationPoint1Builder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.link.rev181130.span.attributes.LinkConcatenation;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.link.rev181130.span.attributes.LinkConcatenationBuilder;
@@ -46,10 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.node.SupportingNode;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.node.SupportingNodeBuilder;
-<<<<<<< HEAD
-=======
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.node.SupportingNodeKey;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.LinkId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1Builder;
@@ -58,24 +43,14 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.top
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.LinkKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.link.DestinationBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.link.SourceBuilder;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPointBuilder;
-
-
-=======
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPoint;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPointBuilder;
 import org.opendaylight.yangtools.yang.common.Uint32;
->>>>>>> standalone/stable/aluminium
 
 
 public class PceLinkTest extends AbstractTest {
 
     private static final String LINK_ID_FORMAT = "%1$s-%2$sto%3$s-%4$s";
-<<<<<<< HEAD
-    private static final Long WAVE_LENGTH = 20L;
-=======
->>>>>>> standalone/stable/aluminium
     private PceLink pceLink = null;
 
     @Before
@@ -221,27 +196,16 @@ public class PceLinkTest extends AbstractTest {
 
         LinkId oppositeLinkId = new LinkId("opposite");
         //For setting up attributes for openRoadm augment
-<<<<<<< HEAD
-=======
         LinkConcatenation linkConcatenation = new LinkConcatenationBuilder()
                 .setSRLGLength(Uint32.valueOf(20))
                 .setFiberType(LinkConcatenation.FiberType.Dsf)
                 .build();
->>>>>>> standalone/stable/aluminium
         OMSAttributesBuilder omsAttributesBuilder =
                 new OMSAttributesBuilder()
                         .setSpan(new SpanBuilder()
                                 .setSpanlossCurrent(new RatioDB(new BigDecimal("55")))
-<<<<<<< HEAD
-                                .setLinkConcatenation(Arrays.asList(
-                                        new LinkConcatenationBuilder()
-                                                .setSRLGLength(20L)
-                                                .setFiberType(LinkConcatenation.FiberType.Dsf)
-                                                .build()
-=======
                                 .setLinkConcatenation(Map.of(linkConcatenation.key(),
                                         linkConcatenation
->>>>>>> standalone/stable/aluminium
                                 )).build()).setOppositeLink(oppositeLinkId);
 
 
@@ -251,13 +215,7 @@ public class PceLinkTest extends AbstractTest {
                 .setLinkId(linkId)
                 .withKey(new LinkKey(linkId));
 
-<<<<<<< HEAD
-        linkBuilder.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1.class,
-                link1Builder.build());
-=======
         linkBuilder.addAugmentation(link1Builder.build());
->>>>>>> standalone/stable/aluminium
 
         org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1Builder linkBuilderNetworkLink
                 = new org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1Builder()
@@ -265,24 +223,14 @@ public class PceLinkTest extends AbstractTest {
                         .build());
 
 
-<<<<<<< HEAD
-        linkBuilder.addAugmentation(
-                org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1.class,
-                linkBuilderNetworkLink.build());
-=======
         linkBuilder.addAugmentation(linkBuilderNetworkLink.build());
->>>>>>> standalone/stable/aluminium
 
         return linkBuilder;
     }
 
     private static LinkBuilder createRoadmToRoadm(String srcNode, String destNode, String srcTp, String destTp) {
         Link1Builder link1Builder = new Link1Builder()
-<<<<<<< HEAD
-                .setLinkLatency(100L)
-=======
                 .setLinkLatency(Uint32.valueOf(100))
->>>>>>> standalone/stable/aluminium
                 .setLinkType(OpenroadmLinkType.ROADMTOROADM);
         return createLinkBuilder(srcNode, destNode, srcTp, destTp, link1Builder);
 
@@ -296,25 +244,6 @@ public class PceLinkTest extends AbstractTest {
 
     }
 
-<<<<<<< HEAD
-    private List<SupportingNode> geSupportingNodes() {
-        List<SupportingNode> supportingNodes1 = new ArrayList<>();
-        supportingNodes1
-                .add(new SupportingNodeBuilder()
-                        .setNodeRef(new NodeId("node 1"))
-                        .setNetworkRef(new NetworkId(NetworkUtils.CLLI_NETWORK_ID))
-                        .build());
-
-        supportingNodes1
-                .add(new SupportingNodeBuilder()
-                        .setNodeRef(new NodeId("node 2"))
-                        .setNetworkRef(new NetworkId(NetworkUtils.UNDERLAY_NETWORK_ID))
-                        .build());
-        return supportingNodes1;
-    }
-
-    private NodeBuilder getNodeBuilder(List<SupportingNode> supportingNodes1) {
-=======
     private Map<SupportingNodeKey,SupportingNode> geSupportingNodes() {
         Map<SupportingNodeKey,SupportingNode> supportingNodes1 = new HashMap<>();
         SupportingNode supportingNode1 = new SupportingNodeBuilder()
@@ -334,7 +263,6 @@ public class PceLinkTest extends AbstractTest {
     }
 
     private NodeBuilder getNodeBuilder(Map<SupportingNodeKey,SupportingNode> supportingNodes1) {
->>>>>>> standalone/stable/aluminium
 
 
         //update tp of nodes
@@ -342,28 +270,16 @@ public class PceLinkTest extends AbstractTest {
         TerminationPoint1Builder tp1Bldr = new TerminationPoint1Builder();
 
         tp1Bldr.setTpType(OpenroadmTpType.XPONDERNETWORK);
-<<<<<<< HEAD
-        xpdrTpBldr.addAugmentation(
-                TerminationPoint1.class, tp1Bldr.build());
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1 node1 =
-                new Node1Builder().setTerminationPoint(ImmutableList.of(xpdrTpBldr.build())).build();
-=======
         xpdrTpBldr.addAugmentation(tp1Bldr.build());
         TerminationPoint xpdr = xpdrTpBldr.build();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1 node1 =
                 new Node1Builder().setTerminationPoint(Map.of(xpdr.key(),xpdr)).build();
->>>>>>> standalone/stable/aluminium
 
 
         return new NodeBuilder()
                 .setNodeId(new NodeId("node 1"))
                 .withKey(new NodeKey(new NodeId("node 1")))
-<<<<<<< HEAD
-                .addAugmentation(
-                        Node1.class, node1)
-=======
                 .addAugmentation(node1)
->>>>>>> standalone/stable/aluminium
                 .setSupportingNode(supportingNodes1);
     }
 

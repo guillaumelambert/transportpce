@@ -44,11 +44,8 @@ import org.slf4j.LoggerFactory;
 
 public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperations {
     private static final Logger LOG = LoggerFactory.getLogger(ServiceDataStoreOperationsImpl.class);
-<<<<<<< HEAD
-=======
     private static final String CREATE_MSG = "create";
     private static final String DELETING_SERVICE_MSG = "Deleting '{}' Service";
->>>>>>> standalone/stable/aluminium
     private DataBroker dataBroker;
 
     // This is class is public so that these messages can be accessed from Junit (avoid duplications).
@@ -246,13 +243,8 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
             writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
             return OperationResult.ok(LogMessages.SUCCESSFUL_MESSAGE);
         } catch (TimeoutException | InterruptedException | ExecutionException e) {
-<<<<<<< HEAD
-            LOG.warn("createService : {}", LogMessages.failedTo("create", serviceCreateInput.getServiceName()), e);
-            return OperationResult.failed(LogMessages.failedTo("create", serviceCreateInput.getServiceName()));
-=======
             LOG.warn("createService : {}", LogMessages.failedTo(CREATE_MSG, serviceCreateInput.getServiceName()), e);
             return OperationResult.failed(LogMessages.failedTo(CREATE_MSG, serviceCreateInput.getServiceName()));
->>>>>>> standalone/stable/aluminium
         }
     }
 
@@ -351,13 +343,8 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
                 writeTx.commit().get(Timeouts.DATASTORE_WRITE, TimeUnit.MILLISECONDS);
                 return null;
             } catch (InterruptedException | TimeoutException | ExecutionException e) {
-<<<<<<< HEAD
-                LOG.error("writeOrModifyOrDeleteServiceList : {}", LogMessages.failedTo("create", serviceName), e);
-                return LogMessages.failedTo("create", serviceName);
-=======
                 LOG.error("writeOrModifyOrDeleteServiceList : {}", LogMessages.failedTo(CREATE_MSG, serviceName), e);
                 return LogMessages.failedTo(CREATE_MSG, serviceName);
->>>>>>> standalone/stable/aluminium
             }
         }
 
@@ -376,11 +363,7 @@ public class ServiceDataStoreOperationsImpl implements ServiceDataStoreOperation
                 action = "modifyService";
                 break;
             case 1 : /* Delete */
-<<<<<<< HEAD
-                LOG.debug("Deleting '{}' Service", serviceName);
-=======
                 LOG.debug(DELETING_SERVICE_MSG, serviceName);
->>>>>>> standalone/stable/aluminium
                 writeTx.delete(LogicalDatastoreType.OPERATIONAL, iid);
                 action = "deleteService";
                 break;

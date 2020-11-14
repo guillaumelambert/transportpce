@@ -101,15 +101,9 @@ public class PceOtnNode implements PceNode {
             = this.node.augmentation(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.network.topology.rev180226.Node1.class);
         List<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network
-<<<<<<< HEAD
-                .node.TerminationPoint> allTps = nodeTp.getTerminationPoint();
-        this.valid = false;
-        if (allTps == null) {
-=======
                 .node.TerminationPoint> allTps = new ArrayList<>(nodeTp.nonnullTerminationPoint().values());
         this.valid = false;
         if (allTps.isEmpty()) {
->>>>>>> standalone/stable/aluminium
             LOG.error("PceOtnNode: initXndrTps: XPONDER TerminationPoint list is empty for node {}", this);
             return;
         }
@@ -194,13 +188,8 @@ public class PceOtnNode implements PceNode {
             for (TpId nwTp : netwTps) {
                 for (TpId clTp : clientTps) {
                     @Nullable
-<<<<<<< HEAD
-                    List<NonBlockingList> nblList = node.augmentation(Node1.class).getSwitchingPools()
-                        .getOduSwitchingPools().get(0).getNonBlockingList();
-=======
                     List<NonBlockingList> nblList = new ArrayList<>(node.augmentation(Node1.class).getSwitchingPools()
                         .nonnullOduSwitchingPools().values().stream().findFirst().get().getNonBlockingList().values());
->>>>>>> standalone/stable/aluminium
                     for (NonBlockingList nbl : nblList) {
                         if (nbl.getTpList().contains(clTp) && nbl.getTpList().contains(nwTp)) {
                             usableXpdrClientTps.add(clTp);
@@ -218,13 +207,8 @@ public class PceOtnNode implements PceNode {
         if (clientTps == null && netwTps != null && nbClient == 0 && nbNetw == 2) {
             netwTps.sort(Comparator.comparing(TpId::getValue));
             @Nullable
-<<<<<<< HEAD
-            List<NonBlockingList> nblList = node.augmentation(Node1.class).getSwitchingPools().getOduSwitchingPools()
-                .get(0).getNonBlockingList();
-=======
             List<NonBlockingList> nblList = new ArrayList<>(node.augmentation(Node1.class).getSwitchingPools()
                 .nonnullOduSwitchingPools().values().stream().findFirst().get().getNonBlockingList().values());
->>>>>>> standalone/stable/aluminium
             for (NonBlockingList nbl : nblList) {
                 for (TpId nwTp : netwTps) {
                     if (nbl.getTpList().contains(nwTp)) {
@@ -240,12 +224,8 @@ public class PceOtnNode implements PceNode {
     }
 
     private boolean checkTpForOdtuTermination(TerminationPoint1 ontTp1) {
-<<<<<<< HEAD
-        for (SupportedInterfaceCapability sic : ontTp1.getTpSupportedInterfaces().getSupportedInterfaceCapability()) {
-=======
         for (SupportedInterfaceCapability sic : ontTp1.getTpSupportedInterfaces().getSupportedInterfaceCapability()
                 .values()) {
->>>>>>> standalone/stable/aluminium
             LOG.debug("in checkTpForOduTermination - sic = {}", sic.getIfCapType());
             if (sic.getIfCapType().equals(IfOCHOTU4ODU4.class)
                 && ontTp1.getXpdrTpPortConnectionAttributes().getTsPool() == null) {
@@ -259,17 +239,11 @@ public class PceOtnNode implements PceNode {
         if (ontTp1.getXpdrTpPortConnectionAttributes() != null
             && ontTp1.getXpdrTpPortConnectionAttributes().getTsPool() != null
             && ontTp1.getXpdrTpPortConnectionAttributes().getOdtuTpnPool() != null
-<<<<<<< HEAD
-            && ontTp1.getXpdrTpPortConnectionAttributes().getOdtuTpnPool().get(0).getOdtuType()
-                .equals(ODTU4TsAllocated.class)
-            && !ontTp1.getXpdrTpPortConnectionAttributes().getOdtuTpnPool().get(0).getTpnPool().isEmpty()
-=======
             && ontTp1.getXpdrTpPortConnectionAttributes().getOdtuTpnPool().values()
                 .stream().findFirst().get().getOdtuType()
                 .equals(ODTU4TsAllocated.class)
             && !ontTp1.getXpdrTpPortConnectionAttributes().getOdtuTpnPool().values()
                 .stream().findFirst().get().getTpnPool().isEmpty()
->>>>>>> standalone/stable/aluminium
             && (ontTp1.getXpdrTpPortConnectionAttributes().getTsPool().size() >= tsNb)) {
             return true;
         }
@@ -277,12 +251,8 @@ public class PceOtnNode implements PceNode {
     }
 
     private boolean checkClientTp(TerminationPoint1 ontTp1) {
-<<<<<<< HEAD
-        for (SupportedInterfaceCapability sic : ontTp1.getTpSupportedInterfaces().getSupportedInterfaceCapability()) {
-=======
         for (SupportedInterfaceCapability sic : ontTp1.getTpSupportedInterfaces().getSupportedInterfaceCapability()
                 .values()) {
->>>>>>> standalone/stable/aluminium
             LOG.debug("in checkTpForOduTermination - sic = {}", sic.getIfCapType());
             switch (otnServiceType) {
                 case "1GE":
@@ -336,15 +306,9 @@ public class PceOtnNode implements PceNode {
             node.augmentation(
                     org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev181130.Node1.class);
         SwitchingPools sp = node1.getSwitchingPools();
-<<<<<<< HEAD
-        List<OduSwitchingPools> osp = sp.getOduSwitchingPools();
-        for (OduSwitchingPools ospx : osp) {
-            List<NonBlockingList> nbl = ospx.getNonBlockingList();
-=======
         List<OduSwitchingPools> osp = new ArrayList<>(sp.nonnullOduSwitchingPools().values());
         for (OduSwitchingPools ospx : osp) {
             List<NonBlockingList> nbl = new ArrayList<>(ospx.nonnullNonBlockingList().values());
->>>>>>> standalone/stable/aluminium
             for (NonBlockingList nbll : nbl) {
                 if (nbll.getAvailableInterconnectBandwidth().toJava() >= neededBW && nbll.getTpList() != null
                         && nbll.getTpList().contains(tp1.getTpId()) && nbll.getTpList().contains(tp2.getTpId())) {
@@ -380,11 +344,7 @@ public class PceOtnNode implements PceNode {
     public void checkAvailableTribPort() {
         List<TerminationPoint> networkTpList = node.augmentation(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1.class)
-<<<<<<< HEAD
-            .getTerminationPoint().stream()
-=======
             .getTerminationPoint().values().stream()
->>>>>>> standalone/stable/aluminium
             .filter(type -> type
                 .augmentation(
                     org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.TerminationPoint1.class)
@@ -393,19 +353,11 @@ public class PceOtnNode implements PceNode {
 
         for (TerminationPoint tp : networkTpList) {
             if (tp.augmentation(TerminationPoint1.class).getXpdrTpPortConnectionAttributes().getOdtuTpnPool() != null
-<<<<<<< HEAD
-                && tp.augmentation(TerminationPoint1.class).getXpdrTpPortConnectionAttributes().getOdtuTpnPool().get(0)
-                    .getOdtuType().equals(ODTU4TsAllocated.class)) {
-                @Nullable
-                List<Uint16> tpnPool = tp.augmentation(TerminationPoint1.class).getXpdrTpPortConnectionAttributes()
-                    .getOdtuTpnPool().get(0).getTpnPool();
-=======
                 && tp.augmentation(TerminationPoint1.class).getXpdrTpPortConnectionAttributes().getOdtuTpnPool()
                     .values().stream().findFirst().get().getOdtuType().equals(ODTU4TsAllocated.class)) {
                 @Nullable
                 List<Uint16> tpnPool = tp.augmentation(TerminationPoint1.class).getXpdrTpPortConnectionAttributes()
                     .getOdtuTpnPool().values().stream().findFirst().get().getTpnPool();
->>>>>>> standalone/stable/aluminium
                 if (tpnPool != null) {
                     tpAvailableTribPort.put(tp.getTpId().getValue(), tpnPool);
                 }
@@ -416,11 +368,7 @@ public class PceOtnNode implements PceNode {
     public void checkAvailableTribSlot() {
         List<TerminationPoint> networkTpList = node.augmentation(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1.class)
-<<<<<<< HEAD
-            .getTerminationPoint().stream()
-=======
             .getTerminationPoint().values().stream()
->>>>>>> standalone/stable/aluminium
             .filter(type -> type
                 .augmentation(
                     org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.TerminationPoint1.class)

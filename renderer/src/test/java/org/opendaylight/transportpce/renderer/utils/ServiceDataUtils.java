@@ -12,18 +12,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathInputBuilder;
-=======
 import java.util.Map;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.RendererRollbackInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.RendererRollbackInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.ServicePathInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.ServicePathInputBuilder;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceImplementationRequestInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceImplementationRequestInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.service.implementation.request.input.PathDescription;
@@ -55,10 +48,7 @@ import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service
 import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.renderer.input.Nodes;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.renderer.input.NodesBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.olm.renderer.input.NodesKey;
-<<<<<<< HEAD
-=======
 import org.opendaylight.yangtools.yang.common.Uint32;
->>>>>>> standalone/stable/aluminium
 
 
 public final class ServiceDataUtils {
@@ -124,11 +114,7 @@ public final class ServiceDataUtils {
     }*/
 
     private static PathDescription createPathDescriptionInvalidResource() {
-<<<<<<< HEAD
-        List<AToZ> atoZList = new ArrayList<AToZ>();
-=======
         Map<AToZKey,AToZ> atoZMap = new HashMap<>();
->>>>>>> standalone/stable/aluminium
         org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource
             .resource.resource.NodeBuilder nodesBuilder = new NodeBuilder();
         org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource
@@ -218,13 +204,7 @@ public final class ServiceDataUtils {
     }
 
     private static PathDescription createPathDescriptionLinkResource() {
-<<<<<<< HEAD
-        List<AToZ> atoZList = new ArrayList<AToZ>();
-//        org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource
-//            .resource.resource.NodeBuilder nodesBuilder = new NodeBuilder();
-=======
         Map<AToZKey,AToZ> atoZMap = new HashMap<>();
->>>>>>> standalone/stable/aluminium
         Link link1 = new LinkBuilder().setLinkId("link 1").build();
         Link link2 = new LinkBuilder().setLinkId("link 2").build();
         AToZ atoZ = new AToZBuilder().setId("1").withKey(new AToZKey("1")).setResource(new ResourceBuilder()
@@ -273,11 +253,7 @@ public final class ServiceDataUtils {
                         .setPortRack("port rack").setPortShelf("port shelf").setPortSlot("port slot")
                         .setPortSubSlot("port subslot").setPortType("port type").build())
                     .build())
-<<<<<<< HEAD
-            .setServiceRate(Long.valueOf(100))
-=======
             .setServiceRate(Uint32.valueOf(100))
->>>>>>> standalone/stable/aluminium
                 .setServiceFormat(ServiceFormat.Ethernet);
     }
 

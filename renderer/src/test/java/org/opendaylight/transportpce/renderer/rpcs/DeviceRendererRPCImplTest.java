@@ -9,30 +9,19 @@ package org.opendaylight.transportpce.renderer.rpcs;
 
 import org.junit.Assert;
 import org.junit.Before;
-<<<<<<< HEAD
-=======
 import org.junit.Ignore;
->>>>>>> standalone/stable/aluminium
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.renderer.provisiondevice.DeviceRendererService;
 import org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRendererService;
 import org.opendaylight.transportpce.test.AbstractTest;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.CreateOtsOmsInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.RendererRollbackOutputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128.ServicePathInput;
-
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.CreateOtsOmsInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.RendererRollbackInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.RendererRollbackOutputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.ServicePathInput;
 
 @Ignore
->>>>>>> standalone/stable/aluminium
 public class DeviceRendererRPCImplTest extends AbstractTest {
     private final DeviceRendererService deviceRenderer = Mockito.mock(DeviceRendererService.class);
     private final OtnDeviceRendererService otnDeviceRenderer = Mockito.mock(OtnDeviceRendererService.class);

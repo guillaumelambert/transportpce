@@ -20,10 +20,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev1
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.lgx.LgxBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.port.PortBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.format.rev190531.ServiceFormat;
-<<<<<<< HEAD
-=======
 import org.opendaylight.yangtools.yang.common.Uint32;
->>>>>>> standalone/stable/aluminium
 
 public class ServicehandlerTxRxCheckTest {
 

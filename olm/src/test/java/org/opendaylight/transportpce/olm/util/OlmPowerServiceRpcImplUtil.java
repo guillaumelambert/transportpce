@@ -101,31 +101,11 @@ public final class OlmPowerServiceRpcImplUtil {
         ServicePowerTurndownInput input = new ServicePowerTurndownInputBuilder()
                 .setNodes(nodes)
                 .setServiceName("service 1")
-<<<<<<< HEAD
-                .setWaveNumber(Long.valueOf("1234")).build();
-
-        return input;
-    }
-
-    public static ServicePowerTurndownInput getServicePowerTurndownInput2() {
-        Nodes node1 = new NodesBuilder().setDestTp("destdeg").setSrcTp("src").setNodeId("node 1").build();
-        Nodes node2 = new NodesBuilder().setDestTp("destdeg").setSrcTp("src").setNodeId("node 2").build();
-        List<Nodes> nodes = new ArrayList<>();
-        nodes.add(node1);
-        nodes.add(node2);
-        ServicePowerTurndownInput input = new ServicePowerTurndownInputBuilder()
-                .setNodes(nodes)
-                .setServiceName("service 1")
-                .setWaveNumber(Long.valueOf("1234")).build();
-=======
                 .setWaveNumber(Uint32.valueOf("1234")).build();
->>>>>>> standalone/stable/aluminium
 
         return input;
     }
 
-<<<<<<< HEAD
-=======
     public static ServicePowerTurndownInput getServicePowerTurndownInput2() {
         Nodes node1 = new NodesBuilder().setDestTp("destdeg").setSrcTp("src").setNodeId("node 1").build();
         Nodes node2 = new NodesBuilder().setDestTp("destdeg").setSrcTp("src").setNodeId("node 2").build();
@@ -140,7 +120,6 @@ public final class OlmPowerServiceRpcImplUtil {
         return input;
     }
 
->>>>>>> standalone/stable/aluminium
     public static ServicePowerTurndownInput getServicePowerTurndownInput3() {
         Nodes node1 = new NodesBuilder().setDestTp("destsrg").setSrcTp("src").setNodeId("node 1").build();
         Nodes node2 = new NodesBuilder().setDestTp("destsrg").setSrcTp("src").setNodeId("node 2").build();
@@ -150,11 +129,7 @@ public final class OlmPowerServiceRpcImplUtil {
         ServicePowerTurndownInput input = new ServicePowerTurndownInputBuilder()
                 .setNodes(nodes)
                 .setServiceName("service 1")
-<<<<<<< HEAD
-                .setWaveNumber(Long.valueOf("1234")).build();
-=======
                 .setWaveNumber(Uint32.valueOf("1234")).build();
->>>>>>> standalone/stable/aluminium
 
         return input;
     }
@@ -168,11 +143,7 @@ public final class OlmPowerServiceRpcImplUtil {
         ServicePowerTurndownInput input = new ServicePowerTurndownInputBuilder()
                 .setNodes(nodes)
                 .setServiceName("service 1")
-<<<<<<< HEAD
-                .setWaveNumber(Long.valueOf("1234")).build();
-=======
                 .setWaveNumber(Uint32.valueOf("1234")).build();
->>>>>>> standalone/stable/aluminium
 
         return input;
     }
@@ -181,11 +152,7 @@ public final class OlmPowerServiceRpcImplUtil {
         CalculateSpanlossBaseInput input = new CalculateSpanlossBaseInputBuilder()
                 .setLinkId(new LinkId("ROADM-A1-to-ROADM-C1"))
                 .setSrcType(CalculateSpanlossBaseInput.SrcType.Link)
-<<<<<<< HEAD
-                .addAugmentation(null, null).build();
-=======
                 .build();
->>>>>>> standalone/stable/aluminium
         return input;
     }
 
@@ -193,11 +160,7 @@ public final class OlmPowerServiceRpcImplUtil {
         CalculateSpanlossBaseInput input = new CalculateSpanlossBaseInputBuilder()
                 .setLinkId(new LinkId("ROADM-A1-to-ROADM-C1"))
                 .setSrcType(CalculateSpanlossBaseInput.SrcType.All)
-<<<<<<< HEAD
-                .addAugmentation(null, null).build();
-=======
                 .build();
->>>>>>> standalone/stable/aluminium
         return input;
     }
 

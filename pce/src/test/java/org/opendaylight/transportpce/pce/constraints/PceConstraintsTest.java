@@ -16,11 +16,6 @@ import org.junit.Test;
 import org.opendaylight.transportpce.pce.networkanalyzer.PceOpticalNode;
 import org.opendaylight.transportpce.test.AbstractTest;
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> standalone/stable/aluminium
 public class PceConstraintsTest extends AbstractTest {
     private static PceConstraints pceConstraints = new PceConstraints();
 

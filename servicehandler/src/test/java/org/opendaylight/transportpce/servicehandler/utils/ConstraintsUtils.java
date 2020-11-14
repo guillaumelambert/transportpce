@@ -21,10 +21,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.routing.constrains.rev190
 import org.opendaylight.yang.gen.v1.http.org.openroadm.routing.constrains.rev190329.routing.constraints.HardConstraintsBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.routing.constrains.rev190329.routing.constraints.SoftConstraints;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.routing.constrains.rev190329.routing.constraints.SoftConstraintsBuilder;
-<<<<<<< HEAD
-=======
 import org.opendaylight.yangtools.yang.common.Uint32;
->>>>>>> standalone/stable/aluminium
 
 /**
  * Utility Class to Build Hard Constraints and Soft Constraints.
@@ -93,11 +90,7 @@ public final class ConstraintsUtils {
                             .setSrlg(Boolean.TRUE)
                             .build())
                         .build())
-<<<<<<< HEAD
-                    .setLatency(new LatencyBuilder().setMaxLatency(1L).build())
-=======
                     .setLatency(new LatencyBuilder().setMaxLatency(Uint32.valueOf(1)).build())
->>>>>>> standalone/stable/aluminium
                     .build())
                 .setCustomerCode(new ArrayList<>(Collections.singletonList("customer-code 1")))
                 .build();

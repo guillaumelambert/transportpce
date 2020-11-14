@@ -514,7 +514,6 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                     usedDegreeTxTtpWls = new HashMap<>();
                     if (txTtpAttributes == null) {
                         txTtpAttributesBuilder = new TxTtpAttributesBuilder();
-                        usedDegreeTxTtpWls = new ArrayList<>();
                     } else {
                         txTtpAttributesBuilder = new TxTtpAttributesBuilder(txTtpAttributes);
                         usedDegreeTxTtpWls.putAll(txTtpAttributesBuilder.getUsedWavelengths());
@@ -534,7 +533,6 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                     usedDegreeRxTtpWls = new HashMap<>();
                     if (rxTtpAttributes == null) {
                         rxTtpAttributesBuilder = new RxTtpAttributesBuilder();
-                        usedDegreeRxTtpWls = new ArrayList<>();
                     } else {
                         rxTtpAttributesBuilder = new RxTtpAttributesBuilder(rxTtpAttributes);
                         usedDegreeRxTtpWls.putAll(rxTtpAttributesBuilder.getUsedWavelengths());
@@ -556,7 +554,6 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                     usedDegreeCtpWls = new HashMap<>();
                     if (ctpAttributes == null) {
                         ctpAttributesBuilder = new CtpAttributesBuilder();
-                        usedDegreeCtpWls = new ArrayList<>();
                     } else {
                         ctpAttributesBuilder = new CtpAttributesBuilder(ctpAttributes);
                         usedDegreeCtpWls.putAll(ctpAttributesBuilder.getUsedWavelengths());
@@ -581,7 +578,6 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                     usedDegreeCpWls = new HashMap<>();
                     if (cpAttributes == null) {
                         cpAttributesBuilder = new CpAttributesBuilder();
-                        usedDegreeCpWls = new ArrayList<>();
                     } else {
                         cpAttributesBuilder = new CpAttributesBuilder(cpAttributes);
                         usedDegreeCpWls.putAll(cpAttributesBuilder.getUsedWavelengths());
@@ -609,7 +605,6 @@ public class NetworkModelWavelengthServiceImpl implements NetworkModelWavelength
                     usedDegreePpWls = new HashMap<>();
                     if (ppAttributes == null) {
                         ppAttributesBuilder = new PpAttributesBuilder();
-                        usedDegreePpWls = new ArrayList<>();
                     } else {
                         ppAttributesBuilder = new PpAttributesBuilder(ppAttributes);
                         usedDegreePpWls.putAll(ppAttributesBuilder.getUsedWavelength());

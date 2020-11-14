@@ -13,10 +13,7 @@ import java.io.StringReader;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
->>>>>>> standalone/stable/aluminium
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HEAD;
@@ -26,11 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import org.opendaylight.transportpce.pce.utils.JsonUtil;
 import org.opendaylight.yang.gen.v1.gnpy.gnpy.api.rev190103.GnpyApi;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.gnpy.path.rev200202.service.PathRequest;
-=======
 import org.opendaylight.yang.gen.v1.gnpy.path.rev200909.service.PathRequest;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yangtools.yang.common.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,11 +61,7 @@ public class GnpyStub {
         // TODO: return different response based on body data
         try {
             String response = null;
-<<<<<<< HEAD
-            List<PathRequest> pathRequest = request.getServiceFile().getPathRequest();
-=======
             List<PathRequest> pathRequest = new ArrayList<>(request.getServiceFile().nonnullPathRequest().values());
->>>>>>> standalone/stable/aluminium
             // this condition is totally arbitrary and could be modified
             if (!pathRequest.isEmpty() && "127.0.0.31".contentEquals(pathRequest.get(0).getSource().stringValue())) {
                 response = Files

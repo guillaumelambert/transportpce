@@ -14,11 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-<<<<<<< HEAD
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.transportpce.common.Timeouts;
-=======
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
@@ -26,23 +21,14 @@ import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfa
 import org.opendaylight.transportpce.olm.util.OlmUtils;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerTurndownInput;
-<<<<<<< HEAD
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.MappingKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.network.nodes.NodeInfo.OpenroadmVersion;
-=======
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingKey;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo.OpenroadmVersion;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.OpticalControlMode;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeTypes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.Interface;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.Interface1;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,10 +60,6 @@ public class PowerMgmtImpl implements PowerMgmt {
      */
     //TODO Need to Case Optical Power mode/NodeType in case of 2.2 devices
     //@SuppressFBwarnings("DM_CONVERT_CASE")
-<<<<<<< HEAD
-    @Override
-=======
->>>>>>> standalone/stable/aluminium
     public Boolean setPower(ServicePowerSetupInput input) {
         LOG.info("Olm-setPower initiated");
         for (int i = 0; i < input.getNodes().size(); i++) {
@@ -94,12 +76,8 @@ public class PowerMgmtImpl implements PowerMgmt {
                 Nodes inputNode = inputNodeOptional.get();
                 OpenroadmVersion openroadmVersion = inputNode.getNodeInfo().getOpenroadmVersion();
                 LOG.info("Getting data from input node {}", inputNode.getNodeInfo().getNodeType());
-<<<<<<< HEAD
-                LOG.info("Getting mapping data for node is {}", inputNode.getMapping().stream().filter(o -> o.key()
-=======
                 LOG.info("Getting mapping data for node is {}",
                         inputNode.nonnullMapping().values().stream().filter(o -> o.key()
->>>>>>> standalone/stable/aluminium
                          .equals(new MappingKey(destTpId))).findFirst().toString());
                 // If its A-End transponder
                 if (destTpId.toLowerCase().contains("network")) {
@@ -264,28 +242,12 @@ public class PowerMgmtImpl implements PowerMgmt {
                                 return false;
                             }
                             if (interfaceOpt.isPresent()) {
-                                InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport
-                                    .interfaces.rev181019.Interface1> interfaces1IID =
-                                        InstanceIdentifier.create(OrgOpenroadmDevice.class).child(
-                                                org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019
-                                                .interfaces.grp.Interface.class,
-                                                new org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019
-                                                .interfaces.grp.InterfaceKey(
-                                                        portMapping.getSupportingOts()))
-                                                .augmentation(
-                                                        org.opendaylight.yang.gen.v1.http.org.openroadm.optical
-                                                        .transport.interfaces.rev181019.Interface1.class);
-
-                                Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces
-                                    .rev181019.Interface1> interfaceOpt1 =
-                                        this.deviceTransactionManager.getDataFromDevice(nodeId,
-                                                LogicalDatastoreType.CONFIGURATION, interfaces1IID,
-                                                Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-                                if (interfaceOpt1.isPresent()) {
-                                    //  if (interfaceOpt.get().augmentation(org.opendaylight.yang.gen.v1.http.org
-                                    //      .openroadm.optical.transport.interfaces.rev181019.Interface1.class).getOts()
-                                    //      .getSpanLossTransmit() != null) {
-                                    spanLossTx = interfaceOpt1.get().getOts().getSpanLossTransmit().getValue();
+                                if (interfaceOpt.get().augmentation(org.opendaylight.yang.gen.v1.http.org
+                                        .openroadm.optical.transport.interfaces.rev181019.Interface1.class).getOts()
+                                        .getSpanLossTransmit() != null) {
+                                    spanLossTx = interfaceOpt.get().augmentation(org.opendaylight.yang.gen.v1.http.org
+                                            .openroadm.optical.transport.interfaces.rev181019.Interface1.class).getOts()
+                                            .getSpanLossTransmit().getValue();
                                     LOG.info("Spanloss TX is {}", spanLossTx);
                                 } else {
                                     LOG.error("interface {} has no spanloss value", interfaceOpt.get().getName());
@@ -364,7 +326,6 @@ public class PowerMgmtImpl implements PowerMgmt {
      *
      * @return true/false based on status of operation
      */
-    @Override
     public Boolean powerTurnDown(ServicePowerTurndownInput input) {
         LOG.info("Olm-powerTurnDown initiated");
         /*Starting with last element into the list Z -> A for

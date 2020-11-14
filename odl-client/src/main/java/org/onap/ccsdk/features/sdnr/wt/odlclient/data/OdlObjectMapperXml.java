@@ -9,6 +9,7 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -66,8 +67,7 @@ public class OdlObjectMapperXml extends XmlMapper {
 
 
     @Override
-    public <T> T readValue(String content, Class<T> valueType)
-            throws JsonParseException, JsonMappingException {
+    public <T> T readValue(String content, Class<T> valueType) throws JsonMappingException, JsonProcessingException {
         if (this.doNormalize) {
             content = this.normalizeContent(content);
         }

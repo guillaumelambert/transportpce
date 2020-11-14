@@ -12,11 +12,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-<<<<<<< HEAD
-=======
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
->>>>>>> standalone/stable/aluminium
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,14 +25,6 @@ import org.junit.Assert;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-<<<<<<< HEAD
-import org.opendaylight.transportpce.common.DataStoreContext;
-import org.opendaylight.transportpce.common.NetworkUtils;
-import org.opendaylight.transportpce.common.converter.XMLDataObjectConverter;
-import org.opendaylight.transportpce.common.converter.api.DataObjectConverter;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestOutput;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZ;
-=======
 import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.test.DataStoreContext;
 import org.opendaylight.transportpce.test.converter.DataObjectConverter;
@@ -43,7 +32,6 @@ import org.opendaylight.transportpce.test.converter.XMLDataObjectConverter;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestOutput;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZ;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZKey;
->>>>>>> standalone/stable/aluminium
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.resource.resource.Node;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NetworkId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.Networks;
@@ -92,36 +80,23 @@ public final class PceTestUtils {
 
         try (
                 // load openroadm-network
-<<<<<<< HEAD
-                Reader gnpyNetwork = new FileReader("src/test/resources/gnpy/gnpy_network.json");
-                // load openroadm-topology
-                Reader gnpyTopo = new FileReader("src/test/resources/gnpy/gnpy_topology.json");
-=======
                 Reader gnpyNetwork = new FileReader("src/test/resources/gnpy/gnpy_network.json",
                         StandardCharsets.UTF_8);
                 // load openroadm-topology
                 Reader gnpyTopo = new FileReader("src/test/resources/gnpy/gnpy_topology.json",
                         StandardCharsets.UTF_8);
->>>>>>> standalone/stable/aluminium
                 JsonReader networkReader = new JsonReader(gnpyNetwork);
                 JsonReader topoReader = new JsonReader(gnpyTopo);
         ) {
 
             Networks networks = (Networks) JsonUtil.getInstance().getDataObjectFromJson(networkReader,
                     QName.create("urn:ietf:params:xml:ns:yang:ietf-network", "2018-02-26", "networks"));
-<<<<<<< HEAD
-            saveOpenRoadmNetwork(networks.getNetwork().get(0), NetworkUtils.UNDERLAY_NETWORK_ID, dataBroker);
-            networks = (Networks) JsonUtil.getInstance().getDataObjectFromJson(topoReader,
-                    QName.create("urn:ietf:params:xml:ns:yang:ietf-network", "2018-02-26", "networks"));
-            saveOpenRoadmNetwork(networks.getNetwork().get(0), NetworkUtils.OVERLAY_NETWORK_ID, dataBroker);
-=======
             @NonNull
             List<Network> networkMap = new ArrayList<>(networks.nonnullNetwork().values());
             saveOpenRoadmNetwork(networkMap.get(0), NetworkUtils.UNDERLAY_NETWORK_ID, dataBroker);
             networks = (Networks) JsonUtil.getInstance().getDataObjectFromJson(topoReader,
                     QName.create("urn:ietf:params:xml:ns:yang:ietf-network", "2018-02-26", "networks"));
             saveOpenRoadmNetwork(networkMap.get(0), NetworkUtils.UNDERLAY_NETWORK_ID, dataBroker);
->>>>>>> standalone/stable/aluminium
         } catch (IOException | ExecutionException | InterruptedException e) {
             LOG.error("Cannot init test ", e);
             Assert.fail("Cannot init test ");
@@ -199,14 +174,9 @@ public final class PceTestUtils {
     }
 
     private static List<String> getNodesFromPath(PathComputationRequestOutput output) {
-<<<<<<< HEAD
-        List<AToZ> atozList = output.getResponseParameters().getPathDescription().getAToZDirection().getAToZ();
-        return atozList.stream()
-=======
         @Nullable Map<AToZKey, AToZ> atozList = output.getResponseParameters()
                 .getPathDescription().getAToZDirection().getAToZ();
         return atozList.values().stream()
->>>>>>> standalone/stable/aluminium
                 .filter(aToZ -> {
                     if ((aToZ.getResource() == null) || (aToZ.getResource().getResource() == null)) {
                         LOG.debug("Diversity constraint: Resource of AToZ node {} is null! Skipping this node!",

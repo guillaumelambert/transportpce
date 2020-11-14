@@ -8,11 +8,8 @@
 package org.opendaylight.transportpce.pce.constraints;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
 import java.util.Collections;
 import java.util.Comparator;
->>>>>>> standalone/stable/aluminium
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -50,11 +47,8 @@ import org.slf4j.LoggerFactory;
 public class PceConstraintsCalc {
     /* Logging. */
     private static final Logger LOG = LoggerFactory.getLogger(PceConstraintsCalc.class);
-<<<<<<< HEAD
-=======
     private static final Comparator<OrderedHops> ORDERED_HOP_COMPARATOR =
             Comparator.comparing(OrderedHops::getHopNumber);
->>>>>>> standalone/stable/aluminium
 
     private PceConstraints pceHardConstraints = new PceConstraints();
     private PceConstraints pceSoftConstraints = new PceConstraints();
@@ -164,11 +158,7 @@ public class PceConstraintsCalc {
 
         Include include = tmpGeneral.getInclude();
         if (include != null) {
-<<<<<<< HEAD
-            List<OrderedHops> listHops = include.getOrderedHops();
-=======
             List<OrderedHops> listHops = new ArrayList<>(include.nonnullOrderedHops().values());
->>>>>>> standalone/stable/aluminium
             if (listHops != null) {
                 readIncludeNodes(listHops, constraints);
             }
@@ -198,10 +188,7 @@ public class PceConstraintsCalc {
     }
 
     private void readIncludeNodes(List<OrderedHops> listHops, PceConstraints constraints) {
-<<<<<<< HEAD
-=======
         Collections.sort(listHops, ORDERED_HOP_COMPARATOR);
->>>>>>> standalone/stable/aluminium
         for (int i = 0; i < listHops.size(); i++) {
             HopType hoptype = listHops.get(i).getHopType().getHopType();
 
@@ -283,11 +270,7 @@ public class PceConstraintsCalc {
     }
 
     private List<String> getAToZNodeList(PathDescription pathDescription) {
-<<<<<<< HEAD
-        List<AToZ> aendToZList = pathDescription.getAToZDirection().getAToZ();
-=======
         List<AToZ> aendToZList = new ArrayList<>(pathDescription.getAToZDirection().nonnullAToZ().values());
->>>>>>> standalone/stable/aluminium
         return aendToZList.stream().filter(aToZ -> {
             if (aToZ.getResource() == null || aToZ.getResource().getResource() == null) {
                 LOG.warn("Diversity constraint: Resource of AToZ node {} is null! Skipping this node!", aToZ.getId());
@@ -308,11 +291,7 @@ public class PceConstraintsCalc {
     }
 
     private List<String> getSRLGList(PathDescription pathDescription) {
-<<<<<<< HEAD
-        List<AToZ> aendToZList = pathDescription.getAToZDirection().getAToZ();
-=======
         List<AToZ> aendToZList = new ArrayList<>(pathDescription.getAToZDirection().nonnullAToZ().values());
->>>>>>> standalone/stable/aluminium
         return aendToZList.stream().filter(aToZ -> {
             if (aToZ.getResource() == null
                     || aToZ.getResource().getResource() == null) {

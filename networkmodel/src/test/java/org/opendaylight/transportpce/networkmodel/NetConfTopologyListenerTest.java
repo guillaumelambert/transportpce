@@ -88,7 +88,7 @@ public class NetConfTopologyListenerTest {
         DeviceTransactionManager deviceTransactionManager =
                 new DeviceTransactionManagerImpl(mountPointService, 3000);
         R2RLinkDiscovery linkDiskovery = new R2RLinkDiscovery(
-                dataBroker, deviceTransactionManager, networkTransactionService);
+                dataBroker, deviceTransactionManager, networkTransactionService, null);
         OpenRoadmInterfacesImpl121 openRoadmInterfacesImpl121 =
                 new OpenRoadmInterfacesImpl121(deviceTransactionManager);
         OpenRoadmInterfacesImpl221 openRoadmInterfacesImpl221 =

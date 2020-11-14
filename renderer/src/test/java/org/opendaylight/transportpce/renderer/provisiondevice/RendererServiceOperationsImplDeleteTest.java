@@ -122,28 +122,17 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         FlexGridImpl flexGrid = new FlexGridImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
         OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
-<<<<<<< HEAD
-            fixedFlexInterface);
-=======
             fixedFlexInterface, flexGrid);
->>>>>>> standalone/stable/aluminium
         OpenRoadmOtnInterface221 openRoadmOTNInterface = new OpenRoadmOtnInterface221(portMapping, openRoadmInterfaces);
         OpenRoadmInterfaceFactory openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,
              openRoadmInterface121, openRoadmInterface221, openRoadmOTNInterface);
 
         this.deviceRenderer = new DeviceRendererServiceImpl(this.getDataBroker(),
             this.deviceTransactionManager, openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect,
-<<<<<<< HEAD
             this.portMapping, null, new DisabledRemoteOpendaylightClient());
 
         this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, crossConnect,
             openRoadmInterfaces, this.deviceTransactionManager, null, new DisabledRemoteOpendaylightClient());
-=======
-            this.portMapping, null);
-
-        this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, crossConnect,
-            openRoadmInterfaces, this.deviceTransactionManager, null);
->>>>>>> standalone/stable/aluminium
 
     }
 

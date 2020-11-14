@@ -10,7 +10,6 @@ package org.opendaylight.transportpce.olm.service;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -71,7 +70,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class OlmPowerServiceImplTest  extends AbstractTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(OlmPowerServiceImplTest.class);
@@ -99,10 +97,11 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
 
     @Before
     public void setUp() {
-        this.mountPoint = new MountPointStub(this.getDataBroker());
+        this.dataBroker =  getNewDataBroker();
+        this.mountPoint = new MountPointStub(this.dataBroker);
         this.mountPointService = new MountPointServiceStub(mountPoint);
         this.deviceTransactionManager = new DeviceTransactionManagerImpl(mountPointService, 3000);
-        this.mappingUtils = Mockito.spy(new MappingUtilsImpl(getDataBroker()));
+        this.mappingUtils = Mockito.spy(new MappingUtilsImpl(dataBroker));
         Mockito.doReturn(StringConstants.OPENROADM_DEVICE_VERSION_1_2_1).when(mappingUtils)
                 .getOpenRoadmVersion(Mockito.anyString());
         this.deviceTransactionManager = new DeviceTransactionManagerImpl(mountPointService, 3000);
@@ -115,18 +114,17 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
         this.openRoadmInterfaces = new OpenRoadmInterfacesImpl((this.deviceTransactionManager),
                 this.mappingUtils,this.openRoadmInterfacesImpl121,this.openRoadmInterfacesImpl22);
         this.portMappingVersion22 =
-                new PortMappingVersion221(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
+                new PortMappingVersion221(dataBroker, deviceTransactionManager, this.openRoadmInterfaces);
         this.portMappingVersion121 =
-                new PortMappingVersion121(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
-        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22, this.portMappingVersion121);
+                new PortMappingVersion121(dataBroker, deviceTransactionManager, this.openRoadmInterfaces);
+        this.portMapping = new PortMappingImpl(dataBroker, this.portMappingVersion22, this.portMappingVersion121);
         this.portMapping = Mockito.spy(this.portMapping);
-        this.powerMgmt = new PowerMgmtImpl(this.getDataBroker(), this.openRoadmInterfaces, this.crossConnect,
+        this.powerMgmt = new PowerMgmtImpl(this.dataBroker, this.openRoadmInterfaces, this.crossConnect,
             this.deviceTransactionManager);
-        this.olmPowerService = new OlmPowerServiceImpl(this.getDataBroker(), this.powerMgmt,
+        this.olmPowerService = new OlmPowerServiceImpl(this.dataBroker, this.powerMgmt,
             this.deviceTransactionManager, this.portMapping, this.mappingUtils, this.openRoadmInterfaces);
-        this.dataBroker =  PowerMockito.spy(getDataBroker());
         this.powerMgmtMock = PowerMockito.mock(PowerMgmtImpl.class);
-        this.olmPowerServiceMock = new OlmPowerServiceImpl(this.getDataBroker(), this.powerMgmtMock,
+        this.olmPowerServiceMock = new OlmPowerServiceImpl(this.dataBroker, this.powerMgmtMock,
             this.deviceTransactionManager, this.portMapping, this.mappingUtils, this.openRoadmInterfaces);
         this.olmPowerServiceMock = Mockito.mock(OlmPowerServiceImpl.class);
         MockitoAnnotations.initMocks(this);
@@ -195,61 +193,6 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
         Assert.assertEquals("Failed", output.getResult());
     }
 
-<<<<<<< HEAD
-    /*
-    @Test
-    public void testCalculateSpanlossBase() {
-        CalculateSpanlossBaseInput input = OlmPowerServiceRpcImplUtil.getCalculateSpanlossBaseInput();
-        //TODO
-        Mockito.when(this.olmPowerServiceMock.calculateSpanlossBase(Mockito.any()))
-                .thenReturn(new CalculateSpanlossBaseOutputBuilder().setResult("Failed").build());
-        CalculateSpanlossBaseOutput output = this.olmPowerServiceMock.calculateSpanlossBase(input);
-        Assert.assertEquals("Failed", output.getResult());
-
-    }
-    */
-
-    /*
-    @Test
-    public void testCalculateSpanlossBase2() {
-        NetworkKey overlayTopologyKey = new NetworkKey(new NetworkId(NetworkUtils.OVERLAY_NETWORK_ID));
-<<<<<<< HEAD
-        InstanceIdentifier<Network1> networkIID = InstanceIdentifier.builder(Networks.class)
-            .child(Network.class, overlayTopologyKey)
-=======
-        InstanceIdentifier<Network1> networkTopoIID = InstanceIdentifier.builder(Networks.class)
-                .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                                .ietf.network.rev180226.networks.Network.class,
-                        overlayTopologyKey)
->>>>>>> 87d8bf0... Retrieve OLM modifs from change 80051
-            .augmentation(Network1.class)
-            .build();
-        InstanceIdentifier<Network> networkIID = InstanceIdentifier.builder(Networks.class)
-                .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                                .ietf.network.rev180226.networks.Network.class,
-                        overlayTopologyKey)
-                .build();
-        Network1 network = TransactionUtils.getNetwork();
-        Network ietfNetwork = TransactionUtils.getOverLayNetwork();
-        TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, ietfNetwork);
-        TransactionUtils.writeTransaction(this.getDataBroker(), networkTopoIID, network);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            LOG.error("Write transaction failed !",e);
-        }
-        CalculateSpanlossBaseInput input = OlmPowerServiceRpcImplUtil.getCalculateSpanlossBaseInput();
-        //TODO
-        Mockito.when(this.olmPowerServiceMock.calculateSpanlossBase(Mockito.any()))
-                .thenReturn(new CalculateSpanlossBaseOutputBuilder().setResult("Failed").build());
-        CalculateSpanlossBaseOutput output = this.olmPowerServiceMock.calculateSpanlossBase(input);
-        Assert.assertEquals("Failed", output.getResult());
-
-    }
-    */
-    @Ignore
-=======
->>>>>>> standalone/stable/aluminium
     @Test
     public void testCalculateSpanlossBase3() {
         NetworkKey overlayTopologyKey = new NetworkKey(new NetworkId(NetworkUtils.OVERLAY_NETWORK_ID));
@@ -258,7 +201,7 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
             .augmentation(Network1.class)
             .build();
         Network1 network = TransactionUtils.getNetwork();
-        TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, network);
+        TransactionUtils.writeTransaction(this.dataBroker, networkIID, network);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -274,7 +217,6 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
     }
 
 
-    @Ignore
     @Test
     public void testCalculateSpanlossBase4() {
         NetworkKey overlayTopologyKey = new NetworkKey(new NetworkId(NetworkUtils.OVERLAY_NETWORK_ID));
@@ -283,7 +225,7 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
             .augmentation(Network1.class)
             .build();
         Network1 network = TransactionUtils.getEmptyNetwork();
-        TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, network);
+        TransactionUtils.writeTransaction(this.dataBroker, networkIID, network);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -295,7 +237,6 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
 
     }
 
-    @Ignore
     @Test
     public void testCalculateSpanlossBase5() {
         NetworkKey overlayTopologyKey = new NetworkKey(new NetworkId(NetworkUtils.OVERLAY_NETWORK_ID));
@@ -304,7 +245,7 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
             .augmentation(Network1.class)
             .build();
         Network1 network = TransactionUtils.getNullNetwork();
-        TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, network);
+        TransactionUtils.writeTransaction(this.dataBroker, networkIID, network);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -331,7 +272,7 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
             .augmentation(Network1.class)
             .build();
         Network1 network = TransactionUtils.getNetwork();
-        TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, network);
+        TransactionUtils.writeTransaction(this.dataBroker, networkIID, network);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -342,7 +283,6 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
         Assert.assertEquals(null, output);
     }
 
-    @Ignore
     @Test
     public void testServicePowerReset() {
         ServicePowerResetInput input = OlmPowerServiceRpcImplUtil.getServicePowerResetInput();
@@ -350,10 +290,6 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
         Assert.assertEquals(null, output);
     }
 
-<<<<<<< HEAD
-    @Ignore
-=======
->>>>>>> standalone/stable/aluminium
     @Test
     public void testServicePowerTurndownSuccessResult() {
         ServicePowerTurndownInput servicePowerTurndownInput = OlmPowerServiceRpcImplUtil.getServicePowerTurndownInput();
