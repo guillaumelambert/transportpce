@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.opendaylight.controller.model</groupId>
 			<artifactId>model-topology</artifactId>
-			<version>1.11.1</version>
+			<version>2.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.opendaylight.netconf</groupId>
@@ -80,9 +80,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.opendaylight.controller</groupId>
-			<artifactId>sal-binding-api</artifactId>
-			<version>1.11.1</version>
+			<groupId>org.opendaylight.mdsal</groupId>
+			<artifactId>mdsal-binding-api</artifactId>
+			<version>6.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>${transportpce.groupId}.ordmodels</groupId>
