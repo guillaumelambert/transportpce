@@ -82,7 +82,7 @@ class Integration:
                 if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
                     self.odlSdnrClient.unmount(simMountPointName)
                 else:
-                    self.odlTrpceClient.unmount(simMountPointNameME)
+                    self.odlTrpceClient.unmount(simMountPointName)
     
 
     def printInfo(self, name, info):
