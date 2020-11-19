@@ -65,11 +65,25 @@ class Integration:
                     self.odlTrpceClient.mount(simMountPointName, simInfo.getIpAddress(), self.config.getEnv("SIMPORT"), self.config.getEnv("SIM_NETCONF_USERNAME"), self.config.getEnv("SIM_NETCONF_PASSWORD"))
     
     def unmount(self,args):
-        for sim in SIMS:
-            if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-                self.odlSdnrClient.unmount(self.getMountPointName(sim))
-            else:
-                self.odlTrpceClient.unmount(self.getMountPointName(sim))
+        mode = args.pop(0)
+        if mode == "demo":
+           infos = self.collectSimInfos(mode)
+           for info in infos:
+                if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+                    self.odlSdnrClient.unmount(info.name)
+                else:
+                    self.odlTrpceClient.unmount(info.name)
+
+        else:
+            for sim in SIMS:
+                simContainerName = self.getContainerName(sim)
+                simInfo = self.dockerExec.inspect(simContainerName)
+                simMountPointName = self.getMountPointName(sim)
+                if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+                    self.odlSdnrClient.unmount(simMountPointName)
+                else:
+                    self.odlTrpceClient.unmount(simMountPointNameME)
+    
 
     def printInfo(self, name, info):
 
@@ -87,6 +101,8 @@ class Integration:
             self.getContainerName("sdncweb")))
         self.printInfo("transportpce", self.dockerExec.inspect(
             self.getContainerName("transportpce")))
+        self.printInfo("transportpce-gui", self.dockerExec.inspect(
+            self.getContainerName("transportpce-gui")))
 
         # print sim infos
         for sim in SIMS:
@@ -136,6 +152,9 @@ class Integration:
     def openSdncWebBrowser(self):
         infos = self.dockerExec.inspect(self.getContainerName("sdncweb"))
         self.openBrowser("http://"+infos.getIpAddress()+":8080")
+    def openTrpceGuiWebBrowser(self):
+        infos = self.dockerExec.inspect(self.getContainerName("transportpce-gui"))
+        self.openBrowser("http://"+infos.getIpAddress()+":8082")
 
     def openApidocsBrowser(self, args):
         container = args.pop(0)
@@ -147,13 +166,16 @@ class Integration:
             self.openBrowser("http://"+infos.getIpAddress()+":8181/apidoc/explorer/index.html")
 
     def setLogs(self):
+
         tc = self.getTransportPCEContainer()
         tc.exec("/opt/opendaylight/bin/client 'log:set DEBUG org.opendaylight.transportpce'")
         tc.exec("/opt/opendaylight/bin/client 'log:set TRACE org.onap.ccsdk.features.sdnr.wt'")
-        #tc.exec("/opt/opendaylight/bin/client 'log:set TRACE org.opendaylight.netconf'")
-        
-        sc = self.getSdnrContainer()
-        sc.exec("/opt/opendaylight/bin/client 'log:set DEBUG org.onap.ccsdk.features.sdnr.wt'")
+        if self.config.isRemoteEnabled():
+            sc = self.getSdnrContainer()
+            sc.exec("/opt/opendaylight/bin/client 'log:set DEBUG org.onap.ccsdk.features.sdnr.wt'")
+            sc.exec("/opt/opendaylight/bin/client 'log:set TRACE org.opendaylight.netconf'")    
+        else:
+            tc.exec("/opt/opendaylight/bin/client 'log:set TRACE org.opendaylight.netconf'")    
         
     def showTrpceLogs(self):
         tc = self.getTransportPCEContainer()
@@ -281,6 +303,8 @@ if __name__ == "__main__":
         integration.getLogs(sys.argv)
     elif cmd == "web":
         integration.openSdncWebBrowser()
+    elif cmd == "webtrpce":
+        integration.openTrpceGuiWebBrowser()
     elif cmd == "apidocs":
         if len(sys.argv) > 0:
             integration.openApidocsBrowser(sys.argv)

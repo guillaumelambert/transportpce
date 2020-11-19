@@ -21,17 +21,20 @@ class End2EndTest:
         step = None
         if len(args)>0:
             step = args.pop(0)
-        success = self.mountAll()
-        if success:
-            print("mounting simulators succeeded")
+        if step != "skipmount":
+            success = self.mountAll()
+            if success:
+                print("mounting simulators succeeded")
+            else:
+                print("problem mounting simulators")
+                return False
+            #stop if requested
+            if step=='mount':
+                return True
+            time.sleep(self.WAITING)
         else:
-            print("problem mounting simulators")
-            return False
-        #stop if requested
-        if step=='mount':
-            return True
-        
-        time.sleep(self.WAITING)
+            print("skip mounting")
+
         success = self.createLinks()
         if success:
             print("creating links succeeded")
@@ -100,7 +103,7 @@ class End2EndTest:
         return True
         
 
-    def createLinks(self, retries=1, delayForRetries=10):
+    def createLinks(self, retries=2, delayForRetries=10):
         success = False
         while retries>=0:
             #connect_xprdA_N1_to_roadmA_PP1
@@ -284,28 +287,28 @@ class End2EndTest:
 
     def getService(self, retries=1, delayForRetries=10):
         
-        success = False
         while retries>0:
+            success = False
             response = self.trpceClient.getService('service1')
-            if not response.isSucceeded():
-                continue
-        
-            success = self.assertEqual(
-                response.data['services'][0]['administrative-state'], 'inService')
-            if not success and retries >0:
-                print("service still not with administrative-state inServerice (state="+response.data['services'][0]['administrative-state']+"). waiting...")
-            success &= self.assertEqual(
-                response.data['services'][0]['service-name'], 'service1')
-            success &= self.assertEqual(
-                response.data['services'][0]['connection-type'], 'service')
-            success &= self.assertEqual(
-                response.data['services'][0]['lifecycle-state'], 'planned')
-            if not success and retries >0:
-                print("service still not with lifecycle-state inServerice (state="+response.data['services'][0]['lifecycle-state']+"). waiting...")
+            if response.isSucceeded():
+            
+                success = self.assertEqual(
+                    response.data['services'][0]['administrative-state'], 'inService')
+                if not success and retries >0:
+                    print("service still not with administrative-state inServerice (state="+response.data['services'][0]['administrative-state']+"). waiting...")
+                success &= self.assertEqual(
+                    response.data['services'][0]['service-name'], 'service1')
+                success &= self.assertEqual(
+                    response.data['services'][0]['connection-type'], 'service')
+                success &= self.assertEqual(
+                    response.data['services'][0]['lifecycle-state'], 'planned')
+                if not success and retries >0:
+                    print("service still not with lifecycle-state inServerice (state="+response.data['services'][0]['lifecycle-state']+"). waiting...")
 
-            if success:
-                break
-
+                if success:
+                    break
+            else:
+                print("service not available: responsecode: "+str(response.code))
             retries-=1
             time.sleep(delayForRetries)
             if retries>0:
