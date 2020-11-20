@@ -290,6 +290,7 @@ public class CrossConnectImpl221 {
                         .container.org.openroadm.device.OduConnection.class,
                     new OduConnectionKey(oduConnectionBuilder.getConnectionName())
                 );
+        LOG.debug("try to post otn crossconnect {} in node {}",oduConnectionBuilder.build(),deviceId);
         Future<Optional<DeviceTransaction>> deviceTxFuture = deviceTransactionManager.getDeviceTransaction(deviceId);
         DeviceTransaction deviceTx;
         try {

@@ -17,11 +17,20 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy.KebabCaseStrategy;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.jdt.annotation.Nullable;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomDateAndTimeSerializer;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomOdlDeserializer;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev181019.resource.resource.resource.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
+import org.opendaylight.yangtools.concepts.Builder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -30,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 
 
-public class OdlObjectMapperXml extends XmlMapper {
+public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
 
     private static final Logger LOG = LoggerFactory.getLogger(OdlObjectMapperXml.class);
     private static final long serialVersionUID = 1L;
@@ -38,13 +47,14 @@ public class OdlObjectMapperXml extends XmlMapper {
     private static final Pattern NORMALIZE_PATTERN = Pattern.compile(NORMALIZE_REGEX, Pattern.MULTILINE);
     private final boolean doNormalize;
     private final YangToolsBuilderAnnotationIntrospector introspector;
-
+    private final Map<Class<?>,List<Class<?>>> autoAugmentationList;
     public OdlObjectMapperXml() {
         this(false);
     }
 
     public OdlObjectMapperXml(boolean doNormalize) {
         super();
+        this.autoAugmentationList = this.initAutoAugmentationList();
         this.doNormalize = doNormalize;
         Bundle bundle = FrameworkUtil.getBundle(OdlObjectMapperXml.class);
         BundleContext context = bundle != null ? bundle.getBundleContext() : null;
@@ -65,13 +75,107 @@ public class OdlObjectMapperXml extends XmlMapper {
     }
 
 
+    private Map<Class<?>,List<Class<?>>> initAutoAugmentationList() {
+        final Map<Class<?>,List<Class<?>>> map = new HashMap<>();
+        map.put(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface.class, Arrays
+                .asList(org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev181019.Interface1.class,
+                        org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.Interface1.class,
+                        org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1.class,
+                        org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev181019.Interface1.class));
+        map.put(Interface.class, Arrays.asList(
+                org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1.class));
+        map.put(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node.class,
+                Arrays.asList(org.opendaylight.yang.gen.v1.http.org.openroadm.network.rev181130.Node1.class,
+                        org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Node1.class));
+        map.put(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1.class,
+                Arrays.asList(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1.class));
+        map.put(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link.class,
+                Arrays.asList(org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Link1.class,
+                        org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev181130.Link1.class,
+                        org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Link1.class));
+        map.put(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node.class,
+                Arrays.asList(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Node1.class,
+                        org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Node1.class));
+        map.put(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network
+                .node.TerminationPoint.class,
+                Arrays.asList(org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.TerminationPoint1.class,
+                        org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev181130.TerminationPoint1.class));
+        map.put(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Protocols.class,
+                Arrays.asList(org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1.class)
+                );
+        return map;
+    }
+
     @Override
     public <T> T readValue(String content, Class<T> valueType)
             throws IOException, JsonParseException, JsonMappingException {
         if (this.doNormalize) {
             content = this.normalizeContent(content);
         }
+        List<Class<?>> augs = this.autoAugmentationList.getOrDefault(valueType, null);
+        if(augs!=null) {
+            Class<?>[] a = new Class<?>[augs.size()];
+            return this.readValue(content, valueType, this.autoAugmentationList.get(valueType).toArray(a));
+        }
         return super.readValue(content, valueType);
+    }
+
+    public <T> T readValue(String content, Class<T> valueType, Class<?>... augmentedTypes)
+            throws IOException, JsonParseException, JsonMappingException {
+        if (this.doNormalize) {
+            content = this.normalizeContent(content);
+        }
+        T value = super.readValue(content, valueType);
+
+        if (augmentedTypes.length > 0) {
+            Builder<T> builder = this.getBuilder(valueType, value);
+            if (builder != null) {
+                Method addAugmentationMethod = null;
+                for (Method m : builder.getClass().getDeclaredMethods()) {
+                    if (m.getName() == "addAugmentation") {
+                        addAugmentationMethod = m;
+                        break;
+                    }
+                }
+                if(addAugmentationMethod!=null) {
+                    for (Class<?> augmentedType : augmentedTypes) {
+                        try {
+                            addAugmentationMethod.invoke(builder,augmentedType, this.readValue(content, augmentedType));
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                                | IOException e) {
+                            LOG.warn("unable to add augmented type {} to basetype {} with content {}: ", augmentedType,
+                                    valueType, content, e);
+                        }
+                    }
+                    value = builder.build();
+                }
+                else {
+                    LOG.warn("unable to add augmentations to type {}. No fn with this name found",builder.getClass());
+                }
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Get Builder object for yang tools interface.
+     *
+     * @param <T> yang-tools base datatype
+     * @param clazz class with interface.
+     * @return builder for interface or null if not existing
+     */
+    @SuppressWarnings({"unchecked", "deprecation"})
+    private @Nullable <T> Builder<T> getBuilder(Class<T> clazz, T value) {
+        String builder = clazz.getName() + "Builder";
+        try {
+            Class<?> clazzBuilder = this.introspector.findClass(builder);
+            return (Builder<T>) clazzBuilder.getDeclaredConstructor(clazz).newInstance(value);
+        } catch (IllegalAccessException | InstantiationException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+
+        }
+        return null;
     }
 
     private String normalizeContent(String content) {
@@ -91,9 +195,13 @@ public class OdlObjectMapperXml extends XmlMapper {
         return copy;
     }
 
+    @Override
     public Class<?> findClass(String name, Class<?> clazz) throws ClassNotFoundException {
         return this.introspector.findClass(name, clazz);
     }
-
+    @Override
+    public Class<?> findClass(String name) throws ClassNotFoundException{
+        return this.introspector.findClass(name);
+    }
 
 }

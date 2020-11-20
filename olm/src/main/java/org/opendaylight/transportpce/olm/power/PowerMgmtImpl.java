@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
@@ -30,9 +28,7 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmappi
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.OpticalControlMode;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeTypes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.Interface;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.Interface1;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -244,35 +240,19 @@ public class PowerMgmtImpl implements PowerMgmt {
                                 return false;
                             }
                             if (interfaceOpt.isPresent()) {
-                                InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport
-                                    .interfaces.rev181019.Interface1> interfaces1IID =
-                                        InstanceIdentifier.create(OrgOpenroadmDevice.class).child(
-                                                org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019
-                                                .interfaces.grp.Interface.class,
-                                                new org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019
-                                                .interfaces.grp.InterfaceKey(
-                                                        portMapping.getSupportingOts()))
-                                                .augmentation(
-                                                        org.opendaylight.yang.gen.v1.http.org.openroadm.optical
-                                                        .transport.interfaces.rev181019.Interface1.class);
-
-                                Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces
-                                    .rev181019.Interface1> interfaceOpt1 =
-                                        this.deviceTransactionManager.getDataFromDevice(nodeId,
-                                                LogicalDatastoreType.CONFIGURATION, interfaces1IID,
-                                                Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-                                if (interfaceOpt1.isPresent()) {
-                                    //  if (interfaceOpt.get().augmentation(org.opendaylight.yang.gen.v1.http.org
-                                    //      .openroadm.optical.transport.interfaces.rev181019.Interface1.class).getOts()
-                                    //      .getSpanLossTransmit() != null) {
-                                    spanLossTx = interfaceOpt1.get().getOts().getSpanLossTransmit().getValue();
+                                if (interfaceOpt.get().augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm
+                                        .optical.transport.interfaces.rev181019.Interface1.class)
+                                        .getOts().getSpanLossTransmit() != null) {
+                                    spanLossTx = interfaceOpt.get().augmentation(org.opendaylight.yang.gen.v1.http
+                                            .org.openroadm.optical.transport.interfaces.rev181019.Interface1.class)
+                                            .getOts().getSpanLossTransmit().getValue();
                                     LOG.info("Spanloss TX is {}", spanLossTx);
                                 } else {
                                     LOG.error("interface {} has no spanloss value", interfaceOpt.get().getName());
                                 }
                             } else {
                                 LOG.error("Interface {} on node {} is not present!", portMapping.getSupportingOts(),
-                                    nodeId);
+                                        nodeId);
                                 return false;
                             }
                         }

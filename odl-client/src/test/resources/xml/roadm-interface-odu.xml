@@ -1,0 +1,10 @@
+<interface xmlns="http://org/openroadm/device">
+    <name>XPDR1-NETWORK1-ODU</name>
+    <supporting-circuit-pack-name>1/0/1-PLUG-NET</supporting-circuit-pack-name>
+    <supporting-interface>XPDR1-NETWORK1-OTU</supporting-interface>
+    <circuit-id>TBD</circuit-id>
+    <administrative-state>inService</administrative-state>
+    <supporting-port>1</supporting-port>
+    <type xmlns:x="http://org/openroadm/interfaces">x:otnOdu</type>
+    <description>TBD</description>
+</interface>

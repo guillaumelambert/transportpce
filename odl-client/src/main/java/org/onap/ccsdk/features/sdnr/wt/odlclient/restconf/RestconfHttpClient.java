@@ -24,7 +24,6 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotImplementedException;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.http.BaseHTTPClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.http.BaseHTTPResponse;
@@ -68,7 +67,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
             NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         final boolean isLeafList = isCompleteLeafListRequest(instanceIdentifier);
         final String uri = this.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId, false, isLeafList);
-        return FutureRestRequest.createFutureRequest(this, uri, "GET", (String) null, this.headers,
+        return FutureRestRequest.createFutureGetRequest(this, uri, (String) null, this.headers,
                 instanceIdentifier.getTargetType(), isLeafList);
     }
 
@@ -170,7 +169,10 @@ public class RestconfHttpClient extends BaseHTTPClient {
         try {
             Class<? extends PathArgument> clazz = pa.getClass();
 
-            Field field = clazz.getDeclaredField("key");
+            Field field = getDeclaredFieldOrNull(clazz,"key");
+            if(field==null) {
+                return null;
+            }
             field.setAccessible(true);
             Object keydef = field.get(pa);
             if (keydef instanceof Identifier) {
@@ -189,8 +191,18 @@ public class RestconfHttpClient extends BaseHTTPClient {
                     }
                 }
             }
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            LOG.debug("key is not a field of class {}", pa.getClass());
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            LOG.debug("key is not a field of class {}: ", pa.getClass(), e);
+        }
+        return null;
+    }
+
+    private static Field getDeclaredFieldOrNull(Class<?> clazz, String key) {
+        Field[] fields = clazz.getDeclaredFields();
+        for(Field f:fields) {
+            if(f.getName()==key) {
+                return f;
+            }
         }
         return null;
     }
@@ -233,8 +245,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
             @NonNull InstanceIdentifier<?> instanceIdentifier, String nodeId) throws ClassNotFoundException,
             NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         final String uri = this.getRfc8040UriFromIif(store, instanceIdentifier, nodeId, false, false);
-        return FutureRestRequest.createFutureRequest(this, uri, "DELETE", (String) null, this.headers,
-                instanceIdentifier.getTargetType(), false);
+        return FutureRestRequest.createFutureDeleteRequest(this, uri, (String) null, this.headers, false);
     }
 
     public <O extends DataObject> FluentFuture<Optional<O>> put(@NonNull LogicalDatastoreType store,
@@ -245,8 +256,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
         LOG.debug("serialize {}",data);
         final String strData = this.mapper.writeValueAsString(data,data.getClass());
         LOG.debug("putting data: {}", strData);
-        return FutureRestRequest.createFutureRequest(this, uri, "PUT", strData, this.headers,
-                instanceIdentifier.getTargetType(), false);
+        return FutureRestRequest.createFuturePutRequest(this, uri, strData, this.headers, false);
     }
 
     public <O extends DataObject> FluentFuture<Optional<O>> merge(@NonNull LogicalDatastoreType store,
@@ -257,7 +267,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
         LOG.debug("serialize {}",data);
         final String strData = this.mapper.writeValueAsString(data,data.getClass());
         LOG.debug("merging data: {}", strData);
-        return FutureRestRequest.createFutureRequest(this, uri, "POST", strData, this.headers,
+        return FutureRestRequest.createFuturePostRequest(this, uri, strData, this.headers,
                 instanceIdentifier.getTargetType(), false);
     }
 }

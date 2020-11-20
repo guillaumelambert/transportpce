@@ -32,6 +32,14 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.srg.CircuitPacksBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.xponder.XpdrPortBuilder;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.lldp.rev181019.lldp.container.lldp.GlobalConfigBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.maintenance.testsignal.rev171215.maint.testsignal.MaintTestsignalBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.otn.odu.interfaces.rev181019.odu.attributes.TcmBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.otn.odu.interfaces.rev181019.odu.container.OduBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.otn.odu.interfaces.rev181019.opu.opu.msi.ExpMsiBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.otn.odu.interfaces.rev181019.opu.opu.msi.RxMsiBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.otn.odu.interfaces.rev181019.opu.opu.msi.TxMsiBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.otn.odu.interfaces.rev181019.parent.odu.allocation.ParentOduAllocationBuilder;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.otn.otu.interfaces.rev181019.otu.container.OtuBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.Ports;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.ports.OtdrPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.ConnectionPorts;
@@ -49,7 +57,14 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.open
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.srg.CircuitPacks;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.xponder.XpdrPort;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.GlobalConfig;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.maintenance.testsignal.rev171215.maint.testsignal.MaintTestsignal;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.odu.attributes.Tcm;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.odu.container.Odu;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.opu.opu.msi.ExpMsi;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.opu.opu.msi.RxMsi;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.opu.opu.msi.TxMsi;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.odu.interfaces.rev181019.parent.odu.allocation.ParentOduAllocation;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev181019.otu.container.Otu;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 import org.osgi.framework.Bundle;
@@ -91,6 +106,15 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         this.customDeserializer.put(CircuitPack.class,CircuitPackBuilder.class.getName());
         this.customDeserializer.put(Xponder.class,XponderBuilder.class.getName());
         this.customDeserializer.put(XpdrPort.class,XpdrPortBuilder.class.getName());
+        this.customDeserializer.put(Odu.class,OduBuilder.class.getName());
+        this.customDeserializer.put(ParentOduAllocation.class,ParentOduAllocationBuilder.class.getName());
+        this.customDeserializer.put(TxMsi.class,TxMsiBuilder.class.getName());
+        this.customDeserializer.put(RxMsi.class,RxMsiBuilder.class.getName());
+        this.customDeserializer.put(ExpMsi.class,ExpMsiBuilder.class.getName());
+        this.customDeserializer.put(MaintTestsignal.class,MaintTestsignalBuilder.class.getName());
+        this.customDeserializer.put(Tcm.class,TcmBuilder.class.getName());
+        this.customDeserializer.put(Otu.class,OtuBuilder.class.getName());
+
 
     }
     @Override
@@ -124,7 +148,7 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         return new JsonPOJOBuilder.Value("build", "set");
     }
 
-    Class<?> findClass(String name) throws ClassNotFoundException {
+    public Class<?> findClass(String name) throws ClassNotFoundException {
         return findClass(name, context);
     }
 

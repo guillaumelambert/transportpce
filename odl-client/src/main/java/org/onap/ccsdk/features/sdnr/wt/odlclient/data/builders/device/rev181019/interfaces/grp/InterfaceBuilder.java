@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import org.opendaylight.netconf.shaded.exificient.core.exceptions.UnsupportedOption;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.State;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.InterfaceKey;
@@ -26,6 +28,7 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.Open
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalChannel;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalTransport;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OtnOdu;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.NetworkMediaChannelConnectionTerminationPoint;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1Builder;
 import org.opendaylight.yangtools.concepts.Builder;
@@ -243,7 +246,7 @@ public class InterfaceBuilder implements Builder<Interface> {
         return this;
     }
 
-    public InterfaceBuilder setType(String value) {
+    public InterfaceBuilder setType(String value) throws UnsupportedOption {
 
         if (value.endsWith("ethernetCsmacd")) {
             this._type = EthernetCsmacd.class;
@@ -255,6 +258,12 @@ public class InterfaceBuilder implements Builder<Interface> {
             this._type = OtnOdu.class;
         }else if (value.endsWith("opticalChannel")) {
             this._type = OpticalChannel.class;
+        }
+        else if(value.endsWith("networkMediaChannelConnectionTerminationPoint")) {
+        	this._type = NetworkMediaChannelConnectionTerminationPoint.class;
+        }
+        else {
+        	throw new UnsupportedOption(String.format("%s is not supported", value));
         }
         return this;
     }

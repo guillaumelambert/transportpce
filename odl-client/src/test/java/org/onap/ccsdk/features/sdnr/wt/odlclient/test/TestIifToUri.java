@@ -8,7 +8,6 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.test;
 
 import static org.junit.Assert.assertEquals;
-import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.junit.Test;
@@ -17,18 +16,10 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.OduConnection;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.OduConnectionKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.SharedRiskGroup;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.SharedRiskGroupKey;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NetworkId;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.Networks;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.Network;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.NetworkKey;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NodeKey;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.TpId;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPoint;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPointKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.optional.rev190614.netconf.node.fields.optional.Topology;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -100,6 +91,17 @@ public class TestIifToUri {
             return super.getRfc8040UriFromIif(storage, instanceIdentifier, nodeId, isRpc);
         }
 
+
+    }
+
+    @Test
+    public void testIIF2() throws Exception {
+        String connectionNumber="1";;
+        InstanceIdentifier<OduConnection> iif = InstanceIdentifier.create(OrgOpenroadmDevice.class).child(OduConnection.class,
+                new OduConnectionKey(connectionNumber));
+        TestRestconfHttpClient restconfClient = new TestRestconfHttpClient("http://localhost:8181/", false, AuthMethod.BASIC,"","");
+
+        LOG.info("odu uri={}",restconfClient.getRfc8040UriFromIif(LogicalDatastoreType.CONFIGURATION, iif, "abc", false));
 
     }
 }

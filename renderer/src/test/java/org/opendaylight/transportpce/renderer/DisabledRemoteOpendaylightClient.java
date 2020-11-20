@@ -86,6 +86,12 @@ public class DisabledRemoteOpendaylightClient implements RemoteOpendaylightClien
         return null;
     }
 
+    @Override
+    public boolean isDeviceMounted(String nodeId) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 
 
 }

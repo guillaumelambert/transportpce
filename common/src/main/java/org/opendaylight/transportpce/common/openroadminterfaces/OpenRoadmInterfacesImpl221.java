@@ -69,7 +69,7 @@ public class OpenRoadmInterfacesImpl221 {
         InstanceIdentifier<Interface> interfacesIID = InstanceIdentifier.create(OrgOpenroadmDevice.class).child(
             Interface.class, new InterfaceKey(ifBuilder.getName()));
         LOG.info("POST INTERF for {} : InterfaceBuilder : name = {} \t type = {}", nodeId, ifBuilder.getName(),
-            ifBuilder.getType().toString());
+            String.valueOf(ifBuilder.getType()));
         deviceTx.put(LogicalDatastoreType.CONFIGURATION, interfacesIID, ifBuilder.build());
         FluentFuture<? extends @NonNull CommitInfo> txSubmitFuture =
             deviceTx.commit(Timeouts.DEVICE_WRITE_TIMEOUT, Timeouts.DEVICE_WRITE_TIMEOUT_UNIT);

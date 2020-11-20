@@ -182,7 +182,22 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
         }
         return false;
     }
+    @Override
+    public boolean isDeviceMounted(String nodeId) {
 
+        InstanceIdentifier<NetconfNode> iif =
+                NETCONF_TOPO_IID.child(Node.class, new NodeKey(new NodeId(nodeId))).augmentation(NetconfNode.class);
+        try {
+            @NonNull
+            Optional<NetconfNode> node = this.restClient.read(LogicalDatastoreType.OPERATIONAL, iif).get();
+            return node.isPresent();
+        } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
+                | IllegalAccessException | IOException | InterruptedException | ExecutionException e) {
+            LOG.warn("unable to read netconfnode {}:", nodeId, e);
+
+        }
+        return false;
+    }
     @Override
     public DataBroker getRemoteDeviceDataBroker(String nodeId) {
         DataBroker broker = this.deviceDataBrokers.get(nodeId);
@@ -200,7 +215,12 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
 
     @Override
     public MountPoint getMountPoint(String deviceId) {
-        return new RemoteMountPoint(this.restClient, this.wsClient, deviceId);
+    	if(this.isDeviceMounted(deviceId)) {
+    		return new RemoteMountPoint(this.restClient, this.wsClient, deviceId);
+    	}
+    	else {
+    		return null;
+    	}
     }
 
     @Override

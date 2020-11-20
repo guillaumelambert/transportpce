@@ -28,10 +28,28 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FutureRestRequest.class);
 
-    public static <T> FluentFuture<Optional<T>> createFutureRequest(BaseHTTPClient client, String uri,
-            String method, String data, Map<String, String> headers, Class<T> clazz, boolean clearWrappingParent) {
-        return FluentFuture.from(new FutureRestRequest<T>(client, uri, method, data, headers, clazz
-                , clearWrappingParent));
+    public static <T> FluentFuture<Optional<T>> createFutureGetRequest(BaseHTTPClient client, String uri, String data,
+            Map<String, String> headers, Class<T> clazz, boolean clearWrappingParent) {
+        return FluentFuture
+                .from(new FutureRestRequest<T>(client, uri, "GET", data, headers, clazz, clearWrappingParent));
+    }
+
+    public static <T> FluentFuture<Optional<T>> createFuturePutRequest(BaseHTTPClient client, String uri, String data,
+            Map<String, String> headers, boolean clearWrappingParent) {
+        return FluentFuture
+                .from(new FutureRestRequest<T>(client, uri, "PUT", data, headers, null, clearWrappingParent));
+    }
+
+    public static <T> FluentFuture<Optional<T>> createFuturePostRequest(BaseHTTPClient client, String uri, String data,
+            Map<String, String> headers, Class<T> clazz, boolean clearWrappingParent) {
+        return FluentFuture
+                .from(new FutureRestRequest<T>(client, uri, "POST", data, headers, clazz, clearWrappingParent));
+    }
+
+    public static <T> FluentFuture<Optional<T>> createFutureDeleteRequest(BaseHTTPClient client, String uri,
+            String data, Map<String, String> headers, boolean clearWrappingParent) {
+        return FluentFuture
+                .from(new FutureRestRequest<T>(client, uri, "DELETE", data, headers, null, clearWrappingParent));
     }
 
     private final BaseHTTPClient client;
@@ -44,7 +62,7 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
     private boolean isCancelled;
     private boolean clearWrappingParent;
 
-    public FutureRestRequest(BaseHTTPClient client, String uri, String method, String data,
+    private FutureRestRequest(BaseHTTPClient client, String uri, String method, String data,
             Map<String, String> headers, Class<T> clazz, boolean clearWrappingParent) {
         this.client = client;
         this.uri = uri;
@@ -65,27 +83,39 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
 
     @Override
     public Optional<T> get() throws InterruptedException, ExecutionException {
-        BaseHTTPResponse response;
         try {
-            response = this.client.sendRequest(this.uri, this.method, this.data, this.headers,
-                    Integer.MAX_VALUE);
-            if (response.isSuccess()) {
-                LOG.debug("request to {}", uri);
-                LOG.debug("response({})" ,response.code);
-                LOG.trace(":{}", response.body);
-                OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
-                return Optional.ofNullable(mapper.readValue(response.body, this.clazz));
-
-            }
-        } catch (IOException e) {
-            LOG.warn("problem requesting data: ", e);
+            return get(30, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            LOG.warn("request timeout:", e);
         }
+        //        BaseHTTPResponse response;
+        //        try {
+        //            response = this.client.sendRequest(this.uri, this.method, this.data, this.headers,
+        //                    Integer.MAX_VALUE);
+        //            if (response.isSuccess()) {
+        //                LOG.debug("request to {}", uri);
+        //                LOG.debug("response({})" ,response.code);
+        //                LOG.trace(":{}", response.body);
+        //                OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
+        //                if(response.isSuccess()) {
+        //                    if(this.clazz ==null) {
+        //                        return Optional.empty();
+        //                    }
+        //                    else {
+        //                        return Optional.ofNullable(mapper.readValue(response.body, this.clazz));
+        //                    }
+        //                }
+        //                return Optional.ofNullable(mapper.readValue(response.body,ErrorResponseBuilder.class));
+        //
+        //            }
+        //        } catch (IOException e) {
+        //            LOG.warn("problem requesting data: ", e);
+        //        }
         return Optional.empty();
     }
 
     @Override
-    public Optional<T> get(long arg0, TimeUnit arg1)
-            throws InterruptedException, ExecutionException, TimeoutException {
+    public Optional<T> get(long arg0, TimeUnit arg1) throws InterruptedException, ExecutionException, TimeoutException {
         BaseHTTPResponse response;
         try {
             long timeoutMillis = arg1.toMillis(arg0);
@@ -94,9 +124,10 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
             if (response.isSuccess()) {
                 LOG.debug("request to {}", uri);
                 LOG.debug("response({}):{}", response.code, response.body);
-                OdlObjectMapperXml mapper = new OdlObjectMapperXml( true);
-                return Optional.ofNullable(mapper.readValue(response.body, this.clazz));
-
+                if (this.clazz != null) {
+                    OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
+                    return Optional.ofNullable(mapper.readValue(response.body, this.clazz));
+                }
             }
         } catch (IOException e) {
             LOG.warn("problem requesting data: ", e);

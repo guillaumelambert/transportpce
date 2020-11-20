@@ -8,42 +8,98 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
 import java.lang.reflect.Field;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.SerializerElem;
+import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.common.QName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OdlXmlSerializer extends OdlDataSerializer<StringBuilder> {
+public class OdlXmlSerializer extends OdlDataSerializer {
 
     private static final Logger LOG = LoggerFactory.getLogger(OdlXmlSerializer.class);
+    private static final String[] xmlNamespacePrefixes=("a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,ab,ac"
+            + ",ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az").split(",");
+    private int prefixIndex=0;
+    private boolean hasNamespace;
+	private boolean withNsPrefix;
+	public OdlXmlSerializer() {
+	    this(null);
+	}
+    public OdlXmlSerializer(ClassFinder clsFinder) {
+        super(clsFinder);
+        this.hasNamespace = false;
+    }
 
-    public OdlXmlSerializer() {
-        super();
+    private String getNamespaceOrDefault(Class<? extends Object> cls, Class<?> rootClass, String def) {
+        final String clsName = cls.getName();
+        final String rootClsName = rootClass.getName();
+
+        if(rootClsName.startsWith("org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.packs.CircuitPacks")) {
+//            if(clsName.startsWith("org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types")) {
+//                return "http://org/openroadm/equipment/states/types";
+//            }
+        }
+        else if(rootClsName.startsWith("org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.RoadmConnections")) {
+//          if(clsName.startsWith("org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types")) {
+//              return "http://org/openroadm/equipment/states/types";
+//          }
+        }
+        else {
+            if(clsName.startsWith("org.opendaylight.yang.gen.v1.http.org.openroadm.common.types")) {
+                return "http://org/openroadm/common-types";
+            }
+            if(clsName.startsWith("org.opendaylight.yang.gen.v1.http.org.openroadm.port.types")) {
+                return "http://org/openroadm/port/types";
+            }
+        }
+        return def;
+    }
+    private String getPrefix() {
+    	return this.prefixIndex<xmlNamespacePrefixes.length?xmlNamespacePrefixes[this.prefixIndex++]:"";
+    }
+    @Override
+    void clear() {
+    	this.prefixIndex = 0;
     }
 
     @Override
-    void preValueWrite(StringBuilder sb, String key, Object o) {
-        sb.append(String.format("<%s %s>", key, this.getXmlNameSpace(o)));
-
+    SerializerElem preValueWrite(String key, Object o, boolean withNsPrefix, Class<?> rootClass) {
+        final String ns = this.getXmlNameSpace(o, rootClass);
+        this.hasNamespace = ns.length() > 0;
+        this.withNsPrefix = withNsPrefix;
+//        if (this.hasNamespace) {
+//            if (this.withNsPrefix) {
+//                sb.append(String.format("<%s xmlns:%s=\"%s\">", key, this.getPrefix(), ns));
+//                this.prefixIndex++;
+//            } else {
+//                sb.append(String.format("<%s xmlns=\"%s\">", key, ns));
+//            }
+//        } else {
+//            sb.append(String.format("<%s>", key));
+//        }
+        return new SerializerElem(key,ns,(withNsPrefix && hasNamespace)?this.getPrefix():null);
     }
 
     @Override
-    void postValueWrite(StringBuilder sb, String key) {
-        sb.append(String.format("</%s>", key));
-
+    void postValueWrite(SerializerElem e, String key) {
+//        sb.append(String.format("</%s>", key));
+//        if(this.hasNamespace) {
+//        	this.prefixIndex++;
+//        }
     }
 
     @Override
-    void onValueWrite(StringBuilder sb, Object o) {
-        sb.append(String.valueOf(o));
-
+    void onValueWrite(SerializerElem e, Object o) {
+        e.setValue(o);
+//        if(this.hasNamespace && this.withNsPrefix) {
+//        	sb.append(String.format("%s:%s",this.getPrefix(),String.valueOf(o)));
+//        }
+//        else {
+//        	sb.append(String.valueOf(o));
+//        }
     }
 
-    @Override
-    StringBuilder instantiateBuilder() {
-        return new StringBuilder();
-    }
-
-    private String getXmlNameSpace(Object o) {
+    private String getXmlNameSpace(Object o, Class<?> rootClass) {
         if (o != null) {
             Field f;
             Object couldQName = null;
@@ -56,9 +112,29 @@ public class OdlXmlSerializer extends OdlDataSerializer<StringBuilder> {
             }
             if (couldQName instanceof QName) {
                 QName qname = (QName) couldQName;
-                return "xmlns=\"" + qname.getNamespace().toString() + "\"";
+                return qname.getNamespace().toString();
             }
+            else if (o.getClass() == Class.class && BaseIdentity.class.isAssignableFrom((Class<?>) o)) {
+                try {
+                    Class<?> value = (Class<?>) o;
+                    QName qname = null;
+                    Field[] fields = value.getDeclaredFields();
+                    for (Field f2 : fields) {
+                        if (f2.getName() == "QNAME") {
+                            qname = (QName) f2.get(value);
+                            break;
+                        }
+                    }
+                    if (qname != null) {
+                        return qname.getNamespace().toString();
+                    }
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    // no need to catch
+                }
+            }
+            return this.getNamespaceOrDefault(o.getClass(), rootClass, "");
         }
         return "";
     }
+
 }

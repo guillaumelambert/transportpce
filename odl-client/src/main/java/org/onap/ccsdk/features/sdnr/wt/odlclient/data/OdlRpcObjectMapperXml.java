@@ -8,6 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy.KebabCaseStrategy;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.KeepPropertyNameSerializer;
 
 public class OdlRpcObjectMapperXml extends OdlObjectMapperXml {
 
@@ -16,17 +17,21 @@ public class OdlRpcObjectMapperXml extends OdlObjectMapperXml {
 
     public OdlRpcObjectMapperXml() {
         super(true);
-        this.serializer = new OdlXmlSerializer();
+        this.serializer = new OdlXmlSerializer(this);
         this.serializer.setNullValueExcluded(true);
+        this.serializer.addSerializer(org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.OpticalControlMode.class, new KeepPropertyNameSerializer());
+        this.serializer.addSerializer("org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.packs.CircuitPacksBuilder$CircuitPacksImpl","_subSlot",new KeepPropertyNameSerializer());
+        this.serializer.addSerializer("org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.RoadmConnectionsBuilder$RoadmConnectionsImpl","_opticalControlMode",new KeepPropertyNameSerializer());
+//        this.serializer.addSerializer(org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.States.class, new KeepPropertyNameSerializer());
     }
 
     @Override
     public String writeValueAsString(Object value) {
-        return this.serializer.writeValueAsString(value, "input");
+    	return this.serializer.writeValueAsString(value, "input");
     }
 
     public String writeValueAsString(Object value, String rootName) {
-        return this.serializer.writeValueAsString(value, rootName);
+    	return this.serializer.writeValueAsString(value, rootName);
     }
 
     public String writeValueAsString(Object data, Class<?> clazz) {
