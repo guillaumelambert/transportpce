@@ -1,10 +1,10 @@
 FROM maven:3.6.3-jdk-11-slim AS builder
-ARG GIT_REF=master
+ARG GIT_REF=stable/magnesium
 RUN apt-get update \
     && apt-get -f -m install -y git \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /tmp/git_repo \
-    && git clone -b "$GIT_REF"  https://git.opendaylight.org/gerrit/transportpce /tmp/git_repo \
+    && git clone -b "$GIT_REF"  https://github.com/highstreet-technologies/transportpce.git /tmp/git_repo \
     && cd /tmp/git_repo/tests \
     && ./buildHoneynode.sh  \
     && ./buildHoneynode.sh 2.2.1 \
