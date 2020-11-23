@@ -64,7 +64,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
     @Override
     public <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data) {
-        LOG.warn("rw transaction now implemented: put, {}", whoCalledMeAll());
+        LOG.info("rw transaction now implemented: put, {}", whoCalledMeAll());
         try {
             this.futureRequest = this.client.put(store, path, data, this.nodeId);
         } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
@@ -76,7 +76,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
     @Override
     public <T extends DataObject> void put(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path,
             @NonNull T data, boolean createMissingParents) {
-        LOG.warn("rw transaction now implemented: deprecated put, {}", whoCalledMeAll());
+        LOG.info("rw transaction now implemented: deprecated put, {}", whoCalledMeAll());
         try {
             this.futureRequest = this.client.put(store, path, data, this.nodeId);
         } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
@@ -94,7 +94,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
     @Override
     public <T extends DataObject> void merge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> instanceIdentifier,
             @NonNull T data, boolean createMissingParents) {
-        LOG.warn("rw transaction not yet implemented: deprecated merge, {}", whoCalledMeAll());
+        LOG.info("rw transaction now implemented: deprecated merge, {}", whoCalledMeAll());
         try {
             this.futureRequest = this.client.merge(store, instanceIdentifier, data, this.nodeId);
         } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
@@ -106,7 +106,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
     @Override
     public <T extends DataObject> void merge(@NonNull LogicalDatastoreType store,
             @NonNull InstanceIdentifier<T> instanceIdentifier, @NonNull T data) {
-        LOG.warn("rw transaction not yet implemented: merge, {}", whoCalledMeAll());
+        LOG.info("rw transaction now implemented: merge, {}", whoCalledMeAll());
         try {
             this.futureRequest = this.client.merge(store, instanceIdentifier, data, this.nodeId);
         } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
@@ -123,6 +123,7 @@ public class RemoteDeviceReadWriteTransaction extends RemoteTransaction implemen
 
     @Override
     public void delete(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<?> path) {
+        LOG.info("rw transaction now implemented: delete, {}", whoCalledMeAll());
         try {
             this.futureRequest = this.client.delete(store, path, this.nodeId);
         } catch (SecurityException | IllegalArgumentException | ClassNotFoundException | NoSuchFieldException

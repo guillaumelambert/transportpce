@@ -45,6 +45,9 @@ public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
     private static final long serialVersionUID = 1L;
     private static final String NORMALIZE_REGEX = "<[\\/]{0,1}([a-z]+[A-Z]+[^>]*)>";
     private static final Pattern NORMALIZE_PATTERN = Pattern.compile(NORMALIZE_REGEX, Pattern.MULTILINE);
+    private static final String XMLNS_REGEX = "xmlns:([a-zA-Z0-9])=\"([^>]*)\">([^<]*)<\\/";
+    private static final Pattern XMLNS_PATTERN = Pattern.compile(XMLNS_REGEX, Pattern.MULTILINE);
+
     private final boolean doNormalize;
     private final YangToolsBuilderAnnotationIntrospector introspector;
     private final Map<Class<?>,List<Class<?>>> autoAugmentationList;
@@ -75,7 +78,7 @@ public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
     }
 
 
-    private Map<Class<?>,List<Class<?>>> initAutoAugmentationList() {
+    public static Map<Class<?>,List<Class<?>>> initAutoAugmentationList() {
         final Map<Class<?>,List<Class<?>>> map = new HashMap<>();
         map.put(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface.class, Arrays
                 .asList(org.opendaylight.yang.gen.v1.http.org.openroadm.otn.otu.interfaces.rev181019.Interface1.class,
@@ -164,8 +167,9 @@ public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
      * @param clazz class with interface.
      * @return builder for interface or null if not existing
      */
-    @SuppressWarnings({"unchecked", "deprecation"})
-    private @Nullable <T> Builder<T> getBuilder(Class<T> clazz, T value) {
+    @SuppressWarnings({"unchecked"})
+    @Override
+    public @Nullable <T> Builder<T> getBuilder(Class<T> clazz, T value) {
         String builder = clazz.getName() + "Builder";
         try {
             Class<?> clazzBuilder = this.introspector.findClass(builder);
@@ -189,6 +193,15 @@ public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
             if (matcher.groupCount() > 0) {
                 attr = matcher.group(1);
                 copy = copy.replaceFirst(attr, converter.translate(attr));
+            }
+        }
+        final Matcher xmlnsMatcher = XMLNS_PATTERN.matcher(content);
+        while(xmlnsMatcher.find()) {
+            if (xmlnsMatcher.groupCount() > 2) {
+                attr = xmlnsMatcher.group(3);
+                if(attr.startsWith(xmlnsMatcher.group(1)+":")) {
+                    copy = copy.replaceFirst(attr,attr.substring(xmlnsMatcher.group(1).length()+1));
+                }
             }
         }
         LOG.trace("after={}", copy);

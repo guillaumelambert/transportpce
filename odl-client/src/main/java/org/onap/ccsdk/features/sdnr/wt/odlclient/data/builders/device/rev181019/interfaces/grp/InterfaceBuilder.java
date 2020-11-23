@@ -7,16 +7,10 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.interfaces.grp;
 import com.google.common.base.MoreObjects;
-import java.lang.Class;
-import java.lang.Object;
-import java.lang.Override;
-import java.lang.String;
-import java.lang.SuppressWarnings;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.opendaylight.netconf.shaded.exificient.core.exceptions.UnsupportedOption;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.State;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
@@ -24,11 +18,12 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfac
 import org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.AdminStates;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.EthernetCsmacd;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.InterfaceType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.MediaChannelTrailTerminationPoint;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.NetworkMediaChannelConnectionTerminationPoint;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpenROADMOpticalMultiplex;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalChannel;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalTransport;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OtnOdu;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.NetworkMediaChannelConnectionTerminationPoint;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1Builder;
 import org.opendaylight.yangtools.concepts.Builder;
@@ -258,6 +253,8 @@ public class InterfaceBuilder implements Builder<Interface> {
             this._type = OtnOdu.class;
         }else if (value.endsWith("opticalChannel")) {
             this._type = OpticalChannel.class;
+        }else if (value.endsWith("mediaChannelTrailTerminationPoint")) {
+            this._type = MediaChannelTrailTerminationPoint.class;
         }
         else if(value.endsWith("networkMediaChannelConnectionTerminationPoint")) {
         	this._type = NetworkMediaChannelConnectionTerminationPoint.class;

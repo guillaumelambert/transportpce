@@ -10,10 +10,14 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.ObjectSerializer;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.ObjectSerializerMap;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.SerializerElem;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
+import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -39,6 +43,7 @@ public abstract class OdlDataSerializer {
 
     private final ObjectSerializerMap extraMappers;
     private final ClassFinder clsFinder;
+    private final Map<Class<?>, List<Class<?>>> augmentations = OdlObjectMapperXml.initAutoAugmentationList();
     private static final ObjectSerializer defaultSerializer = new ObjectSerializer();
 
     public OdlDataSerializer(ClassFinder clsFinder) {
@@ -49,9 +54,11 @@ public abstract class OdlDataSerializer {
     public void addSerializer(Class<?> clazz, ObjectSerializer s) {
         this.extraMappers.put(clazz.getName(), s);
     }
+
     public void addSerializer(Class<?> parentClazz, String propertyName, ObjectSerializer s) {
         this.extraMappers.put(parentClazz, propertyName, s);
     }
+
     public void addSerializer(String parentClazzName, String propertyName, ObjectSerializer s) {
         this.extraMappers.put(parentClazzName, propertyName, s);
     }
@@ -64,7 +71,7 @@ public abstract class OdlDataSerializer {
         return this.nullValueExcluded;
     }
 
-    public String writeValueAsString(Object value, String rootKey) {
+    public <T extends DataObject> String writeValueAsString(T value, String rootKey) {
 
         this.clear();
         Class<?> rootClass = value.getClass();
@@ -98,7 +105,8 @@ public abstract class OdlDataSerializer {
                                 continue;
                             }
                             Class<?> type = field.getType();
-                            extraSerializer = this.extraMappers.getOrDefault(type.getName(),clazz,name, defaultSerializer);
+                            extraSerializer =
+                                    this.extraMappers.getOrDefault(type.getName(), clazz, name, defaultSerializer);
                             //convert property name to kebab-case (yang-spec writing)
                             name = extraSerializer.convertPropertyName(name);
                             //if has inner childs
@@ -170,11 +178,58 @@ public abstract class OdlDataSerializer {
                         LOG.warn("problem accessing value during mapping2: ", ex);
                     }
                 }
+                Collection<Object> augmentations = getAugmentations(object, clazz);
+                if (augmentations != null && augmentations.size() > 0) {
+                    for (Object augment : augmentations) {
+                        this.writeRecurseProperties(e, augment, level, augment.getClass());
+                    }
+                }
             }
         }
     }
 
 
+
+    private Collection<Object> getAugmentations(Object object, Class<?> clazz) {
+        if (object instanceof Augmentable) {
+            if (object instanceof Interface) {
+                return AugmentationMap.getInstance().getAugmentations((Interface) object);
+            }
+//            if(object instanceof Interface) {
+//                InterfaceBuilder builder = new InterfaceBuilder((Interface)object);
+//                List<Class<? extends Augmentation<Interface>>> augClasses = AugmentationMap.getInstance().getAugmentations(Interface.class);
+//                if(augClasses!=null) {
+//                    Collection<Object> r = new ArrayList<>();
+//                    for(Class<? extends Augmentation<Interface>> augClass: augClasses) {
+//                        Object o = builder.augmentation(augClass);
+//                        if(o!=null) {
+//                            r.add(o);
+//                        }
+//                    }
+//                    return r;
+//                }
+//            }
+//            //Builder<?> builder = this.clsFinder.getBuilder(clazz, object);
+//            try {
+//                Field[] ms = object.getClass().getFields();
+//                for (Field mm : ms) {
+//                //    LOG.info("ms={}", mm.getName());
+//                }
+//                Method m = object.getClass().getDeclaredMethod("augmentations");
+//                m.setAccessible(true);
+//                Object map = m.invoke(object);
+//                if (map instanceof Map) {
+//                    return ((Map<Object, Object>) map).values();
+//                }
+//            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+//                    | InvocationTargetException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//
+        }
+        return null;
+    }
 
     private SerializerElem startElem(String elem, Object o, Class<?> rootClass) {
         return this.startElem(elem, o, true, rootClass);
@@ -227,8 +282,8 @@ public abstract class OdlDataSerializer {
     }
 
     private String getEnumStringValue(Object value) {
-        if(Enumeration.class.isAssignableFrom(value.getClass())) {
-            return ((Enumeration)value).getName();
+        if (Enumeration.class.isAssignableFrom(value.getClass())) {
+            return ((Enumeration) value).getName();
         }
 
         return String.valueOf(value);

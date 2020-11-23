@@ -9,6 +9,7 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy.KebabCaseStrategy;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.KeepPropertyNameSerializer;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 
 public class OdlRpcObjectMapperXml extends OdlObjectMapperXml {
 
@@ -25,16 +26,16 @@ public class OdlRpcObjectMapperXml extends OdlObjectMapperXml {
 //        this.serializer.addSerializer(org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.States.class, new KeepPropertyNameSerializer());
     }
 
-    @Override
-    public String writeValueAsString(Object value) {
+
+    public <T extends DataObject> String writeValueAsString(T value) {
     	return this.serializer.writeValueAsString(value, "input");
     }
 
-    public String writeValueAsString(Object value, String rootName) {
+    public <T extends DataObject> String writeValueAsString(T value, String rootName) {
     	return this.serializer.writeValueAsString(value, rootName);
     }
 
-    public String writeValueAsString(Object data, Class<?> clazz) {
+    public <T extends DataObject> String writeValueAsString(T data, Class<?> clazz) {
         KebabCaseStrategy converter = new KebabCaseStrategy();
         String clsName = clazz.getSimpleName();
         if(clsName.endsWith("Impl")) {
