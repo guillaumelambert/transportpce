@@ -42,6 +42,7 @@ services:
       - SDNRWT=true
       - SDNRDBURL=http://sdnrdb:9200
       - SDNRWT_BOOTFEATURES=odl-netconf-callhome-ssh,sdnr-wt-feature-aggregator
+      - OOM_ENABLED=true
 #    entrypoint: /opt/onap/sdnc/bin/startODL.oom.sh
     depends_on: 
       - sdnrdb
