@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev181019.resource.resource.resource.Interface;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev181019.resource.resource.resource.InterfaceBuilder;
 import org.opendaylight.yangtools.yang.binding.Augmentation;
 
 public class AugmentationMap {
@@ -89,15 +88,15 @@ public class AugmentationMap {
 
     }
 
-    public List<Object> getAugmentations(Interface o) {
-        InterfaceBuilder builder = new InterfaceBuilder(o);
-        List<Object> augs = new ArrayList<>();
-        //        Object ao = builder.augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1.class);
-        //        if(ao!=null) {
-        //            augs.add(ao);
-        //        }
-        return augs;
-    }
+//    public List<Object> getAugmentations(Interface o) {
+//        InterfaceBuilder builder = new InterfaceBuilder(o);
+//        List<Object> augs = new ArrayList<>();
+//        //        Object ao = builder.augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1.class);
+//        //        if(ao!=null) {
+//        //            augs.add(ao);
+//        //        }
+//        return augs;
+//    }
 
     public List<Object> getAugmentations(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node o) {
@@ -121,18 +120,6 @@ public class AugmentationMap {
         return augs;
     }
 
-    public List<Object> getAugmentations(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1 o) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1Builder builder =
-                new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1Builder(
-                        o);
-        List<Object> augs = new ArrayList<>();
-        //        Object ao = builder.augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev181019.Interface1.class);
-        //        if(ao!=null) {
-        //            augs.add(ao);
-        //        }
-        return augs;
-    }
 
     public List<Object> getAugmentations(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link o) {
@@ -205,7 +192,7 @@ public class AugmentationMap {
                 return this.getAugmentations(
                         (org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface) object);
             } else if (object instanceof Interface) {
-                return this.getAugmentations((Interface) object);
+                return this.getAugmentations(object);
             }
         }
         return null;

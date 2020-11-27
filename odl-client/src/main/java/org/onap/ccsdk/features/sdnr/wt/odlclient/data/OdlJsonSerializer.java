@@ -8,14 +8,10 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.SerializerElem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OdlJsonSerializer extends OdlDataSerializer{
 
-    private static final Logger LOG = LoggerFactory.getLogger(OdlJsonSerializer.class);
-
-    public OdlJsonSerializer() {
+     public OdlJsonSerializer() {
         super(null);
     }
 

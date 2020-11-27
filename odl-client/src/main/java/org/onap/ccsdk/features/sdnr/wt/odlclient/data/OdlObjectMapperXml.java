@@ -57,7 +57,7 @@ public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
 
     public OdlObjectMapperXml(boolean doNormalize) {
         super();
-        this.autoAugmentationList = this.initAutoAugmentationList();
+        this.autoAugmentationList = initAutoAugmentationList();
         this.doNormalize = doNormalize;
         Bundle bundle = FrameworkUtil.getBundle(OdlObjectMapperXml.class);
         BundleContext context = bundle != null ? bundle.getBundleContext() : null;

@@ -17,6 +17,9 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.ObjectSerialize
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.ObjectSerializerMap;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.SerializerElem;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.Augmentable;
 import org.opendaylight.yangtools.yang.binding.BaseIdentity;
 import org.opendaylight.yangtools.yang.binding.ChoiceIn;
@@ -78,7 +81,6 @@ public abstract class OdlDataSerializer {
         SerializerElem e = this.startElem(rootKey, value, false, rootClass);
         this.writeRecurseProperties(e, value, 0, rootClass);
         this.stopElem(e, rootKey);
-        //return builder.toString();
         return e.toString();
     }
 
@@ -195,38 +197,15 @@ public abstract class OdlDataSerializer {
             if (object instanceof Interface) {
                 return AugmentationMap.getInstance().getAugmentations((Interface) object);
             }
-//            if(object instanceof Interface) {
-//                InterfaceBuilder builder = new InterfaceBuilder((Interface)object);
-//                List<Class<? extends Augmentation<Interface>>> augClasses = AugmentationMap.getInstance().getAugmentations(Interface.class);
-//                if(augClasses!=null) {
-//                    Collection<Object> r = new ArrayList<>();
-//                    for(Class<? extends Augmentation<Interface>> augClass: augClasses) {
-//                        Object o = builder.augmentation(augClass);
-//                        if(o!=null) {
-//                            r.add(o);
-//                        }
-//                    }
-//                    return r;
-//                }
-//            }
-//            //Builder<?> builder = this.clsFinder.getBuilder(clazz, object);
-//            try {
-//                Field[] ms = object.getClass().getFields();
-//                for (Field mm : ms) {
-//                //    LOG.info("ms={}", mm.getName());
-//                }
-//                Method m = object.getClass().getDeclaredMethod("augmentations");
-//                m.setAccessible(true);
-//                Object map = m.invoke(object);
-//                if (map instanceof Map) {
-//                    return ((Map<Object, Object>) map).values();
-//                }
-//            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-//                    | InvocationTargetException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//
+            if (object instanceof Node) {
+                return AugmentationMap.getInstance().getAugmentations((Node) object);
+            }
+            if (object instanceof Link) {
+                return AugmentationMap.getInstance().getAugmentations((Link) object);
+            }
+            if (object instanceof TerminationPoint) {
+                return AugmentationMap.getInstance().getAugmentations((TerminationPoint) object);
+            }
         }
         return null;
     }
@@ -236,17 +215,14 @@ public abstract class OdlDataSerializer {
     }
 
     private SerializerElem startElem(String elem, Object o, boolean withNsPrefix, Class<?> rootClass) {
-        //sb.append(String.format("<%s>", elem));
         return this.preValueWrite(elem, o, withNsPrefix, rootClass);
     }
 
     private void writeElemValue(SerializerElem e, Object elemValue) {
-        // sb.append(String.valueOf(elemValue));
         this.onValueWrite(e, elemValue);
     }
 
     private void stopElem(SerializerElem e, String elem) {
-        //sb.append(String.format("</%s>", elem));
         this.postValueWrite(e, elem);
     }
 
