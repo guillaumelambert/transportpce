@@ -30,7 +30,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     </scm>
 
     <modules>
-    	<module>odl-client</module>
+        <module>odl-ready</module>
+        <module>odl-client</module>
         <module>ordmodels</module>
         <module>tapimodels</module>
         <module>api</module>

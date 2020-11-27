@@ -11,12 +11,12 @@
 
     <groupId>org.onap.ccsdk.features.sdnr.wt</groupId>
     <artifactId>sdnr-wt-odl-client</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <properties>
         <transportpce.groupId>org.opendaylight.transportpce</transportpce.groupId>
-        <transportpce.version>1.2.0-SNAPSHOT</transportpce.version>
+        <transportpce.version>${project.version}</transportpce.version>
         <checkstyle.skip>true</checkstyle.skip>
         <skip.checkstyle>true</skip.checkstyle>
         <odlparent.spotbugs.enforce>false</odlparent.spotbugs.enforce>
