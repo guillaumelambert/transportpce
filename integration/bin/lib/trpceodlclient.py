@@ -110,3 +110,7 @@ class TrpceOdlClient(OdlClient):
     def getOpenroadmTopology(self, suffix):
         return self.requestRest(URI_CONFIG_ORDM_TOPO+suffix,'GET',self.defaultJsonHeaders)
         
+    def deleteService(self, serviceData):
+        response = self.requestRest('/restconf/operations/org-openroadm-service:service-delete',
+            'POST', self.defaultJsonHeaders,serviceData)
+        return response
