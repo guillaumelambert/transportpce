@@ -120,7 +120,7 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
                     this.config.getAuthenticationMethod(), this.config.getCredentialUsername(),
                     this.config.getCredentialPassword());
             this.wsClient = this.config.getWebsocketUrl() == null ? null
-                    : new SdnrWebsocketClient(this.config.getWebsocketUrl(), this.wsCallback);
+                    : new SdnrWebsocketClient(this.config.getWebsocketUrl(), this.wsCallback, this.config.trustAllCerts());
             if (this.wsClient != null) {
                 LOG.info("starting wsclient");
                 this.wsClient.start();
@@ -142,7 +142,7 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
             String password) throws NotImplementedException, URISyntaxException {
         this.config = null;
         this.restClient = new RestconfHttpClient(baseUrl, TRUSTALLCERTS, authMethod, username, password);
-        this.wsClient = wsUrl == null ? null : new SdnrWebsocketClient(wsUrl, this.wsCallback);
+        this.wsClient = wsUrl == null ? null : new SdnrWebsocketClient(wsUrl, this.wsCallback, true);
         if (this.wsClient != null) {
             LOG.info("starting wsclient");
             this.wsClient.start();

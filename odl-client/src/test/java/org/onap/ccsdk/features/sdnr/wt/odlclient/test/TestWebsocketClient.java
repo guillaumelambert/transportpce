@@ -72,8 +72,8 @@ public class TestWebsocketClient {
                 LOG.info("notification: {}", notification);
             }
         };
-        SdnrWebsocketClient wsClient = new SdnrWebsocketClient("ws://172.19.0.4:8080/websocket",
-                callback);
+        SdnrWebsocketClient wsClient = new SdnrWebsocketClient("wss://10.20.35.188:30267/websocket",
+                callback, true);
         wsClient.start();
 
         try {
