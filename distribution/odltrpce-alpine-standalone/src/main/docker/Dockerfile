@@ -9,6 +9,7 @@ RUN apk update && apk --no-cache add bash unzip rsync nss
 ENV JAVA_HOME /opt/java/openjdk
 ENV ODL_HOME /opt/opendaylight
 ENV TRPCE_REPO mvn:org.opendaylight.transportpce/odl-transportpce/${trpce.features.version}/xml/features
+ENV JAVA_SECURITY_DIR /etc/ssl/certs/java
 
 # copy ODL
 COPY odl/karaf-${odl.karaf.version} $ODL_HOME
@@ -25,8 +26,13 @@ RUN sed -i -e /featuresBoot/d $ODL_HOME/etc/org.apache.karaf.features.cfg
 #RUN echo featuresBoot=8ed6b938-844e-4e32-9757-313811989a9f,odl-restconf-all,odl-netconf-topology,features-mdsal,odl-transportpce >> $ODL_HOME/etc/org.apache.karaf.features.cfg
 RUN echo featuresBoot=8ed6b938-844e-4e32-9757-313811989a9f,odl-transportpce,odl-netconf-console >> $ODL_HOME/etc/org.apache.karaf.features.cfg
 
-# Set start script
+# Install ssl and java certificates
+COPY certs/truststoreONAPall.jks $JAVA_SECURITY_DIR/
 
+RUN keytool -importkeystore -srckeystore $JAVA_SECURITY_DIR/truststoreONAPall.jks -srcstorepass changeit -destkeystore $JAVA_SECURITY_DIR/cacerts  -deststorepass changeit -noprompt
+RUN keytool -importkeystore -srckeystore $JAVA_SECURITY_DIR/truststoreONAPall.jks -srcstorepass changeit -destkeystore /opt/java/openjdk/lib/security/cacerts  -deststorepass changeit -noprompt
+# Set start script
 RUN chmod 755 $ODL_HOME/bin/startODL.sh
 ENTRYPOINT $ODL_HOME/bin/startODL.sh
+WORKDIR /opt/opendaylight
 EXPOSE 2550 8181
