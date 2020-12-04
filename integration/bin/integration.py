@@ -6,6 +6,7 @@ import os.path
 import shlex
 import subprocess
 import datetime
+import time
 from lib.config import IntegrationConfig
 from lib.docker import Docker, DockerContainer
 from lib.odlclient import OdlClient
@@ -14,27 +15,30 @@ from tests.mountingtest import MountingTest
 from tests.end2endtest import End2EndTest
 from lib.siminfo import SimulatorInfo
 
-SIMS = ["roadma",  "roadmc", "xpdra", "xpdrc"]
-NODEID_LUT = dict(roadma="ROADM-A1",
+SIMS = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
+SIMS_DEMO2 = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
+
+NODEID_LUT = dict(roadma="ROADM-A1",roadmb="ROADM-B1",
     roadmc="ROADM-C1",
     xpdra="XPDR-A1",
     xpdrc="XPDR-C1")
 
 class Integration:
 
-    def __init__(self, prefix, envFile=None):
+    def __init__(self, prefix, envFile=None, sdnrHost=None, trpceHost=None):
         self.prefix = prefix
         self.config = IntegrationConfig(envFile)
         self.dockerExec = Docker()
         self.odlSdnrClient = None
         if self.config.isRemoteEnabled():
-            sdnrInfos = self.dockerExec.inspect(self.getContainerName("sdnr"))
-            self.odlSdnrClient = OdlClient("http://"+sdnrInfos.getIpAddress()+":8181",
-                self.config.getEnv("SDNR_USERNAME"), self.config.getEnv("SDNR_PASSWORD"))
-        trpceInfos = self.dockerExec.inspect(
-            self.getContainerName("transportpce"))
-        self.odlTrpceClient = TrpceOdlClient("http://"+trpceInfos.getIpAddress()+":8181",
-                                        "admin", "admin")
+            if sdnrHost is None:
+                sdnrInfos = self.dockerExec.inspect(self.getContainerName("sdnr"))
+                sdnrHost = "http://"+sdnrInfos.getIpAddress()+":8181"
+            self.odlSdnrClient = OdlClient(sdnrHost, self.config.getEnv("SDNR_USERNAME"), self.config.getEnv("SDNR_PASSWORD"))
+        if trpceHost is None:
+            trpceInfos = self.dockerExec.inspect(self.getContainerName("transportpce"))
+            trpceHost = "http://"+trpceInfos.getIpAddress()+":8181"
+        self.odlTrpceClient = TrpceOdlClient(trpceHost, "admin", "admin")
 
     
     def getContainerName(self, name, suffix="_1"):
@@ -45,7 +49,7 @@ class Integration:
         return NODEID_LUT[name]
 
     def mount(self,args):
-        mode = args.pop(0)
+        mode = args.pop(0) if len(args)>0 else 'default'
         if mode == "demo":
            infos = self.collectSimInfos(mode)
            for info in infos:
@@ -53,6 +57,10 @@ class Integration:
                     self.odlSdnrClient.mount(info.name, info.ip, info.port, info.username, info.password)
                 else:
                     self.odlTrpceClient.mount(info.name, info.ip, info.port, info.username, info.password)
+        
+        elif mode == 'trpce' and self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+            info = self.getTransportPCEConsoleInfo()
+            self.odlSdnrClient.mount(info.name, info.ip, info.port, info.username, info.password)
 
         else:
             for sim in SIMS:
@@ -65,7 +73,7 @@ class Integration:
                     self.odlTrpceClient.mount(simMountPointName, simInfo.getIpAddress(), self.config.getEnv("SIMPORT"), self.config.getEnv("SIM_NETCONF_USERNAME"), self.config.getEnv("SIM_NETCONF_PASSWORD"))
     
     def unmount(self,args):
-        mode = args.pop(0)
+        mode = args.pop(0) if len(args)>0 else 'default'
         if mode == "demo":
            infos = self.collectSimInfos(mode)
            for info in infos:
@@ -73,6 +81,9 @@ class Integration:
                     self.odlSdnrClient.unmount(info.name)
                 else:
                     self.odlTrpceClient.unmount(info.name)
+        elif mode == 'trpce' and self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+            info = self.getTransportPCEConsoleInfo()
+            self.odlSdnrClient.unmount(info.name)
 
         else:
             for sim in SIMS:
@@ -139,12 +150,33 @@ class Integration:
                 17932, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
             sims.append(SimulatorInfo("ROADM-C", DEMO_MEDIATOR_IP_ADDR, 
                 17933, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
+        elif mode == 'demo2':
+            DEMO2_MEDIATOR_IP_ADDR = "10.20.6.32"
+            DEMO2_NETCONF_USERNAME = "netconf"
+            DEMO2_NETCONF_PASSWORD = "netconf"
+            sims.append(SimulatorInfo("ROADM-A1", DEMO2_MEDIATOR_IP_ADDR, 
+                50000, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
+            sims.append(SimulatorInfo("ROADM-B1", DEMO2_MEDIATOR_IP_ADDR, 
+                50001, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
+            sims.append(SimulatorInfo("ROADM-C1", DEMO2_MEDIATOR_IP_ADDR, 
+                50002, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
+            sims.append(SimulatorInfo("XPDR-A1", DEMO2_MEDIATOR_IP_ADDR, 
+                50003, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
+            sims.append(SimulatorInfo("XPDR-C1", DEMO2_MEDIATOR_IP_ADDR, 
+                50004, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
         return sims
 
     def getTransportPCEContainer(self):
         return DockerContainer(self.getContainerName("transportpce"))
+ 
     def getSdnrContainer(self):
         return DockerContainer(self.getContainerName("sdnr"))
+
+    def getTransportPCEConsoleInfo(self):
+        c = self.dockerExec.inspect(self.getContainerName("transportpce"))
+
+        return SimulatorInfo("transportPCE", c.getIpAddress(),2830, "admin", "admin")
+
 
     def openBrowser(self, url):
         subprocess.Popen("/usr/bin/xdg-open "+url+" >/dev/null 2>&1 &", shell=True)
@@ -214,20 +246,38 @@ class Integration:
             c.copy(self.getContainerName("sdnr"),src,"logs/"+prefix+"_sdnr.log")
         if container == "trpce" or container is None:
             c.copy(self.getContainerName("transportpce"),src,"logs/"+prefix+"_trpce.log")
+
+    def waitForReadyState(self, args=[]):
+        timeout=60
+        print("waiting for ready state (max "+str(timeout) + "sec)...",end="")
+        while timeout>0:
+            if self.config.isRemoteEnabled():
+                ready = self.odlTrpceClient.isReady() and self.odlSdnrClient.isReady()
+            else:
+                ready  = self.odlTrpceClient.isReady()
+            
+            if ready:
+                print("ready!")
+                return True
+            timeout-=1
+            print(".",end="")
+            time.sleep(1)
+        return False
         
     def executeTest(self, args):
         test = args.pop(0)
+        mode = args.pop(0) if len(args)>0 else 'default'
         if test == "1":
             test = MountingTest(self.odlSdnrClient, self.odlTrpceClient,
-                                self.getTransportPCEContainer(), self.collectSimInfos())
+                                self.getTransportPCEContainer(), self.collectSimInfos(mode))
             test.test1()
         elif test == "2":
             test = MountingTest(self.odlSdnrClient, self.odlTrpceClient,
-                                self.getTransportPCEContainer(), self.collectSimInfos())
+                                self.getTransportPCEContainer(), self.collectSimInfos(mode))
             test.test2()
         elif test == "end2end":
             test = End2EndTest(self.odlSdnrClient, self.odlTrpceClient,
-                self.getTransportPCEContainer(),self.collectSimInfos(),self.config)
+                self.getTransportPCEContainer(),self.collectSimInfos(mode),self.config)
             test.test(args)
         elif test == "demo":
             test = End2EndTest(self.odlSdnrClient, self.odlTrpceClient,
@@ -263,6 +313,18 @@ if __name__ == "__main__":
 
     execDirAbs = os.getcwd()
     sys.argv.pop(0)
+
+    sdnrHost = None
+    trpceHost = None
+    if len(sys.argv)>0 and sys.argv[0]=="--sdnr":
+        sys.argv.pop(0)
+        sdnrHost = sys.argv.pop(0)
+        print("overwriting sdnr host: "+sdnrHost)
+    if len(sys.argv)>0 and sys.argv[0]=="--trpce":
+        sys.argv.pop(0)
+        trpceHost = sys.argv.pop(0)
+        print("overwriting trpce host: "+trpceHost)
+
     cmd = sys.argv.pop(0)
 
     # always autodetect prefix by exec folder
@@ -279,7 +341,7 @@ if __name__ == "__main__":
     envFilename = execDirAbs+"/.env"
     if not os.path.isfile(envFilename):
         envFilename = None
-    integration = Integration(prefix, envFilename)
+    integration = Integration(prefix, envFilename, sdnrHost, trpceHost)
     if cmd == "info":
         integration.info()
     elif cmd == "status":
@@ -288,6 +350,8 @@ if __name__ == "__main__":
         integration.mount(sys.argv)
     elif cmd == "unmount":
         integration.unmount(sys.argv)
+    elif cmd == "isready":
+        integration.waitForReadyState(sys.argv)
     elif cmd == "setlogs":
         integration.setLogs()
     elif cmd == "test":

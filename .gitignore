@@ -21,6 +21,7 @@ classes
 .DS_STORE
 .metadata
 .vscode
+.factorypath
 ordmodels/src/main/java
 tests/config.xml
 tests/models

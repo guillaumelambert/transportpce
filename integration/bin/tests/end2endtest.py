@@ -17,7 +17,17 @@ class End2EndTest:
     def logError(self, message):
         print("ERROR: "+message)
 
+    def waitForReadyState(self, timeout=60):
+        while timeout>0:
+            ready = self.trpceClient.isReady() and self.sdncClient.isReady()
+            if ready:
+                return True
+            timeout-=1
+            time.sleep(1)
+        return False
+
     def test(self,args):
+        self.waitForReadyState()
         step = None
         if len(args)>0:
             step = args.pop(0)
