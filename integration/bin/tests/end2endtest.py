@@ -1,30 +1,17 @@
 import time
 import json
+from .basetest import BaseTest
 
-
-class End2EndTest:
+class End2EndTest(BaseTest):
 
 
     def __init__(self, sdncClient, trpceClient, trpceContainer, sims, config):
-
+        BaseTest.__init__(self, sdncClient, trpceClient, sims, config)
         self.WAITING = 20
-        self.sdncClient = sdncClient
-        self.trpceClient = trpceClient
         self.trpceContainer = trpceContainer
-        self.sims = sims
-        self.config = config
 
     def logError(self, message):
         print("ERROR: "+message)
-
-    def waitForReadyState(self, timeout=60):
-        while timeout>0:
-            ready = self.trpceClient.isReady() and self.sdncClient.isReady()
-            if ready:
-                return True
-            timeout-=1
-            time.sleep(1)
-        return False
 
     def test(self,args):
         self.waitForReadyState()
@@ -44,6 +31,13 @@ class End2EndTest:
             time.sleep(self.WAITING)
         else:
             print("skip mounting")
+    
+        success = self.waitForConnectedState(30)
+        if success:
+            print("all devices are connected")
+        else:
+            print("problem with deviceconnection")
+            return False
 
         success = self.createLinks()
         if success:
@@ -110,6 +104,7 @@ class End2EndTest:
             print("problem in creating roadm links")
             return False
         time.sleep(self.WAITING)
+
         success = self.test2CreateService()
         if success:
             print("successfully created service2")
