@@ -47,6 +47,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
     private static final int DEFAULT_TIMEOUT = 5000;
     private final Map<String, String> headers;
     private final OdlRpcObjectMapperXml mapper;
+    private RequestCallback callback;
 
     public RestconfHttpClient(String base, boolean trustAllCerts, AuthMethod authMethod, String username,
             String password) throws NotImplementedException {
@@ -269,5 +270,9 @@ public class RestconfHttpClient extends BaseHTTPClient {
         LOG.debug("merging data: {}", strData);
         return FutureRestRequest.createFuturePostRequest(this, uri, strData, this.headers,
                 instanceIdentifier.getTargetType(), false);
+    }
+
+    public void registerRequestCallback(RequestCallback callback) {
+        this.callback = callback;
     }
 }

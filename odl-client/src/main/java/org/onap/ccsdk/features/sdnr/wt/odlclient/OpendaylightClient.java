@@ -30,6 +30,7 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDataTreeChangeProv
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDeviceConnectionChangeProvider;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDeviceDataBroker;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteMountPoint;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RequestCallback;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketCallback;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketClient;
@@ -111,6 +112,10 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
 
         }
     };
+
+    private final RequestCallback restconfRequestCallback = new RequestCallback() {
+
+    };
     private final DataBroker dataBroker;
     private final Map<String, DataBroker> deviceDataBrokers;
     private final RemoteDataTreeChangeProvider<N, D> dataTreeChangeProvider;
@@ -148,6 +153,7 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
             String password) throws NotImplementedException, URISyntaxException {
         this.config = null;
         this.restClient = new RestconfHttpClient(baseUrl, TRUSTALLCERTS, authMethod, username, password);
+        this.restClient.registerRequestCallback(this.restconfRequestCallback);
         this.wsClient = wsUrl == null ? null : new SdnrWebsocketClient(wsUrl, this.wsCallback, true);
         if (this.wsClient != null) {
             LOG.info("starting wsclient");

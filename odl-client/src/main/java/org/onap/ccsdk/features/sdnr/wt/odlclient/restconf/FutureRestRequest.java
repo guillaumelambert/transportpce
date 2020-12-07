@@ -61,9 +61,14 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
     private boolean isDone;
     private boolean isCancelled;
     private boolean clearWrappingParent;
+    private final RequestCallback callback;
 
     private FutureRestRequest(BaseHTTPClient client, String uri, String method, String data,
             Map<String, String> headers, Class<T> clazz, boolean clearWrappingParent) {
+        this(client, uri, method, data, headers, clazz, clearWrappingParent, null);
+    }
+    private FutureRestRequest(BaseHTTPClient client, String uri, String method, String data,
+            Map<String, String> headers, Class<T> clazz, boolean clearWrappingParent, RequestCallback callback) {
         this.client = client;
         this.uri = uri;
         this.method = method;
@@ -73,6 +78,7 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
         this.isDone = false;
         this.isCancelled = false;
         this.clearWrappingParent = clearWrappingParent;
+        this.callback = callback;
     }
 
     @Override
@@ -88,29 +94,6 @@ public class FutureRestRequest<T> implements ListenableFuture<Optional<T>> {
         } catch (TimeoutException e) {
             LOG.warn("request timeout:", e);
         }
-        //        BaseHTTPResponse response;
-        //        try {
-        //            response = this.client.sendRequest(this.uri, this.method, this.data, this.headers,
-        //                    Integer.MAX_VALUE);
-        //            if (response.isSuccess()) {
-        //                LOG.debug("request to {}", uri);
-        //                LOG.debug("response({})" ,response.code);
-        //                LOG.trace(":{}", response.body);
-        //                OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
-        //                if(response.isSuccess()) {
-        //                    if(this.clazz ==null) {
-        //                        return Optional.empty();
-        //                    }
-        //                    else {
-        //                        return Optional.ofNullable(mapper.readValue(response.body, this.clazz));
-        //                    }
-        //                }
-        //                return Optional.ofNullable(mapper.readValue(response.body,ErrorResponseBuilder.class));
-        //
-        //            }
-        //        } catch (IOException e) {
-        //            LOG.warn("problem requesting data: ", e);
-        //        }
         return Optional.empty();
     }
 
