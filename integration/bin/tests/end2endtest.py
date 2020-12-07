@@ -18,6 +18,9 @@ class End2EndTest(BaseTest):
         step = None
         if len(args)>0:
             step = args.pop(0)
+        if step == "clean":
+            return self.clean()
+
         if step != "skipmount":
             success = self.mountAll()
             if success:
@@ -31,6 +34,7 @@ class End2EndTest(BaseTest):
             time.sleep(self.WAITING)
         else:
             print("skip mounting")
+            step = args.pop(0) if len(args)>0 else None
     
         success = self.waitForConnectedState(30)
         if success:
@@ -80,20 +84,23 @@ class End2EndTest(BaseTest):
         else:
             print("problem with topology")
             return False
-        time.sleep(self.WAITING)
-        success = self.test2()
-        if success:
-            print("test2 passed with creation of ethservice2")
-        else:
-            print("test2 failed")
-            return False
-        time.sleep(10)
-        success = self.test3()
-        if success:
-            print("test3 passed")
-        else:
-            print("test3 failed")
-            return False
+        if step == "test2":
+            step = args.pop(0) if len(args)>0 else None
+            time.sleep(self.WAITING)
+            success = self.test2()
+            if success:
+                print("test2 passed with creation of ethservice2")
+            else:
+                print("test2 failed")
+                return False
+        if step == "test3":
+            time.sleep(10)
+            success = self.test3()
+            if success:
+                print("test3 passed")
+            else:
+                print("test3 failed")
+                return False
         return True
 
     def test2(self):
@@ -163,6 +170,9 @@ class End2EndTest(BaseTest):
             print("problem in testing roadm topology")
             return False
         return True
+
+    def clean(self):
+        self.test3DeleteServices()
 
     def mountAll(self):
         responses = []
@@ -918,7 +928,7 @@ class End2EndTest(BaseTest):
   
         return success
     
-    def test3DeleteServices(self):
+    def deleteService(self, serviceName):
         data = {"input": {
                 "sdnc-request-header": {
                     "request-id": "e3028bae-a90f-4ddd-a83f-cf224eba0e58",
@@ -927,7 +937,7 @@ class End2EndTest(BaseTest):
                     "notification-url": "http://localhost:8585/NotificationServer/notify"
                 },
                 "service-delete-req-info": {
-                    "service-name": "service3",
+                    "service-name": serviceName,
                     "tail-retention": "no"
                 }
             }
@@ -940,56 +950,24 @@ class End2EndTest(BaseTest):
                         response.data['output']['configuration-response-common']['response-message']) and self.assertIn('500',
                             response.data['output']['configuration-response-common']['response-code'])
         if not success:
-                self.logError("problem with deleting service3: "+json.dumps(ele))
-                return False
+            self.logError("problem with deleting "+serviceName+": "+json.dumps(response.data))
+            return False
+        return True
+
+    def test3DeleteServices(self):
+        success = self.deleteService("service3")
+        if not success:
+            return False
         time.sleep(self.WAITING)
         #delete_eth_service1
-        data = {"input": {
-                "sdnc-request-header": {
-                    "request-id": "e3028bae-a90f-4ddd-a83f-cf224eba0e58",
-                    "rpc-action": "service-delete",
-                    "request-system-id": "appname",
-                    "notification-url": "http://localhost:8585/NotificationServer/notify"
-                },
-                "service-delete-req-info": {
-                    "service-name": "service1",
-                    "tail-retention": "no"
-                }
-                }
-                }
-        response = self.trpceClient.deleteService(data)
-        if not response.isSucceeded():
-            self.logError(str(response.code)+" | " +response.content)
-            return False
-        success = self.assertIn('Renderer service delete in progress',
-                      response.data['output']['configuration-response-common']['response-message'])
+        success = self.deleteService("service1")
         if not success:
-                self.logError("problem with deleting service1: "+json.dumps(ele))
-                return False
+            return False
         time.sleep(self.WAITING)
-    #delete_eth_service2(self):
-        data = {"input": {
-                "sdnc-request-header": {
-                    "request-id": "e3028bae-a90f-4ddd-a83f-cf224eba0e58",
-                    "rpc-action": "service-delete",
-                    "request-system-id": "appname",
-                    "notification-url": "http://localhost:8585/NotificationServer/notify"
-                },
-                "service-delete-req-info": {
-                    "service-name": "service2",
-                    "tail-retention": "no"
-                }
-            }
-        }
-        response = self.trpceClient.deleteService(data)
-        if not response.isSucceeded():
-            self.logError(str(response.code)+" | " +response.content)
-            return False
-        success = self.assertIn('Renderer service delete in progress',
-                      response.data['output']['configuration-response-common']['response-message'])
+        #delete_eth_service2(self):
+        success = self.deleteService("service2")
         if not success:
-                self.logError("problem with deleting service2: "+json.dumps(ele))
-                return False
+            return False
         return True
 
     def test3_check_no_xc_ROADMA(self):
