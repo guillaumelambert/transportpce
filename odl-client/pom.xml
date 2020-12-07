@@ -93,6 +93,10 @@
             <version>${transportpce.version}</version>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>xmlunit</groupId>
             <artifactId>xmlunit</artifactId>
             <version>1.6</version>

@@ -24,6 +24,7 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.DeviceConnectionChangedHan
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotImplementedException;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.http.status.StatusServlet;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDataBroker;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDataTreeChangeProvider;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDeviceConnectionChangeProvider;
@@ -67,8 +68,6 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
 
         @Override
         public void onMessageReceived(String msg) {
-
-
         }
 
         @Override
@@ -80,12 +79,18 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
         @Override
         public void onDisconnect(int statusCode, String reason) {
             LOG.warn("ws connection to sdnr broken: {} {}", statusCode, reason);
+            if(OpendaylightClient.this.statusServlet!=null) {
+                OpendaylightClient.this.statusServlet.setWebsocketStatus("disconnected");
+            }
 
         }
 
         @Override
         public void onConnect(Session lsession) {
             LOG.info("ws connection to sdnr established");
+            if(OpendaylightClient.this.statusServlet!=null) {
+                OpendaylightClient.this.statusServlet.setWebsocketStatus("connected");
+            }
 
         }
 
@@ -112,6 +117,7 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
     private final RemoteDeviceConnectionChangeProvider deviceConnectionChangeProvider;
 
     private final RemoteOdlConfig config;
+    private StatusServlet statusServlet;
 
     public OpendaylightClient() throws Exception {
         this.config = new RemoteOdlConfig();
@@ -249,6 +255,10 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
             InstanceIdentifier<T> xciid, long deviceReadTimeout, TimeUnit deviceReadTimeoutUnit) throws InterruptedException, TimeoutException, ExecutionException {
         DataBroker db = this.getRemoteDeviceDataBroker(nodeId);
         return db.newReadOnlyTransaction().read(datastore, xciid).get(deviceReadTimeout, deviceReadTimeoutUnit);
+    }
+
+    public void setStatusServlet(StatusServlet statusServlet) {
+        this.statusServlet = statusServlet;
     }
 
 }
