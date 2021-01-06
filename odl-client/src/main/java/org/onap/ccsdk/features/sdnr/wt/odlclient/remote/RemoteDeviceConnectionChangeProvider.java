@@ -94,20 +94,26 @@ public class RemoteDeviceConnectionChangeProvider {
     }
 
     private void handleChange(String nodeId, NetconfNode netconfNode) {
-        @Nullable
-        ConnectionStatus csts = netconfNode.getConnectionStatus();
-        LOG.debug("handle change for connection status {}",csts);
-        if (csts != null) {
-            if (csts == ConnectionStatus.Connected) {
-                this.pushConnect(nodeId, netconfNode);
-            } else if (csts == ConnectionStatus.Connecting) {
-                this.pushConnecting(nodeId, netconfNode);
-            } else if (csts == ConnectionStatus.UnableToConnect) {
-                this.pushUnableToConnect(nodeId, netconfNode);
-            }
 
-        } else {
-            LOG.warn("unable to handle node {} without connection status", nodeId);
+        if(netconfNode!=null) {
+            @Nullable
+            ConnectionStatus csts = netconfNode.getConnectionStatus();
+            LOG.debug("handle change for connection status {}",csts);
+            if (csts != null) {
+                if (csts == ConnectionStatus.Connected) {
+                    this.pushConnect(nodeId, netconfNode);
+                } else if (csts == ConnectionStatus.Connecting) {
+                    this.pushConnecting(nodeId, netconfNode);
+                } else if (csts == ConnectionStatus.UnableToConnect) {
+                    this.pushUnableToConnect(nodeId, netconfNode);
+                }
+
+            } else {
+                LOG.warn("unable to handle node {} without connection status", nodeId);
+            }
+        }
+        else {
+            this.pushDisconnect(nodeId);
         }
     }
 

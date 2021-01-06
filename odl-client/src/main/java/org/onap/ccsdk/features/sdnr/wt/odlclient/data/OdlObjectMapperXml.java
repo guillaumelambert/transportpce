@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jdt.annotation.Nullable;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomDateAndTimeSerializer;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.CustomOdlDeserializer;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.deserializer.CustomOdlDeserializer;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.DateAndTimeSerializer;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev181019.resource.resource.resource.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 import org.opendaylight.yangtools.concepts.Builder;
@@ -69,9 +69,9 @@ public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
         setSerializationInclusion(Include.NON_NULL);
         setAnnotationIntrospector(this.introspector);
         SimpleModule customSerializerModule = new SimpleModule();
-        customSerializerModule.addSerializer(DateAndTime.class, new CustomDateAndTimeSerializer());
+        customSerializerModule.addSerializer(DateAndTime.class, new DateAndTimeSerializer());
         //        customSerializerModule.addSerializer(ChoiceIn.class, new CustomChoiceSerializer());
-        customSerializerModule.setDeserializerModifier(new CustomOdlDeserializer());
+        customSerializerModule.setDeserializerModifier(new CustomOdlDeserializer(this));
 
         this.registerModule(customSerializerModule);
         this.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
