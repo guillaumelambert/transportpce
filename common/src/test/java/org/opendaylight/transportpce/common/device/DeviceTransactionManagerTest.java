@@ -38,6 +38,7 @@ import org.opendaylight.mdsal.binding.api.MountPointService;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.transportpce.common.Globals;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.Network;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.NetworkBuilder;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
@@ -108,7 +109,7 @@ public class DeviceTransactionManagerTest {
             firstDeviceTx.put(defaultDatastore, defaultIid, defaultData);
             Assert.assertFalse(secondDeviceTxFuture.isDone());
             Assert.assertFalse(thirdDeviceTxFuture.isDone());
-            Thread.sleep(200);
+            Thread.sleep(Globals.SLEEP_200);
             Assert.assertFalse(secondDeviceTxFuture.isDone());
             Assert.assertFalse(thirdDeviceTxFuture.isDone());
 
@@ -118,7 +119,7 @@ public class DeviceTransactionManagerTest {
             anotherDeviceTxFuture.get().get().commit(defaultTimeout, defaultTimeUnit);
 
             firstDeviceTx.commit(defaultTimeout, defaultTimeUnit);
-            Thread.sleep(200);
+            Thread.sleep(Globals.SLEEP_200);
             Assert.assertTrue(secondDeviceTxFuture.isDone());
             Assert.assertFalse(thirdDeviceTxFuture.isDone());
 
@@ -127,7 +128,7 @@ public class DeviceTransactionManagerTest {
             Assert.assertFalse(thirdDeviceTxFuture.isDone());
 
             secondDeviceTx.commit(defaultTimeout, defaultTimeUnit);
-            Thread.sleep(200);
+            Thread.sleep(Globals.SLEEP_200);
             Assert.assertTrue(thirdDeviceTxFuture.isDone());
 
             DeviceTransaction thirdDeviceTx = thirdDeviceTxFuture.get().get();
@@ -263,7 +264,7 @@ public class DeviceTransactionManagerTest {
     @Test
     public void getFutureTimeoutTransactionTest() {
         Mockito.when(dataBrokerMock.newReadWriteTransaction()).then(invocation -> {
-            Thread.sleep(3000);
+            Thread.sleep(Globals.SLEEP_3000);
             return rwTransactionMock;
         });
 
@@ -303,7 +304,7 @@ public class DeviceTransactionManagerTest {
         ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
         Mockito.when(rwTransactionMock.commit()).then(invocation -> Futures.makeChecked(executor.submit(() -> {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(Globals.SLEEP_3000);
             } catch (InterruptedException e) {
                 Assert.fail("Exception catched in future! " + e);
             }

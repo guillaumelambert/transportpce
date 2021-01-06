@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
+import org.opendaylight.transportpce.common.Globals;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnectImpl;
@@ -149,7 +150,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction(nodeId.getValue(), this.getDataBroker(), null);
-            Thread.sleep(1000);
+            Thread.sleep(Globals.SLEEP_1000);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput();
         boolean output = this.powerMgmt.setPower(input);
@@ -161,7 +162,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction2(nodeId.getValue(), this.getDataBroker(), null);
-            Thread.sleep(500);
+            Thread.sleep(Globals.SLEEP_500);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput();
         boolean output = this.powerMgmt.setPower(input);
@@ -173,7 +174,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction3(nodeId.getValue(), this.getDataBroker(), null);
-            Thread.sleep(500);
+            Thread.sleep(Globals.SLEEP_500);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput();
         boolean output = this.powerMgmt.setPower(input);
@@ -197,7 +198,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction3(nodeId.getValue(), this.getDataBroker(), "deg");
-            Thread.sleep(500);
+            Thread.sleep(Globals.SLEEP_500);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput4();
         boolean output = this.powerMgmt.setPower(input);
@@ -209,7 +210,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction3(nodeId.getValue(), this.getDataBroker(), null);
-            Thread.sleep(500);
+            Thread.sleep(Globals.SLEEP_500);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput3();
         boolean output = this.powerMgmt.setPower(input);
@@ -221,7 +222,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction(nodeId.getValue(), this.getDataBroker(), "network");
-            Thread.sleep(500);
+            Thread.sleep(Globals.SLEEP_500);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput2();
         boolean output = this.powerMgmt.setPower(input);
@@ -246,7 +247,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction(nodeId.getValue(), this.getDataBroker(), "deg");
-            Thread.sleep(500);
+            Thread.sleep(Globals.SLEEP_500);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput3();
         boolean output = this.powerMgmt.setPower(input);
@@ -258,7 +259,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction(nodeId.getValue(), this.getDataBroker(), "deg");
-            Thread.sleep(500);
+            Thread.sleep(Globals.SLEEP_500);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput4();
         boolean output = this.powerMgmt.setPower(input);
@@ -270,7 +271,7 @@ public class PowerMgmtTest extends AbstractTest {
         List<NodeId> nodes = TransactionUtils.getNodeIds();
         for (NodeId nodeId : nodes) {
             TransactionUtils.writeNodeTransaction(nodeId.getValue(), this.getDataBroker(), null);
-            Thread.sleep(500);
+            Thread.sleep(Globals.SLEEP_500);
         }
         ServicePowerSetupInput input = OlmPowerServiceRpcImplUtil.getServicePowerSetupInput3();
         boolean output = this.powerMgmt.setPower(input);

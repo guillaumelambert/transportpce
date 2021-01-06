@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.MountPointService;
+import org.opendaylight.transportpce.common.Globals;
 import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.common.ResponseCodes;
 import org.opendaylight.transportpce.common.StringConstants;
@@ -257,7 +258,7 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
         Network1 network = TransactionUtils.getNetwork();
         TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, network);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(Globals.SLEEP_1000);
         } catch (InterruptedException e) {
             LOG.error("Write transaction failed !",e);
         }
@@ -282,7 +283,7 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
         Network1 network = TransactionUtils.getEmptyNetwork();
         TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, network);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(Globals.SLEEP_1000);
         } catch (InterruptedException e) {
             LOG.error("Write transaction failed !",e);
         }
@@ -303,7 +304,7 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
         Network1 network = TransactionUtils.getNullNetwork();
         TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, network);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(Globals.SLEEP_1000);
         } catch (InterruptedException e) {
             LOG.error("Write transaction failed !",e);
         }
@@ -384,7 +385,7 @@ public class OlmPowerServiceImplTest  extends AbstractTest {
         Network1 network = TransactionUtils.getNetwork();
         TransactionUtils.writeTransaction(this.getDataBroker(), networkIID, network);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(Globals.SLEEP_1000);
         } catch (InterruptedException e) {
             LOG.error("Write transaction failed !",e);
         }

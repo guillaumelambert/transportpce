@@ -94,3 +94,6 @@ class OdlClient:
 
         return self.requestRest(URI_CONFIG_NETCONF_TOPO + "node/" + node + "/yang-ext:mount" + suffix,
         'GET',self.defaultJsonHeaders)
+    
+    def getNodeA1Data(self, url:str):
+        return self.requestRest(url, 'GET', self.defaultJsonHeaders)

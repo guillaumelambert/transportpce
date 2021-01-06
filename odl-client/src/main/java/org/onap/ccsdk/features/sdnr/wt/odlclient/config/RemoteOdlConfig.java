@@ -30,6 +30,15 @@ public class RemoteOdlConfig {
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_ENABLED = "enabled";
     public static final String KEY_TRUSTALL = "trustall";
+    private static final String ENV_SLEEP_10000 = "sleep_10000";
+	private static final String ENV_SLEEP_1000 = "sleep_1000";
+	private static final String ENV_SLEEP_3000 = "sleep_3000";
+	private static final String ENV_SLEEP_100 = "sleep_100";
+	private static final String ENV_SLEEP_500 = "sleep_500";
+	private static final String ENV_SLEEP_200 = "sleep_200";
+	private static final String ENV_SLEEP_90000 = "sleep_90000";
+    
+    
 
     private static final String DEFAULT_BASEURL = "http://sdnr:8181";
     private static final String DEFAULT_WSURL = "ws://sdnr:8181/websocket";
@@ -48,8 +57,16 @@ public class RemoteOdlConfig {
     private final AuthMethod authMethod;
     private final String username;
     private final String password;
+    private final String envSleep_10000 ;
+	private final String envSleep_1000;
+	private final String envSleep_3000;
+	private final String envSleep_100;
+	private final String envSleep_500;
+	private final String envSleep_200;
+	private final String envSleep_90000;
     private final boolean trustall;
     private final boolean enabled;
+    
 
     public RemoteOdlConfig() {
         this(FILENAME);
@@ -78,6 +95,13 @@ public class RemoteOdlConfig {
                     .equals(getProperty(prop, KEY_ENABLED, String.valueOf(DEFAULT_ENABLED)));
             this.trustall = "true"
                     .equals(getProperty(prop, KEY_TRUSTALL, String.valueOf(DEFAULT_TRUSTALL)));
+            this.envSleep_100 = getProperty(prop, ENV_SLEEP_100, null);
+            this.envSleep_1000 = getProperty(prop, ENV_SLEEP_1000, null);
+            this.envSleep_10000 = getProperty(prop, ENV_SLEEP_10000, null);
+            this.envSleep_200 = getProperty(prop, ENV_SLEEP_200, null);
+            this.envSleep_3000 = getProperty(prop, ENV_SLEEP_3000, null);
+            this.envSleep_500 = getProperty(prop, ENV_SLEEP_500, null);
+            this.envSleep_90000 = getProperty(prop,ENV_SLEEP_90000, null);
         } else {
             this.baseUrl = DEFAULT_BASEURL;
             this.wsUrl = DEFAULT_WSURL;
@@ -86,6 +110,13 @@ public class RemoteOdlConfig {
             this.password = DEFAULT_PASSWORD;
             this.enabled = DEFAULT_ENABLED;
             this.trustall = DEFAULT_TRUSTALL;
+            this.envSleep_100 = null;
+            this.envSleep_1000 = null;
+            this.envSleep_10000 = null;
+            this.envSleep_200 = null;
+            this.envSleep_3000 = null;
+            this.envSleep_500 = null;
+            this.envSleep_90000 = null;
             this.saveFile(filename);
         }
         LOG.info("loaded remote ODL config with enabled={}, remoteODL={}, wsUrl={} and trustall={}",
@@ -105,6 +136,13 @@ public class RemoteOdlConfig {
             prop.setProperty(KEY_PASSWORD, "****");
             prop.setProperty(KEY_ENABLED, String.valueOf(this.enabled));
             prop.setProperty(KEY_TRUSTALL, String.valueOf(this.trustall));
+            prop.setProperty(ENV_SLEEP_100, this.envSleep_100);
+            prop.setProperty(ENV_SLEEP_1000, this.envSleep_1000);
+            prop.setProperty(ENV_SLEEP_200, this.envSleep_200);
+            prop.setProperty(ENV_SLEEP_10000, this.envSleep_10000);
+            prop.setProperty(ENV_SLEEP_3000, this.envSleep_3000);
+            prop.setProperty(ENV_SLEEP_500, this.envSleep_500);
+            prop.setProperty(ENV_SLEEP_90000, this.envSleep_90000);
             // save properties to project root folder
             prop.store(output, null);
 
@@ -182,4 +220,32 @@ public class RemoteOdlConfig {
     public boolean trustAllCerts() {
         return this.trustall;
     }
+
+	public String getEnvSleep_10000() {
+		return this.envSleep_10000;
+	}
+
+	public String getEnvSleep_1000() {
+		return this.envSleep_1000;
+	}
+
+	public String getEnvSleep_3000() {
+		return this.envSleep_3000;
+	}
+
+	public String getEnvSleep_100() {
+		return this.envSleep_100;
+	}
+
+	public String getEnvSleep_90000() {
+		return this.envSleep_90000;
+	}
+
+	public String getEnvSleep_500() {
+		return this.envSleep_500;
+	}
+
+	public String getEnvSleep_200() {
+		return this.envSleep_200;
+	}
 }

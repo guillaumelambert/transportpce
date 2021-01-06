@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.transportpce.common.Globals;
 import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.Timeouts;
@@ -143,7 +144,7 @@ public class OlmPowerServiceImplSpanLossBaseTest extends AbstractTest {
         Network openroadmTopology = OlmTransactionUtils.getNetworkForSpanLoss();
         OlmTransactionUtils.writeTransaction(this.dataBroker, ietfNetworkIID, openroadmTopology);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(Globals.SLEEP_1000);
         } catch (InterruptedException e) {
             LOG.error("Write transaction failed !", e);
         }
@@ -166,7 +167,7 @@ public class OlmPowerServiceImplSpanLossBaseTest extends AbstractTest {
         Network openroadmTopology = OlmTransactionUtils.getNetworkForSpanLoss();
         OlmTransactionUtils.writeTransaction(this.dataBroker, ietfNetworkIID, openroadmTopology);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(Globals.SLEEP_1000);
         } catch (InterruptedException e) {
             LOG.error("Write transaction failed !", e);
         }

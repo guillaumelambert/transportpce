@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.transportpce.common.Globals;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
@@ -587,7 +588,7 @@ public class OpenRoadmInterface221 {
         // Post interface on the device
         openRoadmInterfaces.postInterface(nodeId, oduInterfaceBldr);
         try {
-            Thread.sleep(3000);
+            Thread.sleep(Globals.SLEEP_3000);
         } catch (InterruptedException e) {
             LOG.error("Error waiting post interface on device", e);
         }
@@ -642,7 +643,7 @@ public class OpenRoadmInterface221 {
         // Post interface on the device
         openRoadmInterfaces.postInterface(anodeId, oduInterfaceBldr);
         try {
-            Thread.sleep(3000);
+            Thread.sleep(Globals.SLEEP_3000);
         } catch (InterruptedException e) {
             LOG.error("Error waiting post interface on device", e);
         }

@@ -17,6 +17,8 @@ class End2EndTest:
     def logError(self, message):
         print("ERROR: "+message)
 
+    def logInfo(self, message):
+        print("Info: "+message)
     def test(self,args):
         step = None
         if len(args)>0:
@@ -34,7 +36,7 @@ class End2EndTest:
             time.sleep(self.WAITING)
         else:
             print("skip mounting")
-
+        
         success = self.createLinks()
         if success:
             print("creating links succeeded")
@@ -77,6 +79,7 @@ class End2EndTest:
             print("problem with topology")
             return False
         time.sleep(self.WAITING)
+        
         success = self.test2()
         if success:
             print("test2 passed with creation of ethservice2")
@@ -84,12 +87,21 @@ class End2EndTest:
             print("test2 failed")
             return False
         time.sleep(10)
+        
         success = self.test3()
         if success:
             print("test3 passed")
         else:
             print("test3 failed")
             return False
+        
+        success = self.test4()
+        if success:
+            print("test4 of creating oc service1 passed")
+        else:
+            print("test4 of creating oc service failed")
+            return False
+
         return True
 
     def test2(self):
@@ -130,6 +142,7 @@ class End2EndTest:
         return True
 
     def test3(self):
+        """
         success = self.test3CreateSerice3()
         if success:
             print("testing of creating service3 on non-available resource successful")
@@ -137,25 +150,52 @@ class End2EndTest:
             print("problem in creating serice3")
             return False
         time.sleep(self.WAITING)
+        """
         success = self.test3DeleteServices()
         if success:
             print("testing of deleting 3 services successful")
         else:
             print("problem in deleting 3 services")
             return False
-        time.sleep(self.WAITING)
+        time.sleep(30)
+        
         success = self.test3_check_no_xc_ROADMA()
         if success:
             print("testing of no roadm-connections successfull")
         else:
             print("problem in testing roadm-connections")
             return False
+        
         time.sleep(20)
         success = self.test3CheckTopology()
         if success:
             print("testing of roadm topology successful")
         else:
             print("problem in testing roadm topology")
+            return False
+        
+        return True
+
+    def test4(self):
+        success = self.test4CreateOcService1()
+        if success:
+            print("creating of optical channel service1 succeeded")
+        else:
+            print("problem in creating optical channel service1")
+            return False
+        time.sleep(self.WAITING)
+        success = self.test4GetOcService1(20,50)
+        if success:
+            print("successfully read oc service1")
+        else:
+            print("problem in reading oc service 1")
+            return False
+        time.sleep(1)
+        success = self.test4CheckConnections()
+        if success:
+            print("roadm connections are valid")
+        else:
+            print("problem in roadm connections")
             return False
         return True
 
@@ -914,6 +954,7 @@ class End2EndTest:
         return success
     
     def test3DeleteServices(self):
+        """
         data = {"input": {
                 "sdnc-request-header": {
                     "request-id": "e3028bae-a90f-4ddd-a83f-cf224eba0e58",
@@ -938,6 +979,7 @@ class End2EndTest:
                 self.logError("problem with deleting service3: "+json.dumps(ele))
                 return False
         time.sleep(self.WAITING)
+        """
         #delete_eth_service1
         data = {"input": {
                 "sdnc-request-header": {
@@ -988,22 +1030,25 @@ class End2EndTest:
         return True
 
     def test3_check_no_xc_ROADMA(self):
-        """
+        
         if self.config.isRemoteEnabled():
             response = self.sdncClient.getNodeData("ROADM-A1", "/org-openroadm-device:org-openroadm-device")
         else:
             response = self.trpceClient.getNodeData("ROADM-A1", "/org-openroadm-device:org-openroadm-device") 
         if not response.isSucceeded():
             self.logError(str(response.code)+" | "+response.content)
-            return False
+            response = self.trpceClient.getNodeData("ROADM-A1", "/org-openroadm-device:org-openroadm-device") 
+            if not response.isSucceeded():
+                return False
         success = self.assertNotIn('roadm-connections',
                  dict.keys(response.data['org-openroadm-device']))
         return success
-        """
-        return True
+    
+    #    return True
+        
 
     def test3CheckTopology(self):
-        """
+    
         #check_topo_XPDRA
         response = self.trpceClient.getOpenroadmTopology("node/XPDR-A1-XPDR1")
         if not response.isSucceeded():
@@ -1067,6 +1112,195 @@ class End2EndTest:
             if not success:
                 self.logError("problem with tp elem in ROADM-A1-DEG2: "+json.dumps(ele))
                 return False
-        """
+        
         return True
 
+    def test4CreateOcService1(self):
+        data = {"input": {
+                "sdnc-request-header": {
+                    "request-id": "e3028bae-a90f-4ddd-a83f-cf224eba0e58",
+                    "rpc-action": "service-create",
+                    "request-system-id": "appname",
+                    "notification-url": "http://localhost:8585/NotificationServer/notify"
+                },
+                "service-name": "serviceoc1",
+                "common-id": "ASATT1234567",
+                "connection-type": "roadm-line",
+                "service-a-end": {
+                    "service-rate": "100",
+                    "node-id": "ROADM-A1",
+                    "service-format": "OC",
+                    "clli": "SNJSCAMCJP8",
+                    "tx-direction": {
+                        "port": {
+                            "port-device-name": "ROUTER_SNJSCAMCJP8_000000.00_00",
+                            "port-type": "router",
+                            "port-name": "Gigabit Ethernet_Tx.ge-5/0/0.0",
+                            "port-rack": "000000.00",
+                            "port-shelf": "00"
+                        },
+                        "lgx": {
+                            "lgx-device-name": "LGX Panel_SNJSCAMCJP8_000000.00_00",
+                            "lgx-port-name": "LGX Back.3",
+                            "lgx-port-rack": "000000.00",
+                            "lgx-port-shelf": "00"
+                        }
+                    },
+                    "rx-direction": {
+                        "port": {
+                            "port-device-name": "ROUTER_SNJSCAMCJP8_000000.00_00",
+                            "port-type": "router",
+                            "port-name": "Gigabit Ethernet_Rx.ge-5/0/0.0",
+                            "port-rack": "000000.00",
+                            "port-shelf": "00"
+                        },
+                        "lgx": {
+                            "lgx-device-name": "LGX Panel_SNJSCAMCJP8_000000.00_00",
+                            "lgx-port-name": "LGX Back.4",
+                            "lgx-port-rack": "000000.00",
+                            "lgx-port-shelf": "00"
+                        }
+                    },
+                    "optic-type": "gray"
+                },
+                "service-z-end": {
+                    "service-rate": "100",
+                    "node-id": "ROADM-C1",
+                    "service-format": "OC",
+                    "clli": "SNJSCAMCJT4",
+                    "tx-direction": {
+                        "port": {
+                            "port-device-name": "ROUTER_SNJSCAMCJT4_000000.00_00",
+                            "port-type": "router",
+                            "port-name": "Gigabit Ethernet_Tx.ge-1/0/0.0",
+                            "port-rack": "000000.00",
+                            "port-shelf": "00"
+                        },
+                        "lgx": {
+                            "lgx-device-name": "LGX Panel_SNJSCAMCJT4_000000.00_00",
+                            "lgx-port-name": "LGX Back.29",
+                            "lgx-port-rack": "000000.00",
+                            "lgx-port-shelf": "00"
+                        }
+                    },
+                    "rx-direction": {
+                        "port": {
+                            "port-device-name": "ROUTER_SNJSCAMCJT4_000000.00_00",
+                            "port-type": "router",
+                            "port-name": "Gigabit Ethernet_Rx.ge-1/0/0.0",
+                            "port-rack": "000000.00",
+                            "port-shelf": "00"
+                        },
+                        "lgx": {
+                            "lgx-device-name": "LGX Panel_SNJSCAMCJT4_000000.00_00",
+                            "lgx-port-name": "LGX Back.30",
+                            "lgx-port-rack": "000000.00",
+                            "lgx-port-shelf": "00"
+                        }
+                    },
+                    "optic-type": "gray"
+                },
+                "due-date": "2016-11-28T00:00:01Z",
+                "operator-contact": "pw1234"
+                }
+        }
+        response = self.trpceClient.createService(data)
+        if not response.isSucceeded():
+            self.logError(str(response.code)+" | " +response.content)
+            return False
+
+        success = self.assertIn('PCE calculation in progress',
+                      response.data['output']['configuration-response-common']['response-message'])
+  
+        return success
+        
+    def test4GetOcService1(self, retries=1, delayForRetries=10):
+        while retries>0:
+            success = False
+            response = self.trpceClient.getService('serviceoc1')
+            if response.isSucceeded():
+            
+                success = self.assertEqual(
+                    response.data['services'][0]['administrative-state'], 'inService')
+                if not success and retries >0:
+                    print("service still not with administrative-state inServerice (state="+response.data['services'][0]['administrative-state']+"). waiting...")
+                success &= self.assertEqual(
+                    response.data['services'][0]['service-name'], 'serviceoc1')
+                success &= self.assertEqual(
+                    response.data['services'][0]['connection-type'], 'service')
+                success &= self.assertEqual(
+                    response.data['services'][0]['lifecycle-state'], 'planned')
+                if not success and retries >0:
+                    print("service still not with lifecycle-state inServerice (state="+response.data['services'][0]['lifecycle-state']+"). waiting...")
+
+                if success:
+                    break
+            else:
+                print("service not available: responsecode: "+str(response.code))
+            retries-=1
+            time.sleep(delayForRetries)
+            if retries>0:
+                print("service still not with state inServerice. waiting...")
+
+        if not success:
+            self.logError(str(response.code)+" | "+ response.content)
+            return False
+        return True
+
+    def test4CheckConnections(self):
+         #check_xc1_ROADMA
+        if self.config.isRemoteEnabled():
+            response = self.sdncClient.getNodeData("ROADM-A1", 
+                "/org-openroadm-device:org-openroadm-device/roadm-connections/SRG1-PP1-TXRX-DEG2-TTP-TXRX-1")
+        else:
+            response = self.trpceClient.getNodeData("ROADM-A1", 
+                "/org-openroadm-device:org-openroadm-device/roadm-connections/SRG1-PP1-TXRX-DEG2-TTP-TXRX-1")
+        if not response.isSucceeded():
+            return False
+        # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
+        success = self.assertDictEqual(
+            dict({
+                'connection-name': 'SRG1-PP1-TXRX-DEG2-TTP-TXRX-1',
+                'opticalControlMode': 'gainLoss',
+                'target-output-power': -3.0
+            }, **response.data['roadm-connections'][0]),
+            response.data['roadm-connections'][0]
+        )
+        success &= self.assertDictEqual(
+            {'src-if': 'SRG1-PP1-TXRX-nmc-1'},
+            response.data['roadm-connections'][0]['source'])
+        success &= self.assertDictEqual(
+            {'dst-if': 'DEG2-TTP-TXRX-nmc-1'},
+            response.data['roadm-connections'][0]['destination'])
+        
+        if not success:
+            return False
+        time.sleep(7)
+        #check_xc1_ROADMC
+        if self.config.isRemoteEnabled():
+            response = self.sdncClient.getNodeData("ROADM-C1", 
+                "/org-openroadm-device:org-openroadm-device/roadm-connections/SRG1-PP1-TXRX-DEG1-TTP-TXRX-1")
+        else:
+            response = self.trpceClient.getNodeData("ROADM-C1", 
+                "/org-openroadm-device:org-openroadm-device/roadm-connections/SRG1-PP1-TXRX-DEG1-TTP-TXRX-1")
+        if not response.isSucceeded():
+            return False
+        # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
+        success = self.assertDictEqual(
+            dict({
+                'connection-name': 'SRG1-PP1-TXRX-DEG1-TTP-TXRX-1',
+                'opticalControlMode': 'gainLoss',
+                'target-output-power': -3.0
+            }, **response.data['roadm-connections'][0]),
+            response.data['roadm-connections'][0]
+        )
+        success &= self.assertDictEqual(
+            {'src-if': 'SRG1-PP1-TXRX-nmc-1'},
+            response.data['roadm-connections'][0]['source'])
+        success &= self.assertDictEqual(
+            {'dst-if': 'DEG1-TTP-TXRX-nmc-1'},
+            response.data['roadm-connections'][0]['destination'])
+        if not response.isSucceeded():
+            return False
+
+        return True
