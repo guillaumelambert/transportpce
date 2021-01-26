@@ -17,13 +17,13 @@ public final class Globals {
 
     private static final Logger LOG = LoggerFactory.getLogger(Globals.class);
     private static RemoteOdlConfig config = new RemoteOdlConfig();
-    private static String ENV_SLEEP_10000 = config.getEnvSleep_10000();
-    private static String ENV_SLEEP_1000 = config.getEnvSleep_1000();
-    private static String ENV_SLEEP_3000 = config.getEnvSleep_3000();
-    private static String ENV_SLEEP_100 = config.getEnvSleep_100();
-    private static String ENV_SLEEP_500 = config.getEnvSleep_500();
-    private static String ENV_SLEEP_200 = config.getEnvSleep_200();
-    private static String ENV_SLEEP_90000 = config.getEnvSleep_90000();
+    private static String ENV_SLEEP_10000 = System.getenv("ENV_SLEEP_10000");
+    private static String ENV_SLEEP_1000 = System.getenv("ENV_SLEEP_1000");
+    private static String ENV_SLEEP_3000 = System.getenv("ENV_SLEEP_3000");
+    private static String ENV_SLEEP_100 = System.getenv("ENV_SLEEP_100");
+    private static String ENV_SLEEP_500 = System.getenv("ENV_SLEEP_500");
+    private static String ENV_SLEEP_200 = System.getenv("ENV_SLEEP_200");
+    private static String ENV_SLEEP_90000 = System.getenv("ENV_SLEEP_90000");
     public static int SLEEP_10000 = getEnvOrDefault(ENV_SLEEP_10000, 10000);
     public static int SLEEP_1000 = getEnvOrDefault(ENV_SLEEP_1000, 1000);
     public static int SLEEP_3000 = getEnvOrDefault(ENV_SLEEP_3000, 3000);
