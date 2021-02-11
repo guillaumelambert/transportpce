@@ -10,7 +10,10 @@ class BaseTest:
 
     def waitForReadyState(self, timeout=60):
         while timeout>0:
-            ready = self.trpceClient.isReady() and self.sdncClient.isReady()
+            if self.config.isRemoteEnabled():
+                ready = self.trpceClient.isReady() and self.sdncClient.isReady()
+            else:
+                ready = self.trpceClient.isReady()
             if ready:
                 return True
             timeout-=1
