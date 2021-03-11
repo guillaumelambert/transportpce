@@ -47,6 +47,25 @@ If you like to have the ODLUX Gui started in you browser you can also directly e
 
 
 
+## integration.py Commands
+
+| command | description |
+| ------- | ----------- |
+| ../bin/integration.py info | show ip info for all containers |
+| ../bin/integration.py status | show ip info for all containers |
+| ../bin/integration.py mount | show ip info for all containers |
+| ../bin/integration.py unmount | show ip info for all containers |
+| ../bin/integration.py isready | check ready state of sdnc and transportpce container (every bundle is state!=failure) |
+| ../bin/integration.py setlogs | set logs inside of sdnc and transportpce to DEBUG |
+| ../bin/integration.py caps [devicename] | show yang-capabilities for the mounted device |
+| ../bin/integration.py getlogs | copy karaf logs of sdnc and transportpce into logs/ folder |
+| ../bin/integration.py web | open ODLUX gui of sdnc in the browser|
+| ../bin/integration.py webtrpce | open transportpce gui in the browser |
+| ../bin/integration.py apidocs [sdnc\|trpce] | open sdnc or transportpce apidcos gui in the browser |
+
+
+
+
 ## Limitiations
 
  * interface types only for org-openroadm-interface supported
