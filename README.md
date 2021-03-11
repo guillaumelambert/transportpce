@@ -17,6 +17,14 @@ mvn clean install -DskipTests
 ```
 mvn clean install -f distribution/odltrpce-alpine-standalone
 ```
+ * build gui
+```
+mvn clean install -f gui
+```
+  * build docker image
+```
+mvn clean install -f distribution/gui
+```
 
 This creates a docker image 'odl/transportpce' with the latest tag.
 

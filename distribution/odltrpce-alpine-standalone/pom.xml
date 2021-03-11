@@ -21,7 +21,7 @@
 		<base.image.repo>adoptopenjdk/openjdk11:alpine</base.image.repo>
 
 		<image.name>odl/transportpce</image.name>
-		<!-- karaf magnesium SR2 -->
+		<!-- karaf magnesium SR1 -->
 		<odl.karaf.version>0.12.1</odl.karaf.version>
 		<!-- Used by Groovy script -->
 		<trpce.project.version>${project.version}</trpce.project.version>
