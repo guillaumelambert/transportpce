@@ -30,9 +30,7 @@ services:
     depends_on: 
       - sdnr
   sdnr:
-#   image: hightec/sdnr-image-aluminium:1.1.0-SNAPSHOT-20201117T172722Z
-    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.1-STAGING-20200914T034621Z
-#    image: hightec/sdnr-image-sodium:1.0.0-SNAPSHOT-20200720T171600Z
+    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.6
     environment: 
       - SDNRONLY=true
       - SDNRINIT=true
