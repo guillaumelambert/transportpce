@@ -70,7 +70,7 @@ public class RequestProcessor {
         rwTx.put(store, path, data);
     }
 
-    @Deprecated
+
     public <T extends DataObject> void merge(LogicalDatastoreType store,
         InstanceIdentifier<T> path, T data) {
 
@@ -129,5 +129,13 @@ public class RequestProcessor {
         LOG.info("Resetting the read write transaction .....");
         rwTx = dataBroker.newReadWriteTransaction();
         return rwTx;
+    }
+
+    /**
+     * Return the dataBroker related to RequestProcessor.
+     * @return the dataBroker
+     */
+    public DataBroker getDataBroker() {
+        return dataBroker;
     }
 }

@@ -8,6 +8,7 @@
 
 package org.opendaylight.transportpce.pce.networkanalyzer;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,12 +21,17 @@ import java.util.stream.Collectors;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.common.ResponseCodes;
+import org.opendaylight.transportpce.common.StringConstants;
+import org.opendaylight.transportpce.common.fixedflex.GridConstant;
+import org.opendaylight.transportpce.common.mapping.MappingUtils;
+import org.opendaylight.transportpce.common.mapping.MappingUtilsImpl;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestInput;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.Node1;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.OpenroadmLinkType;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.OpenroadmNodeType;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.McCapabilities;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev200529.Node1;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.OpenroadmLinkType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.OpenroadmNodeType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NetworkId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.Networks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
@@ -36,7 +42,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.top
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.Network1;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-//import org.opendaylight.yangtools.yang.common.Decimal64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +84,8 @@ public class PceCalculation {
         NONE, HARD_EXCLUDE, HARD_INCLUDE, HARD_DIVERSITY, SOFT_EXCLUDE, SOFT_INCLUDE, SOFT_DIVERSITY;
     }
 
+    private MappingUtils mappingUtils;
+
     public PceCalculation(PathComputationRequestInput input, NetworkTransactionService networkTransactionService,
             PceConstraints pceHardConstraints, PceConstraints pceSoftConstraints, PceResult rc) {
         this.input = input;
@@ -86,6 +93,7 @@ public class PceCalculation {
         this.returnStructure = rc;
 
         this.pceHardConstraints = pceHardConstraints;
+        this.mappingUtils = new MappingUtilsImpl(networkTransactionService.getDataBroker());
         parseInput();
     }
 
@@ -126,13 +134,13 @@ public class PceCalculation {
             switch (serviceFormatA) {
                 case "Ethernet":
                 case "OC":
-                    serviceType = "100GE";
+                    serviceType = StringConstants.SERVICE_TYPE_100GE;
                     break;
                 case "OTU":
-                    serviceType = "OTU4";
+                    serviceType = StringConstants.SERVICE_TYPE_OTU4;
                     break;
                 case "ODU":
-                    serviceType = "ODU4";
+                    serviceType = StringConstants.SERVICE_TYPE_ODU4;
                     break;
                 default:
                     LOG.debug("parseInput: unsupported service type: Format {} Rate 100L", serviceFormatA);
@@ -146,9 +154,9 @@ public class PceCalculation {
         } else if ("Ethernet".equals(serviceFormatA)) {
         //only rate 100L is currently supported except in Ethernet
             if (serviceRate == 10L) {
-                serviceType = "10GE";
+                serviceType = StringConstants.SERVICE_TYPE_10GE;
             } else if (serviceRate == 1L) {
-                serviceType = "1GE";
+                serviceType = StringConstants.SERVICE_TYPE_1GE;
             } else {
                 LOG.debug("parseInput: unsupported service type: Format Ethernet Rate {}", serviceRate);
             }
@@ -156,7 +164,9 @@ public class PceCalculation {
             LOG.debug("parseInput: unsupported service type: Format {} Rate {}",
                 serviceFormatA, serviceRate);
         }
-        if ("ODU4".equals(serviceType) || "10GE".equals(serviceType)  || "1GE".equals(serviceType)) {
+        if (StringConstants.SERVICE_TYPE_ODU4.equals(serviceType)
+                || StringConstants.SERVICE_TYPE_10GE.equals(serviceType)
+                || StringConstants.SERVICE_TYPE_1GE.equals(serviceType)) {
             anodeId = input.getServiceAEnd().getTxDirection().getPort().getPortDeviceName();
             znodeId = input.getServiceZEnd().getTxDirection().getPort().getPortDeviceName();
         } else {
@@ -239,7 +249,8 @@ public class PceCalculation {
 
         LOG.debug("analyzeNw: allNodes size {}, allLinks size {}", allNodes.size(), allLinks.size());
 
-        if (("100GE".equals(serviceType)) || ("OTU4".equals(serviceType))) {
+        if ((StringConstants.SERVICE_TYPE_100GE.equals(serviceType))
+                || (StringConstants.SERVICE_TYPE_OTU4.equals(serviceType))) {
             // 100GE service and OTU4 service are handled at the openroadm-topology layer
             for (Node node : allNodes) {
                 validateNode(node);
@@ -354,7 +365,8 @@ public class PceCalculation {
             return false;
         }
 
-        if (("100GE".equals(serviceType)) || ("OTU4".equals(serviceType))) {
+        if ((StringConstants.SERVICE_TYPE_100GE.equals(serviceType))
+                || (StringConstants.SERVICE_TYPE_OTU4.equals(serviceType))) {
             // 100GE or OTU4 services are handled at WDM Layer
             PceLink pcelink = new PceLink(link, source, dest);
             if (!pcelink.isValid()) {
@@ -424,7 +436,9 @@ public class PceCalculation {
             }
             return true;
 
-        } else if (("ODU4".equals(serviceType)) || ("10GE".equals(serviceType)) || ("1GE".equals(serviceType))) {
+        } else if ((StringConstants.SERVICE_TYPE_ODU4.equals(serviceType))
+                || (StringConstants.SERVICE_TYPE_10GE.equals(serviceType))
+                || (StringConstants.SERVICE_TYPE_1GE.equals(serviceType))) {
             // ODU4, 1GE and 10GE services relying on ODU2, ODU2e or ODU0 services are handled at OTN layer
             PceLink pceOtnLink = new PceLink(link, source, dest);
 
@@ -465,7 +479,6 @@ public class PceCalculation {
 
     private boolean validateNode(Node node) {
         LOG.debug("validateNode: node {} ", node);
-
         // PceNode will be used in Graph algorithm
         Node1 node1 = node.augmentation(Node1.class);
         if (node1 == null) {
@@ -473,26 +486,31 @@ public class PceCalculation {
             return false;
         }
         OpenroadmNodeType nodeType = node1.getNodeType();
-
-        PceOpticalNode pceNode = new PceOpticalNode(node, nodeType, node.getNodeId(),
-            input.getServiceAEnd().getServiceFormat(), "optical");
-        pceNode.validateAZxponder(anodeId, znodeId);
-        pceNode.initWLlist();
+        String deviceNodeId = MapUtils.getSupNetworkNode(node);
+        // Should never happen but because of existing topology test files
+        // we have to manage this case
+        if (deviceNodeId == null || deviceNodeId.isBlank()) {
+            deviceNodeId = node.getNodeId().getValue();
+        }
+        LOG.info("Device node id {} for {}", deviceNodeId, node);
+        PceOpticalNode pceNode = new PceOpticalNode(node, nodeType, mappingUtils.getOpenRoadmVersion(deviceNodeId),
+                getSlotWidthGranularity(deviceNodeId, node.getNodeId()));
+        pceNode.validateAZxponder(anodeId, znodeId, input.getServiceAEnd().getServiceFormat());
+        pceNode.initFrequenciesBitSet();
 
         if (!pceNode.isValid()) {
             LOG.warn(" validateNode: Node is ignored");
             return false;
         }
-
         if (validateNodeConstraints(pceNode).equals(ConstraintTypes.HARD_EXCLUDE)) {
             return false;
         }
-        if ((pceNode.getSupNetworkNodeId().equals(anodeId) && (this.aendPceNode == null))
-            && (Boolean.TRUE.equals(endPceNode(nodeType, pceNode.getNodeId(), pceNode)))) {
+        if (endPceNode(nodeType, pceNode.getNodeId(), pceNode) && this.aendPceNode == null
+            && isAZendPceNode(this.serviceFormatA, pceNode, anodeId, "A")) {
             this.aendPceNode = pceNode;
         }
-        if ((pceNode.getSupNetworkNodeId().equals(znodeId) && (this.zendPceNode == null))
-            && (Boolean.TRUE.equals(endPceNode(nodeType, pceNode.getNodeId(), pceNode)))) {
+        if (endPceNode(nodeType, pceNode.getNodeId(), pceNode) && this.zendPceNode == null
+            && isAZendPceNode(this.serviceFormatZ, pceNode, znodeId, "Z")) {
             this.zendPceNode = pceNode;
         }
 
@@ -501,8 +519,31 @@ public class PceCalculation {
         return true;
     }
 
-    private boolean validateOtnNode(Node node) {
+    private boolean isAZendPceNode(String serviceFormat, PceOpticalNode pceNode, String azNodeId, String azEndPoint) {
+        switch (serviceFormat) {
+            case "Ethernet":
+            case "OC":
+                if (pceNode.getSupNetworkNodeId().equals(azNodeId)) {
+                    return true;
+                }
+                return false;
+            case "OTU":
+                if ("A".equals(azEndPoint) && pceNode.getNodeId().getValue()
+                    .equals(this.input.getServiceAEnd().getRxDirection().getPort().getPortDeviceName())) {
+                    return true;
+                }
+                if ("Z".equals(azEndPoint) && pceNode.getNodeId().getValue()
+                    .equals(this.input.getServiceZEnd().getRxDirection().getPort().getPortDeviceName())) {
+                    return true;
+                }
+                return false;
+            default:
+                LOG.debug("Unsupported service Format {} for node {}", serviceFormat, pceNode.getNodeId().getValue());
+                return false;
+        }
+    }
 
+    private boolean validateOtnNode(Node node) {
         LOG.info("validateOtnNode: {} ", node.getNodeId().getValue());
         // PceOtnNode will be used in Graph algorithm
         if (node.augmentation(Node1.class) != null) {
@@ -531,15 +572,6 @@ public class PceCalculation {
             LOG.error("ValidateOtnNode: no node-type augmentation. Node {} is ignored", node.getNodeId().getValue());
             return false;
         }
-
-//        if (mode == "AZ") {
-//            pceOtnNode.validateAZxponder(anodeId, znodeId);
-//        } else if (mode == "intermediate") {
-//            pceOtnNode.validateIntermediateSwitch();
-//        } else {
-//            LOG.error("validateOtnNode: unproper mode passed to the method : {} not supported", mode);
-//            return null;
-//        }
     }
 
     private ConstraintTypes validateNodeConstraints(PceNode pcenode) {
@@ -594,7 +626,7 @@ public class PceCalculation {
                 this.azSrgs.add(nodeId);
                 break;
             case XPONDER:
-                pceNode.initXndrTps();
+                pceNode.initXndrTps(input.getServiceAEnd().getServiceFormat());
                 break;
             default:
                 LOG.warn("endPceNode: Node {} is not SRG or XPONDER !", nodeId);
@@ -602,7 +634,7 @@ public class PceCalculation {
         }
 
         if (!pceNode.isValid()) {
-            LOG.error("validateNode : there are no availaible wavelengths in node {}", pceNode.getNodeId().getValue());
+            LOG.error("validateNode : there are no available frequencies in node {}", pceNode.getNodeId().getValue());
             return false;
         }
         return true;
@@ -637,5 +669,27 @@ public class PceCalculation {
             LOG.info("In printNodes in node {} : outgoing links {} ", pceNode.getNodeId().getValue(),
                     pceNode.getOutgoingLinks());
         }));
+    }
+
+    /**
+     * Get mc capability slot width granularity for device.
+     * @param deviceNodeId String
+     * @param nodeId NodeId
+     * @return slot width granularity
+     */
+    private BigDecimal getSlotWidthGranularity(String deviceNodeId, NodeId nodeId) {
+        // nodeId: openroadm-topology level node
+        // deviceNodeId: openroadm-network level node
+        List<McCapabilities> mcCapabilities = mappingUtils.getMcCapabilitiesForNode(deviceNodeId);
+        String[] params = nodeId.getValue().split("-");
+        // DEGX or SRGX
+        String rdmModuleName = params[params.length - 1];
+        for (McCapabilities mcCapabitility : mcCapabilities) {
+            if (mcCapabitility.getMcNodeName().contains(rdmModuleName)
+                    && mcCapabitility.getSlotWidthGranularity() != null) {
+                return mcCapabitility.getSlotWidthGranularity().getValue();
+            }
+        }
+        return GridConstant.SLOT_WIDTH_50;
     }
 }

@@ -29,12 +29,12 @@ import org.opendaylight.transportpce.networkmodel.util.LinkIdUtil;
 import org.opendaylight.transportpce.networkmodel.util.OpenRoadmNetwork;
 import org.opendaylight.transportpce.networkmodel.util.OpenRoadmOtnTopology;
 import org.opendaylight.transportpce.networkmodel.util.OpenRoadmTopology;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo.OpenroadmVersion;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeTypes;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev181130.Link1;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev181130.TerminationPoint1;
-import org.opendaylight.yang.gen.v1.http.transportpce.topology.rev200129.OtnLinkType;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.NodeInfo;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.NodeInfo.OpenroadmVersion;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.types.rev191129.NodeTypes;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev200529.Link1;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev200529.TerminationPoint1;
+import org.opendaylight.yang.gen.v1.http.transportpce.topology.rev201019.OtnLinkType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NetworkId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.Networks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
@@ -647,7 +647,7 @@ public class NetworkModelServiceImpl implements NetworkModelService {
                     .child(Link.class, otnTopologyLink.key())
                     .build();
                 networkTransactionService.merge(LogicalDatastoreType.CONFIGURATION, iiOtnTopologyLink,
-            otnTopologyLink);
+                    otnTopologyLink);
             }
         } else {
             LOG.error("Unable to create OTN topology shard for node {}!", nodeId);

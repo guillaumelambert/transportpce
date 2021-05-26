@@ -51,7 +51,6 @@ public class OtnDeviceOperationsImpl implements OtnDeviceOperations {
     }
 
     private Integer getConfigID(PortBandwidthSharing portBandwidthSharing, String circuitPackName, String portName) {
-
         Collection<PossiblePortConfig> possiblePortConfigList = portBandwidthSharing
                 .nonnullPossiblePortConfig().values();
         for (PossiblePortConfig possiblePortConfig: possiblePortConfigList
@@ -81,7 +80,6 @@ public class OtnDeviceOperationsImpl implements OtnDeviceOperations {
         List<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org
                 .openroadm.device.container.org.openroadm.device.odu.switching
                 .pools.non.blocking.list.PortList> networkPortList = new ArrayList<>();
-
         Collection<NonBlockingList> nonBlockingLists = oduSwitchingPools.nonnullNonBlockingList().values();
 
 

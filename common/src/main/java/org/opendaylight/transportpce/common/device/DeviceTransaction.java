@@ -18,7 +18,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jdt.annotation.NonNull;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.transactions.RemoteTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -105,7 +104,10 @@ public class DeviceTransaction {
 
         LOG.debug("Transaction committed. Lock: {}", deviceLock);
         wasSubmittedOrCancelled.set(true);
-        FutureCallback<CommitInfo> cb = new FutureCallback<CommitInfo>() {
+        FluentFuture<? extends @NonNull CommitInfo> future =
+                rwTx.commit().withTimeout(timeout, timeUnit, scheduledExecutorService);
+
+        future.addCallback(new FutureCallback<CommitInfo>() {
             @Override
             public void onSuccess(CommitInfo result) {
                 LOG.debug("Transaction with lock {} successfully committed: {}", deviceLock, result);
@@ -118,14 +120,7 @@ public class DeviceTransaction {
                     timeout, timeUnit, throwable);
                 afterClose();
             }
-        };
-        if (this.rwTx instanceof RemoteTransaction) {
-            ((RemoteTransaction)this.rwTx).addCallback(cb, scheduledExecutorService);
-        }
-        FluentFuture<? extends @NonNull CommitInfo> future =
-                rwTx.commit().withTimeout(timeout, timeUnit, scheduledExecutorService);
-        future.addCallback(cb, scheduledExecutorService);
-
+        }, scheduledExecutorService);
         return future;
     }
 

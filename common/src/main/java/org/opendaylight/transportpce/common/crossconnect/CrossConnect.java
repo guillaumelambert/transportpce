@@ -11,8 +11,9 @@ package org.opendaylight.transportpce.common.crossconnect;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import org.opendaylight.transportpce.common.fixedflex.SpectrumInformation;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.otn.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev201211.otn.renderer.input.Nodes;
 
 public interface CrossConnect {
 
@@ -35,15 +36,15 @@ public interface CrossConnect {
      *
      * @param deviceId
      *            Device id.
-     * @param waveNumber
-     *            Wavelength number.
      * @param srcTp
      *            Name of source termination point.
      * @param destTp
      *            Name of destination termination point.
+     * @param spectrumInformation SpectrumInformation
      * @return optional of connection number
      */
-    Optional<String> postCrossConnect(String deviceId, Long waveNumber, String srcTp, String destTp);
+    Optional<String> postCrossConnect(String deviceId, String srcTp, String destTp,
+            SpectrumInformation spectrumInformation);
 
     /**
      * This method does a delete(edit-config) on roadm connection subtree for a
@@ -67,19 +68,19 @@ public interface CrossConnect {
      *
      * @param nodeId
      *            node-id of NE.
-     * @param waveNumber
-     *            Wavelength number.
      * @param srcTp
      *            Source logical connection point.
      * @param destTp
      *            Destination logical connection point.
-     *
+     * @param lowerSpectralSlotNumber Value of lower spectral slot number.
+     * @param higherSpectralSlotNumber Value of higher spectral slot number.
      * @return list of Ports object type.
      *
      * @throws OpenRoadmInterfaceException
      *            an exception at OpenRoadm interface.
      */
-    List<?> getConnectionPortTrail(String nodeId, Long waveNumber, String srcTp, String destTp)
+    List<?> getConnectionPortTrail(String nodeId, String srcTp, String destTp, int lowerSpectralSlotNumber,
+            int higherSpectralSlotNumber)
             throws OpenRoadmInterfaceException;
 
     /**

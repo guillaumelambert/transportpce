@@ -12,20 +12,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
-import org.opendaylight.transportpce.common.fixedflex.FixedFlexInterface;
-import org.opendaylight.transportpce.common.fixedflex.FlexGridInterface;
+import org.opendaylight.transportpce.common.fixedflex.GridConstant;
+import org.opendaylight.transportpce.common.fixedflex.SpectrumInformation;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.McCapabilities;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.Mapping;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.FrequencyGHz;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.FrequencyTHz;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.ModulationFormat;
@@ -70,22 +66,18 @@ import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class OpenRoadmInterface221 {
     private static final String MAPPING_ERROR_EXCEPTION_MESSAGE =
             "Unable to get mapping from PortMapping for node % and logical connection port %s";
     private final PortMapping portMapping;
     private final OpenRoadmInterfaces openRoadmInterfaces;
-    private FixedFlexInterface fixedFlex;
-    private FlexGridInterface flexGrid;
     private static final Logger LOG = LoggerFactory.getLogger(OpenRoadmInterface221.class);
 
 
-    public OpenRoadmInterface221(PortMapping portMapping, OpenRoadmInterfaces openRoadmInterfaces,
-        FixedFlexInterface fixedFlex, FlexGridInterface flexGrid) {
+    public OpenRoadmInterface221(PortMapping portMapping, OpenRoadmInterfaces openRoadmInterfaces) {
         this.portMapping = portMapping;
         this.openRoadmInterfaces = openRoadmInterfaces;
-        this.fixedFlex = fixedFlex;
-        this.flexGrid = flexGrid;
     }
 
     public String createOpenRoadmEthInterface(String nodeId, String logicalConnPoint)
@@ -116,8 +108,7 @@ public class OpenRoadmInterface221 {
         return ethInterfaceBldr.getName();
     }
 
-    public List<String> createFlexOCH(String nodeId, String logicalConnPoint, Long bitmapIndex,
-        BigDecimal centerFreq, BigDecimal slotWidth)
+    public List<String> createFlexOCH(String nodeId, String logicalConnPoint, SpectrumInformation spectrumInformation)
         throws OpenRoadmInterfaceException {
         Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
         if (portMap == null) {
@@ -128,107 +119,34 @@ public class OpenRoadmInterface221 {
         List<String> interfacesCreated = new ArrayList<>();
 
         if (logicalConnPoint.contains("DEG")) {
-            String mcInterfaceCreated = createMCInterface(nodeId, logicalConnPoint, centerFreq, slotWidth, bitmapIndex);
+            String mcInterfaceCreated = createMCInterface(nodeId, logicalConnPoint, spectrumInformation);
             interfacesCreated.add(mcInterfaceCreated);
         }
-        String mcInterfaceCreated = createNMCInterface(nodeId, logicalConnPoint, centerFreq, slotWidth, bitmapIndex);
+        String mcInterfaceCreated = createNMCInterface(nodeId, logicalConnPoint, spectrumInformation);
         interfacesCreated.add(mcInterfaceCreated);
         return interfacesCreated;
     }
 
-    /**
-     * This methods creates an OCH interface on the given termination point on
-     * Roadm.
-     *
-     * @param nodeId node ID
-     * @param logicalConnPoint logical connection point
-     * @param waveNumber wavelength number of the OCH interface.
-     *
-     * @return Name of the interface if successful, otherwise return null.
-     *
-     * @throws OpenRoadmInterfaceException OpenRoadm interface exception
-     */
-
-    public List<String> createFlexOCH(String nodeId, String logicalConnPoint, Long waveNumber)
-        throws OpenRoadmInterfaceException {
-        Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
-        if (portMap == null) {
-            throw new OpenRoadmInterfaceException(
-                String.format(MAPPING_ERROR_EXCEPTION_MESSAGE, nodeId, logicalConnPoint));
-        }
-
-        List<String> interfacesCreated = new ArrayList<>();
-
-        if (logicalConnPoint.contains("DEG")) {
-            String mcInterfaceCreated = createMCInterface(nodeId, logicalConnPoint, waveNumber);
-            interfacesCreated.add(mcInterfaceCreated);
-        }
-        String nmcInterfaceCreated = createNMCInterface(nodeId, logicalConnPoint, waveNumber);
-        interfacesCreated.add(nmcInterfaceCreated);
-        return interfacesCreated;
-    }
-
-
-    public String createMCInterface(String nodeId, String logicalConnPoint, Long waveNumber)
-        throws OpenRoadmInterfaceException {
-
-        // TODO : Check this method
-
-        fixedFlex = fixedFlex.getFixedFlexWaveMapping(waveNumber.shortValue());
-
-        Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
-        if (portMap == null) {
-            throw new OpenRoadmInterfaceException(
-                String.format(MAPPING_ERROR_EXCEPTION_MESSAGE, nodeId, logicalConnPoint));
-        }
-
-        // TODO : Check this method
-
-        InterfaceBuilder mcInterfaceBldr = createGenericInterfaceBuilder(portMap,
-                MediaChannelTrailTerminationPoint.class, logicalConnPoint + "-mc" + "-" + waveNumber)
-            .setSupportingInterface(portMap.getSupportingOms());
-
-        McTtpBuilder mcTtpBuilder = new McTtpBuilder()
-            .setMinFreq(FrequencyTHz.getDefaultInstance(String.valueOf(fixedFlex.getStart())))
-            .setMaxFreq(FrequencyTHz.getDefaultInstance(String.valueOf(fixedFlex.getStop())));
-
-        // Create Interface1 type object required for adding as augmentation
-        org.opendaylight.yang.gen.v1.http.org.openroadm.media.channel.interfaces.rev181019.Interface1Builder
-            interface1Builder =
-            new org.opendaylight.yang.gen.v1.http.org.openroadm.media.channel.interfaces.rev181019.Interface1Builder()
-                .setMcTtp(mcTtpBuilder.build());
-
-        mcInterfaceBldr.addAugmentation(interface1Builder.build());
-
-        // Post interface on the device
-        openRoadmInterfaces.postInterface(nodeId, mcInterfaceBldr);
-        return mcInterfaceBldr.getName();
-    }
-
     public String createMCInterface(String nodeId, String logicalConnPoint,
-        BigDecimal centerFrequency, BigDecimal slotWidth, Long bitmapIndex)
+        SpectrumInformation spectrumInformation)
         throws OpenRoadmInterfaceException {
-
-        // TODO : Check this method
-
-        flexGrid = flexGrid.getFlexWaveMapping(centerFrequency.floatValue(), slotWidth.floatValue());
-
         Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
         if (portMap == null) {
             throw new OpenRoadmInterfaceException(
                 String.format(MAPPING_ERROR_EXCEPTION_MESSAGE, nodeId, logicalConnPoint));
         }
-
         // TODO : Check this method
         LOG.info("MC interface Freq Start {} and Freq End {} and center-Freq {}",
-            flexGrid.getStart(), flexGrid.getStop(), centerFrequency);
+                spectrumInformation.getMinFrequency(), spectrumInformation.getMaxFrequency(),
+                spectrumInformation.getCenterFrequency());
         InterfaceBuilder mcInterfaceBldr = createGenericInterfaceBuilder(portMap,
-            MediaChannelTrailTerminationPoint.class, logicalConnPoint + "-mc" + "-" + bitmapIndex)
+            MediaChannelTrailTerminationPoint.class,
+            spectrumInformation.getIdentifierFromParams(logicalConnPoint, "mc"))
                 .setSupportingInterface(portMap.getSupportingOms());
 
         McTtpBuilder mcTtpBuilder = new McTtpBuilder()
-            .setMinFreq(FrequencyTHz.getDefaultInstance(String.valueOf(flexGrid.getStart())))
-            .setMaxFreq(FrequencyTHz.getDefaultInstance(String.valueOf(flexGrid.getStop())));
+            .setMinFreq(new FrequencyTHz(spectrumInformation.getMinFrequency()))
+            .setMaxFreq(new FrequencyTHz(spectrumInformation.getMaxFrequency()));
 
         // Create Interface1 type object required for adding as augmentation
         org.opendaylight.yang.gen.v1.http.org.openroadm.media.channel.interfaces.rev181019.Interface1Builder
@@ -243,87 +161,29 @@ public class OpenRoadmInterface221 {
         return mcInterfaceBldr.getName();
     }
 
-    public String createNMCInterface(String nodeId, String logicalConnPoint, Long waveNumber)
+    public String createNMCInterface(String nodeId, String logicalConnPoint,
+        SpectrumInformation spectrumInformation)
         throws OpenRoadmInterfaceException {
-
+        LOG.info("This is the central frequency {}", spectrumInformation.getCenterFrequency());
+        LOG.info("This is the nmc width {}", spectrumInformation.getWidth());
         // TODO : Check this method
-        fixedFlex = fixedFlex.getFixedFlexWaveMapping(waveNumber.shortValue());
-
         Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
         if (portMap == null) {
             throw new OpenRoadmInterfaceException(
                 String.format(MAPPING_ERROR_EXCEPTION_MESSAGE, nodeId, logicalConnPoint));
         }
-        LOG.info("Freq Start {} and Freq End {} and center-Freq {}",
-            fixedFlex.getStart(), fixedFlex.getStop(), fixedFlex.getCenterFrequency());
         //TODO : Check this method
+        String nmcName = spectrumInformation.getIdentifierFromParams(logicalConnPoint, "nmc");
         InterfaceBuilder nmcInterfaceBldr = createGenericInterfaceBuilder(portMap,
-            NetworkMediaChannelConnectionTerminationPoint.class, logicalConnPoint + "-nmc" + "-" + waveNumber);
+            NetworkMediaChannelConnectionTerminationPoint.class, nmcName);
         if (logicalConnPoint.contains("DEG")) {
-            nmcInterfaceBldr.setSupportingInterface(logicalConnPoint + "-mc" + "-" + waveNumber);
+            nmcInterfaceBldr.setSupportingInterface(nmcName);
         }
 
         NmcCtpBuilder nmcCtpIfBuilder = new NmcCtpBuilder()
-            .setFrequency(FrequencyTHz.getDefaultInstance(String.valueOf(fixedFlex.getCenterFrequency())))
-            .setWidth(FrequencyGHz.getDefaultInstance("40"));
+                .setFrequency(new FrequencyTHz(spectrumInformation.getCenterFrequency()))
+                .setWidth(new FrequencyGHz(spectrumInformation.getWidth()));
 
-        // Create Interface1 type object required for adding as augmentation
-        org.opendaylight.yang.gen.v1.http.org.openroadm.network.media.channel.interfaces.rev181019.Interface1Builder
-            nmcCtpI1fBuilder =
-                new org.opendaylight.yang.gen.v1.http.org.openroadm.network.media.channel.interfaces.rev181019
-                    .Interface1Builder().setNmcCtp(nmcCtpIfBuilder.build());
-        nmcInterfaceBldr.addAugmentation(nmcCtpI1fBuilder.build());
-
-        // Post interface on the device
-        openRoadmInterfaces.postInterface(nodeId, nmcInterfaceBldr);
-        return nmcInterfaceBldr.getName();
-    }
-
-    public String createNMCInterface(String nodeId, String logicalConnPoint,
-        BigDecimal centerFrequency, BigDecimal slotWidth, Long bitmapIndex)
-        throws OpenRoadmInterfaceException {
-        LOG.info("This is the central frequency {}", centerFrequency.floatValue());
-        LOG.info("This is the slot-width {}", slotWidth.floatValue());
-        // TODO : Check this method
-        flexGrid = flexGrid.getFlexWaveMapping(centerFrequency.floatValue(), slotWidth.floatValue());
-        Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
-        if (portMap == null) {
-            throw new OpenRoadmInterfaceException(
-                String.format(MAPPING_ERROR_EXCEPTION_MESSAGE, nodeId, logicalConnPoint));
-        }
-
-        LOG.info("Freq Start {} and Freq End {} and center-Freq {}", flexGrid.getStart(),
-            flexGrid.getStop(),centerFrequency);
-        //TODO : Check this method
-        InterfaceBuilder nmcInterfaceBldr = createGenericInterfaceBuilder(portMap,
-            NetworkMediaChannelConnectionTerminationPoint.class, logicalConnPoint + "-nmc" + "-" + bitmapIndex);
-        if (logicalConnPoint.contains("DEG")) {
-            nmcInterfaceBldr.setSupportingInterface(logicalConnPoint + "-mc" + "-" + bitmapIndex);
-        }
-        NmcCtpBuilder nmcCtpIfBuilder;
-
-        // From the logicalConnPoint, get the substring and for that associated substring find the mc-cap
-        String mcLcp = "";
-        if (logicalConnPoint.contains("-PP")) {
-            mcLcp = logicalConnPoint.substring(0, logicalConnPoint.indexOf("-")) + "-PP";
-        }
-        else if (logicalConnPoint.contains("-TTP")) {
-            mcLcp = logicalConnPoint.substring(0, logicalConnPoint.indexOf("-")) + "-TTP";
-        }
-        McCapabilities mcCapabilities = portMapping.getMcCapbilities(nodeId, mcLcp);
-        if (mcCapabilities == null || mcCapabilities.getSlotWidthGranularity() == null
-                || mcCapabilities.getSlotWidthGranularity().getValue() == null) {
-            LOG.warn("Port mapping could not find {}", mcLcp);
-            LOG.warn("Check the port mapping to verify {}", mcLcp);
-            return nmcInterfaceBldr.getName();
-        }
-        double slotWidthGran = mcCapabilities.getSlotWidthGranularity().getValue().doubleValue();
-        // Dead-band is constant (Ref: WP) In GHz
-        double deadBand = 8;
-        double guardBand = Math.ceil(deadBand / slotWidthGran) * slotWidthGran;
-        nmcCtpIfBuilder = new NmcCtpBuilder()
-                .setFrequency(FrequencyTHz.getDefaultInstance(String.valueOf(centerFrequency)))
-                .setWidth(FrequencyGHz.getDefaultInstance(String.valueOf(slotWidth.doubleValue() - guardBand)));
         // Create Interface1 type object required for adding as augmentation
         org.opendaylight.yang.gen.v1.http.org.openroadm.network.media.channel.interfaces.rev181019.Interface1Builder
             nmcCtpI1fBuilder =
@@ -335,80 +195,31 @@ public class OpenRoadmInterface221 {
         return nmcInterfaceBldr.getName();
     }
 
-    public String createOpenRoadmOchInterface(String nodeId, String logicalConnPoint, Long waveNumber)
-        throws OpenRoadmInterfaceException {
-        // TODO : Check this method
-
-        fixedFlex = fixedFlex.getFixedFlexWaveMapping(waveNumber.shortValue());
-
-        Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
-        if (portMap == null) {
-            throw new OpenRoadmInterfaceException(
-                String.format(MAPPING_ERROR_EXCEPTION_MESSAGE, nodeId, logicalConnPoint));
-        }
-
-        // OCH interface specific data
-        OchBuilder ocIfBuilder = new OchBuilder()
-                .setFrequency(FrequencyTHz.getDefaultInstance(String.valueOf(fixedFlex.getCenterFrequency())))
-                .setRate(R100G.class)
-                // TODO: Check if this the correct way to set modulation format here
-                .setModulationFormat(ModulationFormat.DpQpsk)
-                .setTransmitPower(new PowerDBm(new BigDecimal("-5")));
-
-        // Create generic interface
-        InterfaceBuilder ochInterfaceBldr = createGenericInterfaceBuilder(portMap, OpticalChannel.class,
-            createOpenRoadmOchInterfaceName(logicalConnPoint, waveNumber));
-        // Create Interface1 type object required for adding as augmentation
-        // TODO look at imports of different versions of class
-        org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev181019.Interface1Builder
-            ochIf1Builder = new org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev181019
-            .Interface1Builder();
-        ochInterfaceBldr.addAugmentation(ochIf1Builder.setOch(ocIfBuilder.build()).build());
-
-        // Post interface on the device
-        openRoadmInterfaces.postInterface(nodeId, ochInterfaceBldr);
-
-        // Post the equipment-state change on the device circuit-pack if xpdr node
-        if (portMap.getLogicalConnectionPoint().contains(StringConstants.NETWORK_TOKEN)) {
-            this.openRoadmInterfaces.postEquipmentState(nodeId, portMap.getSupportingCircuitPackName(), true);
-        }
-
-        return ochInterfaceBldr.getName();
-    }
-
     public String createOpenRoadmOchInterface(String nodeId, String logicalConnPoint,
-        Long waveNumber, BigDecimal centerFrequency, BigDecimal slotWidth)
+        SpectrumInformation spectrumInformation)
         throws OpenRoadmInterfaceException {
         // TODO : Check this method
-
+        ModulationFormat modulationFormat = ModulationFormat.DpQpsk;
+        Optional<ModulationFormat> optionalModulationFormat = ModulationFormat
+                .forName(spectrumInformation.getModulationFormat());
+        if (optionalModulationFormat.isPresent()) {
+            modulationFormat =  optionalModulationFormat.get();
+        }
         // OCH interface specific data
         OchBuilder ocIfBuilder = new OchBuilder()
-            .setFrequency(FrequencyTHz.getDefaultInstance(String.valueOf(centerFrequency)))
+            .setFrequency(new FrequencyTHz(spectrumInformation.getCenterFrequency()))
             .setRate(R100G.class)
             .setTransmitPower(new PowerDBm(new BigDecimal("-5")))
-            .setModulationFormat(ModulationFormat.DpQpsk);
-
-        // In Flex-grid, slot-width could be other than 50 GHz
-        if ((centerFrequency != null) && (slotWidth != null)) {
-            ocIfBuilder.setFrequency(FrequencyTHz.getDefaultInstance(String.valueOf(centerFrequency)));
-            ocIfBuilder.setWidth(FrequencyGHz.getDefaultInstance(String.valueOf(slotWidth)));
-        }
-        else {
-            // Use fixed grid to find the
-            fixedFlex = fixedFlex.getFixedFlexWaveMapping(waveNumber.shortValue());
-            ocIfBuilder.setFrequency(FrequencyTHz.getDefaultInstance(String.valueOf(fixedFlex.getCenterFrequency())));
-        }
+            .setModulationFormat(modulationFormat);
         Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
         if (portMap == null) {
             throw new OpenRoadmInterfaceException(
                 String.format("Unable to get mapping from PortMapping for node %s and logical connection port %s",
                     nodeId, logicalConnPoint));
         }
-
-
         // Create generic interface
         InterfaceBuilder ochInterfaceBldr = createGenericInterfaceBuilder(portMap, OpticalChannel.class,
-            createOpenRoadmOchInterfaceName(logicalConnPoint, waveNumber));
+            spectrumInformation.getIdentifierFromParams(logicalConnPoint));
         // Create Interface1 type object required for adding as augmentation
         // TODO look at imports of different versions of class
         org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev181019.Interface1Builder
@@ -577,13 +388,12 @@ public class OpenRoadmInterface221 {
 
     }
 
-    public String createOpenRoadmOchInterfaceName(String logicalConnectionPoint, Long waveNumber) {
-        return logicalConnectionPoint + "-" + waveNumber;
+    public String createOpenRoadmOchInterfaceName(String logicalConnectionPoint, String spectralSlotName) {
+        return String.join(GridConstant.NAME_PARAMETERS_SEPARATOR,logicalConnectionPoint, spectralSlotName);
     }
 
     private InterfaceBuilder createGenericInterfaceBuilder(Mapping portMap, Class<? extends InterfaceType> type,
         String key) {
-
         return new InterfaceBuilder()
                 .setDescription("  TBD   ")
                 .setCircuitId("   TBD    ")
@@ -639,22 +449,12 @@ public class OpenRoadmInterface221 {
     }
 
     public boolean isUsedByXc(String nodeId, String interfaceName, String xc,
-        DeviceTransactionManager deviceTransactionManager, RemoteOpendaylightClient odlClient) {
+        DeviceTransactionManager deviceTransactionManager) {
         InstanceIdentifier<RoadmConnections> xciid = InstanceIdentifier.create(OrgOpenroadmDevice.class)
             .child(RoadmConnections.class, new RoadmConnectionsKey(xc));
         LOG.info("reading xc {} in node {}", xc, nodeId);
-        Optional<RoadmConnections> crossconnection = Optional.empty();
-        if (odlClient.isEnabled()) {
-            try {
-                crossconnection = odlClient.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION, xciid,
-                        Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-            } catch (InterruptedException | TimeoutException | ExecutionException e) {
-                LOG.warn("problem reading connection: ", e);
-            }
-        } else {
-            crossconnection = deviceTransactionManager.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION,
-                    xciid, Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-        }
+        Optional<RoadmConnections> crossconnection = deviceTransactionManager.getDataFromDevice(nodeId,
+            LogicalDatastoreType.CONFIGURATION, xciid, Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
         if (crossconnection.isPresent()) {
             RoadmConnections rc = crossconnection.get();
             LOG.info("xd {} found", xc);
@@ -675,22 +475,12 @@ public class OpenRoadmInterface221 {
     }
 
     public boolean isUsedByOtnXc(String nodeId, String interfaceName, String xc,
-        DeviceTransactionManager deviceTransactionManager, RemoteOpendaylightClient odlClient) {
+        DeviceTransactionManager deviceTransactionManager) {
         InstanceIdentifier<OduConnection> xciid = InstanceIdentifier.create(OrgOpenroadmDevice.class)
             .child(OduConnection.class, new OduConnectionKey(xc));
         LOG.info("reading xc {} in node {}", xc, nodeId);
-        Optional<OduConnection> oduConnectionOpt = Optional.empty();
-        if (odlClient.isEnabled()) {
-            try {
-                oduConnectionOpt = odlClient.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION, xciid,
-                        Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-            } catch (InterruptedException | TimeoutException | ExecutionException e) {
-                LOG.warn("problem reading oduconnection: ", e);
-            }
-        } else {
-            oduConnectionOpt = deviceTransactionManager.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION,
-                    xciid, Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-        }
+        Optional<OduConnection> oduConnectionOpt = deviceTransactionManager.getDataFromDevice(nodeId,
+            LogicalDatastoreType.CONFIGURATION, xciid, Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
         if (oduConnectionOpt.isPresent()) {
             OduConnection oduXc = oduConnectionOpt.get();
             LOG.info("xc {} found", xc);

@@ -8,16 +8,8 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders;
 
 import com.google.common.base.MoreObjects;
-import java.lang.Boolean;
-import java.lang.Integer;
-import java.lang.Long;
-import java.lang.Object;
-import java.lang.Override;
-import java.lang.String;
 import java.math.BigDecimal;
 import java.util.Objects;
-
-import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.optional.rev190614.netconf.node.augmented.optional.fields.IgnoreMissingSchemaSources;
@@ -665,7 +657,7 @@ public class NetconfNodeBuilder implements Builder<NetconfNode> {
         public Uint16 getActorResponseWaitTime() {
             return _actorResponseWaitTime;
         }
-        
+
         @Override
         public AvailableCapabilities getAvailableCapabilities() {
             return _availableCapabilities;
@@ -959,10 +951,10 @@ public class NetconfNodeBuilder implements Builder<NetconfNode> {
             return helper.toString();
         }
 
-		@Override
-		public @Nullable IgnoreMissingSchemaSources getIgnoreMissingSchemaSources() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        @Override
+        public IgnoreMissingSchemaSources getIgnoreMissingSchemaSources() {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 }

@@ -20,7 +20,6 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
@@ -31,11 +30,11 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.re
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.OtnServicePathOutput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128.OtnServicePathOutputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterface;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterfaceBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.node.interfaces.NodeInterfaceKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.otn.renderer.input.Nodes;
-import org.opendaylight.yang.gen.v1.http.transportpce.topology.rev200129.OtnLinkType;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev201211.node.interfaces.NodeInterface;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev201211.node.interfaces.NodeInterfaceBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev201211.node.interfaces.NodeInterfaceKey;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev201211.otn.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.transportpce.topology.rev201019.OtnLinkType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,18 +48,16 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
     private final OpenRoadmInterfaces openRoadmInterfaces;
     private final DeviceTransactionManager deviceTransactionManager;
     private final NetworkModelService networkModelService;
-    private final RemoteOpendaylightClient odlClient;
 
     public OtnDeviceRendererServiceImpl(OpenRoadmInterfaceFactory openRoadmInterfaceFactory, CrossConnect crossConnect,
                                         OpenRoadmInterfaces openRoadmInterfaces,
                                         DeviceTransactionManager deviceTransactionManager,
-                                        NetworkModelService networkModelService, RemoteOpendaylightClient odlClient) {
+                                        NetworkModelService networkModelService) {
         this.openRoadmInterfaceFactory = openRoadmInterfaceFactory;
         this.crossConnect = crossConnect;
         this.openRoadmInterfaces = openRoadmInterfaces;
         this.deviceTransactionManager = deviceTransactionManager;
         this.networkModelService = networkModelService;
-        this.odlClient = odlClient;
     }
 
     @Override
@@ -172,7 +169,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
                 return;
             }
             // if the node is currently mounted then proceed.
-            if (this.isDeviceMounted(nodeId)) {
+            if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
                 String connectionNumber = "";
                 switch (input.getServiceRate()) {
                     case ("100G"):
@@ -201,7 +198,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
                 if (intToDelete != null) {
                     for (String interf : intToDelete) {
                         if (!this.openRoadmInterfaceFactory.isUsedByOtnXc(nodeId, interf, connectionNumber,
-                            this.deviceTransactionManager, this.odlClient)) {
+                            this.deviceTransactionManager)) {
                             interfacesToDelete.add(interf);
                             if (!getSupportedInterface(nodeId, interf).contains("ODU4")) {
                                 interfacesToDelete.add(getSupportedInterface(nodeId, interf));
@@ -259,13 +256,6 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
         } else {
             return delServBldr.setResult(String.join("\n", results)).build();
         }
-    }
-
-    private boolean isDeviceMounted(String nodeId) {
-        if (this.odlClient.isEnabled()) {
-            return this.odlClient.isDevicePresent(nodeId);
-        }
-        return this.deviceTransactionManager.isDeviceMounted(nodeId);
     }
 
     private String getConnectionNumber(String serviceName, Nodes node, String networkTp, String oduType) {
@@ -386,7 +376,10 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
 
     private void createODU4TtpInterface(OtnServicePathInput input, List<NodeInterface> nodeInterfaces,
         CopyOnWriteArrayList<Nodes> otnNodesProvisioned) throws OpenRoadmInterfaceException {
-
+        if (input.getNodes() == null) {
+            return;
+        }
+        LOG.info("Creation of ODU4 tp interface {}", input);
         for (int i = 0; i < input.getNodes().size(); i++) {
             Nodes node = input.getNodes().get(i);
             String supportingOtuInterface = node.getNetworkTp() + "-OTU";

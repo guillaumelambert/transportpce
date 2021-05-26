@@ -14,11 +14,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.dom.codec.spi.BindingDOMCodecServices;
 import org.opendaylight.transportpce.common.network.NetworkTransactionImpl;
 import org.opendaylight.transportpce.common.network.RequestProcessor;
-import org.opendaylight.transportpce.pce.gnpy.ConnectToGnpyServer;
 import org.opendaylight.transportpce.pce.gnpy.JerseyServer;
+import org.opendaylight.transportpce.pce.gnpy.consumer.GnpyConsumer;
+import org.opendaylight.transportpce.pce.gnpy.consumer.GnpyConsumerImpl;
 import org.opendaylight.transportpce.pce.utils.PceTestData;
 import org.opendaylight.transportpce.pce.utils.PceTestUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
@@ -34,14 +36,19 @@ public class PceSendingPceRPCsTest extends AbstractTest {
     @Mock
     private BindingDOMCodecServices bindingDOMCodecServices;
     private JerseyServer jerseyServer = new JerseyServer();
+    private DataBroker dataBroker;
+    private GnpyConsumer gnpyConsumer;
 
 
     @Before
     public void setUp() {
-        networkTransaction = new NetworkTransactionImpl(new RequestProcessor(this.getDataBroker()));
-        PceTestUtils.writeNetworkInDataStore(this.getDataBroker());
+        this.dataBroker = getNewDataBroker();
+        networkTransaction = new NetworkTransactionImpl(new RequestProcessor(this.dataBroker));
+        PceTestUtils.writeNetworkInDataStore(this.dataBroker);
+        gnpyConsumer = new GnpyConsumerImpl("http://localhost:9998",
+                "mylogin", "mypassword", getDataStoreContextUtil().getBindingDOMCodecServices());
         pceSendingPceRPCs = new PceSendingPceRPCs(PceTestData.getPCE_test1_request_54(),
-                        networkTransaction, bindingDOMCodecServices);
+                        networkTransaction, gnpyConsumer);
     }
 
     @Test
@@ -55,11 +62,10 @@ public class PceSendingPceRPCsTest extends AbstractTest {
         jerseyServer.setUp();
         pceSendingPceRPCs =
                 new PceSendingPceRPCs(PceTestData.getGnpyPCERequest("XPONDER-1", "XPONDER-2"),
-                        networkTransaction, null);
+                        networkTransaction, gnpyConsumer);
 
         pceSendingPceRPCs.pathComputation();
-        ConnectToGnpyServer connectToGnpy = new ConnectToGnpyServer();
-        Assert.assertTrue(connectToGnpy.isGnpyURLExist());
+        Assert.assertTrue(gnpyConsumer.isAvailable());
         jerseyServer.tearDown();
 
     }

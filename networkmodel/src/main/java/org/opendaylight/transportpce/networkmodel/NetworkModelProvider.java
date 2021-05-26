@@ -7,16 +7,19 @@
  */
 package org.opendaylight.transportpce.networkmodel;
 
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.mdsal.binding.api.RpcProviderService;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.InstanceIdentifiers;
 import org.opendaylight.transportpce.common.NetworkUtils;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
+import org.opendaylight.transportpce.networkmodel.listeners.ServiceHandlerListener;
+import org.opendaylight.transportpce.networkmodel.service.FrequenciesService;
 import org.opendaylight.transportpce.networkmodel.util.TpceNetwork;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.networkutils.rev170818.TransportpceNetworkutilsService;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.servicehandler.rev201125.TransportpceServicehandlerListener;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.concepts.ObjectRegistration;
@@ -31,21 +34,24 @@ public class NetworkModelProvider {
     private final RpcProviderService rpcProviderService;
     private final TransportpceNetworkutilsService networkutilsService;
     private final NetConfTopologyListener topologyListener;
-    private final RemoteOpendaylightClient odlClient;
     private ListenerRegistration<NetConfTopologyListener> dataTreeChangeListenerRegistration;
     private ObjectRegistration<TransportpceNetworkutilsService> networkutilsServiceRpcRegistration;
     private TpceNetwork tpceNetwork;
-
+    private ListenerRegistration<TransportpceServicehandlerListener> serviceHandlerListenerRegistration;
+    private NotificationService notificationService;
+    private FrequenciesService frequenciesService;
 
     public NetworkModelProvider(NetworkTransactionService networkTransactionService, final DataBroker dataBroker,
-            final RpcProviderService rpcProviderService, final TransportpceNetworkutilsService networkutilsService,
-            final NetConfTopologyListener topologyListener, RemoteOpendaylightClient odlClient) {
+        final RpcProviderService rpcProviderService, final TransportpceNetworkutilsService networkutilsService,
+        final NetConfTopologyListener topologyListener, NotificationService notificationService,
+        FrequenciesService frequenciesService) {
         this.dataBroker = dataBroker;
         this.rpcProviderService = rpcProviderService;
         this.networkutilsService = networkutilsService;
         this.topologyListener = topologyListener;
         this.tpceNetwork = new TpceNetwork(networkTransactionService);
-        this.odlClient = odlClient;
+        this.notificationService = notificationService;
+        this.frequenciesService = frequenciesService;
     }
 
     /**
@@ -58,27 +64,18 @@ public class NetworkModelProvider {
         tpceNetwork.createLayer(NetworkUtils.OVERLAY_NETWORK_ID);
         tpceNetwork.createLayer(NetworkUtils.OTN_NETWORK_ID);
         dataTreeChangeListenerRegistration =
-                !this.odlClient.isEnabled()
-                        ? dataBroker.registerDataTreeChangeListener(
-                                DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                                        InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
-                                topologyListener)
-                        : this.odlClient
-                                .registerDataTreeChangeListener(
-                                        DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
-                                                InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)),
-                                        topologyListener);
-        LOG.info("running transportPCE netconf functions remotely: {}", this.odlClient.isEnabled());
-        if (this.odlClient.isEnabled()) {
-            this.odlClient.registerDeviceConnectionChangeListener(topologyListener);
-        }
-        networkutilsServiceRpcRegistration = rpcProviderService
-                .registerRpcImplementation(TransportpceNetworkutilsService.class, networkutilsService);
+            dataBroker.registerDataTreeChangeListener(DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
+                InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class)), topologyListener);
+        networkutilsServiceRpcRegistration =
+            rpcProviderService.registerRpcImplementation(TransportpceNetworkutilsService.class, networkutilsService);
+        TransportpceServicehandlerListener serviceHandlerListner =
+                new ServiceHandlerListener(frequenciesService);
+        serviceHandlerListenerRegistration = notificationService.registerNotificationListener(serviceHandlerListner);
     }
 
-    /**
-     * Method called when the blueprint container is destroyed.
-     */
+        /**
+         * Method called when the blueprint container is destroyed.
+         */
     public void close() {
         LOG.info("NetworkModelProvider Closed");
         if (dataTreeChangeListenerRegistration != null) {
@@ -87,6 +84,6 @@ public class NetworkModelProvider {
         if (networkutilsServiceRpcRegistration != null) {
             networkutilsServiceRpcRegistration.close();
         }
-        this.odlClient.unregisterDeviceConnectionChangeListener(topologyListener);
+        serviceHandlerListenerRegistration.close();
     }
 }

@@ -46,4 +46,6 @@ public interface RemoteOpendaylightClient<N extends Node, D extends DataTreeChan
             InstanceIdentifier<T> xciid, long deviceReadTimeout, TimeUnit deviceReadTimeoutUnit) throws
         InterruptedException, TimeoutException, ExecutionException;
 
+	boolean isDeviceMounted(String nodeId);
+
 }

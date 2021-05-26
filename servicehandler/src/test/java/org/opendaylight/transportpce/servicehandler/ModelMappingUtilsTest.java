@@ -55,8 +55,8 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.TempSer
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.TempServiceCreateOutput;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.Services;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.list.ServicesBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.AToZDirectionBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ZToADirectionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.AToZDirectionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.ZToADirectionBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.ResponseParameters;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.ResponseParametersBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.response.parameters.sp.response.parameters.PathDescriptionBuilder;
@@ -181,7 +181,7 @@ public class ModelMappingUtilsTest extends AbstractTest {
         ServiceRerouteInput serviceRerouteinput = new ServiceRerouteInputBuilder().setServiceName("reroute").build();
         Services services = new ServicesBuilder()
             .setSdncRequestHeader(new SdncRequestHeaderBuilder().setRequestId("123").build()).build();
-        org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteInput
+        org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev201125.ServiceDeleteInput
             serviceDeleteInput =
                     ModelMappingUtils.createServiceDeleteInput(serviceRerouteinput, services);
         Assert.assertEquals("reroute", serviceDeleteInput.getServiceName());
@@ -192,7 +192,7 @@ public class ModelMappingUtilsTest extends AbstractTest {
     public void  createServiceDeleteInputWithServiceReconfigureInput() {
         ServiceReconfigureInput serviceReconfigureInput = new  ServiceReconfigureInputBuilder()
                 .setServiceName("reconf").build();
-        org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteInput
+        org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev201125.ServiceDeleteInput
             serviceDeleteInput =
                     ModelMappingUtils.createServiceDeleteInput(serviceReconfigureInput);
         Assert.assertEquals("reconf", serviceDeleteInput.getServiceName());
@@ -205,7 +205,7 @@ public class ModelMappingUtilsTest extends AbstractTest {
             .setSdncRequestHeader(new SdncRequestHeaderBuilder().setRequestId("123").build()).build();
         ServiceRestorationInput serviceRestorationInput =
             new ServiceRestorationInputBuilder().setServiceName("rest").build();
-        org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteInput
+        org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev201125.ServiceDeleteInput
             serviceDeleteInput =
                     ModelMappingUtils.createServiceDeleteInput(serviceRestorationInput, services);
         Assert.assertEquals("rest", serviceDeleteInput.getServiceName());

@@ -6,14 +6,14 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
     odl:use-default-for-reference-types="true">
 
-    <reference id="dataBroker" interface="org.opendaylight.mdsal.binding.api.DataBroker" odl:type="default" />
+    <reference id="dataBroker" interface="org.opendaylight.mdsal.binding.api.DataBroker" />
     <reference id="rpcProviderService" interface="org.opendaylight.mdsal.binding.api.RpcProviderService" />
     <reference id="deviceTransactionManager" interface="org.opendaylight.transportpce.common.device.DeviceTransactionManager" />
     <reference id="portMapping" interface="org.opendaylight.transportpce.common.mapping.PortMapping" />
     <reference id="networkTransactionImpl" interface="org.opendaylight.transportpce.common.network.NetworkTransactionService" />
     <reference id="mappingUtils" interface="org.opendaylight.transportpce.common.mapping.MappingUtils" />
-	<reference id="odlClient" interface="org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient" />
-	
+    <reference id="notificationService" interface="org.opendaylight.mdsal.binding.api.NotificationService"/>
+
     <bean id="networkModelService" class="org.opendaylight.transportpce.networkmodel.service.NetworkModelServiceImpl">
         <argument ref="networkTransactionImpl" />
         <argument ref="linkDiscoveryImpl" />
@@ -27,7 +27,8 @@
         <argument ref="rpcProviderService" />
         <argument ref="networkutilsServiceImpl" />
         <argument ref="netconfTopologyListener" />
-        <argument ref="odlClient" />
+        <argument ref="notificationService" />
+        <argument ref="frequenciesService" />
     </bean>
 
     <bean id="netconfTopologyListener" class="org.opendaylight.transportpce.networkmodel.NetConfTopologyListener">
@@ -44,9 +45,14 @@
         <argument ref="dataBroker" />
         <argument ref="deviceTransactionManager" />
         <argument ref="networkTransactionImpl" />
-        <argument ref="odlClient" />
    </bean>
 
+    <bean id="frequenciesService" class="org.opendaylight.transportpce.networkmodel.service.FrequenciesServiceImpl">
+        <argument ref="dataBroker" />
+    </bean>
+
     <service ref="networkModelService" interface="org.opendaylight.transportpce.networkmodel.service.NetworkModelService" />
+
+    <service ref="frequenciesService" interface="org.opendaylight.transportpce.networkmodel.service.FrequenciesService" />
 
 </blueprint>

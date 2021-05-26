@@ -8,15 +8,14 @@
 
 package org.opendaylight.transportpce.renderer.openroadminterface;
 
-import java.math.BigDecimal;
 import java.util.List;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
+import org.opendaylight.transportpce.common.fixedflex.GridConstant;
+import org.opendaylight.transportpce.common.fixedflex.SpectrumInformation;
 import org.opendaylight.transportpce.common.mapping.MappingUtils;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev161014.OchAttributes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.Mapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,64 +50,40 @@ public class OpenRoadmInterfaceFactory {
         }
     }
 
-    public List<String> createOpenRoadmOchInterface(String nodeId, String logicalConnPoint, Long waveNumber,
-            BigDecimal centerFreq, BigDecimal slotWidth)
+    public List<String> createOpenRoadmOchInterfaces(String nodeId, String logicalConnPoint,
+            SpectrumInformation spectrumInformation)
             throws OpenRoadmInterfaceException {
         switch (mappingUtils.getOpenRoadmVersion(nodeId)) {
             case StringConstants.OPENROADM_DEVICE_VERSION_1_2_1:
-                return openRoadmInterface121.createOpenRoadmOchInterface(nodeId, logicalConnPoint, waveNumber);
+                return openRoadmInterface121.createOpenRoadmOchInterfaces(nodeId, logicalConnPoint,
+                        spectrumInformation);
             case StringConstants.OPENROADM_DEVICE_VERSION_2_2_1:
-                return openRoadmInterface221.createFlexOCH(nodeId, logicalConnPoint, waveNumber,
-                    centerFreq, slotWidth);
+                return openRoadmInterface221.createFlexOCH(nodeId, logicalConnPoint, spectrumInformation);
             default:
                 return null;
         }
     }
 
+
     /**
-     * This methods creates an OCH interface on the given termination point on
-     * Roadm.
+     * This methods creates an OCH interface on the given termination point on Roadm.
      *
      * @param nodeId           node ID
      * @param logicalConnPoint logical connection point
-     * @param waveNumber       wavelength number of the OCH interface.
+     * @param spectrumInformation spectrum information.
      * @return Name of the interface if successful, otherwise return null.
      * @throws OpenRoadmInterfaceException OpenRoadm interface exception
      */
-    public List<String> createOpenRoadmOchInterface(String nodeId, String logicalConnPoint, Long waveNumber)
-            throws OpenRoadmInterfaceException {
+    public String createOpenRoadmOchInterface(String nodeId, String logicalConnPoint,
+            SpectrumInformation spectrumInformation) throws OpenRoadmInterfaceException {
         switch (mappingUtils.getOpenRoadmVersion(nodeId)) {
             case StringConstants.OPENROADM_DEVICE_VERSION_1_2_1:
-                return openRoadmInterface121.createOpenRoadmOchInterface(nodeId, logicalConnPoint, waveNumber);
+                return openRoadmInterface121.createOpenRoadmOchInterface(nodeId, logicalConnPoint,
+                        spectrumInformation);
             case StringConstants.OPENROADM_DEVICE_VERSION_2_2_1:
-                return openRoadmInterface221.createFlexOCH(nodeId, logicalConnPoint, waveNumber);
-            default:
-                return null;
-        }
-    }
+                return openRoadmInterface221.createOpenRoadmOchInterface(nodeId, logicalConnPoint,
+                        spectrumInformation);
 
-    public String createOpenRoadmOchInterface(String nodeId, String logicalConnPoint, Long waveNumber,
-            OchAttributes.ModulationFormat format, BigDecimal centerFreq, BigDecimal slotWidth)
-            throws OpenRoadmInterfaceException {
-        switch (mappingUtils.getOpenRoadmVersion(nodeId)) {
-            case StringConstants.OPENROADM_DEVICE_VERSION_1_2_1:
-                return openRoadmInterface121.createOpenRoadmOchInterface(nodeId, logicalConnPoint, waveNumber, format);
-            case StringConstants.OPENROADM_DEVICE_VERSION_2_2_1:
-                return openRoadmInterface221.createOpenRoadmOchInterface(nodeId, logicalConnPoint, waveNumber,
-                   centerFreq, slotWidth);
-            default:
-                return null;
-        }
-    }
-
-    public String createOpenRoadmOchInterface(String nodeId, String logicalConnPoint, Long waveNumber,
-            OchAttributes.ModulationFormat format)
-            throws OpenRoadmInterfaceException {
-        switch (mappingUtils.getOpenRoadmVersion(nodeId)) {
-            case StringConstants.OPENROADM_DEVICE_VERSION_1_2_1:
-                return openRoadmInterface121.createOpenRoadmOchInterface(nodeId, logicalConnPoint, waveNumber, format);
-            case StringConstants.OPENROADM_DEVICE_VERSION_2_2_1:
-                return openRoadmInterface221.createOpenRoadmOchInterface(nodeId, logicalConnPoint, waveNumber);
             default:
                 return null;
         }
@@ -217,8 +192,8 @@ public class OpenRoadmInterfaceFactory {
         }
     }
 
-    public String createOpenRoadmOchInterfaceName(String logicalConnectionPoint, Long waveNumber) {
-        return logicalConnectionPoint + "-" + waveNumber;
+    public String createOpenRoadmOchInterfaceName(String logicalConnectionPoint, String spectralSlotNumber) {
+        return String.join(GridConstant.NAME_PARAMETERS_SEPARATOR,logicalConnectionPoint, spectralSlotNumber);
     }
 
     public String createOpenRoadmOmsInterface(String nodeId, Mapping mapping) throws OpenRoadmInterfaceException {
@@ -244,26 +219,25 @@ public class OpenRoadmInterfaceFactory {
     }
 
     public boolean isUsedByXc(String nodeId, String interfaceName, String xc,
-                              DeviceTransactionManager deviceTransactionManager, RemoteOpendaylightClient odlClient) {
+                              DeviceTransactionManager deviceTransactionManager) {
         switch (mappingUtils.getOpenRoadmVersion(nodeId)) {
             case StringConstants.OPENROADM_DEVICE_VERSION_1_2_1:
-                return openRoadmInterface121.isUsedByXc(nodeId, interfaceName, xc, deviceTransactionManager, odlClient);
+                return openRoadmInterface121.isUsedByXc(nodeId, interfaceName, xc, deviceTransactionManager);
             case StringConstants.OPENROADM_DEVICE_VERSION_2_2_1:
-                return openRoadmInterface221.isUsedByXc(nodeId, interfaceName, xc, deviceTransactionManager, odlClient);
+                return openRoadmInterface221.isUsedByXc(nodeId, interfaceName, xc, deviceTransactionManager);
             default:
                 return false;
         }
     }
 
     public boolean isUsedByOtnXc(String nodeId, String interfaceName, String xc,
-        DeviceTransactionManager deviceTransactionManager, RemoteOpendaylightClient odlClient) {
+            DeviceTransactionManager deviceTransactionManager) {
         switch (mappingUtils.getOpenRoadmVersion(nodeId)) {
             case StringConstants.OPENROADM_DEVICE_VERSION_1_2_1:
                 LOG.error(OTN_FUNTIONS_ARE_NOT_SUPPORTED_BY_OPENROADM_MODELS_1_2_1_MSG);
                 return false;
             case StringConstants.OPENROADM_DEVICE_VERSION_2_2_1:
-                return openRoadmInterface221.isUsedByOtnXc(nodeId, interfaceName, xc, deviceTransactionManager,
-                        odlClient);
+                return openRoadmInterface221.isUsedByOtnXc(nodeId, interfaceName, xc, deviceTransactionManager);
             default:
                 return false;
         }

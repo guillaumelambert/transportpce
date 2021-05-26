@@ -8,7 +8,6 @@
 
 package org.opendaylight.transportpce.renderer.provisiondevice.tasks;
 
-
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRendererService;

@@ -34,16 +34,18 @@ import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.mapping.PortMappingImpl;
 import org.opendaylight.transportpce.common.mapping.PortMappingVersion121;
 import org.opendaylight.transportpce.common.mapping.PortMappingVersion221;
+import org.opendaylight.transportpce.common.mapping.PortMappingVersion710;
 import org.opendaylight.transportpce.common.network.NetworkTransactionImpl;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.transportpce.common.network.RequestProcessor;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl121;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl221;
+import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl710;
 import org.opendaylight.transportpce.networkmodel.service.NetworkModelService;
-import org.opendaylight.transportpce.networkmodel.stub.MountPointServiceStub;
-import org.opendaylight.transportpce.networkmodel.stub.MountPointStub;
 import org.opendaylight.transportpce.test.DataStoreContextImpl;
+import org.opendaylight.transportpce.test.stub.MountPointServiceStub;
+import org.opendaylight.transportpce.test.stub.MountPointStub;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
@@ -88,18 +90,21 @@ public class NetConfTopologyListenerTest {
         DeviceTransactionManager deviceTransactionManager =
                 new DeviceTransactionManagerImpl(mountPointService, 3000);
         R2RLinkDiscovery linkDiskovery = new R2RLinkDiscovery(
-                dataBroker, deviceTransactionManager, networkTransactionService, null);
+                dataBroker, deviceTransactionManager, networkTransactionService);
         OpenRoadmInterfacesImpl121 openRoadmInterfacesImpl121 =
                 new OpenRoadmInterfacesImpl121(deviceTransactionManager);
         OpenRoadmInterfacesImpl221 openRoadmInterfacesImpl221 =
                 new OpenRoadmInterfacesImpl221(deviceTransactionManager);
+        OpenRoadmInterfacesImpl710 openRoadmInterfacesImpl710 =
+            new OpenRoadmInterfacesImpl710(deviceTransactionManager);
         MappingUtils mappingUtils = new MappingUtilsImpl(dataBroker);
         OpenRoadmInterfacesImpl openRoadmInterfaces =
                 new OpenRoadmInterfacesImpl(deviceTransactionManager, mappingUtils,
-                openRoadmInterfacesImpl121, openRoadmInterfacesImpl221);
+                openRoadmInterfacesImpl121, openRoadmInterfacesImpl221, openRoadmInterfacesImpl710);
         PortMappingVersion121 p1 = new PortMappingVersion121(dataBroker, deviceTransactionManager, openRoadmInterfaces);
         PortMappingVersion221 p2 = new PortMappingVersion221(dataBroker, deviceTransactionManager, openRoadmInterfaces);
-        PortMapping portMapping = new PortMappingImpl(dataBroker, p2, p1);
+        PortMappingVersion710 p3 = new PortMappingVersion710(dataBroker, deviceTransactionManager, openRoadmInterfaces);
+        PortMapping portMapping = new PortMappingImpl(dataBroker,p3, p2, p1);
         NetworkModelService networkModelService = mock(NetworkModelService.class);
 
         //Start Netconf Topology listener and start adding nodes to the Netconf Topology to verify behaviour

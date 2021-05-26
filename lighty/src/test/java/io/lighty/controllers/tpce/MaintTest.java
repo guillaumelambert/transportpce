@@ -11,10 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-<<<<<<< HEAD
-
-=======
->>>>>>> standalone/stable/aluminium
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.junit.After;
@@ -65,8 +61,4 @@ public class MaintTest {
         ContentResponse response = client.GET("http://localhost:8888/restconfCustom/config/ietf-network:networks/network/openroadm-topology");
         assertEquals("Response code should be 200", 200, response.getStatus());
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> standalone/stable/aluminium

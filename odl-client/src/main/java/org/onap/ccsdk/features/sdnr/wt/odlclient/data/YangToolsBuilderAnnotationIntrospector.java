@@ -9,49 +9,20 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder.Value;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlObjectMapper.DateAndTimeBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.NetconfNodeBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.circuit.pack.PortsBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.circuit.pack.ports.OtdrPortBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.degree.ConnectionPortsBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.interfaces.grp.InterfaceBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.mc.capabilities.g.McCapabilitiesBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.ConnectionMapBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.DegreeBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.InfoBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.LineAmplifierBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.OduSwitchingPoolsBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.SharedRiskGroupBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.XponderBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.CircuitPackBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.NonBlockingListBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.srg.CircuitPacksBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.xponder.XpdrPortBuilder;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.lldp.rev181019.lldp.container.lldp.GlobalConfigBuilder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.Ports;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.ports.OtdrPort;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.ConnectionPorts;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.mc.capabilities.g.McCapabilities;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.ConnectionMap;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Degree;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Info;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.LineAmplifier;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.OduSwitchingPools;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.SharedRiskGroup;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.Xponder;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.line.amplifier.CircuitPack;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.odu.switching.pools.NonBlockingList;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.srg.CircuitPacks;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.xponder.XpdrPort;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.GlobalConfig;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -70,27 +41,36 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         this.customDeserializer = new HashMap<>();
         //this.customDeserializer.put(Credentials.class, LoginPasswordBuilder.class.getName());
         this.customDeserializer.put(DateAndTime.class,DateAndTimeBuilder.class.getName());
-        this.customDeserializer.put(Info.class,InfoBuilder.class.getName());
-        this.customDeserializer.put(GlobalConfig.class,GlobalConfigBuilder.class.getName());
-        this.customDeserializer.put(Degree.class,DegreeBuilder.class.getName());
-        this.customDeserializer.put(NetconfNode.class,NetconfNodeBuilder.class.getName());
-        this.customDeserializer.put(SharedRiskGroup.class,SharedRiskGroupBuilder.class.getName());
-        this.customDeserializer.put(McCapabilities.class,McCapabilitiesBuilder.class.getName());
-        this.customDeserializer.put(CircuitPacks.class,CircuitPacksBuilder.class.getName());
-        this.customDeserializer.put(ConnectionPorts.class,ConnectionPortsBuilder.class.getName());
-        this.customDeserializer.put(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.
-                CircuitPacks.class,org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.
-                degree.CircuitPacksBuilder.class.getName());
-        this.customDeserializer.put(Interface.class,InterfaceBuilder.class.getName());
-        this.customDeserializer.put(OtdrPort.class,OtdrPortBuilder.class.getName());
-        this.customDeserializer.put(Ports.class,PortsBuilder.class.getName());
-        this.customDeserializer.put(OduSwitchingPools.class,OduSwitchingPoolsBuilder.class.getName());
-        this.customDeserializer.put(NonBlockingList.class,NonBlockingListBuilder.class.getName());
-        this.customDeserializer.put(ConnectionMap.class,ConnectionMapBuilder.class.getName());
-        this.customDeserializer.put(LineAmplifier.class,LineAmplifierBuilder.class.getName());
-        this.customDeserializer.put(CircuitPack.class,CircuitPackBuilder.class.getName());
-        this.customDeserializer.put(Xponder.class,XponderBuilder.class.getName());
-        this.customDeserializer.put(XpdrPort.class,XpdrPortBuilder.class.getName());
+//        this.customDeserializer.put(Info.class,InfoBuilder.class.getName());
+//        this.customDeserializer.put(GlobalConfig.class,GlobalConfigBuilder.class.getName());
+//        this.customDeserializer.put(Degree.class,DegreeBuilder.class.getName());
+//        this.customDeserializer.put(NetconfNode.class,NetconfNodeBuilder.class.getName());
+//        this.customDeserializer.put(SharedRiskGroup.class,SharedRiskGroupBuilder.class.getName());
+//        this.customDeserializer.put(McCapabilities.class,McCapabilitiesBuilder.class.getName());
+//        this.customDeserializer.put(CircuitPacks.class,CircuitPacksBuilder.class.getName());
+//        this.customDeserializer.put(ConnectionPorts.class,ConnectionPortsBuilder.class.getName());
+//        this.customDeserializer.put(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.
+//                CircuitPacks.class,org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.
+//                degree.CircuitPacksBuilder.class.getName());
+//        this.customDeserializer.put(Interface.class,InterfaceBuilder.class.getName());
+//        this.customDeserializer.put(OtdrPort.class,OtdrPortBuilder.class.getName());
+//        this.customDeserializer.put(Ports.class,PortsBuilder.class.getName());
+//        this.customDeserializer.put(OduSwitchingPools.class,OduSwitchingPoolsBuilder.class.getName());
+//        this.customDeserializer.put(NonBlockingList.class,NonBlockingListBuilder.class.getName());
+//        this.customDeserializer.put(ConnectionMap.class,ConnectionMapBuilder.class.getName());
+//        this.customDeserializer.put(LineAmplifier.class,LineAmplifierBuilder.class.getName());
+//        this.customDeserializer.put(CircuitPack.class,CircuitPackBuilder.class.getName());
+//        this.customDeserializer.put(Xponder.class,XponderBuilder.class.getName());
+//        this.customDeserializer.put(XpdrPort.class,XpdrPortBuilder.class.getName());
+//        this.customDeserializer.put(Odu.class,OduBuilder.class.getName());
+//        this.customDeserializer.put(ParentOduAllocation.class,ParentOduAllocationBuilder.class.getName());
+//        this.customDeserializer.put(TxMsi.class,TxMsiBuilder.class.getName());
+//        this.customDeserializer.put(RxMsi.class,RxMsiBuilder.class.getName());
+//        this.customDeserializer.put(ExpMsi.class,ExpMsiBuilder.class.getName());
+//        this.customDeserializer.put(MaintTestsignal.class,MaintTestsignalBuilder.class.getName());
+//        this.customDeserializer.put(Tcm.class,TcmBuilder.class.getName());
+//        this.customDeserializer.put(Otu.class,OtuBuilder.class.getName());
+
 
     }
     @Override
@@ -124,7 +104,7 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         return new JsonPOJOBuilder.Value("build", "set");
     }
 
-    Class<?> findClass(String name) throws ClassNotFoundException {
+    public Class<?> findClass(String name) throws ClassNotFoundException {
         return findClass(name, context);
     }
 
@@ -151,4 +131,38 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         }
         // not found in any bundle
     }
+    @Override
+    public AnnotatedMethod resolveSetterConflict(MapperConfig<?> config, AnnotatedMethod setter1,
+            AnnotatedMethod setter2) {
+        Class<?> p1 = setter1.getRawParameterType(0);
+        Class<?> p2 = setter2.getRawParameterType(0);
+        AnnotatedMethod res = null;
+
+        if (this.isAssignable(p1, p2, Map.class, List.class)) {
+            res = p1.isAssignableFrom(List.class)?setter1:setter2;
+        } else if (this.isAssignable(p1, p2, Uint64.class, BigInteger.class)) {
+            res = setter1;
+        } else if (this.isAssignable(p1, p2, Uint32.class, Long.class)) {
+            res = setter1;
+        } else if (this.isAssignable(p1, p2, Uint16.class, Integer.class)) {
+            res = setter1;
+        } else if (this.isAssignable(p1, p2, Uint8.class, Short.class)) {
+            res = setter1;
+        }
+        if (res == null) {
+            res = super.resolveSetterConflict(config, setter1, setter2);
+        }
+        LOG.debug("{} (m1={} <=> m2={} => result:{})", setter1.getName(), p1.getSimpleName(), p2.getSimpleName(),
+                res.getRawParameterType(0).getSimpleName());
+
+        return res;
+    }
+    private boolean isAssignable(Class<?> p1, Class<?> p2, Class<?> c1, Class<?> c2) {
+        return ((p1.isAssignableFrom(c1) && p2.isAssignableFrom(c2))
+                || (p2.isAssignableFrom(c1) && p1.isAssignableFrom(c2)));
+
+    }
+
+
+
 }

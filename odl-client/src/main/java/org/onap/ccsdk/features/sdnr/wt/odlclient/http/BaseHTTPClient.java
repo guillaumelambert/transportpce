@@ -208,7 +208,7 @@ public class BaseHTTPClient {
             trustCerts = new TrustManager[] { new javax.net.ssl.X509TrustManager() {
                 @Override
                 public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
+                    return new X509Certificate[0];
                 }
 
                 @Override

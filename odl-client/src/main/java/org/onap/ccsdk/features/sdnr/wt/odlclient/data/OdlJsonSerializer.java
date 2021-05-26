@@ -7,39 +7,37 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.SerializerElem;
 
-public class OdlJsonSerializer extends OdlDataSerializer<JSONObject>{
+public class OdlJsonSerializer extends OdlDataSerializer{
 
-    private static final Logger LOG = LoggerFactory.getLogger(OdlJsonSerializer.class);
-
-    public OdlJsonSerializer() {
-        super();
+     public OdlJsonSerializer() {
+        super(null);
     }
 
+
     @Override
-    JSONObject instantiateBuilder() {
+    SerializerElem preValueWrite(String key, Object value, boolean withNsPrefix, Class<?> rootClass) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    void preValueWrite(JSONObject builder, String key, Object value) {
+    void postValueWrite(SerializerElem e, String key) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    void postValueWrite(JSONObject builder, String key) {
+    void onValueWrite(SerializerElem e, Object o) {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
-    void onValueWrite(JSONObject builder, Object o) {
-        // TODO Auto-generated method stub
+	@Override
+	void clear() {
+		// TODO Auto-generated method stub
 
-    }
+	}
+
 }

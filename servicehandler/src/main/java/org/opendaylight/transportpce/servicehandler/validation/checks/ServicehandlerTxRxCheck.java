@@ -166,6 +166,7 @@ public final class ServicehandlerTxRxCheck {
         if (serviceEnd == null) {
             return new ComplianceCheckResult(false, LogMessages.endpointTypeNotSet(endpointType));
         }
+
         if (serviceEnd.getServiceRate() == null) {
             String message = "Something wrong when accessing Service " + endpointType + " rate, format or clli";
             return new ComplianceCheckResult(false, message);

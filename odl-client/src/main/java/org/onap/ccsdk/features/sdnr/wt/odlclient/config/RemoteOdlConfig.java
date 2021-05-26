@@ -30,6 +30,7 @@ public class RemoteOdlConfig {
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_ENABLED = "enabled";
     public static final String KEY_TRUSTALL = "trustall";
+    
 
     private static final String DEFAULT_BASEURL = "http://sdnr:8181";
     private static final String DEFAULT_WSURL = "ws://sdnr:8181/websocket";
@@ -50,6 +51,7 @@ public class RemoteOdlConfig {
     private final String password;
     private final boolean trustall;
     private final boolean enabled;
+    
 
     public RemoteOdlConfig() {
         this(FILENAME);
@@ -182,4 +184,5 @@ public class RemoteOdlConfig {
     public boolean trustAllCerts() {
         return this.trustall;
     }
+
 }

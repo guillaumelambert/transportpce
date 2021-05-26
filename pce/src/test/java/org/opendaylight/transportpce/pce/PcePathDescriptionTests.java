@@ -13,6 +13,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.transportpce.common.StringConstants;
+import org.opendaylight.transportpce.common.fixedflex.GridConstant;
 import org.opendaylight.transportpce.common.network.NetworkTransactionImpl;
 import org.opendaylight.transportpce.common.network.RequestProcessor;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints;
@@ -24,8 +26,7 @@ import org.opendaylight.transportpce.pce.networkanalyzer.PceResult;
 import org.opendaylight.transportpce.pce.utils.NodeUtils;
 import org.opendaylight.transportpce.pce.utils.PceTestData;
 import org.opendaylight.transportpce.test.AbstractTest;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.OpenroadmNodeType;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.service.format.rev190531.ServiceFormat;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.OpenroadmNodeType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NodeBuilder;
@@ -50,13 +51,11 @@ public class PcePathDescriptionTests extends AbstractTest {
         //  Link link=genereateLinkBuilder();
 
         NodeBuilder node1Builder = NodeUtils.getNodeBuilder(NodeUtils.geSupportingNodes());
-        node = node1Builder.build();
+        node = node1Builder.setNodeId(new NodeId("test")).build();
         PceOpticalNode pceOpticalNode = new PceOpticalNode(node,
-                OpenroadmNodeType.SRG, new NodeId("OpenROADM-3-2-DEG1"), ServiceFormat.Ethernet,
-                "DEGREE");
+                OpenroadmNodeType.SRG, StringConstants.OPENROADM_DEVICE_VERSION_2_2_1, GridConstant.SLOT_WIDTH_50);
         PceOpticalNode pceOpticalNode2 = new PceOpticalNode(node,
-                OpenroadmNodeType.SRG, new NodeId("OpenROADM-3-1-DEG1"), ServiceFormat.Ethernet,
-                "DEGREE");
+                OpenroadmNodeType.SRG, StringConstants.OPENROADM_DEVICE_VERSION_2_2_1, GridConstant.SLOT_WIDTH_50);
 
         pceLink = new PceLink(link, pceOpticalNode, pceOpticalNode2);
         pceLink.setClient("XPONDER-CLIENT");
@@ -64,7 +63,7 @@ public class PcePathDescriptionTests extends AbstractTest {
         pceResult = new PceResult();
         pceResult.setRC("200");
         pceResult.setRate(Long.valueOf(1));
-        pceResult.setServiceType("100GE");
+        pceResult.setServiceType(StringConstants.SERVICE_TYPE_100GE);
         Map<LinkId, PceLink> map = Map.of(new LinkId("OpenROADM-3-1-DEG1-to-OpenROADM-3-2-DEG1"), pceLink);
         pcePathDescription = new PcePathDescription(List.of(pceLink),
                 map, pceResult);

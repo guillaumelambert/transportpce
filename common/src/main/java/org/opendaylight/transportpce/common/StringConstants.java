@@ -15,7 +15,7 @@ public final class StringConstants {
     public static final String DEFAULT_NETCONF_NODEID = "controller-config";
     public static final String OPENROADM_DEVICE_VERSION_1_2_1 = "(http://org/openroadm/device?revision=2017-02-06)org-openroadm-device";
     public static final String OPENROADM_DEVICE_VERSION_2_2_1 = "(http://org/openroadm/device?revision=2018-10-19)org-openroadm-device";
-
+    public static final String OPENROADM_DEVICE_VERSION_7_1_0 = "(http://org/openroadm/device?revision=2020-05-29)org-openroadm-device";
 
     public static final String NETWORK_TOKEN = "NETWORK";
 
@@ -24,6 +24,18 @@ public final class StringConstants {
     public static final String CLIENT_TOKEN = "CLIENT";
 
     public static final String PP_TOKEN = "PP";
+
+    public static final String SERVICE_TYPE_100GE = "100GE";
+
+    public static final String SERVICE_TYPE_OTU4 = "OTU4";
+
+    public static final String SERVICE_TYPE_400GE = "400GE";
+
+    public static final String SERVICE_TYPE_10GE = "10GE";
+
+    public static final String SERVICE_TYPE_1GE = "1GE";
+
+    public static final String SERVICE_TYPE_ODU4 = "ODU4";
 
     private StringConstants() {
         // hiding the default constructor

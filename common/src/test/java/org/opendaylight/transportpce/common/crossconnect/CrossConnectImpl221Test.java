@@ -28,17 +28,19 @@ import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.device.DeviceTransaction;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManagerImpl;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesKey;
+import org.opendaylight.transportpce.common.fixedflex.SpectrumInformation;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.NodesBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.NodesKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.OpticalControlMode;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.degree.ConnectionPorts;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.degree.ConnectionPortsBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.RoadmConnections;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container.org.openroadm.device.RoadmConnectionsKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.otn.renderer.input.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev201211.otn.renderer.input.Nodes;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 public class CrossConnectImpl221Test {
     private CrossConnectImpl221 crossConnectImpl221 = null;
@@ -81,8 +83,12 @@ public class CrossConnectImpl221Test {
         Mockito.when(rwTransactionMock.commit()).thenReturn(FluentFutures.immediateNullFluentFuture());
         deviceTransactionManager = new DeviceTransactionManagerImpl(mountPointServiceMock, 3000);
         crossConnectImpl221 = new CrossConnectImpl221(deviceTransactionManager);
-        Optional res = crossConnectImpl221.postCrossConnect("deviceId", 100L, "srcTp", "destTp");
-        Assert.assertEquals(res.get(), "srcTp-destTp-100");
+        SpectrumInformation spectrumInformation = new SpectrumInformation();
+        spectrumInformation.setWaveLength(Uint32.valueOf(1));
+        spectrumInformation.setLowerSpectralSlotNumber(761);
+        spectrumInformation.setHigherSpectralSlotNumber(768);
+        Optional res = crossConnectImpl221.postCrossConnect("deviceId", "srcTp", "destTp", spectrumInformation);
+        Assert.assertEquals(res.get(), "srcTp-destTp-761:768");
     }
 
     @Test(expected = NullPointerException.class)

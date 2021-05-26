@@ -13,6 +13,8 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.opendaylight.transportpce.common.StringConstants;
+import org.opendaylight.transportpce.common.fixedflex.GridConstant;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints;
 import org.opendaylight.transportpce.pce.networkanalyzer.PceLink;
 import org.opendaylight.transportpce.pce.networkanalyzer.PceNode;
@@ -22,12 +24,13 @@ import org.opendaylight.transportpce.pce.networkanalyzer.PceResult;
 import org.opendaylight.transportpce.pce.utils.NodeUtils;
 import org.opendaylight.transportpce.pce.utils.PceTestData;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.PathComputationRequestInput;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.OpenroadmNodeType;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.OpenroadmTpType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.OpenroadmNodeType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.OpenroadmTpType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.format.rev190531.ServiceFormat;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.RoutingConstraintsSp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network.Link;
 
 public class PceGraphTest {
@@ -50,19 +53,17 @@ public class PceGraphTest {
                 "OpenROADM-3-1-DEG1",
                 "DEG1-TTP-TX", "DEG1-TTP-RX").build();
 
-        node = NodeUtils.getNodeBuilder(NodeUtils.geSupportingNodes()).build();
-
+        NodeId nodeId = new NodeId("OpenROADM-3-2-DEG1");
+        node = NodeUtils.getNodeBuilder(NodeUtils.geSupportingNodes())
+                .setNodeId(nodeId).withKey(new NodeKey(nodeId))
+                .build();
         pceOpticalNode = new PceOpticalNode(node,
-                OpenroadmNodeType.SRG, new NodeId("OpenROADM-3-2-DEG1"), ServiceFormat.Ethernet,
-                "DEGREE");
-        pceOpticalNode.checkWL(1);
-        pceOpticalNode.checkWL(2);
-
-        pceOpticalNode2 = new PceOpticalNode(node,
-                OpenroadmNodeType.SRG, new NodeId("OpenROADM-3-1-DEG1"), ServiceFormat.Ethernet,
-                "DEGREE");
-        pceOpticalNode2.checkWL(1);
-        pceOpticalNode2.checkWL(2);
+                OpenroadmNodeType.DEGREE, StringConstants.OPENROADM_DEVICE_VERSION_2_2_1, GridConstant.SLOT_WIDTH_50);
+        NodeId nodeId2 = new NodeId("OpenROADM-3-1-DEG1");
+        Node node2 = NodeUtils.getNodeBuilder(NodeUtils.geSupportingNodes())
+                .setNodeId(nodeId2).withKey(new NodeKey(nodeId2)).build();
+        pceOpticalNode2 = new PceOpticalNode(node2,
+                OpenroadmNodeType.DEGREE, StringConstants.OPENROADM_DEVICE_VERSION_2_2_1, GridConstant.SLOT_WIDTH_50);
         pceLink = new PceLink(link, pceOpticalNode, pceOpticalNode2);
         pceLink.setClient("XPONDER-CLIENT");
 
@@ -72,13 +73,12 @@ public class PceGraphTest {
         // init PceHardContraints
         pceHardConstraints = new PceConstraints();
         // pceHardConstraints.setp
-        allPceNodes = Map.of(new NodeId("OpenROADM-3-2-DEG1"), pceOpticalNode,
-                new NodeId("OpenROADM-3-1-DEG1"), pceOpticalNode2);
+        allPceNodes = Map.of(nodeId, pceOpticalNode, nodeId2, pceOpticalNode2);
         rc = new PceResult();
         pceGraph = new PceGraph(pceOpticalNode, pceOpticalNode2, allPceNodes,
                 pceHardConstraints,
                 null, rc,
-                "ODU4");
+                StringConstants.SERVICE_TYPE_ODU4);
     }
 
     @Test
@@ -100,24 +100,23 @@ public class PceGraphTest {
 
     @Test
     public void clacPath100GE() {
-        pceOpticalNode.checkWL(1);
         pceGraph = new PceGraph(pceOpticalNode, pceOpticalNode2, allPceNodes,
                 pceHardConstraints,
                 null, rc,
-                "100GE");
+                StringConstants.SERVICE_TYPE_100GE);
 
         Assert.assertEquals(pceGraph.calcPath(), false);
     }
 
     @Test(expected = Exception.class)
     public void clacPath10GE2() {
-        pceGraph = getOtnPceGraph("10GE");
+        pceGraph = getOtnPceGraph(StringConstants.SERVICE_TYPE_10GE);
         Assert.assertEquals(pceGraph.calcPath(), false);
     }
 
     @Test(expected = Exception.class)
     public void clacPath1GE() {
-        pceGraph = getOtnPceGraph("1GE");
+        pceGraph = getOtnPceGraph(StringConstants.SERVICE_TYPE_1GE);
         Assert.assertEquals(pceGraph.calcPath(), false);
     }
 

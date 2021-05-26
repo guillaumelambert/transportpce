@@ -18,6 +18,7 @@ import org.jgrapht.alg.shortestpath.KShortestSimplePaths;
 import org.jgrapht.alg.shortestpath.PathValidator;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.opendaylight.transportpce.common.ResponseCodes;
+import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints;
 import org.opendaylight.transportpce.pce.networkanalyzer.PceLink;
 import org.opendaylight.transportpce.pce.networkanalyzer.PceNode;
@@ -106,22 +107,31 @@ public class PceGraph {
             }
 
             shortestPathAtoZ = new ArrayList<>(pathAtoZ);
-            if (("100GE".equals(serviceType)) || ("OTU4".equals(serviceType))) {
-                LOG.info("In calcPath Path FOUND path for wl [{}], hops {}, distance per metrics {}, path AtoZ {}",
-                        pceResult.getResultWavelength(), pathAtoZ.size(), path.getWeight(), pathAtoZ);
-                break;
-            } else {
-                // Service is at OTN layer and is relying on a supporting wavelength service
-                LOG.info("In calcPath Path FOUND path for hops {}, distance per metrics {}, path AtoZ {}",
+            switch (serviceType) {
+
+                case StringConstants.SERVICE_TYPE_100GE:
+                case StringConstants.SERVICE_TYPE_OTU4:
+                    LOG.info(
+                        "In calcPath Path FOUND path for wl [{}], min Freq assignment {}, max Freq assignment {},"
+                        + " hops {}, distance per metrics {}, path AtoZ {}",
+                        pceResult.getResultWavelength(), pceResult.getMinFreq(), pceResult.getMaxFreq(),
                         pathAtoZ.size(), path.getWeight(), pathAtoZ);
-                break;
+                    break;
+
+                default:
+                    LOG.info(
+                        "In calcPath Path FOUND path for hops {}, distance per metrics {}, path AtoZ {}",
+                        pathAtoZ.size(), path.getWeight(), pathAtoZ);
+                    break;
             }
+            break;
 
         }
 
         if (shortestPathAtoZ != null) {
-            LOG.info("In calcPath CHOOSEN PATH for wl [{}], hops {}, path AtoZ {}",
-                    pceResult.getResultWavelength(), shortestPathAtoZ.size(), shortestPathAtoZ);
+            LOG.info("In calcPath CHOOSEN PATH for wl [{}], min freq {}, max freq {}, hops {}, path AtoZ {}",
+                    pceResult.getResultWavelength(), pceResult.getMinFreq(), pceResult.getMaxFreq(),
+                    shortestPathAtoZ.size(), shortestPathAtoZ);
         }
         LOG.info("In calcPath : pceResult {}", pceResult);
         return (pceResult.getStatus());
@@ -219,8 +229,8 @@ public class PceGraph {
             case PropagationDelay :
                 weight = link.getLatency();
                 LOG.debug("In PceGraph PropagationDelay is used as a metrics. {}", link);
-                if ((("1GE".equals(serviceType)) || ("10GE".equals(serviceType)) || ("ODU4".equals(serviceType)))
-                        && (weight == 0)) {
+                if ((weight == 0)
+                        && ("1GE".equals(serviceType) || "10GE".equals(serviceType) || "ODU4".equals(serviceType))) {
                     LOG.warn("PropagationDelay set as metric, but latency is null: is latency set for OTN link {}?",
                         link);
                 }

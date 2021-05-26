@@ -31,37 +31,33 @@ import org.opendaylight.transportpce.common.crossconnect.CrossConnectImpl121;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnectImpl221;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManagerImpl;
-import org.opendaylight.transportpce.common.fixedflex.FixedFlexImpl;
-import org.opendaylight.transportpce.common.fixedflex.FixedFlexInterface;
-import org.opendaylight.transportpce.common.fixedflex.FlexGridImpl;
 import org.opendaylight.transportpce.common.mapping.MappingUtils;
 import org.opendaylight.transportpce.common.mapping.MappingUtilsImpl;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.mapping.PortMappingImpl;
 import org.opendaylight.transportpce.common.mapping.PortMappingVersion121;
 import org.opendaylight.transportpce.common.mapping.PortMappingVersion221;
+import org.opendaylight.transportpce.common.mapping.PortMappingVersion710;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl121;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl221;
-import org.opendaylight.transportpce.renderer.DisabledRemoteOpendaylightClient;
-import org.opendaylight.transportpce.renderer.NetworkModelWavelengthService;
-import org.opendaylight.transportpce.renderer.NetworkModelWavelengthServiceImpl;
+import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl710;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface121;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface221;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterfaceFactory;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmOtnInterface221;
-import org.opendaylight.transportpce.renderer.stub.MountPointServiceStub;
-import org.opendaylight.transportpce.renderer.stub.MountPointStub;
 import org.opendaylight.transportpce.renderer.stub.OlmServiceStub;
 import org.opendaylight.transportpce.renderer.utils.NotificationPublishServiceMock;
 import org.opendaylight.transportpce.renderer.utils.ServiceDeleteDataUtils;
 import org.opendaylight.transportpce.renderer.utils.TransactionUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
+import org.opendaylight.transportpce.test.stub.MountPointServiceStub;
+import org.opendaylight.transportpce.test.stub.MountPointStub;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerTurndownOutputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.TransportpceOlmService;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceDeleteOutput;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev201125.ServiceDeleteInputBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev201125.ServiceDeleteOutput;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.ConnectionType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.ServiceAEnd;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.service.ServiceAEndBuilder;
@@ -87,11 +83,12 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
     private DeviceRendererService deviceRenderer;
     private PortMapping portMapping;
     private CrossConnect crossConnect;
-    private NetworkModelWavelengthService networkModelWavelengthService;
     private TransportpceOlmService olmService;
     private MappingUtils mappingUtils;
     private OpenRoadmInterfacesImpl121 openRoadmInterfacesImpl121;
     private OpenRoadmInterfacesImpl221 openRoadmInterfacesImpl221;
+    private OpenRoadmInterfacesImpl710 openRoadmInterfacesImpl710;
+    private PortMappingVersion710 portMappingVersion710;
     private PortMappingVersion221 portMappingVersion22;
     private PortMappingVersion121 portMappingVersion121;
     private CrossConnectImpl121 crossConnectImpl121;
@@ -103,36 +100,36 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         this.deviceTransactionManager = new DeviceTransactionManagerImpl(mountPointService, 3000);
         this.openRoadmInterfacesImpl121 = new OpenRoadmInterfacesImpl121(deviceTransactionManager);
         this.openRoadmInterfacesImpl221 = new OpenRoadmInterfacesImpl221(deviceTransactionManager);
+        this.openRoadmInterfacesImpl710 = new OpenRoadmInterfacesImpl710(deviceTransactionManager);
         this.mappingUtils = new MappingUtilsImpl(getDataBroker());
         this.openRoadmInterfaces = new OpenRoadmInterfacesImpl(deviceTransactionManager, mappingUtils,
-            openRoadmInterfacesImpl121, openRoadmInterfacesImpl221);
+            openRoadmInterfacesImpl121, openRoadmInterfacesImpl221, openRoadmInterfacesImpl710);
         this.openRoadmInterfaces = Mockito.spy(this.openRoadmInterfaces);
+        this.portMappingVersion710 =
+            new PortMappingVersion710(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
         this.portMappingVersion22 =
             new PortMappingVersion221(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
         this.portMappingVersion121 =
             new PortMappingVersion121(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
-        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22,
+        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion710, this.portMappingVersion22,
             this.portMappingVersion121);
         this.crossConnectImpl121 = new CrossConnectImpl121(deviceTransactionManager);
         this.crossConnectImpl221 = new CrossConnectImpl221(deviceTransactionManager);
         this.crossConnect = new CrossConnectImpl(deviceTransactionManager, this.mappingUtils, this.crossConnectImpl121,
             this.crossConnectImpl221);
         this.crossConnect = Mockito.spy(crossConnect);
-        FixedFlexInterface fixedFlexInterface = new FixedFlexImpl();
-        FlexGridImpl flexGrid = new FlexGridImpl();
         OpenRoadmInterface121 openRoadmInterface121 = new OpenRoadmInterface121(portMapping,openRoadmInterfaces);
-        OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces,
-            fixedFlexInterface, flexGrid);
+        OpenRoadmInterface221 openRoadmInterface221 = new OpenRoadmInterface221(portMapping,openRoadmInterfaces);
         OpenRoadmOtnInterface221 openRoadmOTNInterface = new OpenRoadmOtnInterface221(portMapping, openRoadmInterfaces);
         OpenRoadmInterfaceFactory openRoadmInterfaceFactory = new OpenRoadmInterfaceFactory(this.mappingUtils,
              openRoadmInterface121, openRoadmInterface221, openRoadmOTNInterface);
 
-        this.deviceRenderer = new DeviceRendererServiceImpl(this.getDataBroker(),
+        this.deviceRenderer = new DeviceRendererServiceImpl(getDataBroker(),
             this.deviceTransactionManager, openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect,
-            this.portMapping, null, new DisabledRemoteOpendaylightClient());
+            this.portMapping, null);
 
         this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, crossConnect,
-            openRoadmInterfaces, this.deviceTransactionManager, null, new DisabledRemoteOpendaylightClient());
+            openRoadmInterfaces, this.deviceTransactionManager, null);
 
     }
 
@@ -143,11 +140,9 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
         this.olmService = Mockito.spy(this.olmService);
         ListeningExecutorService executor =
             MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
-        this.networkModelWavelengthService = new NetworkModelWavelengthServiceImpl(getDataBroker());
         NotificationPublishService notificationPublishService = new NotificationPublishServiceMock();
         this.rendererServiceOperations =  new RendererServiceOperationsImpl(this.deviceRenderer,
-            this.otnDeviceRendererService, olmService, getDataBroker(), this.networkModelWavelengthService,
-            notificationPublishService);
+            this.otnDeviceRendererService, olmService, getDataBroker(), notificationPublishService);
 
     }
 

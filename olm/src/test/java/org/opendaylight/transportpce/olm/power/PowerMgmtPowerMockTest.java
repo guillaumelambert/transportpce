@@ -34,30 +34,32 @@ import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.mapping.PortMappingImpl;
 import org.opendaylight.transportpce.common.mapping.PortMappingVersion121;
 import org.opendaylight.transportpce.common.mapping.PortMappingVersion221;
+import org.opendaylight.transportpce.common.mapping.PortMappingVersion710;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl121;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl221;
+import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl710;
 import org.opendaylight.transportpce.olm.stub.MountPointServiceStub;
 import org.opendaylight.transportpce.olm.stub.MountPointStub;
 import org.opendaylight.transportpce.olm.util.OlmPowerServiceRpcImplUtil;
 import org.opendaylight.transportpce.olm.util.OlmUtils;
 import org.opendaylight.transportpce.test.AbstractTest;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.ServicePowerSetupInput;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.MappingKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfo;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.NodeInfoBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.Network;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.NodesBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.NodesKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.MappingBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.MappingKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.NodeInfo;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.NodeInfoBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.OpticalControlMode;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.RatioDB;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.NodeTypes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.InterfaceBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.device.types.rev191129.NodeTypes;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.Interface1Builder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.ots.container.Ots;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.optical.transport.interfaces.rev161014.ots.container.OtsBuilder;
@@ -85,6 +87,8 @@ public class PowerMgmtPowerMockTest extends AbstractTest {
     private MappingUtils mappingUtils;
     private OpenRoadmInterfacesImpl121 openRoadmInterfacesImpl121;
     private OpenRoadmInterfacesImpl221 openRoadmInterfacesImpl22;
+    private OpenRoadmInterfacesImpl710 openRoadmInterfacesImpl710;
+    private PortMappingVersion710 portMappingVersion710;
     private PortMappingVersion221 portMappingVersion22;
     private PortMappingVersion121 portMappingVersion121;
 
@@ -103,14 +107,19 @@ public class PowerMgmtPowerMockTest extends AbstractTest {
                 this.crossConnectImpl22);
         this.openRoadmInterfacesImpl121 = new OpenRoadmInterfacesImpl121(deviceTransactionManager);
         this.openRoadmInterfacesImpl22 = new OpenRoadmInterfacesImpl221(deviceTransactionManager);
+        this.openRoadmInterfacesImpl710 = new OpenRoadmInterfacesImpl710(deviceTransactionManager);
         this.openRoadmInterfaces = new OpenRoadmInterfacesImpl((this.deviceTransactionManager),
-                this.mappingUtils,this.openRoadmInterfacesImpl121,this.openRoadmInterfacesImpl22);
+                this.mappingUtils,this.openRoadmInterfacesImpl121,this.openRoadmInterfacesImpl22,
+            this.openRoadmInterfacesImpl710);
         this.openRoadmInterfaces = Mockito.spy(this.openRoadmInterfaces);
         this.portMappingVersion22 =
                 new PortMappingVersion221(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
         this.portMappingVersion121 =
                 new PortMappingVersion121(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
-        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion22, this.portMappingVersion121);
+        this.portMappingVersion710 =
+            new PortMappingVersion710(getDataBroker(), deviceTransactionManager, this.openRoadmInterfaces);
+        this.portMapping = new PortMappingImpl(getDataBroker(), this.portMappingVersion710,
+            this.portMappingVersion22, this.portMappingVersion121);
         this.portMapping = Mockito.spy(this.portMapping);
         this.powerMgmt = new PowerMgmtImpl(this.getDataBroker(), this.openRoadmInterfaces, this.crossConnect,
                 this.deviceTransactionManager);
@@ -233,7 +242,8 @@ public class PowerMgmtPowerMockTest extends AbstractTest {
     private PowerMgmtImpl getNewPowerMgmt(OpenRoadmInterfacesImpl121 openRoadmInterfacesImpl121Spy,
             CrossConnect crossConnectMock) {
         OpenRoadmInterfacesImpl openRoadmInterfacesSpy = new OpenRoadmInterfacesImpl((this.deviceTransactionManager),
-                this.mappingUtils, openRoadmInterfacesImpl121Spy, this.openRoadmInterfacesImpl22);
+                this.mappingUtils, openRoadmInterfacesImpl121Spy, this.openRoadmInterfacesImpl22,
+            this.openRoadmInterfacesImpl710);
         openRoadmInterfacesSpy = PowerMockito.spy(openRoadmInterfacesSpy);
         return new PowerMgmtImpl(this.getDataBroker(), openRoadmInterfacesSpy, crossConnectMock,
                 this.deviceTransactionManager);

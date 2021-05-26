@@ -33,12 +33,15 @@ public final class TPCEUtils {
                     .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.common.optical.channel.types.rev181130.$YangModuleInfoImpl
                     .getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.common.optical.channel.types.rev200529.$YangModuleInfoImpl
+                .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.common.state.types.rev181130.$YangModuleInfoImpl
                     .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev170929.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181130.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.device.types.rev191129.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev161014.$YangModuleInfoImpl
                     .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.equipment.states.types.rev171215.$YangModuleInfoImpl
@@ -61,6 +64,7 @@ public final class TPCEUtils {
             org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev170929.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev181019.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev181130.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.port.types.rev200327.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.probablecause.rev161014.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.probablecause.rev181019.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.resource.rev161014.$YangModuleInfoImpl.getInstance(),
@@ -71,6 +75,8 @@ public final class TPCEUtils {
                     .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.switching.pool.types.rev181130.$YangModuleInfoImpl
                     .getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.switching.pool.types.rev191129.$YangModuleInfoImpl
+                .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.tca.rev161014.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.tca.rev181019.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.openroadm.user.mgmt.rev161014.$YangModuleInfoImpl.getInstance(),
@@ -145,22 +151,22 @@ public final class TPCEUtils {
             org.opendaylight.yang.gen.v1.http.org.openroadm.wavelength.map.rev171215.$YangModuleInfoImpl.getInstance(),
 
             // network models
-            org.opendaylight.yang.gen.v1.http.org.openroadm.amplifier.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.degree.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.external.pluggable.rev181130.$YangModuleInfoImpl
+            org.opendaylight.yang.gen.v1.http.org.openroadm.amplifier.rev191129.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.clli.network.rev191129.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev200529.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.degree.rev200529.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.external.pluggable.rev200529.$YangModuleInfoImpl
                     .getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.link.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.network.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.$YangModuleInfoImpl
+            org.opendaylight.yang.gen.v1.http.org.openroadm.link.rev200529.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.network.rev200529.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev200529.$YangModuleInfoImpl
                     .getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev181130.$YangModuleInfoImpl
+            org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.otn.network.topology.rev200529.$YangModuleInfoImpl
                     .getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.roadm.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.srg.rev181130.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.openroadm.xponder.rev181130.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.roadm.rev191129.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.srg.rev200529.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.openroadm.xponder.rev200529.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.$YangModuleInfoImpl
                     .getInstance(),
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.$YangModuleInfoImpl
@@ -197,33 +203,22 @@ public final class TPCEUtils {
                     .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.$YangModuleInfoImpl
                     .getInstance(),
-<<<<<<< HEAD
-            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429.$YangModuleInfoImpl
-                    .getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.device.rev200128
-=======
-            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.$YangModuleInfoImpl
+            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.$YangModuleInfoImpl
                     .getInstance(),
             org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.device.renderer.rev200128
->>>>>>> standalone/stable/aluminium
                     .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.$YangModuleInfoImpl
+            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev201125.$YangModuleInfoImpl
                     .getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.servicehandler.rev171017.$YangModuleInfoImpl
+            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.servicehandler.rev201125.$YangModuleInfoImpl
                     .getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev200615.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.org.transportpce.common.types.rev201211.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.gnpy.gnpy.api.rev190103.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.gnpy.gnpy.eqpt.config.rev181119.$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.gnpy.gnpy.network.topology.rev181214.$YangModuleInfoImpl.getInstance(),
-<<<<<<< HEAD
-            org.opendaylight.yang.gen.v1.gnpy.path.rev200202.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200429
-=======
             org.opendaylight.yang.gen.v1.gnpy.path.rev200909.$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827
->>>>>>> standalone/stable/aluminium
+            org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012
                     .$YangModuleInfoImpl.getInstance(),
-            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629
+            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017
                     .$YangModuleInfoImpl.getInstance(),
@@ -231,7 +226,7 @@ public final class TPCEUtils {
                     .$YangModuleInfoImpl.getInstance(),
             org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.servicepath.rev171017.$YangModuleInfoImpl
                     .getInstance(),
-            org.opendaylight.yang.gen.v1.http.transportpce.topology.rev200129.$YangModuleInfoImpl.getInstance(),
+            org.opendaylight.yang.gen.v1.http.transportpce.topology.rev201019.$YangModuleInfoImpl.getInstance(),
 
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.$YangModuleInfoImpl
                     .getInstance(),

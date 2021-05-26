@@ -8,18 +8,22 @@
 
 package org.opendaylight.transportpce.pce.networkanalyzer;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.opendaylight.transportpce.common.fixedflex.GridConstant;
 import org.opendaylight.transportpce.pce.SortPortsByName;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev181130.TerminationPoint1;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.Node1;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.networks.network.node.termination.point.pp.attributes.UsedWavelength;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.OpenroadmNodeType;
-import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev181130.OpenroadmTpType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.network.rev200529.TerminationPoint1;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev200529.Node1;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.OpenroadmNodeType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.OpenroadmTpType;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.network.types.rev200529.available.freq.map.AvailFreqMapsKey;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.format.rev190531.ServiceFormat;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.NodeId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.rev180226.networks.network.Node;
@@ -32,30 +36,33 @@ public class PceOpticalNode implements PceNode {
 
     private boolean valid = true;
 
-    private final Node node;
-    private final NodeId nodeId;
-    private final OpenroadmNodeType nodeType;
-    private final ServiceFormat serviceFormat;
-    private final String pceNodeType;
+    private Node node;
+    private NodeId nodeId;
+    private OpenroadmNodeType nodeType;
 
-    // wavelength calculation per node type
-    private List<Long> availableWLindex = new ArrayList<>();
     private Map<String, OpenroadmTpType> availableSrgPp = new TreeMap<>();
     private Map<String, OpenroadmTpType> availableSrgCp = new TreeMap<>();
     private List<String> usedXpndrNWTps = new ArrayList<>();
     private List<PceLink> outgoingLinks = new ArrayList<>();
     private Map<String, String> clientPerNwTp = new HashMap<>();
+    private final AvailFreqMapsKey freqMapKey = new AvailFreqMapsKey(GridConstant.C_BAND);
+    private BitSet frequenciesBitSet;
+    private String version;
+    private BigDecimal slotWidthGranularity;
 
-    public PceOpticalNode(Node node, OpenroadmNodeType nodeType, NodeId nodeId, ServiceFormat serviceFormat,
-        String pceNodeType) {
-        this.node = node;
-        this.nodeId = nodeId;
-        this.nodeType = nodeType;
-        this.serviceFormat = serviceFormat;
-        this.pceNodeType = pceNodeType;
-
-        if ((node == null) || (nodeId == null) || (nodeType == null)) {
-            LOG.error("PceNode: one of parameters is not populated : nodeId, node type");
+    public PceOpticalNode(Node node, OpenroadmNodeType nodeType, String version, BigDecimal slotWidthGranularity) {
+        if (node != null
+                && node.getNodeId() != null
+                && nodeType != null
+                && version != null
+                && slotWidthGranularity != null) {
+            this.node = node;
+            this.nodeId = node.getNodeId();
+            this.nodeType = nodeType;
+            this.version = version;
+            this.slotWidthGranularity = slotWidthGranularity;
+        } else {
+            LOG.error("PceNode: one of parameters is not populated : nodeId, node type, slot width granularity");
             this.valid = false;
         }
     }
@@ -80,9 +87,9 @@ public class PceOpticalNode implements PceNode {
         for (org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network
             .node.TerminationPoint tp : allTps) {
             TerminationPoint1 cntp1 = tp.augmentation(TerminationPoint1.class);
-            org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.TerminationPoint1 nttp1 = tp
-                .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130
-                .TerminationPoint1.class);
+            org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev200529.TerminationPoint1 nttp1 = tp
+                .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev200529
+                        .TerminationPoint1.class);
             OpenroadmTpType type = cntp1.getTpType();
             LOG.info("type = {} for tp {}", type.getName(), tp);
 
@@ -96,19 +103,8 @@ public class PceOpticalNode implements PceNode {
                 case SRGRXPP:
                 case SRGTXPP:
                 case SRGTXRXPP:
-                    boolean used = true;
                     LOG.info("initSrgTpList: SRG-PP tp = {} found", tp.getTpId().getValue());
-                    try {
-                        List<UsedWavelength> usedWavelengths =
-                            new ArrayList<>(nttp1.getPpAttributes().getUsedWavelength().values());
-                        if (usedWavelengths.isEmpty()) {
-                            used = false;
-                        }
-                    } catch (NullPointerException e) {
-                        LOG.warn("initSrgTpList: 'usedWavelengths' for tp={} is null !", tp.getTpId().getValue());
-                        used = false;
-                    }
-                    if (!used) {
+                    if (isTerminationPointAvailable(nttp1)) {
                         LOG.info("initSrgTpList: adding SRG-PP tp '{}'", tp.getTpId().getValue());
                         this.availableSrgPp.put(tp.getTpId().getValue(), cntp1.getTpType());
                     } else {
@@ -128,61 +124,55 @@ public class PceOpticalNode implements PceNode {
             this.availableSrgPp.size(), this.availableSrgCp.size(), this);
     }
 
-    public void initWLlist() {
-        this.availableWLindex.clear();
+    private boolean isTerminationPointAvailable(
+            org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev200529.TerminationPoint1 nttp1) {
+        byte[] availableByteArray = new byte[GridConstant.NB_OCTECTS];
+        Arrays.fill(availableByteArray, (byte) GridConstant.AVAILABLE_SLOT_VALUE);
+        return nttp1 == null || nttp1.getPpAttributes() == null
+                || nttp1.getPpAttributes().getAvailFreqMaps() == null
+                || !nttp1.getPpAttributes().getAvailFreqMaps().containsKey(freqMapKey)
+                || nttp1.getPpAttributes().getAvailFreqMaps().get(freqMapKey).getFreqMap() == null
+                || Arrays.equals(nttp1.getPpAttributes().getAvailFreqMaps().get(freqMapKey).getFreqMap(),
+                        availableByteArray);
+    }
+
+    public void initFrequenciesBitSet() {
         if (!isValid()) {
             return;
         }
         Node1 node1 = this.node.augmentation(Node1.class);
         switch (this.nodeType) {
             case SRG :
-                List<org.opendaylight.yang.gen.v1.http.org.openroadm.srg.rev181130.srg.node.attributes
-                    .AvailableWavelengths> srgAvailableWL =
-                        new ArrayList<>(node1.getSrgAttributes().nonnullAvailableWavelengths().values());
-                if (srgAvailableWL.isEmpty()) {
+                if (!node1.getSrgAttributes().nonnullAvailFreqMaps().containsKey(freqMapKey)) {
+                    LOG.error("initFrequenciesBitSet: SRG no cband available freq maps for node  {}", this);
                     this.valid = false;
-                    LOG.error("initWLlist: SRG AvailableWavelengths is empty for node  {}", this);
                     return;
                 }
-                for (org.opendaylight.yang.gen.v1.http.org.openroadm.srg.rev181130.srg.node.attributes
-                        .AvailableWavelengths awl : srgAvailableWL) {
-                    this.availableWLindex.add(awl.getIndex().toJava());
-                    LOG.debug("initWLlist: SRG next = {} in {}", awl.getIndex(), this);
-                }
+                this.frequenciesBitSet = BitSet.valueOf(node1.getSrgAttributes()
+                        .nonnullAvailFreqMaps().get(freqMapKey).getFreqMap());
                 break;
             case DEGREE :
-                List<org.opendaylight.yang.gen.v1.http.org.openroadm.degree.rev181130.degree.node.attributes
-                        .AvailableWavelengths> degAvailableWL =
-                    new ArrayList<>(node1.getDegreeAttributes().nonnullAvailableWavelengths().values());
-                if (degAvailableWL.isEmpty()) {
+                if (!node1.getDegreeAttributes().nonnullAvailFreqMaps().containsKey(freqMapKey)) {
+                    LOG.error("initFrequenciesBitSet: DEG no cband available freq maps for node  {}", this);
                     this.valid = false;
-                    LOG.error("initWLlist: DEG AvailableWavelengths is empty for node  {}", this);
                     return;
                 }
-                for (org.opendaylight.yang.gen.v1.http.org.openroadm.degree.rev181130.degree.node.attributes
-                            .AvailableWavelengths awl : degAvailableWL) {
-                    this.availableWLindex.add(awl.getIndex().toJava());
-                    LOG.debug("initWLlist: DEGREE next = {} in {}", awl.getIndex(), this);
-                }
+                this.frequenciesBitSet = BitSet.valueOf(node1.getDegreeAttributes()
+                        .nonnullAvailFreqMaps().get(freqMapKey).getFreqMap());
                 break;
             case XPONDER :
-                // HARD CODED 96
-                for (long i = 1; i <= 96; i++) {
-                    this.availableWLindex.add(i);
-                }
+                // at init all bits are set to false (unavailable)
+                this.frequenciesBitSet = new BitSet(GridConstant.EFFECTIVE_BITS);
+                //set all bits to true (available)
+                this.frequenciesBitSet.set(0, GridConstant.EFFECTIVE_BITS);
                 break;
             default:
-                LOG.error("initWLlist: unsupported node type {} in node {}", this.nodeType, this);
+                LOG.error("initFrequenciesBitSet: unsupported node type {} in node {}", this.nodeType, this);
                 break;
         }
-        if (this.availableWLindex.isEmpty()) {
-            LOG.debug("initWLlist: There are no available wavelengths in node {}", this);
-            this.valid = false;
-        }
-        LOG.debug("initWLlist: availableWLindex size = {} in {}", this.availableWLindex.size(), this);
     }
 
-    public void initXndrTps() {
+    public void initXndrTps(ServiceFormat serviceFormat) {
         LOG.info("PceNod: initXndrTps for node : {}", this.nodeId);
         if (!isValid()) {
             return;
@@ -201,8 +191,8 @@ public class PceOpticalNode implements PceNode {
         for (org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.networks.network
             .node.TerminationPoint tp : allTps) {
             TerminationPoint1 cntp1 = tp.augmentation(TerminationPoint1.class);
-            org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130.TerminationPoint1 nttp1 = tp
-                .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev181130
+            org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev200529.TerminationPoint1 nttp1 = tp
+                .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.network.topology.rev200529
                 .TerminationPoint1.class);
             if (cntp1.getTpType() == OpenroadmTpType.XPONDERNETWORK) {
                 if (nttp1 != null && nttp1.getXpdrNetworkAttributes().getWavelength() != null) {
@@ -213,8 +203,8 @@ public class PceOpticalNode implements PceNode {
                 }
                 // find Client of this network TP
                 String client;
-                org.opendaylight.yang.gen.v1.http.transportpce.topology.rev200129.TerminationPoint1 tpceTp1 =
-                    tp.augmentation(org.opendaylight.yang.gen.v1.http.transportpce.topology.rev200129
+                org.opendaylight.yang.gen.v1.http.transportpce.topology.rev201019.TerminationPoint1 tpceTp1 =
+                    tp.augmentation(org.opendaylight.yang.gen.v1.http.transportpce.topology.rev201019
                         .TerminationPoint1.class);
                 if (tpceTp1 != null) {
                     client = tpceTp1.getAssociatedConnectionMapPort();
@@ -225,11 +215,11 @@ public class PceOpticalNode implements PceNode {
                         LOG.error("initXndrTps: XPONDER {} NW TP doesn't have defined Client {}",
                             this, tp.getTpId().getValue());
                     }
-                } else if (ServiceFormat.OTU.equals(this.serviceFormat)) {
+                } else if (ServiceFormat.OTU.equals(serviceFormat)) {
                     LOG.info("Infrastructure OTU4 connection");
                     this.valid = true;
                 } else {
-                    LOG.error("Service Format {} not managed yet", this.serviceFormat.getName());
+                    LOG.error("Service Format {} not managed yet", serviceFormat.getName());
                 }
             }
         }
@@ -285,7 +275,7 @@ public class PceOpticalNode implements PceNode {
     }
 
 
-    public void validateAZxponder(String anodeId, String znodeId) {
+    public void validateAZxponder(String anodeId, String znodeId, ServiceFormat serviceFormat) {
         if (!isValid()) {
             return;
         }
@@ -295,7 +285,7 @@ public class PceOpticalNode implements PceNode {
         // Detect A and Z
         if (this.getSupNetworkNodeId().equals(anodeId) || (this.getSupNetworkNodeId().equals(znodeId))) {
             LOG.info("validateAZxponder: A or Z node detected == {}", nodeId.getValue());
-            initXndrTps();
+            initXndrTps(serviceFormat);
             return;
         }
         LOG.debug("validateAZxponder: XPONDER is ignored == {}", nodeId.getValue());
@@ -305,11 +295,6 @@ public class PceOpticalNode implements PceNode {
     @Override
     public boolean checkTP(String tp) {
         return !this.usedXpndrNWTps.contains(tp);
-    }
-
-    @Override
-    public boolean checkWL(long index) {
-        return (this.availableWLindex.contains(index));
     }
 
     public boolean isValid() {
@@ -338,7 +323,7 @@ public class PceOpticalNode implements PceNode {
 
     @Override
     public String getPceNodeType() {
-        return this.pceNodeType;
+        return "optical";
     }
 
     @Override
@@ -370,4 +355,35 @@ public class PceOpticalNode implements PceNode {
     public Map<String, List<Uint16>> getAvailableTribSlots() {
         return null;
     }
+
+    /*
+    * (non-Javadoc)
+    *
+    * @see org.opendaylight.transportpce.pce.networkanalyzer.PceNode#getBitSetData()
+    */
+    @Override
+    public BitSet getBitSetData() {
+        return this.frequenciesBitSet;
+    }
+
+    /*
+    * (non-Javadoc)
+    *
+    * @see org.opendaylight.transportpce.pce.networkanalyzer.PceNode#getVersion()
+    */
+    @Override
+    public String getVersion() {
+        return this.version;
+    }
+
+    /*
+    * (non-Javadoc)
+    *
+    * @see org.opendaylight.transportpce.pce.networkanalyzer.PceNode#getSlotWidthGranularity()
+    */
+    @Override
+    public BigDecimal getSlotWidthGranularity() {
+        return slotWidthGranularity;
+    }
+
 }

@@ -12,17 +12,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
+import org.opendaylight.transportpce.common.fixedflex.GridConstant;
+import org.opendaylight.transportpce.common.fixedflex.SpectrumInformation;
 import org.opendaylight.transportpce.common.mapping.PortMapping;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaces;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.Mapping;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev161014.PowerDBm;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.interfaces.grp.InterfaceKey;
@@ -193,21 +192,20 @@ public class OpenRoadmInterface121 {
         return oduInterfaceBldr.getName();
     }
     /**
-     * This methods creates an OCH interface on the given termination point on
+     * This methods creates a list of OCH interface on the given termination point on
      * Roadm.
      *
      * @param nodeId node ID
      * @param logicalConnPoint logical connection point
-     * @param waveNumber wavelength number of the OCH interface.
-     *
-     * @return Name of the interface if successful, otherwise return null.
+     * @param spectrumInformation SpectrumInformation
+     * @return List containing name of the interface if successful, otherwise return empty list.
      *
      * @throws OpenRoadmInterfaceException OpenRoadm interface exception
      */
 
-    public List<String> createOpenRoadmOchInterface(String nodeId, String logicalConnPoint, Long waveNumber)
+    public List<String> createOpenRoadmOchInterfaces(String nodeId, String logicalConnPoint,
+            SpectrumInformation spectrumInformation)
         throws OpenRoadmInterfaceException {
-
         Mapping portMap = portMapping.getMapping(nodeId, logicalConnPoint);
         if (portMap == null) {
             throw new OpenRoadmInterfaceException(String.format(
@@ -216,10 +214,10 @@ public class OpenRoadmInterface121 {
         }
         // Create generic interface
         InterfaceBuilder ochInterfaceBldr = createGenericInterfaceBuilder(portMap, OpticalChannel.class,
-            createOpenRoadmOchInterfaceName(logicalConnPoint, waveNumber));
+                spectrumInformation.getIdentifierFromParams(logicalConnPoint));
 
         // OCH interface specific data
-        OchBuilder ocIfBuilder = new OchBuilder().setWavelengthNumber(Uint32.valueOf(waveNumber));
+        OchBuilder ocIfBuilder = new OchBuilder().setWavelengthNumber(spectrumInformation.getWaveLength());
 
         // Add supporting OMS interface
         if (portMap.getSupportingOms() != null) {
@@ -239,19 +237,24 @@ public class OpenRoadmInterface121 {
         return interfacesCreated;
     }
 
-    public String createOpenRoadmOchInterface(String nodeId, String logicalConnPoint, Long waveNumber,
-        OchAttributes.ModulationFormat format) throws OpenRoadmInterfaceException {
+    public String createOpenRoadmOchInterface(String nodeId, String logicalConnPoint,
+            SpectrumInformation spectrumInformation) throws OpenRoadmInterfaceException {
         Mapping portMap = this.portMapping.getMapping(nodeId, logicalConnPoint);
         if (portMap == null) {
             throw new OpenRoadmInterfaceException(String.format(
                 "Unable to get mapping from PortMapping for node %s and logical connection port %s",
                     nodeId, logicalConnPoint));
         }
-
+        OchAttributes.ModulationFormat modulationFormat = OchAttributes.ModulationFormat.DpQpsk;
+        Optional<OchAttributes.ModulationFormat> optionalModulationFormat = OchAttributes.ModulationFormat
+                .forName(spectrumInformation.getModulationFormat());
+        if (optionalModulationFormat.isPresent()) {
+            modulationFormat =  optionalModulationFormat.get();
+        }
         // OCH interface specific data
         OchBuilder ocIfBuilder = new OchBuilder()
-                .setWavelengthNumber(Uint32.valueOf(waveNumber))
-                .setModulationFormat(format)
+                .setWavelengthNumber(spectrumInformation.getWaveLength())
+                .setModulationFormat(modulationFormat)
                 .setRate(R100G.class)
                 .setTransmitPower(new PowerDBm(new BigDecimal("-5")));
 
@@ -262,7 +265,7 @@ public class OpenRoadmInterface121 {
                 .interfaces.rev161014.Interface1Builder();
         // Create generic interface
         InterfaceBuilder ochInterfaceBldr = createGenericInterfaceBuilder(portMap, OpticalChannel.class,
-            createOpenRoadmOchInterfaceName(logicalConnPoint, waveNumber));
+                spectrumInformation.getIdentifierFromParams(logicalConnPoint));
         ochInterfaceBldr.addAugmentation(ochIf1Builder.setOch(ocIfBuilder.build()).build());
 
         // Post interface on the device
@@ -275,8 +278,8 @@ public class OpenRoadmInterface121 {
         return ochInterfaceBldr.getName();
     }
 
-    public String createOpenRoadmOchInterfaceName(String logicalConnectionPoint, Long waveNumber) {
-        return logicalConnectionPoint + "-" + waveNumber;
+    public String createOpenRoadmOchInterfaceName(String logicalConnectionPoint, String spectralSlotName) {
+        return String.join(GridConstant.NAME_PARAMETERS_SEPARATOR,logicalConnectionPoint, spectralSlotName);
     }
 
     public String createOpenRoadmOmsInterface(String nodeId, Mapping mapping) throws OpenRoadmInterfaceException {
@@ -323,22 +326,12 @@ public class OpenRoadmInterface121 {
     }
 
     public boolean isUsedByXc(String nodeId, String interfaceName, String xc,
-        DeviceTransactionManager deviceTransactionManager, RemoteOpendaylightClient odlClient) {
+        DeviceTransactionManager deviceTransactionManager) {
         InstanceIdentifier<RoadmConnections> xciid = InstanceIdentifier.create(OrgOpenroadmDevice.class)
             .child(RoadmConnections.class, new RoadmConnectionsKey(xc));
         LOG.info("reading xc {} in node {}", xc, nodeId);
-        Optional<RoadmConnections> crossconnection = Optional.empty();
-        if (odlClient.isEnabled()) {
-            try {
-                crossconnection = odlClient.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION, xciid,
-                        Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-            } catch (InterruptedException | TimeoutException | ExecutionException e) {
-                LOG.warn("problem reading connection: ", e);
-            }
-        } else {
-            crossconnection = deviceTransactionManager.getDataFromDevice(nodeId, LogicalDatastoreType.CONFIGURATION,
-                    xciid, Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-        }
+        Optional<RoadmConnections> crossconnection = deviceTransactionManager.getDataFromDevice(nodeId,
+            LogicalDatastoreType.CONFIGURATION, xciid, Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
         if (crossconnection.isPresent()) {
             RoadmConnections rc = crossconnection.get();
             LOG.info("xd {} found", xc);

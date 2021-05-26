@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.jdt.annotation.Nullable;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.MountPoint;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
@@ -26,11 +25,11 @@ import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.transportpce.networkmodel.util.TopologyUtils;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.networkutils.rev170818.InitRoadmNodesInputBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.Network;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.Nodes;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.NodesKey;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.CpToDegree;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev200827.network.nodes.Mapping;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.Network;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.Nodes;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.NodesKey;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.CpToDegree;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.portmapping.rev201012.network.nodes.Mapping;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev170929.Direction;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.OrgOpenroadmDevice;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev170206.org.openroadm.device.container.org.openroadm.device.Protocols;
@@ -50,14 +49,12 @@ public class R2RLinkDiscovery {
     private final DataBroker dataBroker;
     private final NetworkTransactionService networkTransactionService;
     private final DeviceTransactionManager deviceTransactionManager;
-    private final RemoteOpendaylightClient odlClient;
 
     public R2RLinkDiscovery(final DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
-        NetworkTransactionService networkTransactionService, RemoteOpendaylightClient odlClient) {
+        NetworkTransactionService networkTransactionService) {
         this.dataBroker = dataBroker;
         this.deviceTransactionManager = deviceTransactionManager;
         this.networkTransactionService = networkTransactionService;
-        this.odlClient = odlClient;
     }
 
     public boolean readLLDP(NodeId nodeId, String nodeVersion) {
@@ -100,22 +97,23 @@ public class R2RLinkDiscovery {
             return success;
         }
         else if (nodeVersion.equals(OPENROADM_DEVICE_VERSION_2_2_1)) {
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1> protocolsIID
-                = InstanceIdentifier.create(org.opendaylight
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device
+                .container.org.openroadm.device.Protocols> protocolsIID = InstanceIdentifier.create(org.opendaylight
                 .yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device.container
                 .OrgOpenroadmDevice.class).child(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019
-                .org.openroadm.device.container.org.openroadm.device.Protocols.class)
-                .augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1.class);
-            Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.Protocols1> protocolObject
-                = this.deviceTransactionManager
+                .org.openroadm.device.container.org.openroadm.device.Protocols.class);
+            Optional<org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.org.openroadm.device
+                .container.org.openroadm.device.Protocols> protocolObject = this.deviceTransactionManager
                 .getDataFromDevice(nodeId.getValue(), LogicalDatastoreType.OPERATIONAL, protocolsIID,
                 Timeouts.DEVICE_READ_TIMEOUT, Timeouts.DEVICE_READ_TIMEOUT_UNIT);
-            if (!protocolObject.isPresent() || (protocolObject.get() == null)) {
+            if (!protocolObject.isPresent() || (protocolObject.get().augmentation(org.opendaylight.yang.gen.v1.http.org
+                .openroadm.lldp.rev181019.Protocols1.class) == null)) {
                 LOG.warn("LLDP subtree is missing : isolated openroadm device");
                 return false;
             }
             org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.@Nullable NbrList nbrList
-                = protocolObject.get().getLldp().getNbrList();
+                = protocolObject.get().augmentation(org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019
+                .Protocols1.class).getLldp().getNbrList();
             LOG.info("LLDP subtree is present. Device has {} neighbours", nbrList.getIfName().size());
             boolean success = true;
             for (org.opendaylight.yang.gen.v1.http.org.openroadm.lldp.rev181019.lldp.container.lldp.nbr.list.IfName
@@ -181,7 +179,7 @@ public class R2RLinkDiscovery {
         // Find which degree is associated with ethernet interface
         Integer srcDegId = getDegFromInterface(nodeId, interfaceName);
         if (srcDegId == null) {
-            LOG.error("Couldnt find src degree connected to Ethernet interface for nodeId: {}", nodeId);
+            LOG.error("Couldnt find degree connected to Ethernet interface for nodeId: {}", nodeId);
             return false;
         }
         // Check whether degree is Unidirectional or Bidirectional by counting
@@ -202,7 +200,7 @@ public class R2RLinkDiscovery {
         NodeId destNodeId = new NodeId(remoteSystemName);
         Integer destDegId = getDegFromInterface(destNodeId, remoteInterfaceName);
         if (destDegId == null) {
-            LOG.error("Couldnt find dst degree connected to Ethernet interface for nodeId: {}", nodeId);
+            LOG.error("Couldnt find degree connected to Ethernet interface for nodeId: {}", nodeId);
             return false;
         }
         // Check whether degree is Unidirectional or Bidirectional by counting
@@ -327,9 +325,8 @@ public class R2RLinkDiscovery {
                         nodeId.getValue(),interfaceName);
                 }
             } else {
-                LOG.warn("Could not find mapping for Interface {} for nodeId {} ({} | {})", interfaceName,
-                        nodeId.getValue(), nodesObject.isPresent(),
-                        nodesObject.isPresent() ? nodesObject.get().getCpToDegree() : null);
+                LOG.warn("Could not find mapping for Interface {} for nodeId {}", interfaceName,
+                    nodeId.getValue());
             }
         } catch (InterruptedException | ExecutionException ex) {
             LOG.error("Unable to read mapping for Interface : {} for nodeId {}", interfaceName, nodeId, ex);

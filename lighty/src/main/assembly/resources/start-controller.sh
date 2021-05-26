@@ -5,8 +5,4 @@ BASEDIR=$(dirname "$0")
 cd ${BASEDIR}
 
 #start controller
-<<<<<<< HEAD
-java -ms128m -mx128m -XX:MaxMetaspaceSize=128m -jar tpce.jar
-=======
 java -ms128m -mx512m -XX:MaxMetaspaceSize=128m -jar tpce.jar
->>>>>>> standalone/stable/aluminium

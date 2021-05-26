@@ -12,22 +12,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.transportpce.common.ResponseCodes;
+import org.opendaylight.transportpce.common.StringConstants;
+import org.opendaylight.transportpce.common.fixedflex.GridConstant;
 import org.opendaylight.transportpce.pce.networkanalyzer.PceLink;
 import org.opendaylight.transportpce.pce.networkanalyzer.PceResult;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.AToZDirectionBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ZToADirectionBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZ;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.atoz.direction.AToZKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ztoa.direction.ZToA;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ztoa.direction.ZToABuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ztoa.direction.ZToAKey;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.Resource;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.ResourceBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.resource.resource.LinkBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.resource.resource.NodeBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.resource.resource.TerminationPoint;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce.resource.resource.resource.TerminationPointBuilder;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.optical.channel.types.rev200529.FrequencyTHz;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.ModulationFormat;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.AToZDirectionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.ZToADirectionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.atoz.direction.AToZ;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.atoz.direction.AToZBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.atoz.direction.AToZKey;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.ztoa.direction.ZToA;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.ztoa.direction.ZToABuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.ztoa.direction.ZToAKey;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce.resource.Resource;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce.resource.ResourceBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce.resource.resource.resource.LinkBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce.resource.resource.resource.NodeBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce.resource.resource.resource.TerminationPoint;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce.resource.resource.resource.TerminationPointBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.network.topology.rev180226.LinkId;
 import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
@@ -83,21 +87,32 @@ public class PcePathDescription {
     private AToZDirectionBuilder buildAtoZDirection(Map<AToZKey, AToZ> atozMap) {
         AToZDirectionBuilder atoZDirectionBldr = new AToZDirectionBuilder()
             .setRate(Uint32.valueOf(rc.getRate()))
+            .setModulationFormat(GridConstant.RATE_MODULATION_FORMAT_MAP
+                    .getOrDefault(Uint32.valueOf(rc.getRate()), ModulationFormat.DpQpsk).getName())
             .setAToZ(atozMap);
-        if ("100GE".equals(rc.getServiceType()) || "OTU4".equals(rc.getServiceType())) {
-            atoZDirectionBldr.setAToZWavelengthNumber(Uint32.valueOf(rc.getResultWavelength()));
-        } else if ("10GE".equals(rc.getServiceType()) || "1GE".equals(rc.getServiceType())
-            || "ODU4".equals(rc.getServiceType())) {
-            if (rc.getResultTribSlot() != null && rc.getResultTribPort() != null) {
-                @SuppressWarnings("unchecked")
-                List<Uint16> tribSlotList = (List<Uint16>) rc.getResultTribSlot().values().toArray()[0];
-                atoZDirectionBldr.setAToZWavelengthNumber(Uint32.valueOf(0))
-                    .setTribPortNumber(Uint16.valueOf(rc.getResultTribPort().values().toArray()[0].toString()))
-                    .setTribSlotNumber(tribSlotList.get(0));
-            } else {
-                LOG.error("Trib port and trib slot number should be present");
-                atoZDirectionBldr.setTribSlotNumber(Uint16.valueOf(0)).setTribPortNumber(Uint16.valueOf(0));
-            }
+        switch (rc.getServiceType()) {
+            case StringConstants.SERVICE_TYPE_100GE:
+            case StringConstants.SERVICE_TYPE_OTU4:
+                atoZDirectionBldr.setAToZMaxFrequency(new FrequencyTHz(rc.getMaxFreq()));
+                atoZDirectionBldr.setAToZMinFrequency(new FrequencyTHz(rc.getMinFreq()));
+                atoZDirectionBldr.setAToZWavelengthNumber(Uint32.valueOf(rc.getResultWavelength()));
+                break;
+            case StringConstants.SERVICE_TYPE_10GE:
+            case StringConstants.SERVICE_TYPE_1GE:
+            case StringConstants.SERVICE_TYPE_ODU4:
+                if (rc.getResultTribSlot() != null && rc.getResultTribPort() != null) {
+                    @SuppressWarnings("unchecked")
+                    List<Uint16> tribSlotList = (List<Uint16>) rc.getResultTribSlot().values().toArray()[0];
+                    atoZDirectionBldr.setAToZWavelengthNumber(Uint32.valueOf(0))
+                            .setTribPortNumber(Uint16.valueOf(rc.getResultTribPort().values().toArray()[0].toString()))
+                            .setTribSlotNumber(tribSlotList.get(0));
+                } else {
+                    LOG.error("Trib port and trib slot number should be present");
+                    atoZDirectionBldr.setTribSlotNumber(Uint16.valueOf(0)).setTribPortNumber(Uint16.valueOf(0));
+                }
+                break;
+            default:
+                break;
         }
         return atoZDirectionBldr;
     }
@@ -108,23 +123,33 @@ public class PcePathDescription {
      * @return a builder for ZtoADirection object
      */
     private ZToADirectionBuilder buildZtoADirection(Map<ZToAKey, ZToA> ztoaMap) {
-        ZToADirectionBuilder ztoADirectionBldr = new ZToADirectionBuilder()
-            .setRate(Uint32.valueOf(rc.getRate()))
-            .setZToA(ztoaMap);
-        if ("100GE".equals(rc.getServiceType()) || "OTU4".equals(rc.getServiceType())) {
-            ztoADirectionBldr.setZToAWavelengthNumber(Uint32.valueOf(rc.getResultWavelength()));
-        } else if ("10GE".equals(rc.getServiceType()) || "1GE".equals(rc.getServiceType())
-            || "ODU4".equals(rc.getServiceType())) {
-            if (rc.getResultTribSlot() != null && rc.getResultTribPort() != null) {
-                @SuppressWarnings("unchecked")
-                List<Uint16> tribSlotList = (List<Uint16>) rc.getResultTribSlot().values().toArray()[0];
-                ztoADirectionBldr.setZToAWavelengthNumber(Uint32.valueOf(0))
-                    .setTribPortNumber(Uint16.valueOf(rc.getResultTribPort().values().toArray()[0].toString()))
-                    .setTribSlotNumber(tribSlotList.get(0));
-            } else {
-                LOG.error("Trib port and trib slot number should be present");
-                ztoADirectionBldr.setTribSlotNumber(Uint16.valueOf(0)).setTribPortNumber(Uint16.valueOf(0));
-            }
+        ZToADirectionBuilder ztoADirectionBldr = new ZToADirectionBuilder().setRate(Uint32.valueOf(rc.getRate()))
+                .setModulationFormat(GridConstant.RATE_MODULATION_FORMAT_MAP
+                        .getOrDefault(Uint32.valueOf(rc.getRate()), ModulationFormat.DpQpsk).getName())
+                .setZToA(ztoaMap);
+        switch (rc.getServiceType()) {
+            case StringConstants.SERVICE_TYPE_100GE:
+            case StringConstants.SERVICE_TYPE_OTU4:
+                ztoADirectionBldr.setZToAMaxFrequency(new FrequencyTHz(rc.getMaxFreq()));
+                ztoADirectionBldr.setZToAMinFrequency(new FrequencyTHz(rc.getMinFreq()));
+                ztoADirectionBldr.setZToAWavelengthNumber(Uint32.valueOf(rc.getResultWavelength()));
+                break;
+            case StringConstants.SERVICE_TYPE_10GE:
+            case StringConstants.SERVICE_TYPE_1GE:
+            case StringConstants.SERVICE_TYPE_ODU4:
+                if (rc.getResultTribSlot() != null && rc.getResultTribPort() != null) {
+                    @SuppressWarnings("unchecked")
+                    List<Uint16> tribSlotList = (List<Uint16>) rc.getResultTribSlot().values().toArray()[0];
+                    ztoADirectionBldr.setZToAWavelengthNumber(Uint32.valueOf(0))
+                            .setTribPortNumber(Uint16.valueOf(rc.getResultTribPort().values().toArray()[0].toString()))
+                            .setTribSlotNumber(tribSlotList.get(0));
+                } else {
+                    LOG.error("Trib port and trib slot number should be present");
+                    ztoADirectionBldr.setTribSlotNumber(Uint16.valueOf(0)).setTribPortNumber(Uint16.valueOf(0));
+                }
+                break;
+            default:
+                break;
         }
         return ztoADirectionBldr;
     }
@@ -152,7 +177,7 @@ public class PcePathDescription {
         for (PceLink pcelink : path) {
             String srcName = pcelink.getSourceId().getValue();
             // Nodes
-            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce
+            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce
                 .resource.resource.resource.Node sourceNode = new NodeBuilder()
                 .setNodeId(srcName)
                 .build();
@@ -179,7 +204,7 @@ public class PcePathDescription {
 
             String linkName = pcelink.getLinkId().getValue();
             // Link
-            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce
+            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce
                 .resource.resource.resource.Link atozLink = new LinkBuilder()
                 .setLinkId(linkName)
                 .build();
@@ -205,7 +230,7 @@ public class PcePathDescription {
             index += 1;
             atozMap.put(ttpResource.key(),ttpResource);
 
-            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce
+            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce
                 .resource.resource.resource.Node targetNode = new NodeBuilder()
                 .setNodeId(destName)
                 .build();
@@ -265,7 +290,7 @@ public class PcePathDescription {
 
 
             // Nodes
-            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce
+            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce
                 .resource.resource.resource.Node sourceNode = new NodeBuilder()
                 .setNodeId(srcName).build();
 
@@ -292,7 +317,7 @@ public class PcePathDescription {
 
             String linkName = pcelink.getLinkId().getValue();
             // Link
-            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce
+            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce
                 .resource.resource.resource.Link ztoaLink = new LinkBuilder()
                 .setLinkId(linkName).build();
 
@@ -317,7 +342,7 @@ public class PcePathDescription {
             ztoaList.put(ttpResource.key(),ttpResource);
 
 
-            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.pce
+            org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.pce
                 .resource.resource.resource.Node targetNode = new NodeBuilder()
                 .setNodeId(destName).build();
             // Target Resource

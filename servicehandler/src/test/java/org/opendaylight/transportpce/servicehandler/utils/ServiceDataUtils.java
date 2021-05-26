@@ -23,10 +23,10 @@ import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev20
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.ServicePathRpcResultBuilder;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.service.path.rpc.result.PathDescription;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.pce.rev200128.service.path.rpc.result.PathDescriptionBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceRpcResultSp;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev200520.ServiceRpcResultSpBuilder;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.servicehandler.rev171017.ServiceRpcResultSh;
-import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.servicehandler.rev171017.ServiceRpcResultShBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev201125.RendererRpcResultSp;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.renderer.rev201125.RendererRpcResultSpBuilder;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.servicehandler.rev201125.ServiceRpcResultSh;
+import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.servicehandler.rev201125.ServiceRpcResultShBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.node.types.rev181130.NodeIdType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.ConnectionType;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.service.types.rev190531.RpcActions;
@@ -63,10 +63,10 @@ import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.feasibility.check.inputs.ServiceAEndBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.feasibility.check.inputs.ServiceZEnd;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.service.rev190531.service.feasibility.check.inputs.ServiceZEndBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.AToZDirection;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.AToZDirectionBuilder;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ZToADirection;
-import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev200629.path.description.ZToADirectionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.AToZDirection;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.AToZDirectionBuilder;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.ZToADirection;
+import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.pathdescription.rev201126.path.description.ZToADirectionBuilder;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.routing.constraints.rev171017.RoutingConstraintsSp.PceMetric;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.RpcStatusEx;
 import org.opendaylight.yang.gen.v1.http.org.transportpce.b.c._interface.service.types.rev200128.ServicePathNotificationTypes;
@@ -392,19 +392,20 @@ public final class ServiceDataUtils {
         return builder.build();
     }
 
-    public static ServiceRpcResultSp buildServiceRpcResultSp() {
+    public static RendererRpcResultSp buildRendererRpcResultSp() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxx");
         OffsetDateTime offsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
         DateAndTime datetime = new DateAndTime(dtf.format(offsetDateTime));
-        ServiceRpcResultSpBuilder builder = new ServiceRpcResultSpBuilder();
+        RendererRpcResultSpBuilder builder = new RendererRpcResultSpBuilder();
         builder.setActualDate(datetime).setNotificationType(ServicePathNotificationTypes.ServiceImplementationRequest)
                 .setServiceName("service 1").setStatus(RpcStatusEx.Successful).setStatusMessage("success");
         return builder.build();
     }
 
-    public static ServiceRpcResultSp buildServiceRpcResultSp(ServicePathNotificationTypes servicePathNotificationTypes,
+    public static RendererRpcResultSp buildRendererRpcResultSp(
+            ServicePathNotificationTypes servicePathNotificationTypes,
             String serviceName, RpcStatusEx rpcStatusEx, String message) {
-        ServiceRpcResultSpBuilder builder = new ServiceRpcResultSpBuilder();
+        RendererRpcResultSpBuilder builder = new RendererRpcResultSpBuilder();
         builder.setNotificationType(servicePathNotificationTypes).setServiceName(serviceName)
                 .setStatus(rpcStatusEx).setStatusMessage(message);
         return builder.build();
@@ -422,11 +423,11 @@ public final class ServiceDataUtils {
         return builder.build();
     }
 
-    public static ServiceRpcResultSp buildFailedServiceRpcResultSp() {
+    public static RendererRpcResultSp buildFailedRendererRpcResultSp() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxx");
         OffsetDateTime offsetDateTime = OffsetDateTime.now(ZoneOffset.UTC);
         DateAndTime datetime = new DateAndTime(dtf.format(offsetDateTime));
-        ServiceRpcResultSpBuilder builder = new ServiceRpcResultSpBuilder();
+        RendererRpcResultSpBuilder builder = new RendererRpcResultSpBuilder();
         builder.setActualDate(datetime).setNotificationType(ServicePathNotificationTypes.ServiceImplementationRequest)
                 .setServiceName("service 1").setStatus(RpcStatusEx.Failed).setStatusMessage("failed");
         return builder.build();
