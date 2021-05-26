@@ -1,4 +1,4 @@
-package org.opendaylight.yang.gen.v1.http.org.openroadm.pm.types.rev161014;
+package org.opendaylight.yang.gen.v1.http.org.openroadm.syslog.rev191129.syslog.selector.log.selector.selector.facility.log.facility;
 import java.lang.String;
 import java.lang.UnsupportedOperationException;
 
@@ -11,12 +11,12 @@ import java.lang.UnsupportedOperationException;
  * loss of user code.
  *
  */
-public class PmDataTypeBuilder {
-    private PmDataTypeBuilder() {
+public class LogFacilityFacilityBuilder {
+    private LogFacilityFacilityBuilder() {
         //Exists only to defeat instantiation.
     }
 
-    public static PmDataType getDefaultInstance(String defaultValue) {
+    public static LogFacility.Facility getDefaultInstance(String defaultValue) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
