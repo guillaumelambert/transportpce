@@ -9,12 +9,9 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-<<<<<<< HEAD
-=======
 # pylint: disable=no-member
 # pylint: disable=too-many-public-methods
 
->>>>>>> standalone/stable/aluminium
 import unittest
 import time
 import requests
@@ -32,10 +29,7 @@ class TransportPCEPortMappingTesting(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-<<<<<<< HEAD
-=======
         # pylint: disable=not-an-iterable
->>>>>>> standalone/stable/aluminium
         for process in cls.processes:
             test_utils.shutdown_process(process)
         print("all processes killed")
@@ -197,10 +191,7 @@ class TransportPCEPortMappingTesting(unittest.TestCase):
              'port-qual': 'xpdr-client', 'lcp-hash-val': 'AO9UFkY/TLYy'},
             res['mapping'])
 
-<<<<<<< HEAD
-=======
     def test_15_xpdr_portmapping_CLIENT4(self):
->>>>>>> standalone/stable/aluminium
         response = test_utils.portmapping_request("XPDRA01/mapping/XPDR1-CLIENT4")
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
@@ -217,11 +208,7 @@ class TransportPCEPortMappingTesting(unittest.TestCase):
 
     def test_17_xpdr_device_disconnected(self):
         response = test_utils.get_netconf_oper_request("XPDRA01")
-<<<<<<< HEAD
-        self.assertEqual(response.status_code, requests.codes.not_found)
-=======
         self.assertEqual(response.status_code, requests.codes.conflict)
->>>>>>> standalone/stable/aluminium
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
@@ -230,11 +217,7 @@ class TransportPCEPortMappingTesting(unittest.TestCase):
 
     def test_18_xpdr_device_not_connected(self):
         response = test_utils.portmapping_request("XPDRA01")
-<<<<<<< HEAD
-        self.assertEqual(response.status_code, requests.codes.not_found)
-=======
         self.assertEqual(response.status_code, requests.codes.conflict)
->>>>>>> standalone/stable/aluminium
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
@@ -247,11 +230,7 @@ class TransportPCEPortMappingTesting(unittest.TestCase):
 
     def test_20_rdm_device_disconnected(self):
         response = test_utils.get_netconf_oper_request("ROADMA01")
-<<<<<<< HEAD
-        self.assertEqual(response.status_code, requests.codes.not_found)
-=======
         self.assertEqual(response.status_code, requests.codes.conflict)
->>>>>>> standalone/stable/aluminium
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",
@@ -260,11 +239,7 @@ class TransportPCEPortMappingTesting(unittest.TestCase):
 
     def test_21_rdm_device_not_connected(self):
         response = test_utils.portmapping_request("ROADMA01")
-<<<<<<< HEAD
-        self.assertEqual(response.status_code, requests.codes.not_found)
-=======
         self.assertEqual(response.status_code, requests.codes.conflict)
->>>>>>> standalone/stable/aluminium
         res = response.json()
         self.assertIn(
             {"error-type": "application", "error-tag": "data-missing",

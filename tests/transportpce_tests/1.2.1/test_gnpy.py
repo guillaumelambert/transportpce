@@ -9,48 +9,28 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-<<<<<<< HEAD
-import unittest
-import json
-=======
 # pylint: disable=no-member
 # pylint: disable=too-many-public-methods
 
 import unittest
->>>>>>> standalone/stable/aluminium
 import os
 import sys
 import time
 import requests
 from common import test_utils
-<<<<<<< HEAD
 
 
 class TransportGNPYtesting(unittest.TestCase):
-
-    @classmethod
-    def __init_logfile(cls):
-        GNPY_LOGFILE = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                    "..", "..", "transportpce_tests", "gnpy.log")
-        if os.path.isfile(GNPY_LOFGILE):
-            os.remove(GNPY_LOFGILE)
-=======
-
-
-class TransportGNPYtesting(unittest.TestCase):
->>>>>>> standalone/stable/aluminium
 
     topo_cllinet_data = None
     topo_ordnet_data = None
     topo_ordtopo_data = None
+    port_mapping_data = None
     processes = None
 
     @classmethod
     def setUpClass(cls):
-<<<<<<< HEAD
-=======
         # pylint: disable=bare-except
->>>>>>> standalone/stable/aluminium
         try:
             sample_files_parsed = False
             TOPO_CLLINET_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -67,6 +47,10 @@ class TransportGNPYtesting(unittest.TestCase):
                                              "..", "..", "sample_configs", "gnpy", "openroadmTopology.json")
             with open(TOPO_ORDTOPO_FILE, 'r') as topo_ordtopo:
                 cls.topo_ordtopo_data = topo_ordtopo.read()
+            PORT_MAPPING_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                                     "..", "..", "sample_configs", "gnpy", "gnpy_portmapping_121.json")
+            with open(PORT_MAPPING_FILE, 'r') as port_mapping:
+                cls.port_mapping_data = port_mapping.read()
             sample_files_parsed = True
         except PermissionError as err:
             print("Permission Error when trying to read sample files\n", err)
@@ -85,15 +69,18 @@ class TransportGNPYtesting(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-<<<<<<< HEAD
-=======
         # pylint: disable=not-an-iterable
->>>>>>> standalone/stable/aluminium
         for process in cls.processes:
             test_utils.shutdown_process(process)
         print("all processes killed")
 
     def setUp(self):
+        time.sleep(2)
+
+     # Load port mapping
+    def test_00_load_port_mapping(self):
+        response = test_utils.rawpost_request(test_utils.URL_FULL_PORTMAPPING, self.port_mapping_data)
+        self.assertEqual(response.status_code, requests.codes.no_content)
         time.sleep(2)
 
     # Mount the different topologies
@@ -114,238 +101,17 @@ class TransportGNPYtesting(unittest.TestCase):
 
     # Path computed by PCE is feasible according to Gnpy
     def test_04_path_computation_FeasibleWithPCE(self):
-<<<<<<< HEAD
-        url = "{}/operations/transportpce-pce:path-computation-request"
-        data = {
-            "input": {
-                "service-name": "service-1",
-                "resource-reserve": "true",
-                "pce-metric": "hop-count",
-                "service-handler-header": {
-                    "request-id": "request-1"
-                },
-                "service-a-end": {
-                    "node-id": "XPONDER-1",
-                    "service-rate": "100",
-                    "service-format": "Ethernet",
-                    "clli": "Node1"
-                },
-                "service-z-end": {
-                    "node-id": "XPONDER-5",
-                    "service-rate": "100",
-                    "service-format": "Ethernet",
-                    "clli": "Node5"
-                }
-            }
-        }
-        response = test_utils.post_request(url, data)
-        self.assertEqual(response.status_code, requests.codes.ok)
-        res = response.json()
-        self.assertEqual(res['output']['configuration-response-common'][
-            'response-code'], '200')
-        self.assertEqual(res['output']['configuration-response-common'][
-            'response-message'],
-            'Path is calculated by PCE')
-        self.assertEqual(res['output']['gnpy-response'][0]['path-dir'],
-                         'A-to-Z')
-        self.assertEqual(res['output']['gnpy-response'][0]['feasibility'], True)
-        self.assertEqual(res['output']['gnpy-response'][1]['path-dir'],
-                         'Z-to-A')
-        self.assertEqual(res['output']['gnpy-response'][1]['feasibility'], True)
-        time.sleep(5)
-
-    # Path computed by PCE is not feasible by GNPy and GNPy cannot find
-    # another one (low SNR)
-    def test_05_path_computation_FoundByPCE_NotFeasibleByGnpy(self):
-        url = "{}/operations/transportpce-pce:path-computation-request"
-        data = {
-            "input": {
-                "service-name": "service-2",
-                "resource-reserve": "true",
-                "pce-metric": "hop-count",
-                "service-handler-header": {
-                    "request-id": "request-2"
-                },
-                "service-a-end": {
-                    "node-id": "XPONDER-1",
-                    "service-rate": "100",
-                    "service-format": "Ethernet",
-                    "clli": "Node1"
-                },
-                "service-z-end": {
-                    "node-id": "XPONDER-5",
-                    "service-rate": "100",
-                    "service-format": "Ethernet",
-                    "clli": "Node5"
-                },
-                "hard-constraints": {
-                    "include_": {
-                        "ordered-hops": [
-                            {
-                                "hop-number": "0",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-2"
-                                }
-                            },
-                            {
-                                "hop-number": "1",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-3"
-                                }
-                            },
-                            {
-                                "hop-number": "2",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-4"
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-        response = test_utils.post_request(url, data)
-        self.assertEqual(response.status_code, requests.codes.ok)
-        res = response.json()
-        self.assertEqual(res['output']['configuration-response-common'][
-            'response-code'], '500')
-        self.assertEqual(res['output']['configuration-response-common'][
-            'response-message'],
-            'No path available by PCE and GNPy ')
-        self.assertEqual(res['output']['gnpy-response'][0]['path-dir'],
-                         'A-to-Z')
-        self.assertEqual(res['output']['gnpy-response'][0]['feasibility'],
-                         False)
-        self.assertEqual(res['output']['gnpy-response'][1]['path-dir'],
-                         'Z-to-A')
-        self.assertEqual(res['output']['gnpy-response'][1]['feasibility'],
-                         False)
-        time.sleep(5)
-
-    # #PCE cannot find a path while GNPy finds a feasible one
-    def test_06_path_computation_NotFoundByPCE_FoundByGNPy(self):
-        url = "{}/operations/transportpce-pce:path-computation-request"
-        data = {
-            "input": {
-                "service-name": "service-3",
-                "resource-reserve": "true",
-                "pce-metric": "hop-count",
-                "service-handler-header": {
-                    "request-id": "request-3"
-                },
-                "service-a-end": {
-                    "node-id": "XPONDER-1",
-                    "service-rate": "100",
-                    "service-format": "Ethernet",
-                    "clli": "Node1"
-                },
-                "service-z-end": {
-                    "node-id": "XPONDER-4",
-                    "service-rate": "100",
-                    "service-format": "Ethernet",
-                    "clli": "Node5"
-                },
-                "hard-constraints": {
-                    "include_": {
-                        "ordered-hops": [
-                            {
-                                "hop-number": "0",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-2"
-                                }
-                            },
-                            {
-                                "hop-number": "1",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-3"
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-        response = test_utils.post_request(url, data)
-=======
         response = test_utils.path_computation_request("request-1", "service-1",
                                                        {"node-id": "XPONDER-1", "service-rate": "100",
                                                            "service-format": "Ethernet", "clli": "Node1"},
                                                        {"node-id": "XPONDER-5", "service-rate": "100",
                                                            "service-format": "Ethernet", "clli": "Node5"})
->>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(res['output']['configuration-response-common'][
             'response-code'], '200')
         self.assertEqual(res['output']['configuration-response-common'][
             'response-message'],
-<<<<<<< HEAD
-            'Path is calculated by GNPy')
-        self.assertEqual(res['output']['gnpy-response'][0]['path-dir'],
-                         'A-to-Z')
-        self.assertEqual(res['output']['gnpy-response'][0]['feasibility'], True)
-        self.assertEqual(res['output']['gnpy-response'][1]['path-dir'],
-                         'Z-to-A')
-        self.assertEqual(res['output']['gnpy-response'][1]['feasibility'], True)
-        time.sleep(5)
-
-    # Not found path by PCE and GNPy cannot find another one
-    def test_07_path_computation_FoundByPCE_NotFeasibleByGnpy(self):
-        url = "{}/operations/transportpce-pce:path-computation-request"
-        data = {
-            "input": {
-                "service-name": "service-4",
-                "resource-reserve": "true",
-                "pce-metric": "hop-count",
-                "service-handler-header": {
-                    "request-id": "request-4"
-                },
-                "service-a-end": {
-                    "node-id": "XPONDER-1",
-                    "service-rate": "100",
-                    "service-format": "Ethernet",
-                    "clli": "Node1"
-                },
-                "service-z-end": {
-                    "node-id": "XPONDER-4",
-                    "service-rate": "100",
-                    "service-format": "Ethernet",
-                    "clli": "Node5"
-                },
-                "hard-constraints": {
-                    "include_": {
-                        "ordered-hops": [
-                            {
-                                "hop-number": "0",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-2"
-                                }
-                            },
-                            {
-                                "hop-number": "1",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-3"
-                                }
-                            },
-                            {
-                                "hop-number": "2",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-4"
-                                }
-                            },
-                            {
-                                "hop-number": "3",
-                                "hop-type": {
-                                    "node-id": "OpenROADM-3"
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-        response = test_utils.post_request(url, data)
-=======
             'Path is calculated by PCE')
         self.assertEqual(res['output']['gnpy-response'][1]['path-dir'],
                          'A-to-Z')
@@ -424,7 +190,6 @@ class TransportGNPYtesting(unittest.TestCase):
                                                            {"hop-number": "2", "hop-type": {"node-id": "OpenROADM-4"}},
                                                            {"hop-number": "3", "hop-type": {"node-id": "OpenROADM-3"}}]}
                                                         })
->>>>>>> standalone/stable/aluminium
         self.assertEqual(response.status_code, requests.codes.ok)
         res = response.json()
         self.assertEqual(res['output']['configuration-response-common'][
@@ -450,6 +215,11 @@ class TransportGNPYtesting(unittest.TestCase):
         self.assertEqual(response.status_code, requests.codes.ok)
         time.sleep(3)
 
+    # Delete portmapping
+    def test_11_delete_port_mapping(self):
+        response = test_utils.delete_request(test_utils.URL_FULL_PORTMAPPING)
+        self.assertEqual(response.status_code, requests.codes.ok)
+        time.sleep(2)
 
 if __name__ == "__main__":
     # logging.basicConfig(filename='./transportpce_tests/log/response.log',filemode='w',level=logging.DEBUG)

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-<<<<<<< HEAD
-=======
 
->>>>>>> standalone/stable/aluminium
 ##############################################################################
 # Copyright (c) 2020 Orange, Inc. and others.  All rights reserved.
 #
@@ -11,12 +8,9 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-<<<<<<< HEAD
-=======
 
 # pylint: disable=no-member
 
->>>>>>> standalone/stable/aluminium
 import json
 import os
 import sys
@@ -37,11 +31,7 @@ SAMPLES_DIRECTORY = simulators.SAMPLES_DIRECTORY
 HONEYNODE_OK_START_MSG = "Netconf SSH endpoint started successfully at 0.0.0.0"
 KARAF_OK_START_MSG = re.escape(
     "Blueprint container for bundle org.opendaylight.netconf.restconf")+".* was successfully created"
-<<<<<<< HEAD
-
-=======
 LIGHTY_OK_START_MSG = re.escape("lighty.io and RESTCONF-NETCONF started")
->>>>>>> standalone/stable/aluminium
 
 RESTCONF_BASE_URL = "http://localhost:8181/restconf"
 ODL_LOGIN = "admin"
@@ -54,8 +44,6 @@ URL_CONFIG_OTN_TOPO = "{}/config/ietf-network:networks/network/otn-topology/"
 URL_CONFIG_CLLI_NET = "{}/config/ietf-network:networks/network/clli-network/"
 URL_CONFIG_ORDM_NET = "{}/config/ietf-network:networks/network/openroadm-network/"
 URL_PORTMAPPING = "{}/config/transportpce-portmapping:network/nodes/"
-<<<<<<< HEAD
-=======
 URL_OPER_SERV_LIST = "{}/operational/org-openroadm-service:service-list/"
 URL_SERV_CREATE = "{}/operations/org-openroadm-service:service-create"
 URL_SERV_DELETE = "{}/operations/org-openroadm-service:service-delete"
@@ -63,7 +51,7 @@ URL_SERVICE_PATH = "{}/operations/transportpce-device-renderer:service-path"
 URL_OTN_SERVICE_PATH = "{}/operations/transportpce-device-renderer:otn-service-path"
 URL_CREATE_OTS_OMS = "{}/operations/transportpce-device-renderer:create-ots-oms"
 URL_PATH_COMPUTATION_REQUEST = "{}/operations/transportpce-pce:path-computation-request"
->>>>>>> standalone/stable/aluminium
+URL_FULL_PORTMAPPING = "{}/config/transportpce-portmapping:network"
 
 TYPE_APPLICATION_JSON = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 TYPE_APPLICATION_XML = {'Content-Type': 'application/xml', 'Accept': 'application/xml'}
@@ -106,24 +94,11 @@ def start_tpce():
     print("starting OpenDaylight...")
     if "USE_LIGHTY" in os.environ and os.environ['USE_LIGHTY'] == 'True':
         process = start_lighty()
-<<<<<<< HEAD
-        # TODO: add some sort of health check similar to Karaf below
-    else:
-        process = start_karaf()
-        if wait_until_log_contains(KARAF_LOG, KARAF_OK_START_MSG, time_to_wait=60):
-            print("OpenDaylight started !")
-        else:
-            print("OpenDaylight failed to start !")
-            shutdown_process(process)
-            for pid in process_list:
-                shutdown_process(pid)
-            sys.exit(1)
-=======
         start_msg = LIGHTY_OK_START_MSG
     else:
         process = start_karaf()
         start_msg = KARAF_OK_START_MSG
-    if wait_until_log_contains(TPCE_LOG, start_msg , time_to_wait=60):
+    if wait_until_log_contains(TPCE_LOG, start_msg, time_to_wait=60):
         print("OpenDaylight started !")
     else:
         print("OpenDaylight failed to start !")
@@ -131,7 +106,6 @@ def start_tpce():
         for pid in process_list:
             shutdown_process(pid)
         sys.exit(1)
->>>>>>> standalone/stable/aluminium
     process_list.append(process)
     return process_list
 
@@ -163,12 +137,9 @@ def install_karaf_feature(feature_name: str):
         os.path.dirname(os.path.realpath(__file__)),
         "..", "..", "..", "karaf", "target", "assembly", "bin", "client")
     return subprocess.run([executable],
-                          input='feature:install ' + feature_name + '\n feature:list | grep tapi \n logout \n',
-<<<<<<< HEAD
-                          universal_newlines=True)
-=======
+                          input='feature:install ' + feature_name + '\n feature:list | grep '
+                          + feature_name + ' \n logout \n',
                           universal_newlines=True, check=False)
->>>>>>> standalone/stable/aluminium
 
 
 def get_request(url):
@@ -180,24 +151,17 @@ def get_request(url):
 
 def post_request(url, data):
     if data:
+        print(json.dumps(data))
         return requests.request(
             "POST", url.format(RESTCONF_BASE_URL),
             data=json.dumps(data),
             headers=TYPE_APPLICATION_JSON,
             auth=(ODL_LOGIN, ODL_PWD))
-<<<<<<< HEAD
-    else:
-        return requests.request(
-            "POST", url.format(RESTCONF_BASE_URL),
-            headers=TYPE_APPLICATION_JSON,
-            auth=(ODL_LOGIN, ODL_PWD))
-=======
 
     return requests.request(
         "POST", url.format(RESTCONF_BASE_URL),
         headers=TYPE_APPLICATION_JSON,
         auth=(ODL_LOGIN, ODL_PWD))
->>>>>>> standalone/stable/aluminium
 
 
 def post_xmlrequest(url, data):
@@ -207,10 +171,7 @@ def post_xmlrequest(url, data):
             data=data,
             headers=TYPE_APPLICATION_XML,
             auth=(ODL_LOGIN, ODL_PWD))
-<<<<<<< HEAD
-=======
     return None
->>>>>>> standalone/stable/aluminium
 
 
 def put_request(url, data):
@@ -236,6 +197,13 @@ def rawput_request(url, data):
         headers=TYPE_APPLICATION_JSON,
         auth=(ODL_LOGIN, ODL_PWD))
 
+def rawpost_request(url, data):
+    return requests.request(
+        "POST", url.format(RESTCONF_BASE_URL),
+        data=data,
+        headers=TYPE_APPLICATION_JSON,
+        auth=(ODL_LOGIN, ODL_PWD))
+
 
 def delete_request(url):
     return requests.request(
@@ -245,7 +213,7 @@ def delete_request(url):
 
 
 def mount_device(node_id, sim):
-    url = URL_CONFIG_NETCONF_TOPO+"node/"+node_id
+    url = URL_CONFIG_NETCONF_TOPO + "node/" + node_id
     body = {"node": [{
         "node-id": node_id,
         "netconf-node-topology:username": NODES_LOGIN,
@@ -255,10 +223,10 @@ def mount_device(node_id, sim):
         "netconf-node-topology:tcp-only": "false",
         "netconf-node-topology:pass-through": {}}]}
     response = put_request(url, body)
-    if wait_until_log_contains(TPCE_LOG, re.escape("Triggering notification stream NETCONF for node "+node_id), 60):
-        print("Node "+node_id+" correctly added to tpce topology", end='... ', flush=True)
+    if wait_until_log_contains(TPCE_LOG, re.escape("Triggering notification stream NETCONF for node " + node_id), 60):
+        print("Node " + node_id + " correctly added to tpce topology", end='... ', flush=True)
     else:
-        print("Node "+node_id+" still not added to tpce topology", end='... ', flush=True)
+        print("Node " + node_id + " still not added to tpce topology", end='... ', flush=True)
         if response.status_code == requests.codes.ok:
             print("It was probably loaded at start-up", end='... ', flush=True)
         # TODO an else-clause to abort test would probably be nice here
@@ -266,12 +234,12 @@ def mount_device(node_id, sim):
 
 
 def unmount_device(node_id):
-    url = URL_CONFIG_NETCONF_TOPO+"node/"+node_id
+    url = URL_CONFIG_NETCONF_TOPO + "node/" + node_id
     response = delete_request(url)
-    if wait_until_log_contains(TPCE_LOG, re.escape("onDeviceDisConnected: "+node_id), 60):
-        print("Node "+node_id+" correctly deleted from tpce topology", end='... ', flush=True)
+    if wait_until_log_contains(TPCE_LOG, re.escape("onDeviceDisConnected: " + node_id), 60):
+        print("Node " + node_id + " correctly deleted from tpce topology", end='... ', flush=True)
     else:
-        print("Node "+node_id+" still not deleted from tpce topology", end='... ', flush=True)
+        print("Node " + node_id + " still not deleted from tpce topology", end='... ', flush=True)
     return response
 
 
@@ -369,8 +337,6 @@ def portmapping_request(suffix: str):
     return get_request(url)
 
 
-<<<<<<< HEAD
-=======
 def get_service_list_request(suffix: str):
     url = URL_OPER_SERV_LIST + suffix
     return get_request(url)
@@ -395,13 +361,21 @@ def service_delete_request(servicename: str,
     return post_request(URL_SERV_DELETE, attr)
 
 
-def service_path_request(operation: str, servicename: str, wavenumber: str, nodes):
+def service_path_request(operation: str, servicename: str, wavenumber: str, nodes, centerfreq: str,
+                         slotwidth: int, minfreq: float, maxfreq: float, lowerslotnumber: int,
+                         higherslotnumber: int):
     attr = {"renderer:input": {
         "renderer:service-name": servicename,
         "renderer:wave-number": wavenumber,
-        "renderer:modulation-format": "qpsk",
+        "renderer:modulation-format": "dp-qpsk",
         "renderer:operation": operation,
-        "renderer:nodes": nodes}}
+        "renderer:nodes": nodes,
+        "renderer:center-freq": centerfreq,
+        "renderer:width": slotwidth,
+        "renderer:min-freq": minfreq,
+        "renderer:max-freq": maxfreq,
+        "renderer:lower-spectral-slot-number": lowerslotnumber,
+        "renderer:higher-spectral-slot-number": higherslotnumber}}
     return post_request(URL_SERVICE_PATH, attr)
 
 
@@ -441,7 +415,6 @@ def path_computation_request(requestid: str, servicename: str, serviceaend, serv
     return post_request(URL_PATH_COMPUTATION_REQUEST, {"input": attr})
 
 
->>>>>>> standalone/stable/aluminium
 def shutdown_process(process):
     if process is not None:
         for child in psutil.Process(process.pid).children():
@@ -456,17 +429,11 @@ def start_honeynode(log_file: str, node_port: str, node_config_file_name: str):
             return subprocess.Popen(
                 [HONEYNODE_EXECUTABLE, node_port, os.path.join(SAMPLES_DIRECTORY, node_config_file_name)],
                 stdout=outfile, stderr=outfile)
-<<<<<<< HEAD
-
-
-def wait_until_log_contains(log_file, regexp, time_to_wait=20):
-=======
     return None
 
 
 def wait_until_log_contains(log_file, regexp, time_to_wait=20):
     # pylint: disable=lost-exception
->>>>>>> standalone/stable/aluminium
     stringfound = False
     filefound = False
     line = None
@@ -477,7 +444,7 @@ def wait_until_log_contains(log_file, regexp, time_to_wait=20):
             filelogs = open(log_file, 'r')
             filelogs.seek(0, 2)
             filefound = True
-            print("Searching for pattern '"+regexp+"' in "+os.path.basename(log_file), end='... ', flush=True)
+            print("Searching for pattern '" + regexp + "' in " + os.path.basename(log_file), end='... ', flush=True)
             compiled_regexp = re.compile(regexp)
             while True:
                 line = filelogs.readline()
@@ -488,7 +455,7 @@ def wait_until_log_contains(log_file, regexp, time_to_wait=20):
                 if not line:
                     time.sleep(0.1)
     except TimeoutError:
-        print("Pattern not found after "+str(time_to_wait), end=" seconds! ", flush=True)
+        print("Pattern not found after " + str(time_to_wait), end=" seconds! ", flush=True)
     except PermissionError:
         print("Permission Error when trying to access the log file", end=" ... ", flush=True)
     finally:
@@ -512,8 +479,6 @@ class TimeOut:
         signal.alarm(self.seconds)
 
     def __exit__(self, type, value, traceback):
-<<<<<<< HEAD
-=======
         # pylint: disable=W0622
->>>>>>> standalone/stable/aluminium
         signal.alarm(0)
+

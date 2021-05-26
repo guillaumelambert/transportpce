@@ -20,10 +20,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <reference id="portMapping" interface="org.opendaylight.transportpce.common.mapping.PortMapping" />
   <reference id="crossConnect" interface="org.opendaylight.transportpce.common.crossconnect.CrossConnect" />
   <reference id="mappingUtils" interface="org.opendaylight.transportpce.common.mapping.MappingUtils"/>
-  <reference id="FixedFlexImpl" interface="org.opendaylight.transportpce.common.fixedflex.FixedFlexInterface"/>
   <reference id="networkModelService" interface="org.opendaylight.transportpce.networkmodel.service.NetworkModelService"/>
   <reference id="odlClient" interface="org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient" />
-  <reference id="FlexGridImpl" interface="org.opendaylight.transportpce.common.fixedflex.FlexGridInterface"/>
 
   <odl:rpc-service id="olmService"
       interface="org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.TransportpceOlmService"/>
@@ -38,8 +36,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         class="org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface221">
     <argument ref="portMapping"/>
     <argument ref="openRoadmInterfaces"/>
-    <argument ref="FixedFlexImpl"/>
-    <argument ref="FlexGridImpl"/>
   </bean>
 
   <bean id="openRoadmOtnInterface"
@@ -81,17 +77,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <argument ref="otnDeviceRenderer" />
   </bean>
 
-  <bean id="networkModelWavelengthService"
-        class="org.opendaylight.transportpce.renderer.NetworkModelWavelengthServiceImpl">
-    <argument ref="dataBroker" />
-  </bean>
-
   <bean id="rendererServiceOperations" class="org.opendaylight.transportpce.renderer.provisiondevice.RendererServiceOperationsImpl" >
     <argument ref="deviceRenderer" />
     <argument ref="otnDeviceRenderer"/>
     <argument ref="olmService" />
     <argument ref="dataBroker" />
-    <argument ref="networkModelWavelengthService" />
     <argument ref="notificationPublishService" />
   </bean>
 
@@ -106,8 +96,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
            interface="org.opendaylight.transportpce.renderer.provisiondevice.DeviceRendererService" />
   <service ref="rendererServiceOperations"
            interface="org.opendaylight.transportpce.renderer.provisiondevice.RendererServiceOperations" />
-  <service ref="networkModelWavelengthService"
-           interface="org.opendaylight.transportpce.renderer.NetworkModelWavelengthService" />
   <service ref="otnDeviceRenderer"
             interface="org.opendaylight.transportpce.renderer.provisiondevice.OtnDeviceRendererService"/>
 
