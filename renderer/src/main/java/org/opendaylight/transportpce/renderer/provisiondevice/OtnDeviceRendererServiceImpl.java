@@ -20,6 +20,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfaceException;
@@ -48,16 +49,19 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
     private final OpenRoadmInterfaces openRoadmInterfaces;
     private final DeviceTransactionManager deviceTransactionManager;
     private final NetworkModelService networkModelService;
+    private final RemoteOpendaylightClient odlClient;
 
     public OtnDeviceRendererServiceImpl(OpenRoadmInterfaceFactory openRoadmInterfaceFactory, CrossConnect crossConnect,
                                         OpenRoadmInterfaces openRoadmInterfaces,
                                         DeviceTransactionManager deviceTransactionManager,
-                                        NetworkModelService networkModelService) {
+                                        NetworkModelService networkModelService,
+                                        RemoteOpendaylightClient odlClient) {
         this.openRoadmInterfaceFactory = openRoadmInterfaceFactory;
         this.crossConnect = crossConnect;
         this.openRoadmInterfaces = openRoadmInterfaces;
         this.deviceTransactionManager = deviceTransactionManager;
         this.networkModelService = networkModelService;
+        this.odlClient = odlClient;
     }
 
     @Override
@@ -146,6 +150,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
         return otnServicePathOutputBuilder.build();
     }
 
+    @Override
     public OtnServicePathOutput deleteOtnServicePath(OtnServicePathInput input) {
         if (input == null) {
             LOG.error("Unable to delete otn service path. input = null");

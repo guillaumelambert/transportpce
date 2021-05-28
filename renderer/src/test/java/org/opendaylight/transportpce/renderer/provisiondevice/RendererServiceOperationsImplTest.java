@@ -39,6 +39,7 @@ import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfa
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl121;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl221;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl710;
+import org.opendaylight.transportpce.renderer.DisabledRemoteOpendaylightClient;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface121;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface221;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterfaceFactory;
@@ -122,9 +123,10 @@ public class RendererServiceOperationsImplTest extends AbstractTest {
         setMountPoint(new MountPointStub(getDataBroker()));
         this.olmService = new OlmServiceStub();
         this.deviceRenderer = new DeviceRendererServiceImpl(this.getDataBroker(), this.deviceTransactionManager,
-            openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect, portMapping, null);
+            openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect, portMapping, null,
+            new DisabledRemoteOpendaylightClient());
         this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, this.crossConnect,
-            openRoadmInterfaces, this.deviceTransactionManager, null);
+            openRoadmInterfaces, this.deviceTransactionManager, null, new DisabledRemoteOpendaylightClient());
         Mockito.doNothing().when(this.openRoadmInterfaces).postEquipmentState(Mockito.anyString(),
             Mockito.anyString(), Mockito.anyBoolean());
         NotificationPublishService notificationPublishService = new NotificationPublishServiceMock();

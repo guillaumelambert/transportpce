@@ -43,6 +43,7 @@ import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfa
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl121;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl221;
 import org.opendaylight.transportpce.common.openroadminterfaces.OpenRoadmInterfacesImpl710;
+import org.opendaylight.transportpce.renderer.DisabledRemoteOpendaylightClient;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface121;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterface221;
 import org.opendaylight.transportpce.renderer.openroadminterface.OpenRoadmInterfaceFactory;
@@ -126,10 +127,10 @@ public class RendererServiceOperationsImplDeleteTest extends AbstractTest {
 
         this.deviceRenderer = new DeviceRendererServiceImpl(getDataBroker(),
             this.deviceTransactionManager, openRoadmInterfaceFactory, openRoadmInterfaces, crossConnect,
-            this.portMapping, null);
+            this.portMapping, null, new DisabledRemoteOpendaylightClient());
 
         this.otnDeviceRendererService = new OtnDeviceRendererServiceImpl(openRoadmInterfaceFactory, crossConnect,
-            openRoadmInterfaces, this.deviceTransactionManager, null);
+            openRoadmInterfaces, this.deviceTransactionManager, null, new DisabledRemoteOpendaylightClient());
 
     }
 

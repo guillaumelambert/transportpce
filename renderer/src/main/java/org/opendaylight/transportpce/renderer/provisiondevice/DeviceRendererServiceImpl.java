@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jdt.annotation.NonNull;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
@@ -88,10 +89,12 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
     private final CrossConnect crossConnect;
     private final PortMapping portMapping;
     private final NetworkModelService networkModelService;
+    private final RemoteOpendaylightClient odlClient;
 
     public DeviceRendererServiceImpl(DataBroker dataBroker, DeviceTransactionManager deviceTransactionManager,
             OpenRoadmInterfaceFactory openRoadmInterfaceFactory, OpenRoadmInterfaces openRoadmInterfaces,
-            CrossConnect crossConnect, PortMapping portMapping, NetworkModelService networkModelService) {
+            CrossConnect crossConnect, PortMapping portMapping, NetworkModelService networkModelService,
+            RemoteOpendaylightClient odlClient) {
         this.dataBroker = dataBroker;
         this.deviceTransactionManager = deviceTransactionManager;
         this.openRoadmInterfaceFactory = openRoadmInterfaceFactory;
@@ -99,6 +102,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         this.crossConnect = crossConnect;
         this.portMapping = portMapping;
         this.networkModelService = networkModelService;
+        this.odlClient = odlClient;
     }
 
     @Override
