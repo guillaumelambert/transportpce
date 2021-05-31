@@ -18,6 +18,12 @@ services:
       - sdnr
   transportpce-gui:
     image: odl/transportpce-gui
+    environment: 
+      - IETF_NETWORK_BASEURL=http://transportpce:8181
+      - TRANSPORTPCE_BASEURL=http://transportpce:8181
+#      - REMOTE_ODL_ENABLED=${REMOTE_ODL_ENABLED}
+#      - IETF_NETWORK_ODL_USERNAME=${SDNR_USERNAME}
+#      - IETF_NETWORK_ODL_PASSWORD=${SDNR_PASSWORD}
     ports:
       - '28082:8082'
     depends_on: 
@@ -31,22 +37,20 @@ services:
       - '28080:8080'
     depends_on: 
       - sdnr
-  sdnr:
-    image: 10.20.6.10:30000/hightec/sdnr-image-aluminium:latest
-#    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.3-STAGING-20201102T035006Z
-#    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.1-STAGING-20200914T034621Z
-#    image: hightec/sdnr-image-sodium:1.0.0-SNAPSHOT-20200720T171600Z
+  sdnr-0:
+    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.6
     environment: 
       - SDNRONLY=true
       - SDNRINIT=true
       - SDNRDM=true
       - SDNRWT=true
-      - SDNRDBURL=http://sdnrdb:9200
-      - SDNRWT_BOOTFEATURES=odl-netconf-callhome-ssh,sdnr-wt-feature-aggregator
+      - SDNRDBURL=http://sdnrdb:9200                                          
+#      - SDNRWT_BOOTFEATURES=odl-netconf-callhome-ssh,odl-mdsal-model-rfc8345,sdnr-wt-feature-aggregator-devicemanager-base
+      - SDNRDM_BOOTFEATURES=odl-restconf-all,odl-netconf-topology,odl-mdsal-all,odl-mdsal-apidocs,odl-daexim-all,odl-restconf-nb-rfc8040,odl-netconf-callhome-ssh,odl-mdsal-model-rfc8345,sdnr-wt-feature-aggregator-devicemanager-base
 #    entrypoint: /opt/onap/sdnc/bin/startODL.oom.sh
     depends_on: 
       - sdnrdb
-  sdnrdb:
+  sdnrdb-0:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
     environment: 
       - discovery.type=single-node
@@ -64,6 +68,8 @@ services:
       - ./conf/oper-ROADMA.xml:/opt/dev/scripts/startup-load.xml
     depends_on: 
       - sdnr
+    ports: 
+      - 50000:${SIMPORT}
   roadmb:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
     environment: 
@@ -78,6 +84,8 @@ services:
       - ./conf/oper-ROADMB.xml:/opt/dev/scripts/startup-load.xml
     depends_on: 
       - sdnr
+    ports: 
+      - 50001:${SIMPORT}  
   roadmc:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
     environment: 
@@ -92,6 +100,8 @@ services:
       - ./conf/oper-ROADMC.xml:/opt/dev/scripts/startup-load.xml
     depends_on: 
       - sdnr  
+    ports: 
+      - 50002:${SIMPORT}
   xpdra:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
     environment: 
@@ -106,6 +116,9 @@ services:
       - ./conf/oper-XPDRA.xml:/opt/dev/scripts/startup-load.xml
     depends_on: 
       - sdnr      
+    ports: 
+      - 50003:${SIMPORT}
+  
   xpdrc:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
     environment: 
@@ -120,4 +133,6 @@ services:
       - ./conf/oper-XPDRC.xml:/opt/dev/scripts/startup-load.xml
     depends_on: 
       - sdnr
-                                          
+    ports: 
+      - 50004:${SIMPORT}
+                                            

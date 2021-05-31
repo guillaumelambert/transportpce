@@ -1,7 +1,8 @@
 import urllib3
+import certifi
 import json
 import base64
-
+urllib3.disable_warnings()
 class OdlResponse:
 
     def __init__(self, r):
@@ -33,7 +34,7 @@ class OdlClient:
         self.defaultJsonHeaders['Authorization']="Basic "+str(base64.b64encode((username+":"+password).encode('utf-8')),'utf-8')
 
     def requestRest(self, uri, method, headers=dict(), data=None):
-        http = urllib3.PoolManager()
+        http = urllib3.PoolManager(cert_reqs='CERT_NONE')
         r = None
         if data == None:
             r = http.request(method, self.baseUrl+uri, headers=headers)
@@ -90,7 +91,17 @@ class OdlClient:
         else:
             return "unknown"
 
+    def isReady(self):
+        try:
+            response = self.requestRest('/ready','GET', self.defaultJsonHeaders)
+        except:
+            return False
+        return response.isSucceeded()
+
     def getNodeData(self, node: str, suffix: str):
 
         return self.requestRest(URI_CONFIG_NETCONF_TOPO + "node/" + node + "/yang-ext:mount" + suffix,
         'GET',self.defaultJsonHeaders)
+    
+    def getNodeA1Data(self, url:str):
+        return self.requestRest(url, 'GET', self.defaultJsonHeaders)

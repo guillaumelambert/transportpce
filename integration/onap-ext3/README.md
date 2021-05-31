@@ -35,7 +35,7 @@ for remote enabled=true
 # stops openroadm devicemanager provider (due a bug)
 ../bin/integration.py bstop 207
 # start test
-../bin/integration.py test end2end
+../bin/integration.py test 3
 ```
 
 if it fails and you need logs

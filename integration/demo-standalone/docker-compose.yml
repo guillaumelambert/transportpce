@@ -16,6 +16,9 @@ services:
 #      - sdnr
   transportpce-gui:
     image: odl/transportpce-gui
+    environment: 
+      - IETF_NETWORK_BASEURL=http://transportpce:8181
+      - TRANSPORTPCE_BASEURL=http://transportpce:8181
     ports:
       - '18082:8082'
     depends_on: 
@@ -58,6 +61,8 @@ services:
       - ./conf/oper-ROADMA.xml:/opt/dev/scripts/startup-load.xml
 #    depends_on: 
 #      - sdnr
+    ports: 
+      - 50010:${SIMPORT}
   roadmb:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
     environment: 
@@ -72,6 +77,8 @@ services:
       - ./conf/oper-ROADMB.xml:/opt/dev/scripts/startup-load.xml
 #    depends_on: 
 #      - sdnr
+    ports: 
+      - 50011:${SIMPORT}
   roadmc:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
     environment: 
@@ -86,6 +93,9 @@ services:
       - ./conf/oper-ROADMC.xml:/opt/dev/scripts/startup-load.xml
 #    depends_on: 
 #      - sdnr  
+    ports: 
+      - 50012:${SIMPORT}
+
   xpdra:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
     environment: 
@@ -99,7 +109,10 @@ services:
       - ./conf/ntsim_configuration.json:/opt/dev/scripts/configuration.json
       - ./conf/oper-XPDRA.xml:/opt/dev/scripts/startup-load.xml
 #    depends_on: 
-#      - sdnr      
+#      - sdnr   
+    ports: 
+      - 50013:${SIMPORT}
+
   xpdrc:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
     environment: 
@@ -115,3 +128,5 @@ services:
 #    depends_on: 
 #      - sdnr
                                           
+    ports: 
+      - 50014:${SIMPORT}
