@@ -19,7 +19,7 @@ public final class Timeouts {
     public static final long RENDERING_TIMEOUT = 240000 * 2;
     public static final long OLM_TIMEOUT = 240000 * 2;
 
-    public static final long SERVICE_ACTIVATION_TEST_RETRY_TIME = 20000;
+    public static final long SERVICE_ACTIVATION_TEST_RETRY_TIME = SleepConstants.isSimMode() ? 1000 : 20000;
 
     /**
      * Device read timeout in seconds.

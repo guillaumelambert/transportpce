@@ -14,6 +14,7 @@ import java.util.concurrent.TimeoutException;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.transportpce.common.SleepConstants;
 import org.opendaylight.transportpce.common.device.DeviceTransactionManager;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.GetPmInput;
 import org.opendaylight.yang.gen.v1.http.org.opendaylight.transportpce.olm.rev170418.GetPmOutputBuilder;
@@ -29,8 +30,8 @@ public final class OlmUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(OlmUtils.class);
     private static long DATABROKER_READ_TIMEOUT_SECONDS = 120;
-    public static final long OLM_TIMER_1 = 120000; //#FUNCTESTVAL= 3000;
-    public static final long OLM_TIMER_2 = 20000;  //#FUNCTESTVAL= 2000;
+    public static final long OLM_TIMER_1 = SleepConstants.OLM_OLM_TIMER_1; //120000; //#FUNCTESTVAL= 3000;
+    public static final long OLM_TIMER_2 = SleepConstants.OLM_OLM_TIMER_2; //20000;  //#FUNCTESTVAL= 2000;
 
     /**
      * This static method returns the port mapping {@link Nodes} for node.

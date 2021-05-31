@@ -33,6 +33,7 @@ import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.transportpce.common.SleepConstants;
 import org.opendaylight.transportpce.common.StringConstants;
 import org.opendaylight.transportpce.common.Timeouts;
 import org.opendaylight.transportpce.common.crossconnect.CrossConnect;
@@ -580,7 +581,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                 while (!isSupportingOtsPresent && (count < 6)) {
                     LOG.info("waiting for post interface operation on node '{}'...", input.getNodeId());
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(SleepConstants.RENDERER_DELAY_10000);
                         this.portMapping.updateMapping(input.getNodeId(), oldMapping);
                     } catch (InterruptedException e) {
                         LOG.error("Failed to wait for post interface operation ");

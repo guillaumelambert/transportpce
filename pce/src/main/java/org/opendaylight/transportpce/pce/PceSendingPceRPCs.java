@@ -9,6 +9,7 @@
 package org.opendaylight.transportpce.pce;
 
 import org.opendaylight.transportpce.common.ResponseCodes;
+import org.opendaylight.transportpce.common.SleepConstants;
 import org.opendaylight.transportpce.common.network.NetworkTransactionService;
 import org.opendaylight.transportpce.pce.constraints.PceConstraints;
 import org.opendaylight.transportpce.pce.constraints.PceConstraintsCalc;
@@ -82,7 +83,7 @@ public class PceSendingPceRPCs {
         LOG.info("Wait for 10s til beginning the PCE cancelResourceReserve request");
         try {
             // sleep for 10s
-            Thread.sleep(10000);
+            Thread.sleep(SleepConstants.PCE_DELAY_10000);
         } catch (InterruptedException e) {
             LOG.error("in PCESendingPceRPC: ",e);
         }
