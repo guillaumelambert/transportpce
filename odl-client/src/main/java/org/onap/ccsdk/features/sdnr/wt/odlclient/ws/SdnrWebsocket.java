@@ -7,15 +7,24 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.ws;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.IOException;
+import java.util.Arrays;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotificationMapperXml;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotificationMapper;
+import org.onap.ccsdk.features.sdnr.wt.websocketmanager.model.data.Scope;
+import org.onap.ccsdk.features.sdnr.wt.websocketmanager.model.data.ScopeRegistration;
+import org.onap.ccsdk.features.sdnr.wt.websocketmanager.model.data.ScopeRegistrationResponse;
+import org.onap.ccsdk.features.sdnr.wt.websocketmanager.model.data.ScopeRegistrationResponse.Status;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.devicemanager.rev190109.AttributeValueChangedNotification;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.devicemanager.rev190109.ObjectCreationNotification;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.devicemanager.rev190109.ObjectDeletionNotification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,24 +32,25 @@ import org.slf4j.LoggerFactory;
 public class SdnrWebsocket {
 
     private static final Logger LOG = LoggerFactory.getLogger(SdnrWebsocket.class);
-    private static final String MESSAGE_NOTIFICATION_REGISTER =
-            "{\"data\":\"scopes\"," + "\"scopes\":[\"ObjectCreationNotification\",\"ObjectDeletionNotification\","
-                    + "\"AttributeValueChangedNotification\",\"ProblemNotification\"]}";
+    private static final ScopeRegistration SCOPE_REGISTRATION_OBJECT =
+            ScopeRegistration.forNotifications(Scope.createList(Arrays.asList(ObjectCreationNotification.QNAME,
+                    ObjectDeletionNotification.QNAME, AttributeValueChangedNotification.QNAME)));
 
     private final SdnrWebsocketCallback callback;
-    private final SdnrNotificationMapperXml mappper;
+    private final SdnrNotificationMapper mappper;
     private Session session;
 
     public SdnrWebsocket(SdnrWebsocketCallback cb) {
         this.callback = cb;
-        this.mappper = new SdnrNotificationMapperXml();
+        this.mappper = new SdnrNotificationMapper();
     }
 
     public boolean sendNotificationRegistration() {
         if (this.session != null && this.session.isOpen()) {
             LOG.debug("sending notification registration");
             try {
-                this.session.getRemote().sendString(MESSAGE_NOTIFICATION_REGISTER);
+                final String scopeRegistration = this.mappper.writeValueAsString(SCOPE_REGISTRATION_OBJECT);
+                this.session.getRemote().sendString(scopeRegistration);
                 return true;
             } catch (IOException e) {
                 LOG.warn("unable to send register message: ", e);
@@ -75,9 +85,31 @@ public class SdnrWebsocket {
     }
 
     private void handleIncomingMessage(String msg) {
-        SdnrNotification notification = this.mappper.read(msg);
+        NotificationInput<?> notification = null;
+        ScopeRegistrationResponse scopeRegistrationResponse = null;
+        try {
+            notification = this.mappper.readNotification(msg);
+        } catch (JsonProcessingException e) {
+            LOG.warn("problem parsing incoming message '{}': ", msg, e);
+        }
         if (notification != null) {
             this.callback.onNotificationReceived(notification);
+        } else {
+            try {
+                scopeRegistrationResponse = this.mappper.readValue(msg, ScopeRegistrationResponse.class);
+            } catch (JsonProcessingException e1) {
+                LOG.warn("problem parsing incoming message '{}': ", msg, e1);
+            }
+            if (scopeRegistrationResponse == null) {
+                LOG.warn("received unknown message: {}", msg);
+                return;
+            }
+            if (scopeRegistrationResponse.getStatus() == Status.success) {
+                LOG.info("successfully registered for scopes {}",scopeRegistrationResponse.getScopes());
+            } else {
+                LOG.warn("problem registering for scopes: {}", msg);
+            }
+
         }
     }
 
@@ -86,4 +118,6 @@ public class SdnrWebsocket {
         LOG.warn("WebSocket Error: {}", cause);
         this.callback.onError(cause);
     }
+
+
 }

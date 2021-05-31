@@ -14,15 +14,15 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.Nullable;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.DeviceConnectionChangedHandler;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications.AttributeValueChangedNotification;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications.ObjectCreationNotification;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications.ObjectDeletionNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.NetconfNodeConnectionStatus.ConnectionStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.netconf.node.topology.rev150114.network.topology.topology.topology.types.TopologyNetconf;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.devicemanager.rev190109.AttributeValueChangedNotification;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.devicemanager.rev190109.ObjectCreationNotification;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.devicemanager.rev190109.ObjectDeletionNotification;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
@@ -50,23 +50,23 @@ public class RemoteDeviceConnectionChangeProvider {
         this.listeners = new ArrayList<>();
     }
 
-    public void onControllerNotification(SdnrNotification notification) {
+    public void onControllerNotification(NotificationInput<?> notification) {
         if (notification.isControllerNotification()) {
-            if (notification instanceof ObjectCreationNotification) {
+            if (notification.isDataType(ObjectCreationNotification.class)) {
                 LOG.debug("handle create notification");
-                String nodeId = ((ObjectCreationNotification) notification).getObjectId();
+                String nodeId = ((ObjectCreationNotification) notification.getData()).getObjectIdRef();
                 this.handleChange(nodeId);
 
             } else if (notification instanceof ObjectDeletionNotification) {
                 LOG.debug("handle delete notification");
-                String nodeId = ((ObjectCreationNotification) notification).getObjectId();
+                String nodeId = ((ObjectDeletionNotification) notification.getData()).getObjectIdRef();
                 this.pushDisconnect(nodeId);
 
             } else if (notification instanceof AttributeValueChangedNotification) {
-                AttributeValueChangedNotification notification2 = (AttributeValueChangedNotification) notification;
+                AttributeValueChangedNotification notification2 = (AttributeValueChangedNotification) notification.getData();
                 LOG.debug("handle change notification for {}",notification2.getAttributeName());
                 if (notification2.getAttributeName().equals("ConnectionStatus")) {
-                    String nodeId = notification2.getObjectId();
+                    String nodeId = notification2.getObjectIdRef();
                     this.handleChange(nodeId);
                 }
             } else {

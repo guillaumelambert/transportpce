@@ -8,8 +8,8 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.ws;
 
 import org.eclipse.jetty.websocket.api.Session;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.notifications.ProblemNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.devicemanager.rev190109.ProblemNotification;
 
 public abstract class FilteredNotificationWebsocketCallback implements SdnrWebsocketCallback{
 
@@ -37,15 +37,13 @@ public abstract class FilteredNotificationWebsocketCallback implements SdnrWebso
     }
 
     @Override
-    public void onNotificationReceived(SdnrNotification notification) {
+    public void onNotificationReceived(NotificationInput<?> notification) {
         if(notification.isControllerNotification()) {
             return;
         }
-        if(notification instanceof ProblemNotification) {
-            ProblemNotification problemNotification = (ProblemNotification)notification;
-
-            if(problemNotification.getNodeName().equals(this.nodeId)) {
-                this.onFilteredNotificationReceived(problemNotification);
+        if(notification.isDataType(ProblemNotification.class)) {
+            if(notification.getNodeId().equals(this.nodeId)) {
+                this.onFilteredNotificationReceived((ProblemNotification) notification.getData());
             }
         }
     }

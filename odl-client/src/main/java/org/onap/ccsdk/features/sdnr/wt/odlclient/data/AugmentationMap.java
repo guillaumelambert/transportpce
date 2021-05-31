@@ -192,7 +192,7 @@ public class AugmentationMap {
                 return this.getAugmentations(
                         (org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.interfaces.grp.Interface) object);
             } else if (object instanceof Interface) {
-                return this.getAugmentations(object);
+                return this.getAugmentations((Interface)object);
             }
         }
         return null;

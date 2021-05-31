@@ -20,6 +20,7 @@
         <checkstyle.skip>true</checkstyle.skip>
         <skip.checkstyle>true</skip.checkstyle>
         <odlparent.spotbugs.enforce>false</odlparent.spotbugs.enforce>
+        <ccsdk.features.version>1.2.0-SNAPSHOT</ccsdk.features.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -94,6 +95,31 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.features.sdnr.wt.aluminium.sr3</groupId>
+            <artifactId>sdnr-wt-yang-utils</artifactId>
+            <version>${ccsdk.features.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.features.sdnr.wt.aluminium.sr3</groupId>
+            <artifactId>sdnr-wt-websocketmanager-model</artifactId>
+            <version>${ccsdk.features.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.ccsdk.features.sdnr.wt.aluminium.sr3</groupId>
+            <artifactId>sdnr-wt-devicemanager-core-model</artifactId>
+            <version>${ccsdk.features.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.onap.ccsdk.features.sdnr.wt.aluminium.sr3</groupId>
+                    <artifactId>sdnr-wt-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.onap.ccsdk.features.sdnr.wt.aluminium.sr3</groupId>
+                    <artifactId>openroadm-pm-types</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>xmlunit</groupId>

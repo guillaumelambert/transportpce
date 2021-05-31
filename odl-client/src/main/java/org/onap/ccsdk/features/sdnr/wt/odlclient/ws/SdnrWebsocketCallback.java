@@ -8,7 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.ws;
 
 import org.eclipse.jetty.websocket.api.Session;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
 
 public interface SdnrWebsocketCallback {
 
@@ -20,6 +20,6 @@ public interface SdnrWebsocketCallback {
 
     void onError(Throwable cause);
 
-    void onNotificationReceived(SdnrNotification notification);
+    void onNotificationReceived(NotificationInput<?> notification);
 
 }

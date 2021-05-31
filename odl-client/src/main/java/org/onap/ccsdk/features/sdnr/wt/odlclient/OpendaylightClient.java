@@ -22,8 +22,8 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.config.RemoteOdlConfig.AuthMethod;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.DeviceConnectionChangedHandler;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotImplementedException;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.http.status.StatusServlet;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDataBroker;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.remote.RemoteDataTreeChangeProvider;
@@ -99,7 +99,7 @@ public class OpendaylightClient<N extends Node, D extends DataTreeChangeListener
          * forward notifications to specific change providers.
          */
         @Override
-        public void onNotificationReceived(SdnrNotification notification) {
+        public void onNotificationReceived(NotificationInput<?> notification) {
             LOG.debug("received notification from sdnr: {}", notification);
             if (notification.isControllerNotification()) {
                 LOG.debug("controller notification. try to handle this");

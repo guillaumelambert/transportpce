@@ -8,11 +8,9 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.remote;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.restconf.RestconfHttpClient;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
@@ -38,16 +36,16 @@ public class RemoteDataTreeChangeProvider<N extends Node, D extends DataTreeChan
         }
     };
 
-    public void onControllerNotification(SdnrNotification notification) {
-        for (RemoteListenerRegistration<D, N> reg : this.listeners) {
-            @NonNull
-            Collection<DataTreeModification<N>> changes = Arrays
-                    .asList(this.createModification(notification));
-            //reg.getInstance().onDataTreeChanged(changes);
-        }
+    public void onControllerNotification(NotificationInput<?> notification) {
+//        for (RemoteListenerRegistration<D, N> reg : this.listeners) {
+//            @NonNull
+//            Collection<DataTreeModification<N>> changes = Arrays
+//                    .asList(this.createModification(notification));
+//            //reg.getInstance().onDataTreeChanged(changes);
+//        }
     }
 
-    private DataTreeModification<N> createModification(SdnrNotification notification) {
+    private DataTreeModification<N> createModification(NotificationInput<?> notification) {
         return new RemoteDataTreeModification<N>(notification);
     }
 

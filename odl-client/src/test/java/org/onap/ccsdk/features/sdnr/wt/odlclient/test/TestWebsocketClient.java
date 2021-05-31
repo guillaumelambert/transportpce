@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.junit.Test;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotificationMapperXml;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotificationMapper;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketCallback;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.ws.SdnrWebsocketClient;
 import org.slf4j.Logger;
@@ -68,7 +68,7 @@ public class TestWebsocketClient {
             }
 
             @Override
-            public void onNotificationReceived(SdnrNotification notification) {
+            public void onNotificationReceived(NotificationInput<?> notification) {
                 LOG.info("notification: {}", notification);
             }
         };
@@ -97,11 +97,11 @@ public class TestWebsocketClient {
 
     @Test
     public void testNotifications() throws JsonParseException, JsonMappingException, IOException {
-        SdnrNotificationMapperXml mapper = new SdnrNotificationMapperXml();
+        SdnrNotificationMapper mapper = new SdnrNotificationMapper();
 
-        LOG.info("create={}", mapper.read(OBJECTCREATION_NOTIFICATION));
-        LOG.info("delete={}", mapper.read(OBJECTDELETION_NOTIFICATION));
-        LOG.info("value changed={}", mapper.read(ATTRIBUTEVALUECHANGED_NOTIFICATION));
+        LOG.info("create={}", mapper.readNotification(OBJECTCREATION_NOTIFICATION));
+        LOG.info("delete={}", mapper.readNotification(OBJECTDELETION_NOTIFICATION));
+        LOG.info("value changed={}", mapper.readNotification(ATTRIBUTEVALUECHANGED_NOTIFICATION));
 
     }
 }

@@ -8,7 +8,7 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.remote;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
 import org.opendaylight.mdsal.binding.api.DataObjectModification;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.api.DataTreeModification;
@@ -16,9 +16,9 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 
 public class RemoteDataTreeModification<N extends Node> implements DataTreeModification<N> {
 
-    private final SdnrNotification source;
+    private final NotificationInput<?> source;
 
-    public RemoteDataTreeModification(SdnrNotification notification) {
+    public RemoteDataTreeModification(NotificationInput<?> notification) {
         this.source = notification;
     }
 

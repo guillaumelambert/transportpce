@@ -47,7 +47,4 @@ public class SdnrWebsocketClient extends WebsocketWatchDog {
         ClientUpgradeRequest request = new ClientUpgradeRequest();
         this.wsClient.connect(new SdnrWebsocket(this), this.url, request);
     }
-
-
-
 }

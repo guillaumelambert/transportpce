@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.jetty.websocket.api.Session;
-import org.onap.ccsdk.features.sdnr.wt.odlclient.data.SdnrNotification;
+import org.onap.ccsdk.features.sdnr.wt.odlclient.data.NotificationInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,7 +143,7 @@ public abstract class WebsocketWatchDog implements SdnrWebsocketCallback {
     }
 
     @Override
-    public void onNotificationReceived(SdnrNotification notification) {
+    public void onNotificationReceived(NotificationInput<?> notification) {
         this.remoteCallback.onNotificationReceived(notification);
         for (SdnrWebsocketCallback cb : this.listeners) {
             cb.onNotificationReceived(notification);
