@@ -15,7 +15,8 @@ from tests.mountingtest import MountingTest
 from tests.end2endtest import End2EndTest
 from lib.siminfo import SimulatorInfo
 
-SIMS = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
+#SIMS = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
+SIMS = ["roadma", "roadmc", "xpdra", "xpdrc"]
 SIMS_DEMO2 = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
 
 NODEID_LUT = dict(roadma="ROADM-A1",roadmb="ROADM-B1",
