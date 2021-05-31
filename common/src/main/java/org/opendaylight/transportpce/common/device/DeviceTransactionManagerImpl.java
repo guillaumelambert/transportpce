@@ -137,6 +137,10 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
     }
 
     private Optional<DataBroker> getDeviceDataBroker(String deviceId) {
+        if (this.odlClient.isEnabled()) {
+            LOG.debug("using remote odl to get device databroker for {}", deviceId);
+            return Optional.ofNullable(this.odlClient.getRemoteDeviceDataBroker(deviceId));
+        }
         Optional<MountPoint> netconfNode = getDeviceMountPoint(deviceId);
         if (netconfNode.isPresent()) {
             return netconfNode.get().getService(DataBroker.class);
@@ -148,6 +152,10 @@ public class DeviceTransactionManagerImpl implements DeviceTransactionManager {
 
     @Override
     public Optional<MountPoint> getDeviceMountPoint(String deviceId) {
+        if (this.odlClient.isEnabled()) {
+            LOG.debug("using remote odl to get mountpoint for {}", deviceId);
+            return Optional.ofNullable(this.odlClient.getMountPoint(deviceId));
+        }
         InstanceIdentifier<Node> netconfNodeIID = InstanceIdentifiers.NETCONF_TOPOLOGY_II.child(Node.class,
                 new NodeKey(new NodeId(deviceId)));
         return mountPointService.getMountPoint(netconfNodeIID);

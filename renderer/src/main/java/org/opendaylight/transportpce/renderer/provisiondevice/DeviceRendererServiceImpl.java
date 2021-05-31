@@ -137,7 +137,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             int crossConnectFlag = 0;
             try {
                 // if the node is currently mounted then proceed
-                if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
+                if (this.isDeviceMounted(nodeId)) {
                     String srcTp = node.getSrcTp();
                     String destTp = node.getDestTp();
                     if ((destTp != null) && destTp.contains(StringConstants.NETWORK_TOKEN)) {
@@ -279,6 +279,14 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         return setServBldr.build();
     }
 
+    private boolean isDeviceMounted(String nodeId) {
+        if (this.odlClient.isEnabled()) {
+            LOG.info("remote odlclient isDeviceMounted");
+            return this.odlClient.isDevicePresent(nodeId);
+        }
+        return this.deviceTransactionManager.isDeviceMounted(nodeId);
+    }
+
     private ConcurrentLinkedQueue<String> processErrorMessage(String message, ForkJoinPool forkJoinPool,
             ConcurrentLinkedQueue<String> messages) {
         LOG.warn("Received error message {}", message);
@@ -316,7 +324,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
                 otnNodesProvisioned.add(node);
             }
             // if the node is currently mounted then proceed.
-            if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
+            if (this.isDeviceMounted(nodeId)) {
                 interfacesToDelete.addAll(getInterfaces2delete(nodeId, srcTp, destTp,
                         input.getLowerSpectralSlotNumber().intValue(),
                         input.getHigherSpectralSlotNumber().intValue()));
@@ -407,7 +415,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
             if (intToDelete != null) {
                 for (String interf : intToDelete) {
                     if (!this.openRoadmInterfaceFactory.isUsedByXc(nodeId, interf, connectionNumber,
-                        this.deviceTransactionManager)) {
+                        this.deviceTransactionManager, this.odlClient)) {
                         interfacesToDelete.add(interf);
                     }
                 }
@@ -559,7 +567,7 @@ public class DeviceRendererServiceImpl implements DeviceRendererService {
         String result = "";
         Boolean success = false;
         // if the node is currently mounted then proceed.
-        if (this.deviceTransactionManager.isDeviceMounted(input.getNodeId())) {
+        if (this.isDeviceMounted(input.getNodeId())) {
             Mapping oldMapping = null;
             Mapping newMapping = null;
             oldMapping = this.portMapping.getMapping(input.getNodeId(), input.getLogicalConnectionPoint());

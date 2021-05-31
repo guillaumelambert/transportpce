@@ -13,6 +13,7 @@
     <reference id="networkTransactionImpl" interface="org.opendaylight.transportpce.common.network.NetworkTransactionService" />
     <reference id="mappingUtils" interface="org.opendaylight.transportpce.common.mapping.MappingUtils" />
     <reference id="notificationService" interface="org.opendaylight.mdsal.binding.api.NotificationService"/>
+    <reference id="odlClient" interface="org.onap.ccsdk.features.sdnr.wt.odlclient.data.RemoteOpendaylightClient" />
 
     <bean id="networkModelService" class="org.opendaylight.transportpce.networkmodel.service.NetworkModelServiceImpl">
         <argument ref="networkTransactionImpl" />
@@ -29,6 +30,7 @@
         <argument ref="netconfTopologyListener" />
         <argument ref="notificationService" />
         <argument ref="frequenciesService" />
+        <argument ref="odlClient" />
     </bean>
 
     <bean id="netconfTopologyListener" class="org.opendaylight.transportpce.networkmodel.NetConfTopologyListener">

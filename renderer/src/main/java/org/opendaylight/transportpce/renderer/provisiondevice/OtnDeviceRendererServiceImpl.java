@@ -174,7 +174,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
                 return;
             }
             // if the node is currently mounted then proceed.
-            if (this.deviceTransactionManager.isDeviceMounted(nodeId)) {
+            if (this.isDeviceMounted(nodeId)) {
                 String connectionNumber = "";
                 switch (input.getServiceRate()) {
                     case ("100G"):
@@ -203,7 +203,7 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
                 if (intToDelete != null) {
                     for (String interf : intToDelete) {
                         if (!this.openRoadmInterfaceFactory.isUsedByOtnXc(nodeId, interf, connectionNumber,
-                            this.deviceTransactionManager)) {
+                            this.deviceTransactionManager, this.odlClient)) {
                             interfacesToDelete.add(interf);
                             if (!getSupportedInterface(nodeId, interf).contains("ODU4")) {
                                 interfacesToDelete.add(getSupportedInterface(nodeId, interf));
@@ -261,6 +261,14 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
         } else {
             return delServBldr.setResult(String.join("\n", results)).build();
         }
+    }
+
+    private boolean isDeviceMounted(String nodeId) {
+        if (this.odlClient.isEnabled()) {
+            LOG.info("remote odlclient isDeviceMounted");
+            return this.odlClient.isDevicePresent(nodeId);
+        }
+        return this.deviceTransactionManager.isDeviceMounted(nodeId);
     }
 
     private String getConnectionNumber(String serviceName, Nodes node, String networkTp, String oduType) {
