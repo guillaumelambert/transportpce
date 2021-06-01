@@ -37,8 +37,8 @@ services:
       - '28080:8080'
     depends_on: 
       - sdnr
-  sdnr-0:
-    image: nexus3.onap.org:10001/onap/sdnc-image:2.0.6
+  sdnr:
+    image: hightec/sdnr-image-aluminium-sr3:1.2-SNAPSHOT-latest  
     environment: 
       - SDNRONLY=true
       - SDNRINIT=true
@@ -50,8 +50,8 @@ services:
 #    entrypoint: /opt/onap/sdnc/bin/startODL.oom.sh
     depends_on: 
       - sdnrdb
-  sdnrdb-0:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+  sdnrdb:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
     environment: 
       - discovery.type=single-node
   roadma:
