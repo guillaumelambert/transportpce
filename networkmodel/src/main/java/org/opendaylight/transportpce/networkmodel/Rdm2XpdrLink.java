@@ -67,6 +67,7 @@ final class Rdm2XpdrLink {
 
         NetworkBuilder networkBldr = createNetworkBuilder(srcNode, srcTp, destNode, destTp, false, xpdrTp, rdmTp);
         if (networkBldr == null) {
+            LOG.warn("unable to create network from src  {}({}) and dst {}({})", srcNode, srcTp, destNode, destTp);
             return false;
         }
         Network network = networkBldr.build();
@@ -79,7 +80,7 @@ final class Rdm2XpdrLink {
 
         try {
             commit.get();
-            LOG.info("Post successful");
+            LOG.info("Post successful {}({}) to {}({})", srcNode, srcTp, destNode, destTp);
             return true;
         } catch (InterruptedException | ExecutionException e) {
             LOG.warn("Failed to create Xponder to Roadm link in the Topo layer ");
@@ -111,7 +112,7 @@ final class Rdm2XpdrLink {
         FluentFuture<? extends @NonNull CommitInfo> commit = wrtx.commit();
         try {
             commit.get();
-            LOG.info("Post successful");
+            LOG.info("Post successful {}({}) to {}({})", srcNode, srcTp, destNode, destTp);
             return true;
 
         } catch (InterruptedException | ExecutionException e) {
@@ -123,6 +124,8 @@ final class Rdm2XpdrLink {
     private static NetworkBuilder createNetworkBuilder(String srcNode, String srcTp, String destNode, String destTp,
         boolean isXponderInput, TerminationPoint xpdrTp, TerminationPoint rdmTp) {
         if (xpdrTp == null || rdmTp == null) {
+            LOG.warn("xpdrTp ({}) or rdmTp({}) is null", xpdrTp == null ? "null" : "nonnull",
+                    rdmTp == null ? "null" : "nonnull");
             return null;
         }
         //update tp of nodes
@@ -187,6 +190,7 @@ final class Rdm2XpdrLink {
                 Optional<TerminationPoint> tpOpt;
                 tpOpt = tpFf.get();
                 if (tpOpt.isPresent()) {
+                    LOG.info("getTpofNode for srcNode={} with tp={} is present", srcNode, srcTp);
                     return tpOpt.get();
                 }
             } catch (InterruptedException | ExecutionException e) {
@@ -194,6 +198,7 @@ final class Rdm2XpdrLink {
                     NetworkUtils.OVERLAY_NETWORK_ID, e);
             }
         }
+        LOG.info("getTpofNode for srcNode={} with tp={} is null", srcNode, srcTp);
         return null;
     }
 

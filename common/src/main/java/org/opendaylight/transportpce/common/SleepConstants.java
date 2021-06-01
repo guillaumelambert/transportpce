@@ -15,14 +15,14 @@ public final class SleepConstants {
     private static final Logger LOG = LoggerFactory.getLogger(SleepConstants.class);
 
     public static final String ENVVAR_SIMULATORMODE = "TRANSPORTPCE_SIMULATOR_MODE";
-
-    public static final long PCE_DELAY_10000 = isSimMode() ? 9999 : 10000;
-    public static final long OLM_OLM_TIMER_1 = isSimMode() ? 10 : 120000;
-    public static final long OLM_OLM_TIMER_2 = isSimMode() ? 10 : 20000;
-    public static final long OLM_DELAY_90000 = isSimMode() ? 10 : 90000;
-    public static final long RENDERER_DELAY_3000 = isSimMode() ? 10 : 3000;
-    public static final long RENDERER_DELAY_10000 = isSimMode() ? 10 : 10000;
-    public static final long RENDERER_SERVICE_ACTIVATION_TEST_RETRY_TIME = isSimMode() ? 10 : 10000;
+    private static final boolean ISSIMMODE = isSimMode();
+    public static final long PCE_DELAY_10000 = ISSIMMODE ? 9999 : 10000;
+    public static final long OLM_OLM_TIMER_1 = ISSIMMODE ? 10 : 120000;
+    public static final long OLM_OLM_TIMER_2 = ISSIMMODE ? 10 : 20000;
+    public static final long OLM_DELAY_90000 = ISSIMMODE ? 10 : 90000;
+    public static final long RENDERER_DELAY_3000 = ISSIMMODE ? 10 : 3000;
+    public static final long RENDERER_DELAY_10000 = ISSIMMODE ? 10 : 10000;
+    public static final long RENDERER_SERVICE_ACTIVATION_TEST_RETRY_TIME = ISSIMMODE ? 10 : 10000;
 
 
     public static boolean isSimMode() {
@@ -32,7 +32,10 @@ public final class SleepConstants {
         } catch (SecurityException e) {
             LOG.warn("unable to load env:", e);
         }
-        return value != null && value.equals("true");
+
+        boolean issim = value != null && value.equals("true");
+        LOG.info("timeouts are configured for sim mode={}", issim);
+        return issim;
     }
 
     private SleepConstants() {

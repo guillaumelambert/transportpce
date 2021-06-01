@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_1_2_1;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_2_2_1;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -88,8 +89,8 @@ public class NetConfTopologyListenerTest {
         MountPointService mountPointService = new MountPointServiceStub(mountPoint);
         DeviceTransactionManager deviceTransactionManager =
                 new DeviceTransactionManagerImpl(mountPointService, 3000);
-        R2RLinkDiscovery linkDiskovery = new R2RLinkDiscovery(dataBroker, deviceTransactionManager,
-                networkTransactionService);
+        R2RLinkDiscovery linkDiskovery = new R2RLinkDiscovery(
+                dataBroker, deviceTransactionManager, networkTransactionService);
         OpenRoadmInterfacesImpl121 openRoadmInterfacesImpl121 =
                 new OpenRoadmInterfacesImpl121(deviceTransactionManager);
         OpenRoadmInterfacesImpl221 openRoadmInterfacesImpl221 =

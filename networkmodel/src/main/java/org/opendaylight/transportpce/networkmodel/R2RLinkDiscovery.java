@@ -9,6 +9,7 @@ package org.opendaylight.transportpce.networkmodel;
 
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_1_2_1;
 import static org.opendaylight.transportpce.common.StringConstants.OPENROADM_DEVICE_VERSION_2_2_1;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;

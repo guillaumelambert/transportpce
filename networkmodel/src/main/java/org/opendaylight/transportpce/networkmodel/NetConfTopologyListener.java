@@ -7,6 +7,7 @@
  */
 package org.opendaylight.transportpce.networkmodel;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +54,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class NetConfTopologyListener implements DataTreeChangeListener<Node>, DeviceConnectionChangedHandler {
 

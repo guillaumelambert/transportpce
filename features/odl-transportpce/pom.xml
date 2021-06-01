@@ -24,9 +24,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <name>OpenDaylight :: transportpce</name>
 
   <properties>
-    <mdsal.version>1.13.3</mdsal.version>
     <netconf.version>1.9.3</netconf.version>
-    <restconf.version>1.13.3</restconf.version>
     <configfile.directory>etc/opendaylight/karaf</configfile.directory>
   </properties>
 

@@ -45,11 +45,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}.ordmodels</groupId>
-            <artifactId>transportpce-ordmodels-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>transportpce-api</artifactId>
             <version>${project.version}</version>
@@ -62,19 +57,11 @@
             <groupId>org.opendaylight.mdsal</groupId>
             <artifactId>mdsal-binding-dom-adapter</artifactId>
         </dependency>
-        
-         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.2</version>
-            <optional>true</optional>
-        </dependency>
         <dependency>
 	        <groupId>org.onap.ccsdk.features.sdnr.wt</groupId>
 			<artifactId>sdnr-wt-odl-client</artifactId>
 			<version>${project.version}</version>
         </dependency>
-
         <!-- Aluminium bump: undocumented new dependencies -->
         <dependency>
             <groupId>org.opendaylight.mdsal</groupId>

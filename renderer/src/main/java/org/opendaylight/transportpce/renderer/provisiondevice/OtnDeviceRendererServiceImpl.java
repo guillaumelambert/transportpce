@@ -150,7 +150,6 @@ public class OtnDeviceRendererServiceImpl implements OtnDeviceRendererService {
         return otnServicePathOutputBuilder.build();
     }
 
-    @Override
     public OtnServicePathOutput deleteOtnServicePath(OtnServicePathInput input) {
         if (input == null) {
             LOG.error("Unable to delete otn service path. input = null");
