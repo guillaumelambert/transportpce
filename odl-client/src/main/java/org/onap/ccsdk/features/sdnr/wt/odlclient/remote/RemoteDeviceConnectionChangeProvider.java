@@ -57,12 +57,12 @@ public class RemoteDeviceConnectionChangeProvider {
                 String nodeId = ((ObjectCreationNotification) notification.getData()).getObjectIdRef();
                 this.handleChange(nodeId);
 
-            } else if (notification instanceof ObjectDeletionNotification) {
+            } else if (notification.isDataType(ObjectDeletionNotification.class)) {
                 LOG.debug("handle delete notification");
                 String nodeId = ((ObjectDeletionNotification) notification.getData()).getObjectIdRef();
                 this.pushDisconnect(nodeId);
 
-            } else if (notification instanceof AttributeValueChangedNotification) {
+            } else if (notification.isDataType(AttributeValueChangedNotification.class)) {
                 AttributeValueChangedNotification notification2 = (AttributeValueChangedNotification) notification.getData();
                 LOG.debug("handle change notification for {}",notification2.getAttributeName());
                 if (notification2.getAttributeName().equals("ConnectionStatus")) {

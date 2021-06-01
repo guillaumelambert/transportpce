@@ -123,7 +123,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
                 moduleName = value.getLocalName();
             }
             if (key == null) {
-                uri += String.format("/%s%s", urlencode(isNewModule ? (moduleName + ":") : ""),
+                uri += String.format("/%s%s", isNewModule ? (urlencode(moduleName) + ":") : "",
                         urlencode(value.getLocalName()));
             } else {
                 uri += String.format("/%s=%s", urlencode(value.getLocalName()), urlencode(key));
@@ -137,7 +137,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
 
     private static final String urlencode(String value) {
         try {
-            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString()).replace("%3A", ":");
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString()).replace(":","%3A");
         } catch (UnsupportedEncodingException ex) {
             LOG.warn("problem encode {}:", value, ex);
         }

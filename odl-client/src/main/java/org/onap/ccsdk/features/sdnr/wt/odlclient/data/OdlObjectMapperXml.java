@@ -141,7 +141,7 @@ public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
             if (builder != null) {
                 Method addAugmentationMethod = null;
                 for (Method m : builder.getClass().getDeclaredMethods()) {
-                    if (m.getName() == "addAugmentation") {
+                    if ((m.getName() == "addAugmentation") && m.getParameterCount()==2) {
                         addAugmentationMethod = m;
                         break;
                     }
