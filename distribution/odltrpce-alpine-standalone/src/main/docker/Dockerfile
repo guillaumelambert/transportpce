@@ -26,6 +26,8 @@ RUN sed -i -e /featuresBoot/d $ODL_HOME/etc/org.apache.karaf.features.cfg
 #RUN echo featuresBoot=8ed6b938-844e-4e32-9757-313811989a9f,odl-restconf-all,odl-netconf-topology,features-mdsal,odl-transportpce >> $ODL_HOME/etc/org.apache.karaf.features.cfg
 RUN echo featuresBoot=57dff2fc-7c53-4901-931c-62617cbd43ce,odl-transportpce,odl-netconf-console >> $ODL_HOME/etc/org.apache.karaf.features.cfg
 
+#Copy patches
+COPY patches/org.apache.karaf.shell.ssh-4.2.10.jar $ODL_HOME/system/org/apache/karaf/shell/org.apache.karaf.shell.ssh/4.2.10/
 # Install ssl and java certificates
 COPY certs/truststoreONAPall.jks $JAVA_SECURITY_DIR/
 

@@ -151,6 +151,25 @@
 							</resources>
 						</configuration>
 					</execution>
+                    <execution>
+                        <id>copy-patches</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals><!-- here the phase you need -->
+                        <phase>validate</phase>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/docker-stage/patches</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/patches</directory>
+                                    <includes>
+                                        <include>*</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
 				</executions>
 			</plugin>
 			<plugin>
