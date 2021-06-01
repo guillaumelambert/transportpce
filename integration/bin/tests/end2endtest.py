@@ -1,5 +1,6 @@
 import time
 import json
+import base64
 from .basetest import BaseTest
 
 class End2EndTest(BaseTest):
@@ -7,7 +8,7 @@ class End2EndTest(BaseTest):
 
     def __init__(self, sdncClient, trpceClient, trpceContainer, sims, config):
         BaseTest.__init__(self, sdncClient, trpceClient, sims, config)
-        self.WAITING = 20
+        self.WAITING = 30
         self.trpceContainer = trpceContainer
 
     def logError(self, message):
@@ -19,8 +20,7 @@ class End2EndTest(BaseTest):
         if len(args)>0:
             step = args.pop(0)
         if step == "clean":
-            return self.clean()
-
+            return self.clean()#
         if step != "skipmount":
             success = self.mountAll()
             if success:
@@ -36,13 +36,12 @@ class End2EndTest(BaseTest):
             print("skip mounting")
             step = args.pop(0) if len(args)>0 else None
     
-        success = self.waitForConnectedState(30)
+        success = self.waitForConnectedState(self.WAITING)
         if success:
             print("all devices are connected")
         else:
             print("problem with deviceconnection")
-            return False
-
+            return False#
         success = self.createLinks()
         if success:
             print("creating links succeeded")
@@ -84,6 +83,7 @@ class End2EndTest(BaseTest):
         else:
             print("problem with topology")
             return False
+        
         if step == "test2":
             step = args.pop(0) if len(args)>0 else None
             time.sleep(self.WAITING)
@@ -366,8 +366,11 @@ class End2EndTest(BaseTest):
             return data.find(const)>=0
         return const in data
 
-    def assertEqual(self, const, data):
-        return const == data
+    def assertEqual(self, const, data, msg=""):
+        r= const == data
+        if r == False and len(msg)>0:
+            print(msg)
+        return r
 
     def assertDictEqual(self, a, b):
         return a == b
@@ -412,56 +415,74 @@ class End2EndTest(BaseTest):
     def checkConnections(self):
         #check_xc1_ROADMA
         if self.config.isRemoteEnabled():
+            response = self.sdncClient.getNodeData("ROADM-A1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
+        else:
+            response = self.trpceClient.getNodeData("ROADM-A1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
+        if not response.isSucceeded():
+            return False
+        connectionId = None
+        a = response.data['org-openroadm-device']['roadm-connections']
+        for c in a:
+            if c["connection-name"].startswith("SRG1-PP1-TXRX-DEG2-TTP-TXRX"):
+                connectionId = c["connection-name"]
+        if self.config.isRemoteEnabled():
             response = self.sdncClient.getNodeData("ROADM-A1", 
-                "/org-openroadm-device:org-openroadm-device/roadm-connections/SRG1-PP1-TXRX-DEG2-TTP-TXRX-1")
+                "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
         else:
             response = self.trpceClient.getNodeData("ROADM-A1", 
-                "/org-openroadm-device:org-openroadm-device/roadm-connections/SRG1-PP1-TXRX-DEG2-TTP-TXRX-1")
+                "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
         if not response.isSucceeded():
             return False
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
         success = self.assertDictEqual(
             dict({
-                'connection-name': 'SRG1-PP1-TXRX-DEG2-TTP-TXRX-1',
+                'connection-name': connectionId,
                 'opticalControlMode': 'gainLoss',
                 'target-output-power': -3.0
             }, **response.data['roadm-connections'][0]),
             response.data['roadm-connections'][0]
         )
-        success &= self.assertDictEqual(
-            {'src-if': 'SRG1-PP1-TXRX-nmc-1'},
-            response.data['roadm-connections'][0]['source'])
-        success &= self.assertDictEqual(
-            {'dst-if': 'DEG2-TTP-TXRX-nmc-1'},
-            response.data['roadm-connections'][0]['destination'])
-        
+        success &= response.data['roadm-connections'][0]['source']['src-if'].startswith('SRG1-PP1-TXRX-nmc')
+        success &= response.data['roadm-connections'][0]['destination']['dst-if'].startswith('DEG2-TTP-TXRX-nmc')
+ 
         if not success:
             return False
 
         #check_xc1_ROADMC
         if self.config.isRemoteEnabled():
+            response = self.sdncClient.getNodeData("ROADM-C1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
+        else:
+            response = self.trpceClient.getNodeData("ROADM-C1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
+        if not response.isSucceeded():
+            return False
+        connectionId = None
+        a = response.data['org-openroadm-device']['roadm-connections']
+        for c in a:
+            if c["connection-name"].startswith("SRG1-PP1-TXRX-DEG1-TTP-TXRX"):
+                connectionId = c["connection-name"]
+
+        if self.config.isRemoteEnabled():
             response = self.sdncClient.getNodeData("ROADM-C1", 
-                "/org-openroadm-device:org-openroadm-device/roadm-connections/SRG1-PP1-TXRX-DEG1-TTP-TXRX-1")
+                "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
         else:
             response = self.trpceClient.getNodeData("ROADM-C1", 
-                "/org-openroadm-device:org-openroadm-device/roadm-connections/SRG1-PP1-TXRX-DEG1-TTP-TXRX-1")
+                "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
+
         if not response.isSucceeded():
             return False
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
         success = self.assertDictEqual(
             dict({
-                'connection-name': 'SRG1-PP1-TXRX-DEG1-TTP-TXRX-1',
+                'connection-name': connectionId,
                 'opticalControlMode': 'gainLoss',
                 'target-output-power': -3.0
             }, **response.data['roadm-connections'][0]),
             response.data['roadm-connections'][0]
         )
-        success &= self.assertDictEqual(
-            {'src-if': 'SRG1-PP1-TXRX-nmc-1'},
-            response.data['roadm-connections'][0]['source'])
-        success &= self.assertDictEqual(
-            {'dst-if': 'DEG1-TTP-TXRX-nmc-1'},
-            response.data['roadm-connections'][0]['destination'])
+
+        success &= response.data['roadm-connections'][0]['source']['src-if'].startswith('SRG1-PP1-TXRX-nmc')
+        success &= response.data['roadm-connections'][0]['destination']['dst-if'].startswith('DEG1-TTP-TXRX-nmc')
+
         if not response.isSucceeded():
             return False
 
@@ -489,66 +510,58 @@ class End2EndTest(BaseTest):
             if not success:
                 self.logError("problem with tp elem in XPDR-A1-XPDR1: "+json.dumps(ele))
                 return False
-        time.sleep(3)
+        time.sleep(1)
         #check_topo_ROADMA_SRG1
         response = self.trpceClient.getOpenroadmTopology("node/ROADM-A1-SRG1")
         if not response.isSucceeded():
             self.logError(str(response.code)+" | "+response.content)
             return False
-        self.assertNotIn({u'index': 1},
-                         response.data['node'][0][u'org-openroadm-network-topology:srg-attributes']['available-wavelengths'])
+        freq_map = base64.b64decode(
+                 response.data['node'][0]['org-openroadm-network-topology:srg-attributes']['avail-freq-maps'][0]['freq-map'])
+        freq_map_array = [int(x) for x in freq_map]
+        success = self.assertEqual(freq_map_array[95], 0, "Index 1 should not be available")
+        if not success:
+            return False
         liste_tp = response.data['node'][0]['ietf-network-topology:termination-point']
         for ele in liste_tp:
             success = True
             if ele['tp-id'] == 'SRG1-PP1-TXRX':
-                success = self.assertIn({u'index': 1, u'frequency': 196.1,u'width': 40},
-                    ele['org-openroadm-network-topology:pp-attributes']['used-wavelength'])
+                freq_map = base64.b64decode(
+                    ele['org-openroadm-network-topology:pp-attributes']['avail-freq-maps'][0]['freq-map'])
+                freq_map_array = [int(x) for x in freq_map]
+                success &= self.assertEqual(freq_map_array[95], 0, "Index 1 should not be available")
             if ele['tp-id'] == 'SRG1-PP2-TXRX':
-                success = self.assertNotIn('used-wavelength', dict.keys(ele))
+                success &= self.assertNotIn('avail-freq-maps', dict.keys(ele))
             if not success:
-                self.logError("problem with tp elem in ROADM-A1-SRG1: "+json.dumps(ele))
                 return False
-
-        time.sleep(3)
-        response = self.trpceClient.getOpenroadmTopology("node/ROADM-A1-DEG2")
-        if not response.isSucceeded():
-            self.logError(str(response.code)+" | "+response.content)
-            return False
-        self.assertNotIn({u'index': 1},
-                         response.data['node'][0][u'org-openroadm-network-topology:degree-attributes']['available-wavelengths'])
-        liste_tp = response.data['node'][0]['ietf-network-topology:termination-point']
-        for ele in liste_tp:
-            success = True
-            if ele['tp-id'] == 'DEG2-CTP-TXRX':
-                success = self.assertIn({u'index': 1, u'frequency': 196.1,u'width': 40},
-                    ele['org-openroadm-network-topology:ctp-attributes']['used-wavelengths'])
-            if ele['tp-id'] == 'DEG2-TTP-TXRX':
-                success = self.assertIn({u'index': 1, u'frequency': 196.1,u'width': 40},
-                ele['org-openroadm-network-topology:tx-ttp-attributes']['used-wavelengths'])
-            if not success:
-                self.logError("problem with tp elem "+json.dumps(ele))
-                return False
-
+        
+        time.sleep(1)
         #check_topo_ROADMA_DEG1
         response = self.trpceClient.getOpenroadmTopology("node/ROADM-A1-DEG2")
         if not response.isSucceeded():
             self.logError(str(response.code)+" | "+response.content)
             return False
-        self.assertNotIn({u'index': 1},
-                         response.data['node'][0][u'org-openroadm-network-topology:degree-attributes']['available-wavelengths'])
+        freq_map = base64.b64decode(
+            response.data['node'][0]['org-openroadm-network-topology:degree-attributes']['avail-freq-maps'][0]['freq-map'])
+        freq_map_array = [int(x) for x in freq_map]
+        self.assertEqual(freq_map_array[95], 0, "Index 1 should not be available")
         liste_tp = response.data['node'][0]['ietf-network-topology:termination-point']
         for ele in liste_tp:
             success = True
             if ele['tp-id'] == 'DEG2-CTP-TXRX':
-                success = self.assertIn({u'index': 1, u'frequency': 196.1,u'width': 40},
-                    ele['org-openroadm-network-topology:ctp-attributes']['used-wavelengths'])
+                freq_map = base64.b64decode(
+                   ele['org-openroadm-network-topology:ctp-attributes']['avail-freq-maps'][0]['freq-map'])
+                freq_map_array = [int(x) for x in freq_map]
+                success &= self.assertEqual(freq_map_array[95], 0, "Index 1 should not be available")
             if ele['tp-id'] == 'DEG2-TTP-TXRX':
-                success = self.assertIn({u'index': 1, u'frequency': 196.1,u'width': 40},
-                    ele['org-openroadm-network-topology:tx-ttp-attributes']['used-wavelengths'])
+                freq_map = base64.b64decode(
+                       ele['org-openroadm-network-topology:tx-ttp-attributes']['avail-freq-maps'][0]['freq-map'])
+                freq_map_array = [int(x) for x in freq_map]
+                success &= self.assertEqual(freq_map_array[95], 0, "Index 1 should not be available")
             if not success:
-                self.logError("problem with tp elem in ROADM-A1-DEG2: "+json.dumps(ele))
                 return False
-       
+        
+        
         return True
 
     def test2CreateConnections(self, retries=2, delayForRetries=10):

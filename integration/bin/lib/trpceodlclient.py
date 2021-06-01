@@ -27,14 +27,26 @@ class TrpceOdlClient(OdlClient):
         return response
     
     def linkXpdrToRoadm(self, xpdrNode, xpdrNum, xpdrNetworkPortNumber, roadmNodeId, srgNumber, logicalConnectionPoint):
+        # data ={
+        #     "networkutils:input": {
+        #         "networkutils:links-input": {
+        #         "networkutils:xpdr-node": xpdrNode,
+        #         "networkutils:xpdr-num": str(xpdrNum),
+        #         "networkutils:network-num": str(xpdrNetworkPortNumber),
+        #         "networkutils:rdm-node": roadmNodeId,
+        #         "networkutils:srg-num": str(srgNumber),
+        #         "networkutils:termination-point-num": logicalConnectionPoint
+        #         }
+        #     }
+        # }
         data ={
             "networkutils:input": {
                 "networkutils:links-input": {
                 "networkutils:xpdr-node": xpdrNode,
-                "networkutils:xpdr-num": str(xpdrNum),
-                "networkutils:network-num": str(xpdrNetworkPortNumber),
+                "networkutils:xpdr-num": xpdrNum,
+                "networkutils:network-num": xpdrNetworkPortNumber,
                 "networkutils:rdm-node": roadmNodeId,
-                "networkutils:srg-num": str(srgNumber),
+                "networkutils:srg-num": srgNumber,
                 "networkutils:termination-point-num": logicalConnectionPoint
                 }
             }
@@ -47,14 +59,26 @@ class TrpceOdlClient(OdlClient):
     
     
     def linkRoadmTpXpdr(self, xpdrNode, xpdrNum, xpdrNetworkPortNumber, roadmNodeId, srgNumber, logicalConnectionPoint):
+        # data ={
+        #     "networkutils:input": {
+        #         "networkutils:links-input": {
+        #         "networkutils:xpdr-node": xpdrNode,
+        #         "networkutils:xpdr-num": str(xpdrNum),
+        #         "networkutils:network-num": str(xpdrNetworkPortNumber),
+        #         "networkutils:rdm-node": roadmNodeId,
+        #         "networkutils:srg-num": str(srgNumber),
+        #         "networkutils:termination-point-num": logicalConnectionPoint
+        #         }
+        #     }
+        # }
         data ={
             "networkutils:input": {
                 "networkutils:links-input": {
                 "networkutils:xpdr-node": xpdrNode,
-                "networkutils:xpdr-num": str(xpdrNum),
-                "networkutils:network-num": str(xpdrNetworkPortNumber),
+                "networkutils:xpdr-num": xpdrNum,
+                "networkutils:network-num": xpdrNetworkPortNumber,
                 "networkutils:rdm-node": roadmNodeId,
-                "networkutils:srg-num": str(srgNumber),
+                "networkutils:srg-num": srgNumber,
                 "networkutils:termination-point-num": logicalConnectionPoint
                 }
             }
