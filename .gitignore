@@ -41,3 +41,5 @@ docs/_build/
 honeynode-simulator/
 pce/data
 pce/some-output
+integration/demo-adva*
+integration/remote logs

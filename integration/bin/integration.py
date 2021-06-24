@@ -51,7 +51,7 @@ class Integration:
 
     def mount(self,args):
         mode = args.pop(0) if len(args)>0 else 'default'
-        if mode == "demo":
+        if mode == "adva":
            infos = self.collectSimInfos(mode)
            for info in infos:
                 if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
@@ -75,7 +75,7 @@ class Integration:
     
     def unmount(self,args):
         mode = args.pop(0) if len(args)>0 else 'default'
-        if mode == "demo":
+        if mode == "adva":
            infos = self.collectSimInfos(mode)
            for info in infos:
                 if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
@@ -121,14 +121,24 @@ class Integration:
             simContainerName = self.getContainerName(sim)
             self.printInfo(sim, self.dockerExec.inspect(simContainerName))
 
-    def status(self):
-        for sim in SIMS:
-            if self.config.isRemoteEnabled():
-                status = self.odlSdnrClient.neStatus(self.getMountPointName(sim))
-            else:
-                status = self.odlTrpceClient.neStatus(self.getMountPointName(sim))
-                
-            print(sim.ljust(20)+status)
+    def status(self, args):
+        mode = args.pop(0) if len(args)>0 else 'default'
+        if mode == "adva":
+            infos = self.collectSimInfos(mode)
+            for info in infos:
+                if self.config.isRemoteEnabled():
+                    status = self.odlSdnrClient.neStatus(info.name)
+                else:
+                    status = self.odlTrpceClient.neStatus(info.name)
+                print(info.name.ljust(20)+status)
+               
+        else:
+            for sim in SIMS:
+                if self.config.isRemoteEnabled():
+                    status = self.odlSdnrClient.neStatus(self.getMountPointName(sim))
+                else:
+                    status = self.odlTrpceClient.neStatus(self.getMountPointName(sim))              
+                print(sim.ljust(20)+status)
 
     def collectSimInfos(self,mode='default'):
         sims = []
@@ -141,16 +151,20 @@ class Integration:
                 self.config.getEnv("SIMPORT"),
                 self.config.getEnv("SIM_NETCONF_USERNAME"), 
                 self.config.getEnv("SIM_NETCONF_PASSWORD")))
-        elif mode == 'demo':
+        elif mode == 'adva':
             DEMO_MEDIATOR_IP_ADDR = "10.20.6.49"
             DEMO_NETCONF_USERNAME = "admin"
             DEMO_NETCONF_PASSWORD = "admin"
-            sims.append(SimulatorInfo("ROADM-A", DEMO_MEDIATOR_IP_ADDR, 
+            sims.append(SimulatorInfo("ROADM-A1", DEMO_MEDIATOR_IP_ADDR, 
                 17931, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("ROADM-B", DEMO_MEDIATOR_IP_ADDR, 
-                17932, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("ROADM-C", DEMO_MEDIATOR_IP_ADDR, 
+            sims.append(SimulatorInfo("ROADM-B1", DEMO_MEDIATOR_IP_ADDR, 
+                17941, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
+            sims.append(SimulatorInfo("ROADM-C1", DEMO_MEDIATOR_IP_ADDR, 
+                17951, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
+            sims.append(SimulatorInfo("XPDR-A1", DEMO_MEDIATOR_IP_ADDR, 
                 17933, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
+            sims.append(SimulatorInfo("XPDR-C1", DEMO_MEDIATOR_IP_ADDR, 
+                17953, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
         elif mode == 'demo2':
             DEMO2_MEDIATOR_IP_ADDR = "10.20.6.32"
             DEMO2_NETCONF_USERNAME = "netconf"
@@ -346,7 +360,7 @@ if __name__ == "__main__":
     if cmd == "info":
         integration.info()
     elif cmd == "status":
-        integration.status()
+        integration.status(sys.argv)
     elif cmd == "mount":
         integration.mount(sys.argv)
     elif cmd == "unmount":
