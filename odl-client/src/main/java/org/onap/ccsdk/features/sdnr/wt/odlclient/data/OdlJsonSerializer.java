@@ -40,4 +40,12 @@ public class OdlJsonSerializer extends OdlDataSerializer{
 
 	}
 
+
+    @Override
+    SerializerElem preValueWrite(String key, Object o, boolean withNsPrefix, boolean withNamespace,
+            Class<?> rootClass) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

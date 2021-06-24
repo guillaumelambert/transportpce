@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 public abstract class OdlDataSerializer {
 
     abstract SerializerElem preValueWrite(String key, Object o, boolean withNsPrefix, Class<?> rootClass);
+    abstract SerializerElem preValueWrite(String key, Object o, boolean withNsPrefix,boolean withNamespace, Class<?> rootClass);
 
     abstract void postValueWrite(SerializerElem e, String key);
 
@@ -113,14 +114,14 @@ public abstract class OdlDataSerializer {
                             name = extraSerializer.convertPropertyName(name);
                             //if has inner childs
                             if (DataObject.class.isAssignableFrom(type)) {
-                                e2 = this.startElem(name, value, rootClass);
+                                e2 = this.startElem(name, value, false, rootClass);
                                 this.writeRecurseProperties(e2, value, level + 1, rootClass);
                                 this.stopElem(e2, name);
                                 e.addChild(e2);
                             } else {
                                 //if enum
                                 if (Enum.class.isAssignableFrom(type)) {
-                                    e2 = this.startElem(name, value, rootClass);
+                                    e2 = this.startElem(name, value, false, false, rootClass);
                                     String svalue = this.getEnumStringValue(value);
                                     this.writeElemValue(e2, svalue.substring(0, 1).toLowerCase() + svalue.substring(1));
                                     this.stopElem(e2, name);
@@ -128,7 +129,7 @@ public abstract class OdlDataSerializer {
                                 }
                                 // type object (new type of base type) => use getValue()
                                 else if (TypeObject.class.isAssignableFrom(type)) {
-                                    e2 = this.startElem(name, value, rootClass);
+                                    e2 = this.startElem(name, value, false, false, rootClass);
                                     this.writeElemValue(e2, this.getTypeObjectStringValue(value, type));
                                     this.stopElem(e2, name);
                                     e.addChild(e2);
@@ -136,12 +137,22 @@ public abstract class OdlDataSerializer {
                                 //if choice then jump over field and step into next java level, but not in xml
                                 else if (ChoiceIn.class.isAssignableFrom(type)) {
                                     this.writeRecurseProperties(e, value, level, rootClass);
-                                } else if (type == Class.class
-                                        && BaseIdentity.class.isAssignableFrom((Class<?>) value)) {
+                                }
+                                //if type is Identity reference
+                                else if (type == Class.class && BaseIdentity.class.isAssignableFrom((Class<?>) value)) {
                                     e2 = this.startElem(name, value, rootClass);
                                     this.writeElemValue(e2, this.getIdentity((Class<?>) value));
                                     this.stopElem(e2, name);
                                     e.addChild(e2);
+                                }
+                                //if list of elems
+                                else if (value != null && Map.class.isAssignableFrom(type)) {
+                                    for (Object listObject : ((Map<?,Object>) value).values()) {
+                                        e2 = this.startElem(name, listObject, rootClass);
+                                        this.writeRecurseProperties(e2, listObject, level + 1, rootClass);
+                                        this.stopElem(e2, name);
+                                        e.addChild(e2);
+                                    }
                                 }
                                 //if list of elems
                                 else if (value != null && List.class.isAssignableFrom(type)) {
@@ -154,7 +165,7 @@ public abstract class OdlDataSerializer {
                                 }
                                 //by exclude all others it is basic value element
                                 else {
-                                    e2 = this.startElem(name, value, rootClass);
+                                    e2 = this.startElem(name, value, false, false, rootClass);
                                     this.writeElemValue(e2, value);
                                     this.stopElem(e2, name);
                                     e.addChild(e2);
@@ -216,6 +227,9 @@ public abstract class OdlDataSerializer {
 
     private SerializerElem startElem(String elem, Object o, boolean withNsPrefix, Class<?> rootClass) {
         return this.preValueWrite(elem, o, withNsPrefix, rootClass);
+    }
+    private SerializerElem startElem(String elem, Object o, boolean withNsPrefix, boolean withNamespace, Class<?> rootClass) {
+        return this.preValueWrite(elem, o, withNsPrefix, withNamespace, rootClass);
     }
 
     private void writeElemValue(SerializerElem e, Object elemValue) {

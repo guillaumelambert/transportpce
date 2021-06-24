@@ -162,6 +162,9 @@ public class OdlObjectMapperXml extends XmlMapper implements ClassFinder{
                     LOG.warn("unable to add augmentations to type {}. No fn with this name found",builder.getClass());
                 }
             }
+            else {
+                LOG.warn("no builder foun for type {}",valueType);
+            }
         }
         return value;
     }

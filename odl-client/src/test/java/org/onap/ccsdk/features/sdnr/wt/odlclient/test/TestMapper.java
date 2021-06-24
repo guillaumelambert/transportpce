@@ -40,9 +40,12 @@ import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlRpcObjectMapperXml;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.OdlXmlSerializer;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.Direction;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.EquipmentTypeEnum;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.FrequencyTHz;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.ModulationFormat;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.OpticalControlMode;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.PortQual;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.PowerDBm;
+import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.R100G;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.common.types.rev181019.State;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.LedControlInputBuilder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.circuit.pack.CircuitPackCategoryBuilder;
@@ -869,58 +872,62 @@ public class TestMapper {
         }
 
     }
-//    @Test
-//    public void testInterfaceWithAugmentSerializer() {
-//        Mapping portMap = new MappingBuilder().setSupportingCircuitPackName("cpname")
-//                .setSupportingPort("C1")
-//                .build();
-//
-//
-//        // OCH interface specific data
-//        OchBuilder ocIfBuilder = new OchBuilder()
-//                .setFrequency(FrequencyTHz.getDefaultInstance("196.5"))
-//                .setRate(R100G.class)
-//                .setTransmitPower(new PowerDBm(new BigDecimal("-5")));
-//
-//        String logicalConnPoint = "lcp";
-//        Long waveNumber = 1L;
-//        // Create generic interface
-//        InterfaceBuilder ochInterfaceBldr = createGenericInterfaceBuilder(portMap, OpticalChannel.class,
-//            createOpenRoadmOchInterfaceName(logicalConnPoint, waveNumber));
-//        // Create Interface1 type object required for adding as augmentation
-//        // TODO look at imports of different versions of class
-//        org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev181019.Interface1Builder
-//            ochIf1Builder = new org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev181019
-//            .Interface1Builder();
-//        ochInterfaceBldr.addAugmentation(
-//            org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev181019.Interface1.class,
-//            ochIf1Builder.setOch(ocIfBuilder.build()).build());
-//        OdlRpcObjectMapperXml mapper = new OdlRpcObjectMapperXml();
-//        Method[] ms = ochInterfaceBldr.getClass().getDeclaredMethods();
-//        for(Method m:ms) {
-//            if(m.getName().startsWith("augm")) {
-//                LOG.info("m={}",m.getName());
-//            }
-//        }
-//        String res = mapper.writeValueAsString(ochInterfaceBldr.build(), Interface.class);
-//        LOG.info("if with aug = {}",res);
-//    }
+
     public String createOpenRoadmOchInterfaceName(String logicalConnectionPoint, Long waveNumber) {
         return logicalConnectionPoint + "-" + waveNumber;
     }
-//    private InterfaceBuilder createGenericInterfaceBuilder(Mapping portMap, Class<? extends InterfaceType> type,
-//            String key) {
-//            InterfaceBuilder interfaceBuilder = new InterfaceBuilder()
-//                    .setDescription("  TBD   ")
-//                    .setCircuitId("   TBD    ")
-//                    .setSupportingCircuitPackName(portMap.getSupportingCircuitPackName())
-//                    .setSupportingPort(portMap.getSupportingPort())
-//                    .setAdministrativeState(AdminStates.InService)
-//                    .setType(type)
-//                    .setName(key)
-//                    .withKey(new InterfaceKey(key));
-//            return interfaceBuilder;
-//        }
+
+    @Test
+    public void testInterfaceOCHSerializer() {
+        InterfaceBuilder ifbuilder = new InterfaceBuilder()
+                .setAdministrativeState(AdminStates.InService)
+                .setCircuitId("TBD").setDescription("TBD")
+                .setName("XPDR1-NETWORK1-761:768")
+                .setSupportingCircuitPackName("1/0/1-PLUG-NET")
+                .setSupportingPort(1)
+                .setType(org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.OpticalChannel.class);
+        Interface1Builder ifOCHBuilder = new Interface1Builder()
+                .setOch(new OchBuilder()
+                    .setFrequency(FrequencyTHz.getDefaultInstance("196.1000"))
+                    .setRate(R100G.class)
+                    .setTransmitPower(PowerDBm.getDefaultInstance("-5"))
+                    .setModulationFormat(ModulationFormat.DpQpsk)
+                    .build());
+        ifbuilder.addAugmentation(ifOCHBuilder.build());
+        OdlRpcObjectMapperXml mapper = new OdlRpcObjectMapperXml();
+        String res = mapper.writeValueAsString(ifbuilder.build(), Interface.class);
+        String fileContent = null;
+        try {
+            fileContent = this.getTrimmedFileContent("/xml/roadm-interface-och-put-request.xml");
+        } catch (IOException e1) {
+            fail(e1.getMessage());
+        }
+        LOG.info("src={}", fileContent);
+        LOG.info("res={}", res);
+        try {
+            assertTrue(XMLUnit.compareXML(fileContent, res).similar());
+        } catch (SAXException | IOException e) {
+            LOG.error(e.getMessage());
+            fail(e.getMessage());
+        }
+    }
+    @Test
+    public void testInterfaceOCHDeSerializer() {
+        OdlObjectMapperXml mapper = new OdlObjectMapperXml(true);
+        String fileContent = null;
+        try {
+            fileContent = this.getTrimmedFileContent("/xml/roadm-interface-och-put-request2.xml");
+        } catch (IOException e1) {
+            fail(e1.getMessage());
+        }
+        Interface iface = null;
+        try {
+            iface = mapper.readValue(fileContent,Interface.class);
+        } catch (JsonProcessingException e) {
+            fail(e.getMessage());
+        }
+        LOG.info("deser={}",iface);
+    }
     @Ignore
     @Test
     public void testPowerSerializer() {
@@ -938,16 +945,6 @@ public class TestMapper {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        //    	InterfaceBuilder interfaceBuilder = new InterfaceBuilder()
-        //                .setDescription("  TBD   ")
-        //                .setCircuitId("   TBD    ")
-        //                .setSupportingCircuitPackName("2/0")
-        //                .setSupportingPort("L1")
-        //                .setAdministrativeState(AdminStates.InService)
-        //                .setType(NetworkMediaChannelConnectionTerminationPoint.class)
-        //                .setName("DEG2-TTP-TXRX-nmc-1")
-        //                .withKey(new InterfaceKey("DEG2-TTP-TXRX-nmc-1"));
-        //
 
         InterfaceBuilder ochInterfaceBuilder = new InterfaceBuilder(interfaceObj);
         org.opendaylight.yang.gen.v1.http.org.openroadm.optical.channel.interfaces.rev181019.Interface1 if1 =

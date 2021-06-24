@@ -68,6 +68,7 @@ public class CustomOdlDeserializer extends BeanDeserializerModifier {
             JsonDeserializer<?> deserializer) {
         final JavaType type = beanDesc.getType();
         final Class<?> rawClass = type.getRawClass();
+
         final JsonDeserializer<?> deser = super.modifyDeserializer(config, beanDesc, deserializer);
         if (implementsInterface(rawClass, TypeObject.class)) {
             return new TypeObjectJsonDeserializer<TypeObject>(type, deser);
@@ -75,7 +76,7 @@ public class CustomOdlDeserializer extends BeanDeserializerModifier {
         if (implementsInterface(rawClass, ScalarTypeObject.class)) {
             return new TypeObjectJsonDeserializer<ScalarTypeObject>(type, deser);
         }
-        if (implementsInterface(rawClass, BaseIdentity.class)) {
+        if (implementsInterface(rawClass, Class.class)) {
             return new BaseIdentityJsonDeserializer<BaseIdentity>(deser, this.clsFinder);
         }
         if (rawClass.equals(Class.class)) {
@@ -85,13 +86,7 @@ public class CustomOdlDeserializer extends BeanDeserializerModifier {
         return deser;
     }
     public static boolean implementsInterface(Class<?> clz, Class<?> ifToImplement) {
-        Class<?>[] ifs = clz.getInterfaces();
-        for (Class<?> iff : ifs) {
-            if (iff.equals(ifToImplement)) {
-                return true;
-            }
-        }
-        return false;
+        return ifToImplement.isAssignableFrom(clz);
     }
 
 }

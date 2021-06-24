@@ -34,53 +34,53 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
     private static final Logger LOG = LoggerFactory.getLogger(YangToolsBuilderAnnotationIntrospector.class);
     private static final long serialVersionUID = 1L;
     private final BundleContext context;
-    private final Map<Class<?>,String> customDeserializer;
+    private final Map<Class<?>, String> customDeserializer;
 
     public YangToolsBuilderAnnotationIntrospector(BundleContext context) {
         this.context = context;
         this.customDeserializer = new HashMap<>();
         //this.customDeserializer.put(Credentials.class, LoginPasswordBuilder.class.getName());
-        this.customDeserializer.put(DateAndTime.class,DateAndTimeBuilder.class.getName());
-//        this.customDeserializer.put(Info.class,InfoBuilder.class.getName());
-//        this.customDeserializer.put(GlobalConfig.class,GlobalConfigBuilder.class.getName());
-//        this.customDeserializer.put(Degree.class,DegreeBuilder.class.getName());
-//        this.customDeserializer.put(NetconfNode.class,NetconfNodeBuilder.class.getName());
-//        this.customDeserializer.put(SharedRiskGroup.class,SharedRiskGroupBuilder.class.getName());
-//        this.customDeserializer.put(McCapabilities.class,McCapabilitiesBuilder.class.getName());
-//        this.customDeserializer.put(CircuitPacks.class,CircuitPacksBuilder.class.getName());
-//        this.customDeserializer.put(ConnectionPorts.class,ConnectionPortsBuilder.class.getName());
-//        this.customDeserializer.put(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.
-//                CircuitPacks.class,org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.
-//                degree.CircuitPacksBuilder.class.getName());
-//        this.customDeserializer.put(Interface.class,InterfaceBuilder.class.getName());
-//        this.customDeserializer.put(OtdrPort.class,OtdrPortBuilder.class.getName());
-//        this.customDeserializer.put(Ports.class,PortsBuilder.class.getName());
-//        this.customDeserializer.put(OduSwitchingPools.class,OduSwitchingPoolsBuilder.class.getName());
-//        this.customDeserializer.put(NonBlockingList.class,NonBlockingListBuilder.class.getName());
-//        this.customDeserializer.put(ConnectionMap.class,ConnectionMapBuilder.class.getName());
-//        this.customDeserializer.put(LineAmplifier.class,LineAmplifierBuilder.class.getName());
-//        this.customDeserializer.put(CircuitPack.class,CircuitPackBuilder.class.getName());
-//        this.customDeserializer.put(Xponder.class,XponderBuilder.class.getName());
-//        this.customDeserializer.put(XpdrPort.class,XpdrPortBuilder.class.getName());
-//        this.customDeserializer.put(Odu.class,OduBuilder.class.getName());
-//        this.customDeserializer.put(ParentOduAllocation.class,ParentOduAllocationBuilder.class.getName());
-//        this.customDeserializer.put(TxMsi.class,TxMsiBuilder.class.getName());
-//        this.customDeserializer.put(RxMsi.class,RxMsiBuilder.class.getName());
-//        this.customDeserializer.put(ExpMsi.class,ExpMsiBuilder.class.getName());
-//        this.customDeserializer.put(MaintTestsignal.class,MaintTestsignalBuilder.class.getName());
-//        this.customDeserializer.put(Tcm.class,TcmBuilder.class.getName());
-//        this.customDeserializer.put(Otu.class,OtuBuilder.class.getName());
+        this.customDeserializer.put(DateAndTime.class, DateAndTimeBuilder.class.getName());
+        //        this.customDeserializer.put(Info.class,InfoBuilder.class.getName());
+        //        this.customDeserializer.put(GlobalConfig.class,GlobalConfigBuilder.class.getName());
+        //        this.customDeserializer.put(Degree.class,DegreeBuilder.class.getName());
+        //        this.customDeserializer.put(NetconfNode.class,NetconfNodeBuilder.class.getName());
+        //        this.customDeserializer.put(SharedRiskGroup.class,SharedRiskGroupBuilder.class.getName());
+        //        this.customDeserializer.put(McCapabilities.class,McCapabilitiesBuilder.class.getName());
+        //        this.customDeserializer.put(CircuitPacks.class,CircuitPacksBuilder.class.getName());
+        //        this.customDeserializer.put(ConnectionPorts.class,ConnectionPortsBuilder.class.getName());
+        //        this.customDeserializer.put(org.opendaylight.yang.gen.v1.http.org.openroadm.device.rev181019.degree.
+        //                CircuitPacks.class,org.onap.ccsdk.features.sdnr.wt.odlclient.data.builders.device.rev181019.
+        //                degree.CircuitPacksBuilder.class.getName());
+        //        this.customDeserializer.put(Interface.class,InterfaceBuilder.class.getName());
+        //        this.customDeserializer.put(OtdrPort.class,OtdrPortBuilder.class.getName());
+        //        this.customDeserializer.put(Ports.class,PortsBuilder.class.getName());
+        //        this.customDeserializer.put(OduSwitchingPools.class,OduSwitchingPoolsBuilder.class.getName());
+        //        this.customDeserializer.put(NonBlockingList.class,NonBlockingListBuilder.class.getName());
+        //        this.customDeserializer.put(ConnectionMap.class,ConnectionMapBuilder.class.getName());
+        //        this.customDeserializer.put(LineAmplifier.class,LineAmplifierBuilder.class.getName());
+        //        this.customDeserializer.put(CircuitPack.class,CircuitPackBuilder.class.getName());
+        //        this.customDeserializer.put(Xponder.class,XponderBuilder.class.getName());
+        //        this.customDeserializer.put(XpdrPort.class,XpdrPortBuilder.class.getName());
+        //        this.customDeserializer.put(Odu.class,OduBuilder.class.getName());
+        //        this.customDeserializer.put(ParentOduAllocation.class,ParentOduAllocationBuilder.class.getName());
+        //        this.customDeserializer.put(TxMsi.class,TxMsiBuilder.class.getName());
+        //        this.customDeserializer.put(RxMsi.class,RxMsiBuilder.class.getName());
+        //        this.customDeserializer.put(ExpMsi.class,ExpMsiBuilder.class.getName());
+        //        this.customDeserializer.put(MaintTestsignal.class,MaintTestsignalBuilder.class.getName());
+        //        this.customDeserializer.put(Tcm.class,TcmBuilder.class.getName());
+        //        this.customDeserializer.put(Otu.class,OtuBuilder.class.getName());
 
 
     }
+
     @Override
     public Class<?> findPOJOBuilder(AnnotatedClass ac) {
         try {
             String builder = null;
             if (this.customDeserializer.containsKey(ac.getRawType())) {
                 builder = this.customDeserializer.get(ac.getRawType());
-            }
-            else {
+            } else {
                 if (ac.getRawType().isInterface()) {
                     builder = ac.getName() + "Builder";
                 }
@@ -91,7 +91,7 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
                 return innerBuilder;
             }
         } catch (ClassNotFoundException e) {
-            LOG.trace("builder class not found for {}",ac.getName());
+            LOG.trace("builder class not found for {}", ac.getName());
         }
         return super.findPOJOBuilder(ac);
     }
@@ -122,8 +122,11 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
                 try {
                     return b.loadClass(name);
                 } catch (ClassNotFoundException e) {
-                    // No problem, this bundle doesn't have the class
                 }
+            }
+            try {
+                return Class.forName(name);
+            } catch (ClassNotFoundException e) {
             }
             throw new ClassNotFoundException("Can not find Class in OSGi context.");
         } else {
@@ -131,6 +134,7 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         }
         // not found in any bundle
     }
+
     @Override
     public AnnotatedMethod resolveSetterConflict(MapperConfig<?> config, AnnotatedMethod setter1,
             AnnotatedMethod setter2) {
@@ -139,7 +143,7 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         AnnotatedMethod res = null;
 
         if (this.isAssignable(p1, p2, Map.class, List.class)) {
-            res = p1.isAssignableFrom(List.class)?setter1:setter2;
+            res = p1.isAssignableFrom(List.class) ? setter1 : setter2;
         } else if (this.isAssignable(p1, p2, Uint64.class, BigInteger.class)) {
             res = setter1;
         } else if (this.isAssignable(p1, p2, Uint32.class, Long.class)) {
@@ -157,6 +161,7 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
 
         return res;
     }
+
     private boolean isAssignable(Class<?> p1, Class<?> p2, Class<?> c1, Class<?> c2) {
         return ((p1.isAssignableFrom(c1) && p2.isAssignableFrom(c2))
                 || (p2.isAssignableFrom(c1) && p1.isAssignableFrom(c2)));

@@ -51,15 +51,11 @@ public class SerializerElem {
 
     private String getValueWithNs() {
         if (this.value != null) {
-            return (this.namespace != null && this.namespace.length() > 0)
+            return (this.namespace != null && this.namespace.length() > 0 && this.nsPrefix!=null)
                     ? String.format("%s:%s", this.nsPrefix, this.value)
                     : this.value;
         }
-//        if (this.value != null) {
-//            return (this.namespace != null && this.namespace.length() > 0)
-//                    ? String.format("%s", this.value)
-//                    : this.value;
-//        }
+
         if (this.items.size() > 0) {
             StringBuilder sb = new StringBuilder();
             for (SerializerElem e : this.items) {

@@ -16,14 +16,15 @@ import org.opendaylight.yangtools.yang.common.QName;
 
 public class OdlXmlSerializer extends OdlDataSerializer {
 
-    private static final String[] xmlNamespacePrefixes=("a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,ab,ac"
+    private static final String[] xmlNamespacePrefixes = ("a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,ab,ac"
             + ",ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az").split(",");
-    private int prefixIndex=0;
+    private int prefixIndex = 0;
     private boolean hasNamespace;
 
-	public OdlXmlSerializer() {
-	    this(null);
-	}
+    public OdlXmlSerializer() {
+        this(null);
+    }
+
     public OdlXmlSerializer(ClassFinder clsFinder) {
         super(clsFinder);
         this.hasNamespace = false;
@@ -47,19 +48,30 @@ public class OdlXmlSerializer extends OdlDataSerializer {
 
         return def;
     }
+
     private String getPrefix() {
-    	return this.prefixIndex<xmlNamespacePrefixes.length?xmlNamespacePrefixes[this.prefixIndex++]:"";
+        return this.prefixIndex < xmlNamespacePrefixes.length ? xmlNamespacePrefixes[this.prefixIndex++] : "";
     }
+
     @Override
     void clear() {
-    	this.prefixIndex = 0;
+        this.prefixIndex = 0;
     }
 
     @Override
     SerializerElem preValueWrite(String key, Object o, boolean withNsPrefix, Class<?> rootClass) {
         final String ns = this.getXmlNameSpace(o, rootClass);
         this.hasNamespace = ns.length() > 0;
-        return new SerializerElem(key,ns,(withNsPrefix && hasNamespace)?this.getPrefix():null);
+        return new SerializerElem(key, ns, (withNsPrefix && hasNamespace) ? this.getPrefix() : null);
+    }
+
+    @Override
+    SerializerElem preValueWrite(String key, Object o, boolean withNsPrefix, boolean withNamespace,
+            Class<?> rootClass) {
+        if (withNamespace) {
+            return this.preValueWrite(key, o, withNsPrefix, rootClass);
+        }
+        return new SerializerElem(key, null, null);
     }
 
     @Override
@@ -86,8 +98,7 @@ public class OdlXmlSerializer extends OdlDataSerializer {
             if (couldQName instanceof QName) {
                 QName qname = (QName) couldQName;
                 return qname.getNamespace().toString();
-            }
-            else if (o.getClass() == Class.class && BaseIdentity.class.isAssignableFrom((Class<?>) o)) {
+            } else if (o.getClass() == Class.class && BaseIdentity.class.isAssignableFrom((Class<?>) o)) {
                 try {
                     Class<?> value = (Class<?>) o;
                     QName qname = null;
@@ -109,5 +120,6 @@ public class OdlXmlSerializer extends OdlDataSerializer {
         }
         return "";
     }
+
 
 }
