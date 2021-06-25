@@ -12,5 +12,5 @@ Fork of the Opendaylight transportpce project
 
 | branch | status |
 | ------ | ------ |
-| [stable/magnesium](https://github.com/highstreet-technologies/transportpce/tree/stable/magnesium) | working |
-| [stable/aluminium](https://github.com/highstreet-technologies/transportpce/tree/stable/aluminium) | in progress |
+| [stable/magnesium](https://github.com/highstreet-technologies/transportpce/tree/stable/magnesium) | stable |
+| [stable/aluminium](https://github.com/highstreet-technologies/transportpce/tree/stable/aluminium) | stable |
