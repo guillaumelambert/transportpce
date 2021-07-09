@@ -21,7 +21,8 @@ We have three different options for simulators:
 ## Preparation
 
  * compile all sources (maybe with skipTests): mvn clean install
- * build transportpce docker image
+ * build transportpce and gui docker image (distribution folder)
+ * feel free to exchange the sdnc-image with your preferred one (>=ONAP honolulu release)
 
 ## Integration script
 

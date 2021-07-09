@@ -27,9 +27,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.onap.ccsdk.parent.aluminium.sr3</groupId>
+        <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>binding-parent</artifactId>
-        <version>2.2.0-SNAPSHOT</version>
+        <version>2.1.7</version>
         <relativePath/>
     </parent>
 
@@ -60,6 +60,16 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

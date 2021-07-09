@@ -24,8 +24,8 @@ services:
     depends_on: 
       - transportpce
   sdncweb:
-    image: nexus3.onap.org:10001/onap/sdnc-web-image:latest
-#    image: 10.20.6.10:30000/hightec/sdnc-web-image:2.0.0-SNAPSHOT-20200731T064656Z
+#    image: nexus3.onap.org:10001/onap/sdnc-web-image:latest
+    image: 10.20.6.10:30000/hightec/sdnc-web-image:2.2.0-SNAPSHOT-20210624T064521Z
     environment: 
       - SDNRHOST=sdnr
     ports:
@@ -33,24 +33,27 @@ services:
     depends_on: 
       - sdnr
   sdnr:
-    image: hightec/sdnc-image-wt-patch:1.2-SNAPSHOT-latest  
-    #image: 10.20.6.10:30000/hightec/sdnr-image-silicon:1.2.0-SNAPSHOT-20210623T013547Z
+    #image: hightec/sdnc-image-wt-patch:1.2.0-SNAPSHOT-20210625T063556Z
+    image: 10.20.6.10:30000/hightec/sdnr-image-aluminium:1.2.0-SNAPSHOT-20210707T234903Z
     environment:
       - ODL_ADMIN_PASSWORD=${SDNR_PASSWORD}
       - SDNRONLY=true
       - SDNRINIT=true
-      - SDNRDM=true
+      - SDNRDM=false
       - SDNRWT=true
       - SDNRDBURL=http://sdnrdb:9200                                          
       - SDNRDM_BOOTFEATURES=odl-restconf-all,odl-netconf-topology,odl-mdsal-all,odl-mdsal-apidocs,odl-daexim-all,odl-restconf-nb-rfc8040,odl-netconf-callhome-ssh,odl-mdsal-model-rfc8345,sdnr-wt-feature-aggregator-devicemanager-base,sdnr-wt-feature-aggregator-devicemanager
     depends_on: 
       - sdnrdb
+    ports:
+      - '8181:8181'
   sdnrdb:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
     environment: 
       - discovery.type=single-node
   roadma:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
+    container_name: roadma
     environment: 
       - NTS_IP=10.20.11.121
       - EXTERNAL_NTS_IP=10.20.11.121
@@ -67,6 +70,7 @@ services:
       - 50000:${SIMPORT}
   roadmb:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
+    container_name: roadmb
     environment: 
       - NTS_IP=10.20.11.121
       - EXTERNAL_NTS_IP=10.20.11.121
@@ -83,6 +87,7 @@ services:
       - 50001:${SIMPORT}  
   roadmc:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
+    container_name: roadmc
     environment: 
       - NTS_IP=10.20.11.121
       - EXTERNAL_NTS_IP=10.20.11.121
@@ -99,6 +104,7 @@ services:
       - 50002:${SIMPORT}
   xpdra:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
+    container_name: xpdra
     environment: 
       - NTS_IP=10.20.11.121
       - EXTERNAL_NTS_IP=10.20.11.121
@@ -116,6 +122,7 @@ services:
   
   xpdrc:
     image: ${NTSIM_ROADM_STANDALONE_IMAGE}
+    container_name: xpdrc
     environment: 
       - NTS_IP=10.20.11.121
       - EXTERNAL_NTS_IP=10.20.11.121

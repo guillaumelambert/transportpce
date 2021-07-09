@@ -30,6 +30,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     </scm>
 
     <modules>
+        <module>sdnr/wt/devicemanager-core/model</module>
+        <module>sdnr/wt/websocketmanager/model</module>
+        <module>sdnr/wt/yang-utils</module>
         <module>ordmodels</module>
         <module>tapimodels</module>
         <module>api</module>

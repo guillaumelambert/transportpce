@@ -7,6 +7,7 @@ import shlex
 import subprocess
 import datetime
 import time
+import json
 from lib.config import IntegrationConfig
 from lib.docker import Docker, DockerContainer
 from lib.odlclient import OdlClient
@@ -15,15 +16,8 @@ from tests.mountingtest import MountingTest
 from tests.end2endtest import End2EndTest
 from lib.siminfo import SimulatorInfo
 
-#SIMS = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
-SIMS = ["roadma", "roadmc", "xpdra", "xpdrc"]
-SIMS_DEMO2 = ["roadma", "roadmb", "roadmc", "xpdra", "xpdrc"]
-
-NODEID_LUT = dict(roadma="ROADM-A1",roadmb="ROADM-B1",
-    roadmc="ROADM-C1",
-    xpdra="XPDR-A1",
-    xpdrc="XPDR-C1")
-
+BIN_FOLDER="../bin"
+SIM_FOLDER="../sims"
 class Integration:
 
     def __init__(self, prefix, envFile=None, sdnrHost=None, trpceHost=None):
@@ -41,61 +35,24 @@ class Integration:
             trpceHost = "http://"+trpceInfos.getIpAddress()+":8181"
         self.odlTrpceClient = TrpceOdlClient(trpceHost, "admin", "admin")
 
-    
     def getContainerName(self, name, suffix="_1"):
         return self.prefix+name+suffix
 
-    def getMountPointName(self, name, suffix="_1"):
-        #return self.getContainerName(name, suffix).replace("_", "").replace(" ", "").replace("-", "")
-        return NODEID_LUT[name]
-
     def mount(self,args):
-        mode = args.pop(0) if len(args)>0 else 'default'
-        if mode == "adva":
-           infos = self.collectSimInfos(mode)
-           for info in infos:
-                if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-                    self.odlSdnrClient.mount(info.name, info.ip, info.port, info.username, info.password)
-                else:
-                    self.odlTrpceClient.mount(info.name, info.ip, info.port, info.username, info.password)
-        
-        elif mode == 'trpce' and self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-            info = self.getTransportPCEConsoleInfo()
-            self.odlSdnrClient.mount(info.name, info.ip, info.port, info.username, info.password)
-
-        else:
-            for sim in SIMS:
-                simContainerName = self.getContainerName(sim)
-                simInfo = self.dockerExec.inspect(simContainerName)
-                simMountPointName = self.getMountPointName(sim)
-                if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-                    self.odlSdnrClient.mount(simMountPointName, simInfo.getIpAddress(), self.config.getEnv("SIMPORT"), self.config.getEnv("SIM_NETCONF_USERNAME"), self.config.getEnv("SIM_NETCONF_PASSWORD"))
-                else:
-                    self.odlTrpceClient.mount(simMountPointName, simInfo.getIpAddress(), self.config.getEnv("SIMPORT"), self.config.getEnv("SIM_NETCONF_USERNAME"), self.config.getEnv("SIM_NETCONF_PASSWORD"))
+        infos = self.collectSimInfos(args)
+        for info in infos:
+             if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+                 self.odlSdnrClient.mount(info.name, info.ip, info.port, info.username, info.password)
+             else:
+                 self.odlTrpceClient.mount(info.name, info.ip, info.port, info.username, info.password)
     
     def unmount(self,args):
-        mode = args.pop(0) if len(args)>0 else 'default'
-        if mode == "adva":
-           infos = self.collectSimInfos(mode)
-           for info in infos:
-                if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-                    self.odlSdnrClient.unmount(info.name)
-                else:
-                    self.odlTrpceClient.unmount(info.name)
-        elif mode == 'trpce' and self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-            info = self.getTransportPCEConsoleInfo()
-            self.odlSdnrClient.unmount(info.name)
-
-        else:
-            for sim in SIMS:
-                simContainerName = self.getContainerName(sim)
-                simInfo = self.dockerExec.inspect(simContainerName)
-                simMountPointName = self.getMountPointName(sim)
-                if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-                    self.odlSdnrClient.unmount(simMountPointName)
-                else:
-                    self.odlTrpceClient.unmount(simMountPointName)
-    
+        infos = self.collectSimInfos(args)
+        for info in infos:
+             if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+                 self.odlSdnrClient.unmount(info.name)
+             else:
+                 self.odlTrpceClient.unmount(info.name)
 
     def printInfo(self, name, info):
 
@@ -117,68 +74,31 @@ class Integration:
             self.getContainerName("transportpce-gui")))
 
         # print sim infos
-        for sim in SIMS:
-            simContainerName = self.getContainerName(sim)
-            self.printInfo(sim, self.dockerExec.inspect(simContainerName))
+        #for sim in SIMS:
+        #    simContainerName = self.getContainerName(sim)
+        #    self.printInfo(sim, self.dockerExec.inspect(simContainerName))
 
     def status(self, args):
-        mode = args.pop(0) if len(args)>0 else 'default'
-        if mode == "adva":
-            infos = self.collectSimInfos(mode)
-            for info in infos:
-                if self.config.isRemoteEnabled():
-                    status = self.odlSdnrClient.neStatus(info.name)
-                else:
-                    status = self.odlTrpceClient.neStatus(info.name)
-                print(info.name.ljust(20)+status)
-               
-        else:
-            for sim in SIMS:
-                if self.config.isRemoteEnabled():
-                    status = self.odlSdnrClient.neStatus(self.getMountPointName(sim))
-                else:
-                    status = self.odlTrpceClient.neStatus(self.getMountPointName(sim))              
-                print(sim.ljust(20)+status)
+        infos = self.collectSimInfos(args)
+        for info in infos:
+            if self.config.isRemoteEnabled():
+                status = self.odlSdnrClient.neStatus(info.name)
+            else:
+                status = self.odlTrpceClient.neStatus(info.name)
+            print(info.name.ljust(20)+status)
 
-    def collectSimInfos(self,mode='default'):
+    def collectSimInfos(self, args):
+        mode = args.pop(0) if len(args)>0 else 'default'
         sims = []
-        if mode == 'default':
-            for sim in SIMS:
-                simContainerName = self.getContainerName(sim)
-                simInfo = self.dockerExec.inspect(simContainerName)
-                simMountPointName = self.getMountPointName(sim)
-                sims.append(SimulatorInfo(simMountPointName, simInfo.getIpAddress(), 
-                self.config.getEnv("SIMPORT"),
-                self.config.getEnv("SIM_NETCONF_USERNAME"), 
-                self.config.getEnv("SIM_NETCONF_PASSWORD")))
-        elif mode == 'adva':
-            DEMO_MEDIATOR_IP_ADDR = "10.20.6.49"
-            DEMO_NETCONF_USERNAME = "admin"
-            DEMO_NETCONF_PASSWORD = "admin"
-            sims.append(SimulatorInfo("ROADM-A1", DEMO_MEDIATOR_IP_ADDR, 
-                17931, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("ROADM-B1", DEMO_MEDIATOR_IP_ADDR, 
-                17941, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("ROADM-C1", DEMO_MEDIATOR_IP_ADDR, 
-                17951, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("XPDR-A1", DEMO_MEDIATOR_IP_ADDR, 
-                17933, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("XPDR-C1", DEMO_MEDIATOR_IP_ADDR, 
-                17953, DEMO_NETCONF_USERNAME, DEMO_NETCONF_PASSWORD))
-        elif mode == 'demo2':
-            DEMO2_MEDIATOR_IP_ADDR = "10.20.6.32"
-            DEMO2_NETCONF_USERNAME = "netconf"
-            DEMO2_NETCONF_PASSWORD = "netconf"
-            sims.append(SimulatorInfo("ROADM-A1", DEMO2_MEDIATOR_IP_ADDR, 
-                50000, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("ROADM-B1", DEMO2_MEDIATOR_IP_ADDR, 
-                50001, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("ROADM-C1", DEMO2_MEDIATOR_IP_ADDR, 
-                50002, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("XPDR-A1", DEMO2_MEDIATOR_IP_ADDR, 
-                50003, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
-            sims.append(SimulatorInfo("XPDR-C1", DEMO2_MEDIATOR_IP_ADDR, 
-                50004, DEMO2_NETCONF_USERNAME, DEMO2_NETCONF_PASSWORD))
+        with open(SIM_FOLDER+"/"+mode+".json", "r") as file:
+            tmp=json.load(file)
+            for sim in tmp:
+                host=sim['host']
+                if len(host) <=0:
+                    simInfo = self.dockerExec.inspect(sim['container'])
+                    host = simInfo.getIpAddress()
+                sims.append(SimulatorInfo(sim['node-id'], host, sim['port'], sim['username'], sim['password']))
+       
         return sims
 
     def getTransportPCEContainer(self):
@@ -281,22 +201,21 @@ class Integration:
         
     def executeTest(self, args):
         test = args.pop(0)
-        mode = args.pop(0) if len(args)>0 else 'default'
         if test == "1":
             test = MountingTest(self.odlSdnrClient, self.odlTrpceClient,
-                                self.getTransportPCEContainer(), self.collectSimInfos(mode))
+                                self.getTransportPCEContainer(), self.collectSimInfos(args))
             test.test1()
         elif test == "2":
             test = MountingTest(self.odlSdnrClient, self.odlTrpceClient,
-                                self.getTransportPCEContainer(), self.collectSimInfos(mode))
+                                self.getTransportPCEContainer(), self.collectSimInfos(args))
             test.test2()
         elif test == "end2end":
             test = End2EndTest(self.odlSdnrClient, self.odlTrpceClient,
-                self.getTransportPCEContainer(),self.collectSimInfos(mode),self.config)
+                self.getTransportPCEContainer(),self.collectSimInfos(args),self.config)
             test.test(args)
         elif test == "demo":
             test = End2EndTest(self.odlSdnrClient, self.odlTrpceClient,
-                self.getTransportPCEContainer(),self.collectSimInfos('demo'),self.config)
+                self.getTransportPCEContainer(),self.collectSimInfos(['demo']),self.config)
             test.test(args)
         else:
             print('unknown command: '+test)
