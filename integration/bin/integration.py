@@ -88,7 +88,7 @@ class Integration:
             print(info.name.ljust(20)+status)
 
     def collectSimInfos(self, args):
-        mode = args.pop(0) if len(args)>0 else 'default'
+        mode = args.pop(0) if len(args)>0 and not args[0].startswith('--') else 'default'
         sims = []
         with open(SIM_FOLDER+"/"+mode+".json", "r") as file:
             tmp=json.load(file)
@@ -250,6 +250,7 @@ if __name__ == "__main__":
 
     sdnrHost = None
     trpceHost = None
+    envFilename = None
     if len(sys.argv)>0 and sys.argv[0]=="--sdnr":
         sys.argv.pop(0)
         sdnrHost = sys.argv.pop(0)
@@ -258,6 +259,10 @@ if __name__ == "__main__":
         sys.argv.pop(0)
         trpceHost = sys.argv.pop(0)
         print("overwriting trpce host: "+trpceHost)
+    if len(sys.argv)>0 and sys.argv[0]=="--env":
+        sys.argv.pop(0)
+        envFilename = sys.argv.pop(0)
+        print("overwriting env file: "+envFilename)
 
     cmd = sys.argv.pop(0)
 
@@ -271,10 +276,10 @@ if __name__ == "__main__":
         prefix = tmp[len(tmp)-1]
         prefix = prefix.replace(" ", "_")+"_"
 
-    
-    envFilename = execDirAbs+"/.env"
-    if not os.path.isfile(envFilename):
-        envFilename = None
+    if envFilename is None:
+        envFilename = execDirAbs+"/.env"
+        if not os.path.isfile(envFilename):
+            envFilename = None
     integration = Integration(prefix, envFilename, sdnrHost, trpceHost)
     if cmd == "info":
         integration.info()

@@ -1,6 +1,6 @@
 [
     {
-        "node-id": "ROADM-A",
+        "node-id": "ROADM-A1",
         "host": "",
         "port": 830,
         "username":"netconf",
@@ -8,15 +8,7 @@
         "container":"roadma"
     },
     {
-        "node-id": "ROADM-B",
-        "host": "",
-        "port": 830,
-        "username":"netconf",
-        "password":"netconf",
-        "container":"roadmb"
-    },
-    {
-        "node-id": "ROADM-C",
+        "node-id": "ROADM-C1",
         "host": "",
         "port": 830,
         "username":"netconf",
@@ -24,7 +16,7 @@
         "container":"roadmc"
     },
     {
-        "node-id": "XPDR-A",
+        "node-id": "XPDR-A1",
         "host": "",
         "port": 830,
         "username":"netconf",
@@ -32,7 +24,7 @@
         "container":"xpdra"
     },
     {
-        "node-id": "XPDR-C",
+        "node-id": "XPDR-C1",
         "host": "",
         "port": 830,
         "username":"netconf",

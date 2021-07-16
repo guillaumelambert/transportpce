@@ -11,13 +11,13 @@ class TrpceOdlClient(OdlClient):
 
     def linkRoadmToRoadm(self, roadmANodeId, roadmADeg, roadmATermPoint, roadmZNodeId, roadmZDeg, roadmZTermPoint):
         data = {
-            "networkutils:input": {
-                "networkutils:rdm-a-node": roadmANodeId,
-                "networkutils:deg-a-num": roadmADeg,
-                "networkutils:termination-point-a": roadmATermPoint,
-                "networkutils:rdm-z-node": roadmZNodeId,
-                "networkutils:deg-z-num": roadmZDeg,
-                "networkutils:termination-point-z": roadmZTermPoint
+            "input": {
+                "rdm-a-node": roadmANodeId,
+                "deg-a-num": roadmADeg,
+                "termination-point-a": roadmATermPoint,
+                "rdm-z-node": roadmZNodeId,
+                "deg-z-num": roadmZDeg,
+                "termination-point-z": roadmZTermPoint
             }
         }
         payload = json.dumps(data)
@@ -28,14 +28,14 @@ class TrpceOdlClient(OdlClient):
     
     def linkXpdrToRoadm(self, xpdrNode, xpdrNum, xpdrNetworkPortNumber, roadmNodeId, srgNumber, logicalConnectionPoint):
         data ={
-            "networkutils:input": {
-                "networkutils:links-input": {
-                "networkutils:xpdr-node": xpdrNode,
-                "networkutils:xpdr-num": xpdrNum,
-                "networkutils:network-num": xpdrNetworkPortNumber,
-                "networkutils:rdm-node": roadmNodeId,
-                "networkutils:srg-num": srgNumber,
-                "networkutils:termination-point-num": logicalConnectionPoint
+            "input": {
+                "links-input": {
+                "xpdr-node": xpdrNode,
+                "xpdr-num": xpdrNum,
+                "network-num": xpdrNetworkPortNumber,
+                "rdm-node": roadmNodeId,
+                "srg-num": srgNumber,
+                "termination-point-num": logicalConnectionPoint
                 }
             }
         }
@@ -48,14 +48,14 @@ class TrpceOdlClient(OdlClient):
     
     def linkRoadmTpXpdr(self, xpdrNode, xpdrNum, xpdrNetworkPortNumber, roadmNodeId, srgNumber, logicalConnectionPoint):
         data ={
-            "networkutils:input": {
-                "networkutils:links-input": {
-                "networkutils:xpdr-node": xpdrNode,
-                "networkutils:xpdr-num": xpdrNum,
-                "networkutils:network-num": xpdrNetworkPortNumber,
-                "networkutils:rdm-node": roadmNodeId,
-                "networkutils:srg-num": srgNumber,
-                "networkutils:termination-point-num": logicalConnectionPoint
+            "input": {
+                "links-input": {
+                "xpdr-node": xpdrNode,
+                "xpdr-num": xpdrNum,
+                "network-num": xpdrNetworkPortNumber,
+                "rdm-node": roadmNodeId,
+                "srg-num": srgNumber,
+                "termination-point-num": logicalConnectionPoint
                 }
             }
         }

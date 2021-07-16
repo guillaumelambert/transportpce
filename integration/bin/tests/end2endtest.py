@@ -17,11 +17,12 @@ class End2EndTest(BaseTest):
     def test(self,args):
         self.waitForReadyState()
         step = None
+        print("e2e test args="+str(args))
         if len(args)>0:
             step = args.pop(0)
-        if step == "clean":
+        if step == "--clean":
             return self.clean()#
-        if step != "skipmount":
+        if step != "--skipmount":
             success = self.mountAll()
             if success:
                 print("mounting simulators succeeded")
@@ -29,7 +30,7 @@ class End2EndTest(BaseTest):
                 print("problem mounting simulators")
                 return False
             #stop if requested
-            if step=='mount':
+            if step=='--mount':
                 return True
             time.sleep(self.WAITING)
         else:
