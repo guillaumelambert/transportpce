@@ -37,8 +37,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T deserialize(JsonParser parser, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+    public T deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
         Class<?> clazz = type.getRawClass();
         final String arg = parser.getValueAsString();
@@ -51,7 +50,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
             } else {
                 //try to find builder with getDefaultInstance method
                 try {
-                    Class<?> builderClazz = findBuilderClass(ctxt,clazz);
+                    Class<?> builderClazz = findBuilderClass(ctxt, clazz);
                     if (hasClassDeclaredMethod(builderClazz, TYPEOBJECT_INSTANCE_METHOD)) {
                         Method method = builderClazz.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
                         T res = (T) method.invoke(null, arg);
@@ -69,26 +68,76 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
                         return (T) clazz.getConstructor(ctype).newInstance(arg);
                     } else if (hasClassDeclaredMethod(ctype, TYPEOBJECT_INSTANCE_METHOD)) {
                         Method method = ctype.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
-                        return (T) clazz.getConstructor(ctype)
-                                .newInstance(method.invoke(null, arg));
-                    } else {
-                        // TODO: recursive instantiation down to string constructor or
-                        // getDefaultInstance method
+                        return (T) clazz.getConstructor(ctype).newInstance(method.invoke(null, arg));
                     }
                 }
+                // TODO: recursive instantiation down to string constructor or
+                // e.g org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Host
+                // Host->IpAddress->Ipv4Address/Ipv6Address
+                ctypes = getConstructorParameterTypes(clazz, null);
+                for (Class<?> ctype : ctypes) {
+                    //ignore string(hasn't worked before) and self class
+                    if (ctype.equals(String.class) || ctype.equals(clazz)) {
+                        continue;
+                    }
+                    try {
+                        Object value = recurseInstantiate(arg, ctype, 0, 4);
+                        if (value != null) {
+                            return (T) clazz.getConstructor(ctype).newInstance(value);
+                        }
+                    } catch (IllegalArgumentException ex) {
+                        LOG.debug("unable to instantiate {} with value {}", ctype.getName(), arg);
+                    }
 
+                }
             }
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | NoSuchElementException | SecurityException
-                | InstantiationException e) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                | NoSuchElementException | SecurityException | InstantiationException e) {
             LOG.warn("problem deserializing {} with value {}: {}", clazz.getName(), arg, e);
         }
         return (T) deser.deserialize(parser, ctxt);
     }
 
-    private Class<?> findBuilderClass(DeserializationContext ctxt,Class<?> clazz) throws ClassNotFoundException{
+    private Object recurseInstantiate(String strValue, Class<?> clazz, int iteration, int maxIteration)
+            throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            NoSuchMethodException, SecurityException {
+        if (iteration > maxIteration) {
+            LOG.warn("max iteration {} in deserialization reached for class {}", iteration, clazz.getName());
+            return null;
+        }
+        List<Class<?>> ctypes = getConstructorParameterTypes(clazz, null);
+        for (Class<?> ctype : ctypes) {
+            //ignore self class
+            if (ctype.equals(clazz)) {
+                continue;
+            }
+            //constructor with string => instantiate
+            //catch illegalargexception  for validity value checks
+            if (ctype.equals(String.class)) {
+                try {
+                    return clazz.getConstructor(ctype).newInstance(strValue);
+                } catch (IllegalArgumentException ex) {
+                    LOG.debug("unable to instantiate {} with value {}", ctype.getName(), strValue);
+                }
+            }
+            //for each other object based constructor iterate
+            Object value = recurseInstantiate(strValue, ctype, iteration + 1, maxIteration);
+            if (value != null) {
+                try {
+                    return clazz.getConstructor(ctype).newInstance(value);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException
+                        | NoSuchMethodException | SecurityException e) {
+                    LOG.debug("problem instantiating {} with value {}: ", ctype.getName(), strValue, e);
+                }
+            }
+        }
+        return null;
+    }
+
+    private Class<?> findBuilderClass(DeserializationContext ctxt, Class<?> clazz) throws ClassNotFoundException {
         return ctxt.findClass(clazz.getName() + "Builder");
     }
+
     private static boolean hasClassDeclaredMethod(Class<?> clazz, String name) {
         Method[] methods = clazz.getDeclaredMethods();
         for (Method m : methods) {
@@ -98,6 +147,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
         }
         return false;
     }
+
     private static List<Class<?>> getConstructorParameterTypes(Class<?> clazz, Class<?> prefer) {
 
         Constructor<?>[] constructors = clazz.getConstructors();
