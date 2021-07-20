@@ -32,6 +32,7 @@ class OdlClient:
         self.defaultJsonHeaders['Content-Type']='application/json'
         self.defaultJsonHeaders['Accept']='application/json'
         self.defaultJsonHeaders['Authorization']="Basic "+str(base64.b64encode((username+":"+password).encode('utf-8')),'utf-8')
+        self.primarySource = False
 
     def requestRest(self, uri, method, headers=dict(), data=None):
         http = urllib3.PoolManager(cert_reqs='CERT_NONE')
@@ -105,3 +106,9 @@ class OdlClient:
     
     def getNodeA1Data(self, url:str):
         return self.requestRest(url, 'GET', self.defaultJsonHeaders)
+
+    def setPrimary(self, prim):
+        self.primarySource = prim
+
+    def isPrimary(self):
+        return self.primarySource

@@ -6,8 +6,8 @@ from .basetest import BaseTest
 class End2EndTest(BaseTest):
 
 
-    def __init__(self, sdncClient, trpceClient, trpceContainer, sims, config):
-        BaseTest.__init__(self, sdncClient, trpceClient, sims, config)
+    def __init__(self, sdncClients, trpceClient, trpceContainer, sims, config):
+        BaseTest.__init__(self, sdncClients, trpceClient, sims, config)
         self.WAITING = 30
         self.trpceContainer = trpceContainer
 
@@ -178,10 +178,13 @@ class End2EndTest(BaseTest):
     def mountAll(self):
         responses = []
         if self.config.isRemoteEnabled():
+            idx=0
             for sim in self.sims:
-                response = self.sdncClient.mount( sim.name, sim.ip,
+                client = self.getSdncClient(idx)
+                response = client.mount( sim.name, sim.ip,
                     sim.port,sim.username,sim.password)
                 responses.append(response)
+                idx+=1
         else:
             for sim in self.sims:
                 response = self.trpceClient.mount( sim.name, sim.ip,
@@ -416,7 +419,7 @@ class End2EndTest(BaseTest):
     def checkConnections(self):
         #check_xc1_ROADMA
         if self.config.isRemoteEnabled():
-            response = self.sdncClient.getNodeData("ROADM-A1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
+            response = self.getSdncClient(0, True).getNodeData("ROADM-A1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
         else:
             response = self.trpceClient.getNodeData("ROADM-A1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
         if not response.isSucceeded():
@@ -427,7 +430,7 @@ class End2EndTest(BaseTest):
             if c["connection-name"].startswith("SRG1-PP1-TXRX-DEG2-TTP-TXRX"):
                 connectionId = c["connection-name"]
         if self.config.isRemoteEnabled():
-            response = self.sdncClient.getNodeData("ROADM-A1", 
+            response = self.getSdncClient(0, True).getNodeData("ROADM-A1", 
                 "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
         else:
             response = self.trpceClient.getNodeData("ROADM-A1", 
@@ -451,7 +454,7 @@ class End2EndTest(BaseTest):
 
         #check_xc1_ROADMC
         if self.config.isRemoteEnabled():
-            response = self.sdncClient.getNodeData("ROADM-C1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
+            response = self.getSdncClient(0, True).getNodeData("ROADM-C1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
         else:
             response = self.trpceClient.getNodeData("ROADM-C1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
         if not response.isSucceeded():
@@ -463,7 +466,7 @@ class End2EndTest(BaseTest):
                 connectionId = c["connection-name"]
 
         if self.config.isRemoteEnabled():
-            response = self.sdncClient.getNodeData("ROADM-C1", 
+            response = self.getSdncClient(0, True).getNodeData("ROADM-C1", 
                 "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
         else:
             response = self.trpceClient.getNodeData("ROADM-C1", 
@@ -733,7 +736,7 @@ class End2EndTest(BaseTest):
     def test2CheckConnections(self):
         #check_xc2_ROADMA
         if self.config.isRemoteEnabled():
-            response = self.sdncClient.getNodeData("ROADM-A1", 
+            response = self.getSdncClient(0, True).getNodeData("ROADM-A1", 
                 "/org-openroadm-device:org-openroadm-device/roadm-connections/DEG2-TTP-TXRX-SRG1-PP2-TXRX-2")
         else:
             response = self.trpceClient.getNodeData("ROADM-A1", 

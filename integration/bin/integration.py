@@ -3,11 +3,11 @@
 import sys
 import os
 import os.path
-import shlex
 import subprocess
 import datetime
 import time
 import json
+import re
 from lib.config import IntegrationConfig
 from lib.docker import Docker, DockerContainer
 from lib.odlclient import OdlClient
@@ -17,37 +17,66 @@ from tests.end2endtest import End2EndTest
 from lib.siminfo import SimulatorInfo
 
 BIN_FOLDER="../bin"
-SIM_FOLDER="../sims"
+SIM_FOLDER="../configs/sims"
+CONTROLLER_FOLDER="../configs/controllers"
 class Integration:
 
-    def __init__(self, prefix, envFile=None, sdnrHost=None, trpceHost=None):
+    def __init__(self, prefix, envFile=None, profile="default"):
         self.prefix = prefix
         self.config = IntegrationConfig(envFile)
         self.dockerExec = Docker()
-        self.odlSdnrClient = None
-        if self.config.isRemoteEnabled():
-            if sdnrHost is None:
-                sdnrInfos = self.dockerExec.inspect(self.getContainerName("sdnr"))
-                sdnrHost = "http://"+sdnrInfos.getIpAddress()+":8181"
-            self.odlSdnrClient = OdlClient(sdnrHost, self.config.getEnv("SDNR_USERNAME"), self.config.getEnv("SDNR_PASSWORD"))
-        if trpceHost is None:
-            trpceInfos = self.dockerExec.inspect(self.getContainerName("transportpce"))
-            trpceHost = "http://"+trpceInfos.getIpAddress()+":8181"
-        self.odlTrpceClient = TrpceOdlClient(trpceHost, "admin", "admin")
+        self.profile = profile
+        cconfig = self.loadControllerConfig()
+        self.odlSdnrClients = []
+        trpceConfig = cconfig['transportpce']
+        trpceHost=trpceConfig['host']
+        if len(trpceConfig['container'])>0:
+            trpceInfos = self.dockerExec.inspect(trpceConfig['container'])
+            trpceHost=trpceInfos.getIpAddress()
+        self.odlTrpceClient = TrpceOdlClient(trpceConfig['scheme']+'://'+trpceHost+':'+str(trpceConfig['port']),
+            trpceConfig['username'], trpceConfig['password'])
+        
+        for sconfig in cconfig['sdnr']:
+            sdnrHost=sconfig['host']
+            if len(sconfig['container'])>0:
+                sdnrInfos = self.dockerExec.inspect(sconfig['container'])
+                sdnrHost=sdnrInfos.getIpAddress()
+            client = OdlClient(sconfig['scheme']+'://'+sdnrHost+':'+str(sconfig['port']), 
+                sconfig['username'], sconfig['password'])
+            if sconfig['primary']:
+                client.setPrimary(True)
+            self.odlSdnrClients.append(client)
+        
+    def loadControllerConfig(self):
+        data=None
+        regex = r"\$\{([^}]+)\}"
+        with open(CONTROLLER_FOLDER+'/'+self.profile+'.json','r') as fp:
+            content=fp.read()
+            matches = re.finditer(regex, content, re.MULTILINE)
+            for matchNum, match in enumerate(matches, start=1):
+                content = content.replace(match.group(),self.config.getEnv(match.group(1)))
+            data = json.loads(content)
+            fp.close()
+        return data
 
     def getContainerName(self, name, suffix="_1"):
         return self.prefix+name+suffix
 
-    def mount(self,args):
-        infos = self.collectSimInfos(args)
+    def getSdnrClient(self, primary=True, i=0):
+        return self.odlSdnrClients[len(self.odlSdnrClients) % i]
+    def getTrpceClient(self):
+        return self.odlTrpceClient
+    
+    def mount(self):
+        infos = self.collectSimInfos()
         for info in infos:
              if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
                  self.odlSdnrClient.mount(info.name, info.ip, info.port, info.username, info.password)
              else:
                  self.odlTrpceClient.mount(info.name, info.ip, info.port, info.username, info.password)
     
-    def unmount(self,args):
-        infos = self.collectSimInfos(args)
+    def unmount(self):
+        infos = self.collectSimInfos()
         for info in infos:
              if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
                  self.odlSdnrClient.unmount(info.name)
@@ -73,13 +102,9 @@ class Integration:
         self.printInfo("transportpce-gui", self.dockerExec.inspect(
             self.getContainerName("transportpce-gui")))
 
-        # print sim infos
-        #for sim in SIMS:
-        #    simContainerName = self.getContainerName(sim)
-        #    self.printInfo(sim, self.dockerExec.inspect(simContainerName))
 
-    def status(self, args):
-        infos = self.collectSimInfos(args)
+    def status(self,args):
+        infos = self.collectSimInfos()
         for info in infos:
             if self.config.isRemoteEnabled():
                 status = self.odlSdnrClient.neStatus(info.name)
@@ -87,8 +112,8 @@ class Integration:
                 status = self.odlTrpceClient.neStatus(info.name)
             print(info.name.ljust(20)+status)
 
-    def collectSimInfos(self, args):
-        mode = args.pop(0) if len(args)>0 and not args[0].startswith('--') else 'default'
+    def collectSimInfos(self):
+        mode = self.profile
         sims = []
         with open(SIM_FOLDER+"/"+mode+".json", "r") as file:
             tmp=json.load(file)
@@ -202,20 +227,20 @@ class Integration:
     def executeTest(self, args):
         test = args.pop(0)
         if test == "1":
-            test = MountingTest(self.odlSdnrClient, self.odlTrpceClient,
-                                self.getTransportPCEContainer(), self.collectSimInfos(args))
+            test = MountingTest(self.odlSdnrClients, self.odlTrpceClient,
+                                self.getTransportPCEContainer(), self.collectSimInfos())
             test.test1()
         elif test == "2":
-            test = MountingTest(self.odlSdnrClient, self.odlTrpceClient,
-                                self.getTransportPCEContainer(), self.collectSimInfos(args))
+            test = MountingTest(self.odlSdnrClients, self.odlTrpceClient,
+                                self.getTransportPCEContainer(), self.collectSimInfos())
             test.test2()
         elif test == "end2end":
-            test = End2EndTest(self.odlSdnrClient, self.odlTrpceClient,
-                self.getTransportPCEContainer(),self.collectSimInfos(args),self.config)
+            test = End2EndTest(self.odlSdnrClients, self.odlTrpceClient,
+                self.getTransportPCEContainer(),self.collectSimInfos(),self.config)
             test.test(args)
         elif test == "demo":
-            test = End2EndTest(self.odlSdnrClient, self.odlTrpceClient,
-                self.getTransportPCEContainer(),self.collectSimInfos(['demo']),self.config)
+            test = End2EndTest(self.odlSdnrClients, self.odlTrpceClient,
+                self.getTransportPCEContainer(),self.collectSimInfos(),self.config)
             test.test(args)
         else:
             print('unknown command: '+test)
@@ -248,24 +273,23 @@ if __name__ == "__main__":
     execDirAbs = os.getcwd()
     sys.argv.pop(0)
 
-    sdnrHost = None
-    trpceHost = None
+    profile="default"
     envFilename = None
-    if len(sys.argv)>0 and sys.argv[0]=="--sdnr":
-        sys.argv.pop(0)
-        sdnrHost = sys.argv.pop(0)
-        print("overwriting sdnr host: "+sdnrHost)
-    if len(sys.argv)>0 and sys.argv[0]=="--trpce":
-        sys.argv.pop(0)
-        trpceHost = sys.argv.pop(0)
-        print("overwriting trpce host: "+trpceHost)
-    if len(sys.argv)>0 and sys.argv[0]=="--env":
-        sys.argv.pop(0)
-        envFilename = sys.argv.pop(0)
-        print("overwriting env file: "+envFilename)
+    x=0
+    while x<len(sys.argv):
+        arg = sys.argv[x]
+        if arg == "--profile":
+            sys.argv.pop(x)
+            profile = sys.argv.pop(x)
+            print("using profile: "+profile) 
+        elif arg =="--env":
+            sys.argv.pop(x)
+            envFilename = sys.argv.pop(x)
+            print("overwriting env file: "+envFilename)
+        else:
+            x+=1
 
     cmd = sys.argv.pop(0)
-
     # always autodetect prefix by exec folder
     tmp = execDirAbs.split("/")
     prefix = tmp[len(tmp)-1]
@@ -280,7 +304,7 @@ if __name__ == "__main__":
         envFilename = execDirAbs+"/.env"
         if not os.path.isfile(envFilename):
             envFilename = None
-    integration = Integration(prefix, envFilename, sdnrHost, trpceHost)
+    integration = Integration(prefix, envFilename, profile)
     if cmd == "info":
         integration.info()
     elif cmd == "status":

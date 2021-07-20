@@ -2,6 +2,7 @@ version: '3'
 
 services:
   transportpce:
+    container_name: transportpce
     image: odl/transportpce
     environment: 
       - REMOTE_SDNRURL=${REMOTE_SDNR_URL}
@@ -35,6 +36,7 @@ services:
   sdnr:
     #image: hightec/sdnc-image-wt-patch:1.2.0-SNAPSHOT-20210625T063556Z
     image: 10.20.6.10:30000/hightec/sdnr-image-aluminium:1.2.0-SNAPSHOT-20210707T234903Z
+    container_name: sdnr
     environment:
       - ODL_ADMIN_PASSWORD=${SDNR_PASSWORD}
       - SDNRONLY=true
