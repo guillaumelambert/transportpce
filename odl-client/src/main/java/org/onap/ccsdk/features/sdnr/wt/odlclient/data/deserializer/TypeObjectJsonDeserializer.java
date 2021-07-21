@@ -64,12 +64,15 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
                 // find constructor argument types
                 List<Class<?>> ctypes = getConstructorParameterTypes(clazz, String.class);
                 for (Class<?> ctype : ctypes) {
-                    if (ctype.equals(String.class)) {
-                        return (T) clazz.getConstructor(ctype).newInstance(arg);
-                    } else if (hasClassDeclaredMethod(ctype, TYPEOBJECT_INSTANCE_METHOD, String.class)) {
-                        Method method = ctype.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
-                        return (T) clazz.getConstructor(ctype).newInstance(method.invoke(null, arg));
-
+                    try {
+                        if (ctype.equals(String.class)) {
+                            return (T) clazz.getConstructor(ctype).newInstance(arg);
+                        } else if (hasClassDeclaredMethod(ctype, TYPEOBJECT_INSTANCE_METHOD, String.class)) {
+                            Method method = ctype.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
+                            return (T) clazz.getConstructor(ctype).newInstance(method.invoke(null, arg));
+                        }
+                    } catch (IllegalArgumentException e) {
+                        LOG.debug("unable to instantiate {} with value {}", ctype.getName(), arg);
                     }
                 }
                 // TODO: recursive instantiation down to string constructor or
@@ -143,11 +146,10 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
     private static boolean hasClassDeclaredMethod(Class<?> clazz, String name, Class<?> paramType) {
         Method[] methods = clazz.getDeclaredMethods();
         for (Method m : methods) {
-            if (m.getName().equals(name) && m.getParameterCount()==1) {
-                if(paramType==null) {
+            if (m.getName().equals(name) && m.getParameterCount() == 1) {
+                if (paramType == null) {
                     return true;
-                }
-                else if (paramType.equals(m.getParameterTypes()[0])){
+                } else if (paramType.equals(m.getParameterTypes()[0])) {
                     return true;
                 }
             }
@@ -155,16 +157,23 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
         return false;
     }
 
+    /**
+     * get list of constructor params for single arg constructors expect constructors of itself (e.g. Host(Host
+     * host){...})
+     *
+     * @param clazz Class to detect constructors for
+     * @param prefer prefered constructor argument. If exists return only this. optional/nullable
+     * @return List of Classes for which constructors of this classes are existing, but are not itself
+     */
     private static List<Class<?>> getConstructorParameterTypes(Class<?> clazz, Class<?> prefer) {
 
         Constructor<?>[] constructors = clazz.getConstructors();
         List<Class<?>> res = new ArrayList<>();
         for (Constructor<?> c : constructors) {
             Class<?>[] ptypes = c.getParameterTypes();
-            if (ptypes.length == 1) {
+            if (ptypes.length == 1 && !clazz.equals(ptypes[0])) {
                 res.add(ptypes[0]);
             }
-
             if (prefer != null && ptypes.length == 1 && ptypes[0].equals(prefer)) {
                 return Arrays.asList(prefer);
             }
