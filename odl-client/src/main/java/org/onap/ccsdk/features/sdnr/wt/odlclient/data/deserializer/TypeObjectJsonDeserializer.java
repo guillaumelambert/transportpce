@@ -43,7 +43,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
         final String arg = parser.getValueAsString();
         try {
 
-            if (hasClassDeclaredMethod(clazz, TYPEOBJECT_INSTANCE_METHOD)) {
+            if (hasClassDeclaredMethod(clazz, TYPEOBJECT_INSTANCE_METHOD, String.class)) {
                 Method method = clazz.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
                 T res = (T) method.invoke(null, arg);
                 return res;
@@ -51,7 +51,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
                 //try to find builder with getDefaultInstance method
                 try {
                     Class<?> builderClazz = findBuilderClass(ctxt, clazz);
-                    if (hasClassDeclaredMethod(builderClazz, TYPEOBJECT_INSTANCE_METHOD)) {
+                    if (hasClassDeclaredMethod(builderClazz, TYPEOBJECT_INSTANCE_METHOD, String.class)) {
                         Method method = builderClazz.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
                         T res = (T) method.invoke(null, arg);
                         return res;
@@ -66,14 +66,10 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
                 for (Class<?> ctype : ctypes) {
                     if (ctype.equals(String.class)) {
                         return (T) clazz.getConstructor(ctype).newInstance(arg);
-                    } else if (hasClassDeclaredMethod(ctype, TYPEOBJECT_INSTANCE_METHOD)) {
+                    } else if (hasClassDeclaredMethod(ctype, TYPEOBJECT_INSTANCE_METHOD, String.class)) {
                         Method method = ctype.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
-                        try {
-                            return (T) clazz.getConstructor(ctype).newInstance(method.invoke(null, arg));
-                        } catch (NullPointerException e) {
-                            LOG.debug("unable to instantiate class {} with method {} and arg {}", ctype.getName(),
-                                    method.getName(), arg);
-                        }
+                        return (T) clazz.getConstructor(ctype).newInstance(method.invoke(null, arg));
+
                     }
                 }
                 // TODO: recursive instantiation down to string constructor or
@@ -110,6 +106,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
             LOG.warn("max iteration {} in deserialization reached for class {}", iteration, clazz.getName());
             return null;
         }
+        LOG.debug("iterate for typeobject class {} with value {}", clazz.getName(), strValue);
         List<Class<?>> ctypes = getConstructorParameterTypes(clazz, null);
         for (Class<?> ctype : ctypes) {
             //ignore self class
@@ -143,11 +140,16 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
         return ctxt.findClass(clazz.getName() + "Builder");
     }
 
-    private static boolean hasClassDeclaredMethod(Class<?> clazz, String name) {
+    private static boolean hasClassDeclaredMethod(Class<?> clazz, String name, Class<?> paramType) {
         Method[] methods = clazz.getDeclaredMethods();
         for (Method m : methods) {
-            if (m.getName().equals(name)) {
-                return true;
+            if (m.getName().equals(name) && m.getParameterCount()==1) {
+                if(paramType==null) {
+                    return true;
+                }
+                else if (paramType.equals(m.getParameterTypes()[0])){
+                    return true;
+                }
             }
         }
         return false;
