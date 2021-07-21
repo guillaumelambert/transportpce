@@ -71,7 +71,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
                             Method method = ctype.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
                             return (T) clazz.getConstructor(ctype).newInstance(method.invoke(null, arg));
                         }
-                    } catch (IllegalArgumentException e) {
+                    } catch (InvocationTargetException e) {
                         LOG.debug("unable to instantiate {} with value {}", ctype.getName(), arg);
                     }
                 }
@@ -89,7 +89,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
                         if (value != null) {
                             return (T) clazz.getConstructor(ctype).newInstance(value);
                         }
-                    } catch (IllegalArgumentException ex) {
+                    } catch (InvocationTargetException ex) {
                         LOG.debug("unable to instantiate {} with value {}", ctype.getName(), arg);
                     }
 
@@ -121,7 +121,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
             if (ctype.equals(String.class)) {
                 try {
                     return clazz.getConstructor(ctype).newInstance(strValue);
-                } catch (IllegalArgumentException ex) {
+                } catch (InvocationTargetException ex) {
                     LOG.debug("unable to instantiate {} with value {}", ctype.getName(), strValue);
                 }
             }
