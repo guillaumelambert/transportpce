@@ -48,7 +48,7 @@ If you like to have the ODLUX Gui started in you browser you can also directly e
 
 
 
-## integration.py Commands
+### Commands
 
 | command | description |
 | ------- | ----------- |
@@ -64,7 +64,12 @@ If you like to have the ODLUX Gui started in you browser you can also directly e
 | ../bin/integration.py webtrpce | open transportpce gui in the browser |
 | ../bin/integration.py apidocs [sdnc\|trpce] | open sdnc or transportpce apidcos gui in the browser |
 
+### overrides
 
+| arg | default value | description |
+| --- | ------------- | ----------- |
+| --profile | default | uses {value}.json to load sim and controller information from configs folder |
+| --env | .env | load env vars for passwords etc |
 
 
 ## Limitiations

@@ -2,15 +2,9 @@ import time;
 
 class BaseTest:
 
-    def __init__(self, sdncClients, trpceClient, sims, config):
+    def __init__(self, sdncClients, primarySdncClient, trpceClient, sims, config):
         self.sdncClients = sdncClients
-        self.primarySdncClient = None
-        idx=0
-        for c in self.sdncClients:
-            if c.isPrimary():
-                self.primarySdncClient=c
-                self.sdncClients.pop(idx)
-            idx+=1
+        self.primarySdncClient = primarySdncClient
         self.trpceClient = trpceClient
         self.sims = sims
         self.config = config

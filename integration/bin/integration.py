@@ -21,31 +21,34 @@ SIM_FOLDER="../configs/sims"
 CONTROLLER_FOLDER="../configs/controllers"
 class Integration:
 
+    def getUrl(self,config):
+        host=config['host']
+        if len(config['container'])>0:
+            infos = self.dockerExec.inspect(config['container'])
+            host=infos.getIpAddress()
+        url = config['scheme']+'://'+host+':'+str(config['port'])
+        if ('suffix' in config) and (len(config['suffix'])>0):
+            url+=config['suffix']
+        return url
+
     def __init__(self, prefix, envFile=None, profile="default"):
         self.prefix = prefix
         self.config = IntegrationConfig(envFile)
         self.dockerExec = Docker()
         self.profile = profile
         cconfig = self.loadControllerConfig()
-        self.odlSdnrClients = []
         trpceConfig = cconfig['transportpce']
-        trpceHost=trpceConfig['host']
-        if len(trpceConfig['container'])>0:
-            trpceInfos = self.dockerExec.inspect(trpceConfig['container'])
-            trpceHost=trpceInfos.getIpAddress()
-        self.odlTrpceClient = TrpceOdlClient(trpceConfig['scheme']+'://'+trpceHost+':'+str(trpceConfig['port']),
-            trpceConfig['username'], trpceConfig['password'])
-        
+        self.odlTrpceClient = TrpceOdlClient(self.getUrl(trpceConfig), trpceConfig['username'], trpceConfig['password'])
+        self.odlSdnrClients = []
+        self.primarySdncClient = None
         for sconfig in cconfig['sdnr']:
-            sdnrHost=sconfig['host']
-            if len(sconfig['container'])>0:
-                sdnrInfos = self.dockerExec.inspect(sconfig['container'])
-                sdnrHost=sdnrInfos.getIpAddress()
-            client = OdlClient(sconfig['scheme']+'://'+sdnrHost+':'+str(sconfig['port']), 
-                sconfig['username'], sconfig['password'])
+            client = OdlClient(self.getUrl(sconfig), sconfig['username'], sconfig['password'])
             if sconfig['primary']:
                 client.setPrimary(True)
-            self.odlSdnrClients.append(client)
+                self.primarySdncClient = client
+            else:
+                self.odlSdnrClients.append(client)
+        
         
     def loadControllerConfig(self):
         data=None
@@ -62,26 +65,33 @@ class Integration:
     def getContainerName(self, name, suffix="_1"):
         return self.prefix+name+suffix
 
-    def getSdnrClient(self, primary=True, i=0):
-        return self.odlSdnrClients[len(self.odlSdnrClients) % i]
+    def getSdnrClient(self, idx=0, primary=False):
+        if (primary and self.primarySdncClient!=None) or len(self.odlSdnrClients) == 0:
+            return self.primarySdncClient
+        return self.odlSdnrClients[idx % len(self.odlSdnrClients)]
+
     def getTrpceClient(self):
         return self.odlTrpceClient
     
-    def mount(self):
+    def mount(self, args):
         infos = self.collectSimInfos()
+        idx=0
         for info in infos:
-             if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-                 self.odlSdnrClient.mount(info.name, info.ip, info.port, info.username, info.password)
-             else:
+            if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+                 self.getSdnrClient(idx).mount(info.name, info.ip, info.port, info.username, info.password)
+            else:
                  self.odlTrpceClient.mount(info.name, info.ip, info.port, info.username, info.password)
+            idx+=1
     
-    def unmount(self):
+    def unmount(self, args):
         infos = self.collectSimInfos()
+        idx=0
         for info in infos:
-             if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
-                 self.odlSdnrClient.unmount(info.name)
-             else:
-                 self.odlTrpceClient.unmount(info.name)
+            if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
+                self.getSdnrClient(idx).unmount(info.name)
+            else:
+                self.odlTrpceClient.unmount(info.name)
+            idx+=1
 
     def printInfo(self, name, info):
 
@@ -107,7 +117,7 @@ class Integration:
         infos = self.collectSimInfos()
         for info in infos:
             if self.config.isRemoteEnabled():
-                status = self.odlSdnrClient.neStatus(info.name)
+                status = self.getSdnrClient(0, True).neStatus(info.name)
             else:
                 status = self.odlTrpceClient.neStatus(info.name)
             print(info.name.ljust(20)+status)
@@ -178,7 +188,7 @@ class Integration:
         if self.config.getEnv("REMOTE_ODL_ENABLED") == "true":
             response = self.odlTrpceClient.neInfos(self.getMountPointName(device))
         else:
-            response = self.odlSdnrClient.neInfos(self.getMountPointName(device))
+            response = self.getSdnrClient(0, True).neInfos(self.getMountPointName(device))
         
         if response.isSucceeded():
             caps=response.data["network-topology:node"][0]["netconf-node-topology:available-capabilities"]["available-capability"]
@@ -212,7 +222,12 @@ class Integration:
         print("waiting for ready state (max "+str(timeout) + "sec)...",end="")
         while timeout>0:
             if self.config.isRemoteEnabled():
-                ready = self.odlTrpceClient.isReady() and self.odlSdnrClient.isReady()
+                ready = self.odlTrpceClient.isReady()
+                if ready:
+                    if self.primarySdncClient!=None:
+                        ready= self.primarySdncClient.isReady()
+                    for c in self.odlSdnrClients:
+                        ready &= c.isReady()
             else:
                 ready  = self.odlTrpceClient.isReady()
             
@@ -235,7 +250,7 @@ class Integration:
                                 self.getTransportPCEContainer(), self.collectSimInfos())
             test.test2()
         elif test == "end2end":
-            test = End2EndTest(self.odlSdnrClients, self.odlTrpceClient,
+            test = End2EndTest(self.odlSdnrClients, self.primarySdncClient, self.odlTrpceClient,
                 self.getTransportPCEContainer(),self.collectSimInfos(),self.config)
             test.test(args)
         elif test == "demo":
@@ -250,7 +265,10 @@ def print_help():
     print("TransportPCE into ONAP integration script")
     print("=========================================")
     print("usage:")
-    print("  integration.py COMMAND [ARGS]")
+    print("  integration.py [ARGS] COMMAND")
+    print("ARGS:")
+    print("  --env [envfile]       set custom env file")
+    print("  --profile [profile]   set custom profile")
     print("COMMANDS:")
     print("  info                  show docker container information")
     print("  status                show simulator states")
@@ -305,6 +323,7 @@ if __name__ == "__main__":
         if not os.path.isfile(envFilename):
             envFilename = None
     integration = Integration(prefix, envFilename, profile)
+    #print("args="+str(sys.argv))
     if cmd == "info":
         integration.info()
     elif cmd == "status":

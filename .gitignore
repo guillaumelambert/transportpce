@@ -43,3 +43,6 @@ pce/data
 pce/some-output
 integration/demo-adva*
 integration/remote logs
+integration/configs/sims/demo*
+integration/configs/controllers/demo*
+.env.*

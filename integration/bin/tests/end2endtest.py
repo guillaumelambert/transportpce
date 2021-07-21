@@ -6,8 +6,8 @@ from .basetest import BaseTest
 class End2EndTest(BaseTest):
 
 
-    def __init__(self, sdncClients, trpceClient, trpceContainer, sims, config):
-        BaseTest.__init__(self, sdncClients, trpceClient, sims, config)
+    def __init__(self, sdncClients, primarySdncClient, trpceClient, trpceContainer, sims, config):
+        BaseTest.__init__(self, sdncClients, primarySdncClient, trpceClient, sims, config)
         self.WAITING = 30
         self.trpceContainer = trpceContainer
 
