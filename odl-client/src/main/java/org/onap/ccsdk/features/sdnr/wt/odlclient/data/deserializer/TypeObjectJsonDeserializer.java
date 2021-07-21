@@ -68,7 +68,12 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
                         return (T) clazz.getConstructor(ctype).newInstance(arg);
                     } else if (hasClassDeclaredMethod(ctype, TYPEOBJECT_INSTANCE_METHOD)) {
                         Method method = ctype.getDeclaredMethod(TYPEOBJECT_INSTANCE_METHOD, String.class);
-                        return (T) clazz.getConstructor(ctype).newInstance(method.invoke(null, arg));
+                        try {
+                            return (T) clazz.getConstructor(ctype).newInstance(method.invoke(null, arg));
+                        } catch (NullPointerException e) {
+                            LOG.debug("unable to instantiate class {} with method {} and arg {}", ctype.getName(),
+                                    method.getName(), arg);
+                        }
                     }
                 }
                 // TODO: recursive instantiation down to string constructor or

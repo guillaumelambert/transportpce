@@ -277,7 +277,7 @@ public class TestMapper {
         return new FileReader(new File(TestMapper.class.getResource(filename).getFile()));
     }
 
-    //    @Test
+    @Test
     public void testNetconfNodeDeserializer() throws JsonParseException, JsonMappingException, IOException {
         OdlObjectMapperXml xmlMapper = new OdlObjectMapperXml(true);
         String fileContent = null;
