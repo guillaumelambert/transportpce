@@ -36,12 +36,11 @@ import org.slf4j.LoggerFactory;
 
 public class RemoteDeviceConnectionChangeProvider {
 
-    private static final InstanceIdentifier<Topology> NETCONF_TOPO_IID = InstanceIdentifier
-            .create(NetworkTopology.class).child(Topology.class,
+    private static final InstanceIdentifier<Topology> NETCONF_TOPO_IID =
+            InstanceIdentifier.create(NetworkTopology.class).child(Topology.class,
                     new TopologyKey(new TopologyId(TopologyNetconf.QNAME.getLocalName())));
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(RemoteDeviceConnectionChangeProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RemoteDeviceConnectionChangeProvider.class);
     private final RestconfHttpClient client;
     private final List<DeviceConnectionChangedHandler> listeners;
 
@@ -63,8 +62,9 @@ public class RemoteDeviceConnectionChangeProvider {
                 this.pushDisconnect(nodeId);
 
             } else if (notification.isDataType(AttributeValueChangedNotification.class)) {
-                AttributeValueChangedNotification notification2 = (AttributeValueChangedNotification) notification.getData();
-                LOG.debug("handle change notification for {}",notification2.getAttributeName());
+                AttributeValueChangedNotification notification2 =
+                        (AttributeValueChangedNotification) notification.getData();
+                LOG.debug("handle change notification for {}", notification2.getAttributeName());
                 if (notification2.getAttributeName().equals("ConnectionStatus")) {
                     String nodeId = notification2.getObjectIdRef();
                     this.handleChange(nodeId);
@@ -78,16 +78,14 @@ public class RemoteDeviceConnectionChangeProvider {
     }
 
     private void handleChange(String nodeId) {
-        InstanceIdentifier<NetconfNode> nodeIif = NETCONF_TOPO_IID.child(Node.class,new NodeKey(new NodeId(nodeId)))
-                .augmentation(NetconfNode.class);
+        InstanceIdentifier<NetconfNode> nodeIif =
+                NETCONF_TOPO_IID.child(Node.class, new NodeKey(new NodeId(nodeId))).augmentation(NetconfNode.class);
         try {
-            LOG.debug("read remote netconfnode for node {}",nodeId);
-            Optional<NetconfNode> netconfNode = this.client.read(LogicalDatastoreType.CONFIGURATION, nodeIif)
-                    .get();
+            LOG.debug("read remote netconfnode for node {}", nodeId);
+            Optional<NetconfNode> netconfNode = this.client.read(LogicalDatastoreType.CONFIGURATION, nodeIif).get();
             this.handleChange(nodeId, netconfNode.isPresent() ? netconfNode.get() : null);
-        } catch (ClassNotFoundException | NoSuchFieldException | SecurityException
-                | IllegalArgumentException | IllegalAccessException | InterruptedException
-                | ExecutionException | IOException e) {
+        } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException
+                | IllegalAccessException | InterruptedException | ExecutionException | IOException e) {
             LOG.warn("problem reading netconfnode for {}: ", nodeId, e);
         }
 
@@ -95,10 +93,10 @@ public class RemoteDeviceConnectionChangeProvider {
 
     private void handleChange(String nodeId, NetconfNode netconfNode) {
 
-        if(netconfNode!=null) {
+        if (netconfNode != null) {
             @Nullable
             ConnectionStatus csts = netconfNode.getConnectionStatus();
-            LOG.debug("handle change for connection status {}",csts);
+            LOG.debug("handle change for connection status {}", csts);
             if (csts != null) {
                 if (csts == ConnectionStatus.Connected) {
                     this.pushConnect(nodeId, netconfNode);
@@ -111,37 +109,52 @@ public class RemoteDeviceConnectionChangeProvider {
             } else {
                 LOG.warn("unable to handle node {} without connection status", nodeId);
             }
-        }
-        else {
+        } else {
             this.pushDisconnect(nodeId);
         }
     }
 
     private void pushConnect(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
-            LOG.debug("push connected to {}",listener.getClass());
-            listener.onRemoteDeviceConnected(nodeId, netconfNode);
+            LOG.debug("push connected to {}", listener.getClass());
+            try {
+                listener.onRemoteDeviceConnected(nodeId, netconfNode);
+            } catch (Exception e) {
+                LOG.warn("problem pushing connected state for {}: ", nodeId, e);
+            }
         }
     }
 
     private void pushConnecting(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
-            LOG.debug("push connecting to {}",listener.getClass());
-            listener.onRemoteDeviceConnecting(nodeId);
+            LOG.debug("push connecting to {}", listener.getClass());
+            try {
+                listener.onRemoteDeviceConnecting(nodeId);
+            } catch (Exception e) {
+                LOG.warn("problem pushing connecting state for {}: ", nodeId, e);
+            }
         }
     }
 
     private void pushUnableToConnect(String nodeId, NetconfNode netconfNode) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
-            LOG.debug("push unable to connect to {}",listener.getClass());
-            listener.onRemoteDeviceUnableToConnect(nodeId);
+            LOG.debug("push unable to connect to {}", listener.getClass());
+            try {
+                listener.onRemoteDeviceUnableToConnect(nodeId);
+            } catch (Exception e) {
+                LOG.warn("problem pushing unable-to-connect state for {}: ", nodeId, e);
+            }
         }
     }
 
     private void pushDisconnect(String nodeId) {
         for (DeviceConnectionChangedHandler listener : this.listeners) {
-            LOG.debug("push disconnect to {}",listener.getClass());
-            listener.onRemoteDeviceDisConnected(nodeId);
+            LOG.debug("push disconnect to {}", listener.getClass());
+            try {
+                listener.onRemoteDeviceDisConnected(nodeId);
+            } catch (Exception e) {
+                LOG.warn("problem pushing disconnected state for {}: ", nodeId, e);
+            }
         }
     }
 
