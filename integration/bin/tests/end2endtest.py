@@ -23,7 +23,7 @@ class End2EndTest(BaseTest):
         if step == "--clean":
             return self.clean()#
         if step != "--skipmount":
-            success = self.mountAll()
+            success = self.mountAll(10)
             if success:
                 print("mounting simulators succeeded")
             else:
@@ -42,7 +42,14 @@ class End2EndTest(BaseTest):
             print("all devices are connected")
         else:
             print("problem with deviceconnection")
-            return False#
+            return False
+        success = self.checkAutocreatedNetworksAfterMount(2, 10)
+        if success:
+            print("autocreated networks are looking good")
+        else:
+            print("problem with autocreated networks")
+            return False
+        time.sleep(self.WAITING)
         success = self.createLinks()
         if success:
             print("creating links succeeded")
@@ -175,7 +182,7 @@ class End2EndTest(BaseTest):
     def clean(self):
         self.test3DeleteServices()
 
-    def mountAll(self):
+    def mountAll(self, delayBetweenMount=0):
         responses = []
         if self.config.isRemoteEnabled():
             idx=0
@@ -185,17 +192,58 @@ class End2EndTest(BaseTest):
                     sim.port,sim.username,sim.password)
                 responses.append(response)
                 idx+=1
+                if delayBetweenMount>0 and response.isSucceeded():
+                    time.sleep(delayBetweenMount)
         else:
             for sim in self.sims:
                 response = self.trpceClient.mount( sim.name, sim.ip,
                     sim.port,sim.username,sim.password)
                 responses.append(response)
+                if delayBetweenMount>0 and response.isSucceeded():
+                    time.sleep(delayBetweenMount)
  
         for r in responses:
             if not r.isSucceeded():
                 return False
         return True
         
+    def checkAutocreatedNetworksAfterMount(self, retries, delayForRetries):
+        success = False
+        while retries>=0:
+            #connect_xprdA_N1_to_roadmA_PP1
+            networkIds = self.trpceClient.getIetfNetworkIds()
+            if networkIds is not None:
+                success = (self.assertIn('otn-topology', networkIds) and 
+                self.assertIn('clli-network', networkIds) and
+                self.assertIn('openroadm-topology', networkIds) and
+                self.assertIn('openroadm-network', networkIds))
+            if success:
+                success = (self.assertNodesInIetfNetwork('otn-topology', ['XPDR-C1-XPDR1','XPDR-A1-XPDR1']) and
+                self.assertNodesInIetfNetwork('openroadm-network', ['ROADM-A1','ROADM-C1', 'XPDR-A1', 'XPDR-C1']) and
+                self.assertNodesInIetfNetwork('openroadm-topology',['ROADM-A1-DEG1','ROADM-A1-DEG2','ROADM-A1-SRG1','ROADM-A1-SRG3',
+                'ROADM-C1-DEG1','ROADM-C1-DEG2','ROADM-C1-SRG1','XPDR-A1-XPDR1','XPDR-C1-XPDR1']))
+                if success:
+                    break
+            retries-=1
+            if retries>=0:
+                print("network autocreation not yet complete. waiting for retry...")
+            else:
+                break
+            
+            time.sleep(delayForRetries)   
+        return success
+    def assertNodesInIetfNetwork(self, networkId, nodeIds):
+        networkNodes = self.trpceClient.getIetfNetworkNodes(networkId)
+        if networkNodes is None:
+            print('unable to get network nodes for '+networkId)
+            return False
+        
+        for nodeId in nodeIds:
+            if not self.assertIn(nodeId,networkNodes ):
+                print('node '+nodeId+' not found in network '+networkId)
+                return False
+    
+        return True
 
     def createLinks(self, retries=2, delayForRetries=10):
         success = False
@@ -365,22 +413,6 @@ class End2EndTest(BaseTest):
   
         return success
        
-    def assertIn(self, const, data):
-        if type(data) == str:
-            return data.find(const)>=0
-        return const in data
-
-    def assertEqual(self, const, data, msg=""):
-        r= const == data
-        if r == False and len(msg)>0:
-            print(msg)
-        return r
-
-    def assertDictEqual(self, a, b):
-        return a == b
-
-    def assertNotIn(self, k, ar):
-        return not k in ar
 
     def getService(self, retries=1, delayForRetries=10):
         
@@ -418,6 +450,7 @@ class End2EndTest(BaseTest):
 
     def checkConnections(self):
         #check_xc1_ROADMA
+        jsonNamespace = 'org-openroadm-device:'
         if self.config.isRemoteEnabled():
             response = self.getSdncClient(0, True).getNodeData("ROADM-A1","/org-openroadm-device:org-openroadm-device?fields=roadm-connections")
         else:
@@ -425,16 +458,16 @@ class End2EndTest(BaseTest):
         if not response.isSucceeded():
             return False
         connectionId = None
-        a = response.data['org-openroadm-device']['roadm-connections']
+        a = response.data['org-openroadm-device:org-openroadm-device']['roadm-connections']
         for c in a:
             if c["connection-name"].startswith("SRG1-PP1-TXRX-DEG2-TTP-TXRX"):
                 connectionId = c["connection-name"]
         if self.config.isRemoteEnabled():
             response = self.getSdncClient(0, True).getNodeData("ROADM-A1", 
-                "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
+                "/org-openroadm-device:org-openroadm-device/roadm-connections="+self.urlencode(connectionId))
         else:
             response = self.trpceClient.getNodeData("ROADM-A1", 
-                "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
+                "/org-openroadm-device:org-openroadm-device/roadm-connections="+self.urlencode(connectionId))
         if not response.isSucceeded():
             return False
         # the following statement replaces self.assertDictContainsSubset deprecated in python 3.2
@@ -443,11 +476,11 @@ class End2EndTest(BaseTest):
                 'connection-name': connectionId,
                 'opticalControlMode': 'gainLoss',
                 'target-output-power': -3.0
-            }, **response.data['roadm-connections'][0]),
-            response.data['roadm-connections'][0]
+            }, **response.data['org-openroadm-device:roadm-connections'][0]),
+            response.data['org-openroadm-device:roadm-connections'][0]
         )
-        success &= response.data['roadm-connections'][0]['source']['src-if'].startswith('SRG1-PP1-TXRX-nmc')
-        success &= response.data['roadm-connections'][0]['destination']['dst-if'].startswith('DEG2-TTP-TXRX-nmc')
+        success &= self.testString(response.data[jsonNamespace+'roadm-connections'][0]['source']['src-if'],r'^SRG.-PP1-TXRX-nmc.*')
+        success &= self.testString(response.data[jsonNamespace+'roadm-connections'][0]['destination']['dst-if'],r'^DEG.-TTP-TXRX-nmc.*')
  
         if not success:
             return False
@@ -460,17 +493,17 @@ class End2EndTest(BaseTest):
         if not response.isSucceeded():
             return False
         connectionId = None
-        a = response.data['org-openroadm-device']['roadm-connections']
+        a = response.data[jsonNamespace+'org-openroadm-device']['roadm-connections']
         for c in a:
             if c["connection-name"].startswith("SRG1-PP1-TXRX-DEG1-TTP-TXRX"):
                 connectionId = c["connection-name"]
 
         if self.config.isRemoteEnabled():
             response = self.getSdncClient(0, True).getNodeData("ROADM-C1", 
-                "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
+                "/org-openroadm-device:org-openroadm-device/roadm-connections="+self.urlencode(connectionId))
         else:
             response = self.trpceClient.getNodeData("ROADM-C1", 
-                "/org-openroadm-device:org-openroadm-device/roadm-connections/"+connectionId)
+                "/org-openroadm-device:org-openroadm-device/roadm-connections="+self.urlencode(connectionId))
 
         if not response.isSucceeded():
             return False
@@ -480,12 +513,12 @@ class End2EndTest(BaseTest):
                 'connection-name': connectionId,
                 'opticalControlMode': 'gainLoss',
                 'target-output-power': -3.0
-            }, **response.data['roadm-connections'][0]),
-            response.data['roadm-connections'][0]
+            }, **response.data[jsonNamespace+'roadm-connections'][0]),
+            response.data[jsonNamespace+'roadm-connections'][0]
         )
 
-        success &= response.data['roadm-connections'][0]['source']['src-if'].startswith('SRG1-PP1-TXRX-nmc')
-        success &= response.data['roadm-connections'][0]['destination']['dst-if'].startswith('DEG1-TTP-TXRX-nmc')
+        success &= self.testString(response.data[jsonNamespace+'roadm-connections'][0]['source']['src-if'], r'^SRG.-PP1-TXRX-nmc.*')
+        success &= self.testString(response.data[jsonNamespace+'roadm-connections'][0]['destination']['dst-if'], r'^DEG.-TTP-TXRX-nmc.*')
 
         if not response.isSucceeded():
             return False

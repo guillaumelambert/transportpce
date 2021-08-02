@@ -63,7 +63,8 @@ class Integration:
         return data
 
     def getContainerName(self, name, suffix="_1"):
-        return self.prefix+name+suffix
+        return name
+#        return self.prefix+name+suffix
 
     def getSdnrClient(self, idx=0, primary=False):
         if (primary and self.primarySdncClient!=None) or len(self.odlSdnrClients) == 0:
@@ -108,7 +109,7 @@ class Integration:
         self.printInfo("sdncweb", self.dockerExec.inspect(
             self.getContainerName("sdncweb")))
         self.printInfo("transportpce", self.dockerExec.inspect(
-            self.getContainerName("transportpce")))
+            "transportpce"))
         self.printInfo("transportpce-gui", self.dockerExec.inspect(
             self.getContainerName("transportpce-gui")))
 
@@ -137,13 +138,13 @@ class Integration:
         return sims
 
     def getTransportPCEContainer(self):
-        return DockerContainer(self.getContainerName("transportpce"))
+        return DockerContainer("transportpce")
  
     def getSdnrContainer(self):
-        return DockerContainer(self.getContainerName("sdnr"))
+        return DockerContainer("sdnr")
 
     def getTransportPCEConsoleInfo(self):
-        c = self.dockerExec.inspect(self.getContainerName("transportpce"))
+        c = self.dockerExec.inspect("transportpce")
 
         return SimulatorInfo("transportPCE", c.getIpAddress(),2830, "admin", "admin")
 
@@ -164,7 +165,7 @@ class Integration:
             infos = self.dockerExec.inspect(self.getContainerName("sdnr"))
             self.openBrowser("http://"+infos.getIpAddress()+":8181/apidoc/explorer/index.html")
         elif container == "trpce":
-            infos = self.dockerExec.inspect(self.getContainerName("transportpce"))
+            infos = self.dockerExec.inspect("transportpce")
             self.openBrowser("http://"+infos.getIpAddress()+":8181/apidoc/explorer/index.html")
 
     def setLogs(self):
@@ -215,7 +216,7 @@ class Integration:
         if container == "sdnc" or container is None:
             c.copy(self.getContainerName("sdnr"),src,"logs/"+prefix+"_sdnr.log")
         if container == "trpce" or container is None:
-            c.copy(self.getContainerName("transportpce"),src,"logs/"+prefix+"_trpce.log")
+            c.copy("transportpce",src,"logs/"+prefix+"_trpce.log")
 
     def waitForReadyState(self, args=[]):
         timeout=60

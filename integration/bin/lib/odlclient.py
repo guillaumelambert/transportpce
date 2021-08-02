@@ -19,7 +19,7 @@ class OdlResponse:
     def sourceNotFound(self):
         return self.code==404
 
-URI_CONFIG_NETCONF_TOPO = "/restconf/config/network-topology:network-topology/topology/topology-netconf/"
+URI_CONFIG_NETCONF_TOPO = "/rests/data/network-topology:network-topology/topology=topology-netconf/"
 
 class OdlClient:
 
@@ -52,21 +52,24 @@ class OdlClient:
         node = dict()
         data["node"] = node
         node["node-id"] = name
-        node["netconf-node-topology:port"] = port
-        node["netconf-node-topology:host"] = ip
-        node["netconf-node-topology:username"] = username
-        node["netconf-node-topology:password"] = password
-        node["netconf-node-topology:tcp-only"] = False
-        node["netconf-node-topology:reconnect-on-changed-schema"] = False
-        node["netconf-node-topology:connection-timeout-millis"] = 20000
-        node["netconf-node-topology:max-connection-attempts"] = 100
-        node["netconf-node-topology:between-attempts-timeout-millis"] = 2000
-        node["netconf-node-topology:sleep-factor"] = 1.5
-        node["netconf-node-topology:keepalive-delay"] = 120
+        node["port"] = port
+        node["host"] = ip
+        node["username"] = username
+        node["password"] = password
+        node["tcp-only"] = False
+        node["reconnect-on-changed-schema"] = False
+        node["connection-timeout-millis"] = 20000
+        node["max-connection-attempts"] = 100
+        node["between-attempts-timeout-millis"] = 2000
+        node["sleep-factor"] = 1.5
+        node["keepalive-delay"] = 120
         payload = json.dumps(data)
-        response = self.requestRest('/rests/data/network-topology:network-topology/topology=topology-netconf',
-                                    'POST', self.defaultJsonHeaders, payload)
+        response = self.requestRest('/rests/data/network-topology:network-topology/topology=topology-netconf/node='+name,
+                                    'PUT', self.defaultJsonHeaders, payload)
         print(name + " mounted "+str(response.code)+ " on "+self.baseUrl)
+        if response.code>=400:
+            print("with error:")
+            print(response.content)
         return response
 
     def unmount(self, name):
@@ -101,11 +104,17 @@ class OdlClient:
 
     def getNodeData(self, node: str, suffix: str):
 
-        return self.requestRest(URI_CONFIG_NETCONF_TOPO + "node/" + node + "/yang-ext:mount" + suffix,
+        return self.requestRest(URI_CONFIG_NETCONF_TOPO + "node=" + node + "/yang-ext:mount" + suffix,
         'GET',self.defaultJsonHeaders)
     
     def getNodeA1Data(self, url:str):
         return self.requestRest(url, 'GET', self.defaultJsonHeaders)
+
+    def getIetfNetworks(self, filter=""):
+        return self.requestRest('/rests/data/ietf-network:networks'+filter, 'GET', self.defaultJsonHeaders)
+
+    def getIetfNetwork(self, networkId, filter=''):
+        return self.getIetfNetworks('/network='+networkId+filter)
 
     def setPrimary(self, prim):
         self.primarySource = prim

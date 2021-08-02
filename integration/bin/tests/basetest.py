@@ -1,4 +1,6 @@
 import time;
+import re
+import urllib
 
 class BaseTest:
 
@@ -53,7 +55,29 @@ class BaseTest:
 
         return False
 
+    def urlencode(self, str):
+        return urllib.parse.quote_plus(str)
 
-        
+    def testString(self, str, regex):
+        pattern = re.compile(regex)
+        return pattern.search(str) != None
+
+    def assertIn(self, const, data):
+        if type(data) == str:
+            return data.find(const)>=0
+        return const in data
+
+    def assertEqual(self, const, data, msg=""):
+        r= const == data
+        if r == False and len(msg)>0:
+            print(msg)
+        return r
+
+    def assertDictEqual(self, a, b):
+        return a == b
+
+    def assertNotIn(self, k, ar):
+        return not k in ar
+    
 
     

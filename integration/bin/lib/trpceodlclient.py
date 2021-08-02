@@ -114,3 +114,30 @@ class TrpceOdlClient(OdlClient):
         response = self.requestRest('/restconf/operations/org-openroadm-service:service-delete',
             'POST', self.defaultJsonHeaders,serviceData)
         return response
+
+    def getIetfNetworkIds(self):
+        response = self.getIetfNetworks('?fields=network/network-id')
+        list=None
+        if response.isSucceeded():
+            list=[]
+            for n in response.data['ietf-network:networks']['network']:
+                list.append(n['network-id'])
+
+        else:
+            print('unable to read ietf networks. response code '+response.code)
+        return list
+    
+    def getIetfNetworkNodes(self, networkId):
+        response = self.getIetfNetwork(networkId,'?fields=node/node-id')
+        list=None
+        if response.isSucceeded():
+            if  'node' in response.data['ietf-network:network'][0]:
+                list=[]
+                for n in response.data['ietf-network:network'][0]['node']:
+                    list.append(n['node-id'])
+            else:
+                print('no nodes found for '+networkId)
+        else:
+            print('unable to read ietf network nodes for '+networkId+'. response code '+str(response.code))
+        return list
+    
