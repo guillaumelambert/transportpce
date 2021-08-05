@@ -46,3 +46,4 @@ integration/remote logs
 integration/configs/sims/demo*
 integration/configs/controllers/demo*
 .env.*
+issues/

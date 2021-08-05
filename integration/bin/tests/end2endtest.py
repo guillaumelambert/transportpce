@@ -23,7 +23,7 @@ class End2EndTest(BaseTest):
         if step == "--clean":
             return self.clean()#
         if step != "--skipmount":
-            success = self.mountAll(10)
+            success = self.mountAll()
             if success:
                 print("mounting simulators succeeded")
             else:

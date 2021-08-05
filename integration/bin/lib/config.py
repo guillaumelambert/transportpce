@@ -2,17 +2,17 @@ import sys
 import os
 import os.path
 
+
 class IntegrationConfig:
+    def __init__(self, envFiles):
 
-
-    def __init__(self,envFile):
-        
         self.envs = {}
-        if envFile != None:
-            self.source(envFile)
+        if len(envFiles) > 0:
+            for envFile in envFiles:
+                self.source(envFile)
 
     def source(self, envFilename):
-        print("sourcing "+envFilename)
+        print("sourcing " + envFilename)
         with open(envFilename) as f:
             lines = f.readlines()
             for line in lines:
@@ -28,7 +28,7 @@ class IntegrationConfig:
         try:
             e = os.environ[env]
         except KeyError:
-            print("unable to find env for "+env)
+            print("unable to find env for " + env)
             #print("these are available")
             # print(os.environ)
         return e

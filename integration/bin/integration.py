@@ -31,9 +31,9 @@ class Integration:
             url+=config['suffix']
         return url
 
-    def __init__(self, prefix, envFile=None, profile="default"):
+    def __init__(self, prefix, envFiles=[], profile="default"):
         self.prefix = prefix
-        self.config = IntegrationConfig(envFile)
+        self.config = IntegrationConfig(envFiles)
         self.dockerExec = Docker()
         self.profile = profile
         cconfig = self.loadControllerConfig()
@@ -268,7 +268,7 @@ def print_help():
     print("usage:")
     print("  integration.py [ARGS] COMMAND")
     print("ARGS:")
-    print("  --env [envfile]       set custom env file")
+    print("  --env [envfile]       set custom env file (multiple possible)")
     print("  --profile [profile]   set custom profile")
     print("COMMANDS:")
     print("  info                  show docker container information")
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     sys.argv.pop(0)
 
     profile="default"
-    envFilename = None
+    envFilenames = []
     x=0
     while x<len(sys.argv):
         arg = sys.argv[x]
@@ -305,6 +305,7 @@ if __name__ == "__main__":
             sys.argv.pop(x)
             envFilename = sys.argv.pop(x)
             print("overwriting env file: "+envFilename)
+            envFilenames.append(envFilename)          
         else:
             x+=1
 
@@ -323,7 +324,7 @@ if __name__ == "__main__":
         envFilename = execDirAbs+"/.env"
         if not os.path.isfile(envFilename):
             envFilename = None
-    integration = Integration(prefix, envFilename, profile)
+    integration = Integration(prefix, envFilenames, profile)
     #print("args="+str(sys.argv))
     if cmd == "info":
         integration.info()
