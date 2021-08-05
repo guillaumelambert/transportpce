@@ -49,11 +49,13 @@ class Integration:
             else:
                 self.odlSdnrClients.append(client)
         
-        
+    def resolveFile(self, filename):
+        return os.path.dirname(__file__)+"/"+filename
+
     def loadControllerConfig(self):
         data=None
         regex = r"\$\{([^}]+)\}"
-        with open(CONTROLLER_FOLDER+'/'+self.profile+'.json','r') as fp:
+        with open(self.resolveFile(CONTROLLER_FOLDER+'/'+self.profile+'.json'),'r') as fp:
             content=fp.read()
             matches = re.finditer(regex, content, re.MULTILINE)
             for matchNum, match in enumerate(matches, start=1):
@@ -126,7 +128,7 @@ class Integration:
     def collectSimInfos(self):
         mode = self.profile
         sims = []
-        with open(SIM_FOLDER+"/"+mode+".json", "r") as file:
+        with open(self.resolveFile(SIM_FOLDER+"/"+mode+".json"), "r") as file:
             tmp=json.load(file)
             for sim in tmp:
                 host=sim['host']
