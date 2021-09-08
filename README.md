@@ -35,7 +35,7 @@ cd integration/onap-ext3
 edit ```.env``` file
 ```
 docker-compose up -d
-../bin/integration.py test 3
+../bin/integration.py test end2end
 ```
 
 more details [here](integration/README.md)
