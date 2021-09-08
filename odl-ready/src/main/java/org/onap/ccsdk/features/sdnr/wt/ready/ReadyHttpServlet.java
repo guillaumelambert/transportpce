@@ -31,16 +31,16 @@ public class ReadyHttpServlet extends HttpServlet {
     public void setBundleService(BundleService bundleService) {
         this.bundleService  = bundleService;
     }
+
     public ReadyHttpServlet() {
         LOG.info("ready state servlet instantiated");
     }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         if (this.getBundleStatesReady()) {
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {
-
             try {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             } catch (IOException | IllegalStateException e) {
@@ -51,7 +51,7 @@ public class ReadyHttpServlet extends HttpServlet {
 
     private boolean getBundleStatesReady() {
         Bundle thisbundle = FrameworkUtil.getBundle(this.getClass());
-        BundleContext context = thisbundle ==null?null:thisbundle.getBundleContext();
+        BundleContext context = thisbundle == null ? null : thisbundle.getBundleContext();
         if (context == null) {
             LOG.debug("no bundle context available");
             return true;
@@ -62,47 +62,47 @@ public class ReadyHttpServlet extends HttpServlet {
             return true;
         }
         LOG.debug("found {} bundles", bundles.length);
-        int cntNotActive=0;
+        int cntNotActive = 0;
 
         for (Bundle bundle : bundles) {
-            if(this.bundleService!=null) {
+            if (this.bundleService != null) {
                 BundleInfo info = this.bundleService.getInfo(bundle);
-                if(info.getState()==BundleState.Active ) {
+                if (info.getState() == BundleState.Active) {
                     continue;
                 }
-                if(info.getState()==BundleState.Resolved ) {
-                    if(!this.isBundleImportant(bundle.getSymbolicName())) {
-                        LOG.trace("ignore not important bundle {} with state {}",bundle.getSymbolicName(),info.getState());
+                if (info.getState() == BundleState.Resolved) {
+                    if (!this.isBundleImportant(bundle.getSymbolicName())) {
+                        LOG.trace("ignore not important bundle {} with state {}",
+                            bundle.getSymbolicName(),info.getState());
                         continue;
                     }
                 }
 
                 LOG.trace("bundle {} is in state {}",bundle.getSymbolicName(),info.getState());
-            }
-            else {
+            } else {
                 LOG.warn("bundle service is null");
             }
             cntNotActive++;
         }
 
-        return cntNotActive==0;
+        return cntNotActive == 0;
     }
 
     private boolean isBundleImportant(String symbolicName) {
         symbolicName = symbolicName.toLowerCase();
-        if(symbolicName.contains("mdsal")) {
+        if (symbolicName.contains("mdsal")) {
             return true;
         }
-        if(symbolicName.contains("netconf")) {
+        if (symbolicName.contains("netconf")) {
             return true;
         }
-        if(symbolicName.contains("ccsdk")) {
+        if (symbolicName.contains("ccsdk")) {
             return true;
         }
-        if(symbolicName.contains("devicemanager")) {
+        if (symbolicName.contains("devicemanager")) {
             return true;
         }
-        if(symbolicName.contains("restconf")) {
+        if (symbolicName.contains("restconf")) {
             return true;
         }
 
