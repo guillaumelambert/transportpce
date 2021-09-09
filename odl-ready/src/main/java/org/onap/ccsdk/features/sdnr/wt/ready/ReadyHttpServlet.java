@@ -7,7 +7,9 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.ready;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
+import java.util.Locale;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,12 @@ public class ReadyHttpServlet extends HttpServlet {
 
     private BundleService bundleService = null;
 
+    //TODO check if another solution such as using OSGi annotations would not be more indicated here
+    @SuppressFBWarnings(
+            value = {"SE_BAD_FIELD", "MSF_MUTABLE_SERVLET_FIELD", "MTIA_SUSPECT_SERVLET_INSTANCE_FIELD"},
+            justification =
+                "This field is not Serializable but this class implements HttpServlet to delegate serialization."
+                + "Thus instances of this class aren't serialized. SpotBugs does not recognize this.")
     public void setBundleService(BundleService bundleService) {
         this.bundleService  = bundleService;
     }
@@ -44,7 +52,7 @@ public class ReadyHttpServlet extends HttpServlet {
             try {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             } catch (IOException | IllegalStateException e) {
-                LOG.warn("unable to write out 404 res not found: {}", e);
+                LOG.warn("unable to write out 404 res not found:", e);
             }
         }
     }
@@ -89,7 +97,7 @@ public class ReadyHttpServlet extends HttpServlet {
     }
 
     private boolean isBundleImportant(String symbolicName) {
-        symbolicName = symbolicName.toLowerCase();
+        symbolicName = symbolicName.toLowerCase(Locale.getDefault());
         if (symbolicName.contains("mdsal")) {
             return true;
         }
