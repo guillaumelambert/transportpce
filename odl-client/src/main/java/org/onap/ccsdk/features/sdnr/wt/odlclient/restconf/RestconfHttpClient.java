@@ -213,10 +213,10 @@ public class RestconfHttpClient extends BaseHTTPClient {
         PrintWriter pw = new PrintWriter(sw);
         exception.printStackTrace(pw);
 
-        StringBuffer buf = new StringBuffer();
-        buf.append("Exception: ");
-        buf.append(sw.toString());
-        return buf.toString();
+        return new StringBuilder()
+                .append("Exception: ")
+                .append(sw.toString())
+                .toString();
     }
 
     public <O extends DataObject, I extends DataObject> ListenableFuture<RpcResult<O>> executeRpc(String nodeId,

@@ -45,7 +45,7 @@ public class RemoteMountPoint implements MountPoint {
             return (@NonNull Optional<T>) Optional
                     .of(new RemoteRpcConsumerRegistry(this.restClient, this.nodeId));
         }
-        if(service.equals(NotificationService.class)) {
+        if (service.equals(NotificationService.class)) {
             return (@NonNull Optional<T>) Optional
                     .of(new RemoteNotificationService(this.wsClient, this.nodeId));
         }
