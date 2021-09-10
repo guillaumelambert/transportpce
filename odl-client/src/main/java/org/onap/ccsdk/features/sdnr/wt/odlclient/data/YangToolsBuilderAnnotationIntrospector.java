@@ -114,25 +114,26 @@ public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationInt
         return findClass(name, ctx);
     }
 
-    public Class<?> findClass(String name, BundleContext context) throws ClassNotFoundException {
+    // In a class finder, the expected behavior is not to catch an exception when a Bundle is a class is not found
+    // but to try the next ones.
+    @SuppressWarnings("EmptyBlock")
+    public Class<?> findClass(String name, BundleContext bundleContext) throws ClassNotFoundException {
         // Try to find in other bundles
-        if (context != null) {
-            //OSGi environment
-            for (Bundle b : context.getBundles()) {
-                try {
-                    return b.loadClass(name);
-                } catch (ClassNotFoundException e) {
-                }
-            }
-            try {
-                return Class.forName(name);
-            } catch (ClassNotFoundException e) {
-            }
-            throw new ClassNotFoundException("Can not find Class in OSGi context.");
-        } else {
+        //OSGi environment
+        if (bundleContext == null) {
             return Class.forName(name);
         }
-        // not found in any bundle
+        for (Bundle b : bundleContext.getBundles()) {
+            try {
+                return b.loadClass(name);
+            } catch (ClassNotFoundException e) {
+            }
+        }
+        try {
+            return Class.forName(name);
+        } catch (ClassNotFoundException e) {
+        }
+        throw new ClassNotFoundException("Can not find Class in OSGi context.");
     }
 
     @Override

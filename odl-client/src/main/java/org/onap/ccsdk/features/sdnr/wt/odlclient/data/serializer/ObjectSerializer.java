@@ -9,8 +9,8 @@ package org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer;
 
 public class ObjectSerializer {
 
-	public String convertPropertyName(String name) {
-		return name.substring(1).replaceAll("([a-z0-9])([A-Z])", "$1-$2").toLowerCase();
-	}
+    public String convertPropertyName(String name) {
+        return name.substring(1).replaceAll("([a-z0-9])([A-Z])", "$1-$2").toLowerCase();
+    }
 
 }
