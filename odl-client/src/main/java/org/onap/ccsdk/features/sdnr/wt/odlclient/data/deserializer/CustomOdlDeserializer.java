@@ -85,6 +85,7 @@ public class CustomOdlDeserializer extends BeanDeserializerModifier {
 
         return deser;
     }
+
     public static boolean implementsInterface(Class<?> clz, Class<?> ifToImplement) {
         return ifToImplement.isAssignableFrom(clz);
     }

@@ -129,17 +129,20 @@ public class BaseIdentityJsonDeserializer<T> extends JsonDeserializer<Class<? ex
         }
         Class<?> clazz;
         clazz = this.identityMap.get(clazzToSearch);
-        if (clazz != null)
+        if (clazz != null) {
             return (Class<? extends T>) clazz;
+        }
         try {
             clazz = ctxt.findClass(clazzToSearch);
-            if (clazz != null)
+            if (clazz != null) {
                 return (Class<? extends T>) clazz;
+            }
         } catch (ClassNotFoundException e) {
             try {
                 clazz = this.clsFinder.findClass(clazzToSearch);
-                if (clazz != null)
+                if (clazz != null) {
                     return (Class<? extends T>) clazz;
+                }
             } catch (ClassNotFoundException e2) {
                 LOG.warn("BaseIdentityDeserializer class not found for '{}({})'", clazzToSearch,
                         parser.getValueAsString(), e2);

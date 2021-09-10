@@ -33,12 +33,12 @@ public class ClassJsonDeserializer extends FromStringDeserializer<Class<?>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClassJsonDeserializer.class);
     private static final long serialVersionUID = 1L;
-    private static final Map<String,Class<?>> exceptions = initExceptions();
+    private static final Map<String,Class<?>> EXCEPTIONS = initExceptions();
     private final ClassFinder clsFinder;
+
     public ClassJsonDeserializer(Class<?> vc, ClassFinder clsFinder) {
         super(vc);
         this.clsFinder = clsFinder;
-
     }
 
     private static Map<String, Class<?>> initExceptions() {
@@ -63,18 +63,19 @@ public class ClassJsonDeserializer extends FromStringDeserializer<Class<?>> {
     @Override
     protected Class<?> _deserialize(String value, DeserializationContext ctxt) throws IOException {
         try {
-            if(exceptions.containsKey(value)) {
-                return exceptions.get(value);
+            if (EXCEPTIONS.containsKey(value)) {
+                return EXCEPTIONS.get(value);
             }
             return this.clsFinder.findClass(this.normalizeClassName(value));
         } catch (ClassNotFoundException e) {
-            throw new IOException("Can not find class "+value,e);
+            throw new IOException("Can not find class " + value, e);
         }
     }
+
     private String normalizeClassName(final String clsName) {
-        String value = clsName.substring(0,1).toUpperCase()+clsName.substring(1);
+        String value = clsName.substring(0,1).toUpperCase() + clsName.substring(1);
         value = value.replace("-", "");
-        LOG.debug("normalize class name from {} to {}",clsName,value);
+        LOG.debug("normalize class name from {} to {}", clsName, value);
         return value;
     }
 }
