@@ -47,6 +47,7 @@ public class NotificationInput<T extends Notification> {
     public NotificationInput() {
 
     }
+
     public NotificationInput(NotificationInputBase base, T notification) {
         this.eventTime = base.getEventTime();
         this.nodeId = base.getNodeId();
@@ -95,12 +96,12 @@ public class NotificationInput<T extends Notification> {
 
     @JsonIgnore
     public boolean isDataType(Class<?> clazz) {
-        return this.data!=null && YangToolsMapperHelper.implementsInterface(this.data.getClass(), clazz);
+        return this.data != null && YangToolsMapperHelper.implementsInterface(this.data.getClass(), clazz);
     }
 
     @JsonIgnore
     public boolean isControllerNotification() {
-        return this.type!=null && CONTROLLER_NAMESPACE.equals(this.type.getNamespace());
+        return this.type != null && CONTROLLER_NAMESPACE.equals(this.type.getNamespace());
     }
 
 }
