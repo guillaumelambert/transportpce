@@ -133,7 +133,7 @@ public class RemoteOdlConfig {
 
             LOG.debug("try to find env var(s) for {}", value);
             final Matcher matcher = PATTERN.matcher(value);
-            String tmp = new String(value);
+            String tmp = value;
             while (matcher.find() && matcher.groupCount() > 0) {
                 final String mkey = matcher.group(1);
                 if (mkey != null) {
@@ -142,7 +142,7 @@ public class RemoteOdlConfig {
                         String env = System.getenv(mkey.substring(2, mkey.length() - 1));
                         tmp = tmp.replace(mkey, env == null ? "" : env);
                     } catch (SecurityException e) {
-                        LOG.warn("unable to read env {}: {}", value, e);
+                        LOG.warn("unable to read env {}: ", value, e);
                     }
                 }
             }

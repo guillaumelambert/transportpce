@@ -65,7 +65,7 @@ public class OdlObjectMapper extends ObjectMapper implements ClassFinder {
                     String[] hlp = key.split(":");
                     key = hlp[hlp.length - 1];
                 }
-                LOG.trace("using key=", key);
+                LOG.trace("using key={}", key);
                 return ctxt.getAttribute(key);
             }
         });

@@ -18,7 +18,8 @@ import org.opendaylight.yangtools.yang.binding.Augmentation;
 
 public class AugmentationMap {
 
-    private static AugmentationMap instance;
+    private static final Object LOCK = new Object();
+    private static volatile AugmentationMap instance;
     private final Map<Class<?>, List<Class<?>>> map;
 
     public AugmentationMap() {
@@ -216,8 +217,13 @@ public class AugmentationMap {
     }
 
     public static AugmentationMap getInstance() {
+        //TODO check if this synchronized lock cannot be repaled by a straightorward initilization elsewhere
         if (instance == null) {
-            instance = new AugmentationMap();
+            synchronized (LOCK) {
+                if (instance == null) {
+                    instance = new AugmentationMap();
+                }
+            }
         }
         return instance;
     }

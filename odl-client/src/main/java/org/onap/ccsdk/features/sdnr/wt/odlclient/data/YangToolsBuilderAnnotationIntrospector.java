@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,12 @@ import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//TODO check if another solution  would not be more indicated here
+@SuppressFBWarnings(
+    value = {"SE_BAD_FIELD"},
+    justification =
+      "This field is not Serializable but the class implements JacksonAnnotationIntrospector to delegate serialization."
+      + "Thus instances of this class aren't serialized. SpotBugs does not recognize this.")
 public class YangToolsBuilderAnnotationIntrospector extends JacksonAnnotationIntrospector {
 
     private static final Logger LOG = LoggerFactory.getLogger(YangToolsBuilderAnnotationIntrospector.class);

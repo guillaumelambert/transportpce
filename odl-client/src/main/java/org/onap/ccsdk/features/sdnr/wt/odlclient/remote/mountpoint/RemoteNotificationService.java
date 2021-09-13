@@ -33,7 +33,7 @@ public class RemoteNotificationService implements NotificationService {
         return (@NonNull ListenerRegistration<T>) new WebsocketListenerRegistration(this.wsClient,this.nodeId);
     }
 
-    public class WebsocketListenerRegistration extends FilteredNotificationWebsocketCallback
+    public static class WebsocketListenerRegistration extends FilteredNotificationWebsocketCallback
             implements ListenerRegistration<NotificationListener> {
 
         private final SdnrWebsocketClient wsClient;

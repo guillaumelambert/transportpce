@@ -201,7 +201,7 @@ public class RestconfHttpClient extends BaseHTTPClient {
     private static Field getDeclaredFieldOrNull(Class<?> clazz, String key) {
         Field[] fields = clazz.getDeclaredFields();
         for (Field f:fields) {
-            if (f.getName() == key) {
+            if (f.getName().equals(key)) {
                 return f;
             }
         }

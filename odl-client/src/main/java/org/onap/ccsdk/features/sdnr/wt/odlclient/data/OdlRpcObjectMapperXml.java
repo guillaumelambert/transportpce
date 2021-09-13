@@ -8,9 +8,16 @@
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy.KebabCaseStrategy;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.KeepPropertyNameSerializer;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
+//TODO check if another solution  would not be more indicated here
+@SuppressFBWarnings(
+    value = {"SE_BAD_FIELD"},
+    justification =
+       "This field is not Serializable but the class implements OdlObjectMapperXml to delegate serialization."
+       + "Thus instances of this class aren't serialized. SpotBugs does not recognize this.")
 public class OdlRpcObjectMapperXml extends OdlObjectMapperXml {
 
     private static final long serialVersionUID = 1L;

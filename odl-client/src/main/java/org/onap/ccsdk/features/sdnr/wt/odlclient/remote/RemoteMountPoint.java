@@ -49,8 +49,7 @@ public class RemoteMountPoint implements MountPoint {
             return (@NonNull Optional<T>) Optional
                     .of(new RemoteNotificationService(this.wsClient, this.nodeId));
         }
-        // TODO Auto-generated method stub
-        return null;
+        return Optional.empty();
     }
 
 }

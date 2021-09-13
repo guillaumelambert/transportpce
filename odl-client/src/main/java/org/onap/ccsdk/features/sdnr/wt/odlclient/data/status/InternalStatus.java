@@ -38,7 +38,7 @@ public class InternalStatus {
     }
 
 
-    private class ResponseStatus {
+    private static class ResponseStatus {
 
         private int succeeded;
         private int failed;
@@ -49,7 +49,7 @@ public class InternalStatus {
         }
 
         public String toJSON() {
-            return String.format(JSON_FORMAT_RESPONSES, this.succeeded,this.failed);
+            return String.format(JSON_FORMAT_RESPONSES, this.succeeded, this.failed);
         }
     }
 

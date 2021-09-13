@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.ClassFinder;
 import org.opendaylight.yang.gen.v1.http.org.openroadm.interfaces.rev170626.EthernetCsmacd;
@@ -73,7 +74,7 @@ public class ClassJsonDeserializer extends FromStringDeserializer<Class<?>> {
     }
 
     private String normalizeClassName(final String clsName) {
-        String value = clsName.substring(0,1).toUpperCase() + clsName.substring(1);
+        String value = clsName.substring(0,1).toUpperCase(Locale.getDefault()) + clsName.substring(1);
         value = value.replace("-", "");
         LOG.debug("normalize class name from {} to {}", clsName, value);
         return value;

@@ -97,7 +97,7 @@ public class TypeObjectJsonDeserializer<T> extends JsonDeserializer<T> {
             }
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
                 | NoSuchElementException | SecurityException | InstantiationException e) {
-            LOG.warn("problem deserializing {} with value {}: {}", clazz.getName(), arg, e);
+            LOG.warn("problem deserializing {} with value {}: ", clazz.getName(), arg, e);
         }
         return (T) deser.deserialize(parser, ctxt);
     }

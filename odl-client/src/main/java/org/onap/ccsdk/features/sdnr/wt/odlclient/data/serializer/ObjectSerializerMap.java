@@ -7,9 +7,17 @@
  */
 package org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.HashMap;
 import java.util.Map;
 
+
+//TODO check if another solution  would not be more indicated here
+@SuppressFBWarnings(
+    value = {"SE_BAD_FIELD"},
+    justification =
+       "This field is not Serializable but the class implements HashMap<?, ObjectSerializer> to delegate serialization."
+       + "Thus instances of this class aren't serialized. SpotBugs does not recognize this.")
 public class ObjectSerializerMap extends HashMap<String, ObjectSerializer> {
 
     private static final long serialVersionUID = 1L;

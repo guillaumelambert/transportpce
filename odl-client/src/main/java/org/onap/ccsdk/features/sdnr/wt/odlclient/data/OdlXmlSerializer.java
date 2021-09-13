@@ -106,7 +106,7 @@ public class OdlXmlSerializer extends OdlDataSerializer {
                     QName qname = null;
                     Field[] fields = value.getDeclaredFields();
                     for (Field f2 : fields) {
-                        if (f2.getName() == "QNAME") {
+                        if (f2.getName().equals("QNAME")) {
                             qname = (QName) f2.get(value);
                             break;
                         }

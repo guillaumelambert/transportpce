@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.ObjectSerializer;
 import org.onap.ccsdk.features.sdnr.wt.odlclient.data.serializer.ObjectSerializerMap;
@@ -129,7 +130,8 @@ public abstract class OdlDataSerializer {
                         if (Enum.class.isAssignableFrom(type)) {
                             e2 = this.startElem(name, value, false, false, rootClass);
                             String svalue = this.getEnumStringValue(value);
-                            this.writeElemValue(e2, svalue.substring(0, 1).toLowerCase() + svalue.substring(1));
+                            this.writeElemValue(e2,
+                                svalue.substring(0, 1).toLowerCase(Locale.getDefault()) + svalue.substring(1));
                             this.stopElem(e2, name);
                             e1.addChild(e2);
                         }
@@ -256,7 +258,7 @@ public abstract class OdlDataSerializer {
         QName qname = null;
         Field[] fields = value.getDeclaredFields();
         for (Field f : fields) {
-            if (f.getName() == "QNAME") {
+            if (f.getName().equals("QNAME")) {
                 qname = (QName) f.get(value);
                 break;
             }
